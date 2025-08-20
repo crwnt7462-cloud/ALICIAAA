@@ -310,34 +310,34 @@ export default function ModernSalonCompact() {
               <div className="space-y-6">
                 {serviceCategories.map((category) => (
                   <div key={category.id} className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple/10 hover:bg-white/85 transition-all duration-300">
-                    {/* Header de catégorie avec bouton dépliable */}
+                    {/* Header de catégorie compact */}
                     <button
                       onClick={() => toggleCategory(category.id)}
-                      className="w-full p-6 bg-gradient-to-r from-purple-50/70 to-violet-50/70 backdrop-blur-xl border-b border-white/30 hover:from-purple-100/70 hover:to-violet-100/70 transition-all duration-300"
+                      className="w-full p-4 bg-gradient-to-r from-purple-50/70 to-violet-50/70 backdrop-blur-xl border-b border-white/30 hover:from-purple-100/70 hover:to-violet-100/70 transition-all duration-300"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="text-left">
-                          <h3 className="font-bold text-xl bg-gradient-to-r from-purple-700 to-violet-700 bg-clip-text text-transparent">{category.name}</h3>
-                          <p className="text-gray-600">{category.description}</p>
+                        <div className="text-left flex-1">
+                          <h3 className="font-bold text-lg bg-gradient-to-r from-purple-700 to-violet-700 bg-clip-text text-transparent">{category.name}</h3>
+                          <p className="text-gray-600 text-sm">{category.description}</p>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-sm text-purple-700 bg-white/90 backdrop-blur-xl px-4 py-2 rounded-full font-medium border border-white/50 shadow-lg">
-                            {category.count} services
+                        <div className="flex items-center gap-3">
+                          <div className="text-xs text-purple-700 bg-white/90 backdrop-blur-xl px-3 py-1 rounded-full font-medium border border-white/50 shadow-sm">
+                            {category.count}
                           </div>
                           {expandedCategory === category.id ? (
-                            <ChevronUp className="h-5 w-5 text-purple-600" />
+                            <ChevronUp className="h-4 w-4 text-purple-600" />
                           ) : (
-                            <ChevronDown className="h-5 w-5 text-purple-600" />
+                            <ChevronDown className="h-4 w-4 text-purple-600" />
                           )}
                         </div>
                       </div>
                     </button>
                     
-                    {/* Contenu dépliable avec services et photos */}
+                    {/* Contenu dépliable compact */}
                     {expandedCategory === category.id && (
-                      <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+                      <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                         {category.services.map((service, index) => (
-                          <div key={index} className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-white/90 hover:shadow-xl hover:shadow-purple/10 transition-all duration-300">
+                          <div key={index} className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-xl p-3 sm:p-4 hover:bg-white/90 hover:shadow-lg hover:shadow-purple/10 transition-all duration-300">
                             <div className="flex items-start gap-3 sm:gap-4">
                               {/* Photo de prestation - RESPONSIVE */}
                               <div className="flex-shrink-0">
