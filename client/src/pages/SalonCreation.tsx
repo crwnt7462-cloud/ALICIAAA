@@ -909,37 +909,37 @@ export default function SalonCreation() {
 
       {/* Modal de personnalisation moderne */}
       <Dialog open={isColorModalOpen} onOpenChange={setIsColorModalOpen}>
-        <DialogContent className="max-w-md mx-auto bg-white/80 backdrop-blur-xl border-white/20 shadow-2xl">
-          <DialogHeader className="text-center pb-4">
-            <DialogTitle className="text-xl font-semibold text-gray-900">
-              Personnaliser la couleur
+        <DialogContent className="max-w-lg mx-auto bg-white/90 backdrop-blur-2xl border-white/30 shadow-2xl rounded-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="text-center pb-6">
+            <DialogTitle className="text-2xl font-bold text-gray-900">
+              Couleur du salon
             </DialogTitle>
-            <p className="text-sm text-gray-600 mt-1">
-              Choisissez la couleur de votre salon
+            <p className="text-sm text-gray-600 mt-2">
+              Cette couleur apparaîtra sur vos boutons et accents
             </p>
           </DialogHeader>
           
-          <div className="space-y-6">
-            {/* Palettes prédéfinies - Grid responsive */}
+          <div className="space-y-8">
+            {/* Palettes prédéfinies - Design minimaliste */}
             <div>
-              <h4 className="font-medium mb-4 text-gray-800">Couleurs prédéfinies</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <h4 className="font-semibold mb-6 text-gray-900">Couleurs prédéfinies</h4>
+              <div className="grid grid-cols-2 gap-4">
                 {colorPresets.map((preset, index) => (
                   <button
                     key={index}
                     onClick={() => applyColorPreset(preset)}
-                    className={`group flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02] ${
+                    className={`group flex items-center gap-4 p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${
                       primaryColor === preset.color 
-                        ? 'border-current bg-white/50 shadow-md' 
-                        : 'border-gray-200/50 bg-white/20 hover:bg-white/30'
+                        ? 'border-current bg-white/70 shadow-lg scale-[1.02]' 
+                        : 'border-gray-200/40 bg-white/40 hover:bg-white/60'
                     }`}
                     style={{ borderColor: primaryColor === preset.color ? preset.color : undefined }}
                   >
                     <div 
-                      className="w-6 h-6 rounded-full shadow-sm"
+                      className="w-8 h-8 rounded-full shadow-md flex-shrink-0"
                       style={{ backgroundColor: preset.color }}
                     />
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                    <span className="text-base font-medium text-gray-800 group-hover:text-gray-900 truncate">
                       {preset.name}
                     </span>
                   </button>
@@ -948,52 +948,43 @@ export default function SalonCreation() {
             </div>
 
             {/* Couleur personnalisée */}
-            <div className="bg-white/30 backdrop-blur-md rounded-xl p-4 border border-white/20">
-              <h4 className="font-medium mb-3 text-gray-800">Couleur personnalisée</h4>
-              <div className="flex items-center gap-3">
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+              <h4 className="font-semibold mb-4 text-gray-900">Couleur personnalisée</h4>
+              <div className="flex items-center gap-4">
                 <div className="relative">
                   <input
                     type="color"
                     value={primaryColor}
                     onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="w-12 h-12 rounded-xl border-2 border-white/30 cursor-pointer shadow-md"
+                    className="w-14 h-14 rounded-2xl border-2 border-white/50 cursor-pointer shadow-lg"
                   />
                 </div>
                 <Input
                   value={primaryColor}
                   onChange={(e) => setPrimaryColor(e.target.value)}
                   placeholder="#8b5cf6"
-                  className="flex-1 bg-white/50 border-white/30"
+                  className="flex-1 bg-white/60 border-white/50 rounded-xl text-base"
                 />
               </div>
             </div>
 
-            {/* Aperçu moderne */}
-            <div className="bg-white/20 backdrop-blur-md rounded-xl p-4 border border-white/20">
-              <h4 className="font-medium mb-4 text-gray-800">Aperçu</h4>
-              <div className="space-y-3">
-                <Button 
-                  style={getButtonStyle('solid')} 
-                  className="w-full shadow-lg hover:shadow-xl transition-shadow duration-200"
-                >
-                  Bouton de réservation
-                </Button>
-                <Button 
-                  style={getButtonStyle('outline')} 
-                  variant="outline"
-                  className="w-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors duration-200"
-                >
-                  Bouton secondaire
-                </Button>
-              </div>
+            {/* Aperçu simplifié */}
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+              <h4 className="font-semibold mb-4 text-gray-900">Aperçu</h4>
+              <Button 
+                style={getButtonStyle('solid')} 
+                className="w-full h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-white font-semibold"
+              >
+                Réserver maintenant
+              </Button>
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-4 pt-4">
               <Button
                 variant="outline"
                 onClick={() => setIsColorModalOpen(false)}
-                className="flex-1 bg-white/10 border-white/30 hover:bg-white/20"
+                className="flex-1 h-12 bg-white/30 border-white/50 hover:bg-white/50 rounded-xl"
               >
                 Annuler
               </Button>
@@ -1002,11 +993,11 @@ export default function SalonCreation() {
                   setIsColorModalOpen(false);
                   toast({
                     title: "Couleur appliquée",
-                    description: "Votre couleur personnalisée a été sauvegardée",
+                    description: "La couleur de votre salon a été mise à jour",
                   });
                 }}
                 style={getButtonStyle('solid')}
-                className="flex-1 shadow-lg hover:shadow-xl transition-shadow duration-200"
+                className="flex-1 h-12 shadow-lg hover:shadow-xl transition-all duration-200 text-white font-semibold rounded-xl"
               >
                 Appliquer
               </Button>
