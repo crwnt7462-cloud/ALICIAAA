@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { 
   MapPin, Phone, Mail, Clock, Star, Calendar, 
-  CreditCard, Check, ArrowLeft, Sparkles, Settings, Edit3, CheckCircle, Heart
+  CreditCard, Check, ArrowLeft, Sparkles, Settings, Edit3, CheckCircle, Heart,
+  Search, ChevronDown, Instagram, Facebook, Music
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -35,6 +36,7 @@ interface SalonData {
 export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('services');
   
   // Salon par défaut si pas de données
   const defaultSalonData: SalonData = {
@@ -117,127 +119,444 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header avec bouton retour */}
-      <div className="sticky top-0 z-40 bg-white border-b shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => setLocation('/dashboard')}
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour Dashboard
-          </Button>
-          
-          <div className="flex items-center space-x-3">
-            <Button 
-              size="sm" 
-              variant="outline"
-              className="text-xs"
-            >
-              <Edit3 className="w-3 h-3 mr-1" />
-              Modifier
-            </Button>
-            <Button 
-              size="sm" 
-              className="gradient-bg text-white text-xs"
-            >
-              <Settings className="w-3 h-3 mr-1" />
-              Paramètres
-            </Button>
+      {/* Header Navigation - Style Fresha avec logo Avyento */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo Avyento */}
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setLocation('/dashboard')}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
+              <img 
+                src="/attached_assets/Logo avyento._1755714467098.png"
+                alt="Avyento"
+                className="h-8 w-auto"
+                style={{ height: '32px' }}
+              />
+            </div>
+
+            {/* Navigation Center - Barres de recherche dynamiques */}
+            <div className="hidden md:flex items-center gap-4">
+              {/* Barre de recherche services */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Rechercher un service..."
+                  className="pl-10 pr-4 py-2 w-48 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Adresse avec détection */}
+              <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <MapPin className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700">Adresse</span>
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              </button>
+
+              {/* Sélecteur de date */}
+              <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700">Date</span>
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              </button>
+
+              {/* Sélecteur d'heure */}
+              <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <Clock className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-700">Heure</span>
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+
+            {/* Menu Button */}
+            <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <span>Menu</span>
+              <div className="space-y-1">
+                <div className="w-4 h-0.5 bg-gray-600"></div>
+                <div className="w-4 h-0.5 bg-gray-600"></div>
+                <div className="w-4 h-0.5 bg-gray-600"></div>
+              </div>
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        
-        {/* En-tête salon */}
-        <div 
-          className="relative bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 mb-8 text-white overflow-hidden"
-          style={{
-            background: pageData.primaryColor 
-              ? `linear-gradient(135deg, ${pageData.primaryColor}, ${pageData.secondaryColor || '#8B5CF6'})` 
-              : undefined
-          }}
-        >
-          <div className="relative z-10">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold mb-3">
-                  {pageData.salonName || "Mon Salon"}
-                </h1>
-                <p className="text-lg opacity-90 mb-4 max-w-2xl">
-                  {pageData.salonDescription || "Votre salon de beauté professionnel"}
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-2 opacity-75" />
-                    <span>{pageData.salonAddress || "Adresse du salon"}</span>
+      {/* Breadcrumb */}
+      <div className="bg-gray-50 px-4 py-3">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <span>Accueil</span>
+            <span>•</span>
+            <span>Instituts de beauté</span>
+            <span>•</span>
+            <span>France</span>
+            <span>•</span>
+            <span>Paris</span>
+            <span>•</span>
+            <span className="text-gray-900">{pageData.salonName || "Excellence Beauty Salon"}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Header Salon avec photo de couverture */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-start gap-6">
+            {/* Photo de couverture du salon */}
+            <div className="w-24 h-24 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
+              <img 
+                src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                alt={pageData.salonName || "Excellence Beauty Salon"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Informations salon */}
+            <div className="flex-1">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h1 className="text-3xl font-bold text-gray-900">{pageData.salonName || "Excellence Beauty Salon"}</h1>
+                    <CheckCircle className="h-6 w-6 text-blue-500" />
                   </div>
                   
-                  <div className="flex items-center">
-                    <Phone className="w-4 h-4 mr-2 opacity-75" />
-                    <span>{pageData.salonPhone || "Téléphone"}</span>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <Mail className="w-4 h-4 mr-2 opacity-75" />
-                    <span>{pageData.salonEmail || "Email"}</span>
+                  <div className="flex items-center gap-4 mb-2 text-sm">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium text-gray-900">5.0</span>
+                      <span className="text-gray-600">(749)</span>
+                    </div>
+                    <span className="text-gray-600">•</span>
+                    <span className="text-green-600 font-medium">Ouvert</span>
+                    <span className="text-gray-600">- ferme à 19:00</span>
+                    <span className="text-gray-600">•</span>
+                    <span className="text-gray-600">{pageData.salonAddress || 'Paris, France'}</span>
+                    <button className="text-blue-600 hover:text-blue-700 font-medium">
+                      Afficher l'itinéraire
+                    </button>
                   </div>
                 </div>
-              </div>
-              
-              <div className="hidden md:block">
-                <div className="bg-white/20 backdrop-blur-sm rounded-full p-6">
-                  <Sparkles className="w-12 h-12" />
+
+                {/* Actions */}
+                <div className="flex items-center gap-3">
+                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <Heart className="h-5 w-5 text-gray-600" />
+                  </button>
+                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <Star className="h-5 w-5 text-gray-600" />
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Services disponibles */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <Calendar className="w-5 h-5 mr-2" />
-              Nos Prestations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2">
-              {availableServices.map((service: any) => (
-                <div 
-                  key={service.id} 
-                  className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                    formData.serviceId === service.id?.toString() 
-                      ? 'border-purple-500 bg-purple-50' 
-                      : 'border-gray-200 hover:border-purple-300'
-                  }`}
-                  onClick={() => setFormData(prev => ({ ...prev, serviceId: service.id?.toString() || '' }))}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-lg">{service.name}</h3>
-                    {pageData.showPrices && (
-                      <span 
-                        className="font-bold text-lg"
-                        style={{ color: pageData.primaryColor || '#8B5CF6' }}
-                      >
-                        {service.price}€
-                      </span>
-                    )}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        
+        {/* Navigation par onglets */}
+        <div className="border-b border-gray-200 mb-8">
+          <nav className="flex space-x-8">
+            {['Services', 'Infos', 'Équipe', 'Avis', 'Galerie'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab.toLowerCase())}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === tab.toLowerCase()
+                    ? 'border-purple-500 text-purple-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* Contenu des onglets */}
+        {activeTab === 'services' && (
+          <div className="space-y-6">
+            {/* Services par catégories */}
+            <div className="space-y-4">
+              <div className="border border-gray-200 rounded-lg">
+                <button className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50">
+                  <div>
+                    <h3 className="font-semibold text-lg">Soins Visage</h3>
+                    <p className="text-sm text-gray-500">Traitements du visage personnalisés</p>
                   </div>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Clock className="w-4 h-4 mr-1" />
-                    <span>{service.duration || 60} min</span>
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </button>
+                <div className="border-t border-gray-100 p-4 space-y-4">
+                  <div className="flex gap-4 p-4 border rounded-lg">
+                    <div className="flex gap-2">
+                      <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=80&h=80&fit=crop" className="w-16 h-16 rounded-lg object-cover" />
+                      <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=80&h=80&fit=crop" className="w-16 h-16 rounded-lg object-cover" />
+                      <img src="https://images.unsplash.com/photo-1559599189-fe84dea4eb79?w=80&h=80&fit=crop" className="w-16 h-16 rounded-lg object-cover" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium">Soin Anti-Âge Premium</h4>
+                      <p className="text-sm text-gray-600">Traitement complet contre les signes de l'âge</p>
+                      <div className="flex items-center mt-2">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm ml-1">4.9 (127 avis)</span>
+                      </div>
+                      <p className="text-lg font-semibold text-purple-600 mt-2">85€</p>
+                    </div>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="border border-gray-200 rounded-lg">
+                <button className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50">
+                  <div>
+                    <h3 className="font-semibold text-lg">Coiffure</h3>
+                    <p className="text-sm text-gray-500">Coupes, colorations et coiffages</p>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+              
+              <div className="border border-gray-200 rounded-lg">
+                <button className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50">
+                  <div>
+                    <h3 className="font-semibold text-lg">Manucure & Pédicure</h3>
+                    <p className="text-sm text-gray-500">Soins des ongles et nail art</p>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        )}
+
+        {activeTab === 'infos' && (
+          <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Réseaux Sociaux</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Facebook className="w-5 h-5 text-blue-600" />
+                    <span>@excellencebeauty</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Instagram className="w-5 h-5 text-pink-600" />
+                    <span>@excellence_beauty</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Music className="w-5 h-5 text-black" />
+                    <span>@excellencebeauty</span>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Horaires d'ouverture</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Lundi - Vendredi</span>
+                    <span>9h00 - 19h00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Samedi</span>
+                    <span>9h00 - 17h00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Dimanche</span>
+                    <span className="text-red-600">Fermé</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>À propos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 leading-relaxed">
+                  Excellence Beauty Salon est votre destination de choix pour tous vos besoins de beauté. 
+                  Avec plus de 10 ans d'expérience, notre équipe de professionnels qualifiés vous offre 
+                  des services de qualité dans un environnement relaxant et moderne. Nous utilisons uniquement 
+                  des produits haut de gamme pour vous garantir les meilleurs résultats.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'équipe' && (
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card>
+              <CardContent className="p-6 text-center">
+                <img 
+                  src="https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=150&h=150&fit=crop&crop=face" 
+                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                  alt="Sophie"
+                />
+                <h3 className="font-semibold text-lg">Sophie</h3>
+                <p className="text-purple-600 font-medium">Esthéticienne Senior</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Spécialiste en soins anti-âge avec 8 ans d'expérience
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6 text-center">
+                <img 
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" 
+                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                  alt="Marc"
+                />
+                <h3 className="font-semibold text-lg">Marc</h3>
+                <p className="text-purple-600 font-medium">Coiffeur Styliste</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Expert en coloration et techniques avant-gardistes
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6 text-center">
+                <img 
+                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face" 
+                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                  alt="Léa"
+                />
+                <h3 className="font-semibold text-lg">Léa</h3>
+                <p className="text-purple-600 font-medium">Manucure Expert</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Spécialiste nail art et soins des ongles
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'avis' && (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="text-center">
+                <div className="text-4xl font-bold">4.9</div>
+                <div className="flex items-center justify-center gap-1 mt-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <div className="text-sm text-gray-500">749 avis</div>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <img 
+                      src="https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=40&h=40&fit=crop&crop=face" 
+                      className="w-10 h-10 rounded-full"
+                      alt="Client"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium">Marie L.</span>
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-500">il y a 2 jours</span>
+                      </div>
+                      <p className="text-gray-700">
+                        Excellent service ! Sophie a été très professionnelle pour mon soin anti-âge. 
+                        Je recommande vivement ce salon.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <img 
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" 
+                      className="w-10 h-10 rounded-full"
+                      alt="Client"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium">Thomas R.</span>
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-500">il y a 1 semaine</span>
+                      </div>
+                      <p className="text-gray-700">
+                        Marc a fait un travail fantastique sur ma coupe. Très satisfait du résultat !
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'galerie' && (
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Soins Visage</h3>
+              <p className="text-gray-600 mb-4">Nos techniques avancées pour sublimer votre peau</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="relative group">
+                    <img 
+                      src={`https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300&h=300&fit=crop&q=80`}
+                      className="w-full aspect-square object-cover rounded-lg"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-end p-3">
+                      <span className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                        Soin Anti-Âge Premium
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Coiffure</h3>
+              <p className="text-gray-600 mb-4">Nos créations capillaires les plus réussies</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="relative group">
+                    <img 
+                      src={`https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=300&h=300&fit=crop&q=80`}
+                      className="w-full aspect-square object-cover rounded-lg"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-end p-3">
+                      <span className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                        Coupe & Coloration
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Formulaire de réservation */}
         {formData.serviceId && (
