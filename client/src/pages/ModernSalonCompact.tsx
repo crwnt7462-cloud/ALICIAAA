@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Share2, Heart, Phone, MapPin, Star, Clock, ChevronDown, ChevronUp, User, Calendar, Info, MessageSquare, Image, Map, Instagram, Facebook } from 'lucide-react';
+import { ArrowLeft, Share2, Heart, Phone, MapPin, Star, Clock, ChevronDown, ChevronUp, Calendar, Info, Map, Instagram, Facebook, X } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
 import logoAvyento from '@assets/Logo avyento._1755714467098.png';
 
@@ -8,6 +8,7 @@ export default function ModernSalonCompact() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
+  const [selectedServiceReviews, setSelectedServiceReviews] = useState<{serviceName: string, reviews: any[]} | null>(null);
   
   // Données du salon - STATIQUES UNIQUEMENT
   const salonData = {
@@ -44,7 +45,12 @@ export default function ModernSalonCompact() {
           duration: 45,
           rating: 4.5,
           reviews: 12,
-          image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=100&h=100&fit=crop&q=80'
+          image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=100&h=100&fit=crop&q=80',
+          serviceReviews: [
+            { name: "Marc D.", rating: 5, comment: "Excellente coupe, très professionnel !", date: "Il y a 3 jours" },
+            { name: "Thomas L.", rating: 4, comment: "Bon service, je recommande.", date: "Il y a 1 semaine" },
+            { name: "Pierre M.", rating: 5, comment: "Parfait comme toujours !", date: "Il y a 2 semaines" }
+          ]
         },
         {
           name: 'Coupe & Brushing femme',
@@ -53,7 +59,13 @@ export default function ModernSalonCompact() {
           duration: 75,
           rating: 4.8,
           reviews: 28,
-          image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=100&h=100&fit=crop&q=80'
+          image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=100&h=100&fit=crop&q=80',
+          serviceReviews: [
+            { name: "Sophie R.", rating: 5, comment: "Magnifique coupe ! Je suis ravie du résultat.", date: "Il y a 2 jours" },
+            { name: "Marie C.", rating: 5, comment: "Brushing parfait, très satisfaite.", date: "Il y a 5 jours" },
+            { name: "Laura B.", rating: 4, comment: "Très bien, coiffeur à l'écoute.", date: "Il y a 1 semaine" },
+            { name: "Camille T.", rating: 5, comment: "Service impeccable, je recommande vivement !", date: "Il y a 10 jours" }
+          ]
         },
         {
           name: 'Coloration complète',
@@ -88,7 +100,12 @@ export default function ModernSalonCompact() {
           duration: 60,
           rating: 4.6,
           reviews: 18,
-          image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop&q=80'
+          image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop&q=80',
+          serviceReviews: [
+            { name: "Emma P.", rating: 5, comment: "Soin relaxant, peau très douce après !", date: "Il y a 1 jour" },
+            { name: "Julie M.", rating: 4, comment: "Très bien, bon rapport qualité-prix.", date: "Il y a 4 jours" },
+            { name: "Sarah D.", rating: 5, comment: "Parfait, esthéticienne très professionnelle.", date: "Il y a 1 semaine" }
+          ]
         },
         {
           name: 'Épilation jambes complètes',
@@ -349,10 +366,13 @@ export default function ModernSalonCompact() {
                                       <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                                       <span className="font-medium text-xs sm:text-sm">{service.duration} min</span>
                                     </div>
-                                    <div className="flex items-center gap-1 sm:gap-2 text-gray-600">
+                                    <button 
+                                      onClick={() => setSelectedServiceReviews({serviceName: service.name, reviews: service.serviceReviews || []})}
+                                      className="flex items-center gap-1 sm:gap-2 text-gray-600 hover:text-amber-600 transition-colors cursor-pointer"
+                                    >
                                       <Star className="h-3 w-3 sm:h-4 sm:w-4 text-amber-400 fill-amber-400" />
                                       <span className="font-medium text-xs sm:text-sm">{service.rating} ({service.reviews})</span>
-                                    </div>
+                                    </button>
                                   </div>
                                   <button 
                                     onClick={() => setLocation('/booking')}
@@ -621,6 +641,54 @@ export default function ModernSalonCompact() {
           <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
         </div>
       </div>
+      
+      {/* MODAL AVIS SPÉCIFIQUES D'UN SERVICE */}
+      {selectedServiceReviews && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white/95 backdrop-blur-xl border border-white/40 rounded-3xl w-full max-w-2xl max-h-[80vh] overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200/40">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Avis pour</h3>
+                <p className="text-purple-600 font-semibold">{selectedServiceReviews.serviceName}</p>
+              </div>
+              <button
+                onClick={() => setSelectedServiceReviews(null)}
+                className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-full p-2 hover:bg-white/90 transition-all duration-300 shadow-lg"
+              >
+                <X className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              {selectedServiceReviews.reviews.length > 0 ? (
+                <div className="space-y-4">
+                  {selectedServiceReviews.reviews.map((review, index) => (
+                    <div key={index} className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-2xl p-4 hover:bg-white/70 transition-all duration-300">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{review.name}</h4>
+                          <p className="text-xs text-gray-500">{review.date}</p>
+                        </div>
+                        <div className="flex">
+                          {Array.from({ length: review.rating }, (_, i) => (
+                            <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-700 text-sm leading-relaxed">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Star className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">Aucun avis disponible pour cette prestation</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
