@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Share2, Heart, Phone, MapPin, Star, Clock, ChevronDown, ChevronUp, Calendar, Info, Map, Instagram, Facebook, X, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Share2, Heart, MapPin, Star, Clock, ChevronDown, ChevronUp, Calendar, Info, Map, Instagram, Facebook, X, ArrowRight } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { getGenericGlassButton } from "@/lib/salonColors";
@@ -963,16 +963,13 @@ export default function ModernSalonCompact() {
       </div>
 
       {/* Footer complet Avyento - Pleine largeur */}
-      <footer className="w-screen relative -mx-4 lg:-mx-8 mt-12 bg-gray-900 text-white">
+      <footer className="w-screen relative left-1/2 -translate-x-1/2 mt-12 bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             
             {/* Colonne Avyento */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-violet-500 rounded-lg"></div>
-                <h3 className="text-lg font-bold">Avyento</h3>
-              </div>
+              <h3 className="text-lg font-bold">Avyento</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
                 La plateforme IA qui révolutionne la beauté et optimise vos revenus.
               </p>
