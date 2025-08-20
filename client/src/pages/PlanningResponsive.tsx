@@ -87,6 +87,72 @@ export default function PlanningResponsive() {
   
   // États des dialogs
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  // Position de la ligne d'heure actuelle
+  const getCurrentTimeLinePosition = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const totalMinutes = hours * 60 + minutes;
+    const startMinutes = 8 * 60; // 8h00
+    const endMinutes = 20 * 60; // 20h00
+    
+    if (totalMinutes < startMinutes || totalMinutes > endMinutes) return null;
+    
+    const progress = (totalMinutes - startMinutes) / (endMinutes - startMinutes);
+    return progress * 100; // Pourcentage de la journée
+  };
+
+  // Rendez-vous d'exemple pour la timeline mobile
+  const sampleAppointmentsMobile = [
+    {
+      id: 1,
+      serviceName: "Coupe + Brushing",
+      clientName: "Sophie Martin",
+      startTime: "09:00",
+      endTime: "10:00",
+      status: "confirmed",
+      date: new Date(),
+    },
+    {
+      id: 2, 
+      serviceName: "Coloration",
+      clientName: "Emma Dubois",
+      startTime: "10:30",
+      endTime: "12:30", 
+      status: "confirmed",
+      date: new Date(),
+    },
+    {
+      id: 3,
+      serviceName: "Manucure",
+      clientName: "Julie Laurent", 
+      startTime: "14:00",
+      endTime: "14:45",
+      status: "pending",
+      date: new Date(),
+    }
+  ];
+
+  // Fonction pour récupérer les RDV d'une date
+  const getAppointmentsForDate = (date: Date) => {
+    return sampleAppointmentsMobile.filter(apt => 
+      apt.date.toDateString() === date.toDateString()
+    );
+  };
+
+  // Fonction pour vérifier si un RDV est en cours
+  const isAppointmentCurrent = (appointment: any) => {
+    const now = new Date();
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    return currentTime >= appointment.startTime && currentTime <= appointment.endTime;
+  };
+
+  // Fonction pour gérer le nouveau RDV
+  const handleNewAppointment = () => {
+    // Placeholder pour le moment - will be implemented later
+    console.log("Nouveau rendez-vous demandé");
+  };
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   // Calcul des données calendrier
@@ -180,36 +246,11 @@ export default function PlanningResponsive() {
     return Math.max(0, (hours - 8) * 80 + (minutes / 60) * 80);
   };
 
-  const getAppointmentsForDate = (date: Date) => {
-    return beautySampleEvents.map(event => ({
-      id: event.id,
-      serviceName: event.title,
-      clientName: event.client,
-      startTime: event.time.split('-')[0],
-      endTime: event.time.split('-')[1],
-      status: event.status,
-      notes: event.notes || ""
-    }));
-  };
+  // Fonction supprimée car dupliquée avec version plus haut
 
-  const isAppointmentCurrent = (appointment: any) => {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    const currentTime = currentHour * 60 + currentMinute;
-    
-    const [startHour, startMinute] = appointment.startTime.split(':').map(Number);
-    const [endHour, endMinute] = appointment.endTime.split(':').map(Number);
-    const startTime = startHour * 60 + startMinute;
-    const endTime = endHour * 60 + endMinute;
-    
-    return currentTime >= startTime && currentTime <= endTime;
-  };
+  // Fonction supprimée car dupliquée plus haut
 
-  // Fonctions simplifiées sans formulaire pour corriger l'erreur
-  const handleNewAppointment = () => {
-    alert("Nouvelle fonctionnalité à venir");
-  };
+  // Fonction supprimée car dupliquée plus haut
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -292,17 +333,22 @@ export default function PlanningResponsive() {
           </div>
         </div>
 
-        {/* Timeline des rendez-vous */}
+        {/* Timeline des rendez-vous avec ligne violette d'heure actuelle */}
         <div className="bg-white flex-1 overflow-y-auto pb-20">
           <div className="relative p-4">
-            {/* Ligne d'heure actuelle (violette selon votre demande) */}
-            <div 
-              className="absolute left-0 right-0 z-10 flex items-center px-4"
-              style={{ top: `${getCurrentTimePosition()}px` }}
-            >
-              <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white"></div>
-              <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
-            </div>
+            {/* Ligne violette d'heure actuelle - exactement comme la verte de votre photo */}
+            {getCurrentTimeLinePosition() !== null && (
+              <div 
+                className="absolute left-0 right-0 z-10 flex items-center px-4"
+                style={{ top: '30%' }}
+              >
+                <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white shadow-lg"></div>
+                <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
+                <div className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow">
+                  {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            )}
 
             {/* Rendez-vous de la journée sélectionnée */}
             {getAppointmentsForDate(selectedDate || new Date()).map((appointment, index) => {
