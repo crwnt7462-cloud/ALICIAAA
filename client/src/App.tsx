@@ -729,16 +729,7 @@ function Router() {
     );
   }
 
-  // PAGE SUPPRIMÉE - Redondance avec la route dynamique principale
-
-  // Page salon professionnelle - modification existante
-  if (location === '/salon') {
-    return (
-      <div className="h-full">
-        <SalonPageFixed pageUrl="salon-demo" />
-      </div>
-    );
-  }
+  // PAGE SUPPRIMÉE - Redondance avec la route dynamique principale - ROUTE SALON SUPPRIMÉE POUR ÉVITER CONFLIT
 
   // Tests système
   if (location === '/system-test') {
@@ -1097,11 +1088,11 @@ function Router() {
     );
   }
 
-  // Page salon mobile moderne - Route spéciale "/salon" 
+  // Page salon mobile moderne - Route spéciale "/salon" - SEULE ROUTE ACTIVE
   if (location === '/salon') {
     return (
       <div className="h-full">
-        <TestSalon />
+        <ModernSalonMobileFixed />
       </div>
     );
   }
