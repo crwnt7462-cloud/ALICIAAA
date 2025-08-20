@@ -10,6 +10,7 @@ export default function ModernSalonCompact() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [selectedServiceReviews, setSelectedServiceReviews] = useState<{serviceName: string, reviews: any[]} | null>(null);
   const [activeGalleryCategory, setActiveGalleryCategory] = useState('coiffure');
+  const [selectedServiceGallery, setSelectedServiceGallery] = useState<{serviceName: string, photos: any[]} | null>(null);
   
   // Données du salon - STATIQUES UNIQUEMENT
   const salonData = {
@@ -47,6 +48,11 @@ export default function ModernSalonCompact() {
           rating: 4.5,
           reviews: 12,
           image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=100&h=100&fit=crop&q=80',
+          photos: [
+            { url: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=400&fit=crop&q=80', description: 'Coupe classique avant' },
+            { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80', description: 'Coupe classique après' },
+            { url: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop&q=80', description: 'Finition soignée' }
+          ],
           serviceReviews: [
             { name: "Marc D.", rating: 5, comment: "Excellente coupe, très professionnel !", date: "Il y a 3 jours" },
             { name: "Thomas L.", rating: 4, comment: "Bon service, je recommande.", date: "Il y a 1 semaine" },
@@ -61,6 +67,12 @@ export default function ModernSalonCompact() {
           rating: 4.8,
           reviews: 28,
           image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=100&h=100&fit=crop&q=80',
+          photos: [
+            { url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80', description: 'Coupe femme avant' },
+            { url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=400&fit=crop&q=80', description: 'Brushing terminé' },
+            { url: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=400&fit=crop&q=80', description: 'Mise en forme' },
+            { url: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80', description: 'Résultat final' }
+          ],
           serviceReviews: [
             { name: "Sophie R.", rating: 5, comment: "Magnifique coupe ! Je suis ravie du résultat.", date: "Il y a 2 jours" },
             { name: "Marie C.", rating: 5, comment: "Brushing parfait, très satisfaite.", date: "Il y a 5 jours" },
@@ -75,7 +87,12 @@ export default function ModernSalonCompact() {
           duration: 120,
           rating: 4.7,
           reviews: 15,
-          image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=100&h=100&fit=crop&q=80'
+          image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=100&h=100&fit=crop&q=80',
+          photos: [
+            { url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=400&fit=crop&q=80', description: 'Avant coloration' },
+            { url: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80', description: 'Application couleur' },
+            { url: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=400&fit=crop&q=80', description: 'Résultat final' }
+          ]
         },
         {
           name: 'Mèches & Balayage',
@@ -84,7 +101,13 @@ export default function ModernSalonCompact() {
           duration: 150,
           rating: 4.9,
           reviews: 22,
-          image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=100&h=100&fit=crop&q=80'
+          image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=100&h=100&fit=crop&q=80',
+          photos: [
+            { url: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=400&fit=crop&q=80', description: 'Technique balayage' },
+            { url: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80', description: 'Mèches naturelles' },
+            { url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=400&fit=crop&q=80', description: 'Avant/Après' },
+            { url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80', description: 'Résultat lumineux' }
+          ]
         }
       ]
     },
@@ -102,6 +125,11 @@ export default function ModernSalonCompact() {
           rating: 4.6,
           reviews: 18,
           image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop&q=80',
+          photos: [
+            { url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&q=80', description: 'Préparation du soin' },
+            { url: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=400&fit=crop&q=80', description: 'Application hydratation' },
+            { url: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&h=400&fit=crop&q=80', description: 'Résultat éclatant' }
+          ],
           serviceReviews: [
             { name: "Emma P.", rating: 5, comment: "Soin relaxant, peau très douce après !", date: "Il y a 1 jour" },
             { name: "Julie M.", rating: 4, comment: "Très bien, bon rapport qualité-prix.", date: "Il y a 4 jours" },
@@ -321,6 +349,10 @@ export default function ModernSalonCompact() {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
   };
 
+  const openServiceGallery = (serviceName: string, photos: any[]) => {
+    setSelectedServiceGallery({ serviceName, photos });
+  };
+
   console.log('ModernSalonCompact loaded - no API calls');
 
   return (
@@ -468,13 +500,25 @@ export default function ModernSalonCompact() {
                         {category.services.map((service, index) => (
                           <div key={index} className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-xl p-3 sm:p-4 hover:bg-white/90 hover:shadow-lg hover:shadow-purple/10 transition-all duration-300">
                             <div className="flex items-start gap-3 sm:gap-4">
-                              {/* Photo de prestation - RESPONSIVE */}
+                              {/* Photo de prestation - RESPONSIVE et CLIQUABLE */}
                               <div className="flex-shrink-0">
-                                <img
-                                  src={service.image}
-                                  alt={service.name}
-                                  className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-lg sm:rounded-xl object-cover shadow-lg border border-white/40"
-                                />
+                                <button
+                                  onClick={() => service.photos && openServiceGallery(service.name, service.photos)}
+                                  className="relative group"
+                                >
+                                  <img
+                                    src={service.image}
+                                    alt={service.name}
+                                    className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-lg sm:rounded-xl object-cover shadow-lg border border-white/40 group-hover:opacity-75 transition-all duration-300 cursor-pointer"
+                                  />
+                                  {service.photos && (
+                                    <div className="absolute inset-0 bg-black/20 rounded-lg sm:rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                                      <div className="bg-white/90 backdrop-blur-xl text-gray-800 px-2 py-1 rounded-lg text-xs font-medium">
+                                        {service.photos.length} photos
+                                      </div>
+                                    </div>
+                                  )}
+                                </button>
                               </div>
                               
                               {/* Contenu service - RESPONSIVE */}
@@ -848,6 +892,49 @@ export default function ModernSalonCompact() {
                   <p className="text-gray-500">Aucun avis disponible pour cette prestation</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal pour la galerie de photos d'un service */}
+      {selectedServiceGallery && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-xl border border-white/40 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            <div className="p-4 sm:p-6 border-b border-gray-200/50">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+                  Photos - {selectedServiceGallery.serviceName}
+                </h3>
+                <button
+                  onClick={() => setSelectedServiceGallery(null)}
+                  className="bg-gray-100/80 backdrop-blur-xl border border-gray-200/50 rounded-xl p-2 text-gray-600 hover:bg-gray-200/80 transition-all duration-300"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                {selectedServiceGallery.photos.length} photo{selectedServiceGallery.photos.length > 1 ? 's' : ''} disponible{selectedServiceGallery.photos.length > 1 ? 's' : ''}
+              </p>
+            </div>
+            
+            <div className="p-4 sm:p-6 overflow-y-auto max-h-[70vh]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {selectedServiceGallery.photos.map((photo, index) => (
+                  <div key={index} className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl overflow-hidden hover:bg-white/90 hover:shadow-xl hover:shadow-purple/10 transition-all duration-300">
+                    <img
+                      src={photo.url}
+                      alt={photo.description}
+                      className="w-full h-48 sm:h-56 lg:h-64 object-cover"
+                    />
+                    <div className="p-3 sm:p-4">
+                      <p className="text-sm font-medium text-gray-900 line-clamp-2">
+                        {photo.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
