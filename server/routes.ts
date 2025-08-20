@@ -1128,24 +1128,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Vérifier les identifiants du compte pro
       if (email === 'pro@avyento.com' && password === 'avyento2025') {
-        // Simuler une session utilisateur professionnelle
+        // Créer une vraie session utilisateur professionnelle
         const professionalUser = {
+          claims: {
+            sub: 'pro-user-1',
+            email: 'pro@avyento.com',
+            first_name: 'Professionnel',
+            last_name: 'Avyento'
+          },
+          access_token: 'professional-access-token',
+          expires_at: Math.floor(Date.now() / 1000) + 86400 // 24h
+        };
+
+        // Créer la session
+        req.user = professionalUser;
+        req.session.user = professionalUser;
+        
+        // Créer ou mettre à jour l'utilisateur dans la base
+        await storage.upsertUser({
           id: 'pro-user-1',
           email: 'pro@avyento.com',
           firstName: 'Professionnel',
-          lastName: 'Avyento',
-          subscriptionType: 'premium-pro',
-          subscriptionStatus: 'active',
-          subscriptionExpiry: new Date('2026-08-20').toISOString()
-        };
+          lastName: 'Avyento'
+        });
 
-        // Dans un vrai système, vous créeriez une vraie session
-        // Ici nous retournons juste les données pour le frontend
-        console.log('✅ Connexion professionnelle réussie:', email);
+        console.log('✅ Connexion professionnelle réussie + session créée:', email);
         
         res.json({
           success: true,
-          user: professionalUser,
+          user: {
+            id: 'pro-user-1',
+            email: 'pro@avyento.com',
+            firstName: 'Professionnel',
+            lastName: 'Avyento'
+          },
           message: 'Connexion réussie'
         });
       } else {
@@ -1171,21 +1187,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Vérifier les identifiants du compte pro
       if (email === 'pro@avyento.com' && password === 'avyento2025') {
+        // Créer une vraie session utilisateur professionnelle
         const professionalUser = {
+          claims: {
+            sub: 'pro-user-1',
+            email: 'pro@avyento.com',
+            first_name: 'Professionnel',
+            last_name: 'Avyento'
+          },
+          access_token: 'professional-access-token',
+          expires_at: Math.floor(Date.now() / 1000) + 86400 // 24h
+        };
+
+        // Créer la session
+        req.user = professionalUser;
+        req.session.user = professionalUser;
+        
+        // Créer ou mettre à jour l'utilisateur dans la base
+        await storage.upsertUser({
           id: 'pro-user-1',
           email: 'pro@avyento.com',
           firstName: 'Professionnel',
-          lastName: 'Avyento',
-          subscriptionType: 'premium-pro',
-          subscriptionStatus: 'active',
-          subscriptionExpiry: new Date('2026-08-20').toISOString()
-        };
+          lastName: 'Avyento'
+        });
 
-        console.log('✅ Connexion classique réussie:', email);
+        console.log('✅ Connexion classique réussie + session créée:', email);
         
         res.json({
           success: true,
-          user: professionalUser,
+          user: {
+            id: 'pro-user-1',
+            email: 'pro@avyento.com',
+            firstName: 'Professionnel',
+            lastName: 'Avyento'
+          },
           message: 'Connexion réussie'
         });
       } else {

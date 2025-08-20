@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 
 export default function LoginClassic() {
-  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -37,8 +35,8 @@ export default function LoginClassic() {
           description: `Bienvenue ${data.user.firstName}`,
         });
         
-        // Redirection vers le dashboard
-        setLocation('/dashboard');
+        // Redirection vers la page d'accueil qui gérera l'authentification
+        window.location.href = "/";
       } else {
         toast({
           title: "Erreur de connexion",
