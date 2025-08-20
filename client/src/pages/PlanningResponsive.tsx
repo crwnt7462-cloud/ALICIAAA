@@ -473,7 +473,7 @@ export default function PlanningResponsive() {
         {/* PLUS DE CALENDRIER SIDEBAR - SUPPRIMÉ */}
 
         {/* Grille horaire complète 6h-23h */}
-        <div className="bg-white pb-20">
+        <div className="bg-white pb-4">
           <div className="relative">
             {/* Ligne violette d'heure actuelle */}
             {(() => {
@@ -1002,12 +1002,12 @@ export default function PlanningResponsive() {
         </div>
       </div>
 
-      {/* Dialog de choix d'action - Design Glassmorphism épuré */}
+      {/* Dialog de choix d'action - Design ULTRA COMPACT comme l'image */}
       <Dialog open={isActionChoiceOpen} onOpenChange={setIsActionChoiceOpen}>
-        <DialogContent className="sm:max-w-[320px] max-w-[280px] p-0 bg-white/90 backdrop-blur-xl border border-white/30 shadow-2xl rounded-3xl">
-          <div className="p-6">
-            <DialogHeader className="pb-5">
-              <DialogTitle className="text-lg font-semibold text-gray-800 text-center">
+        <DialogContent className="max-w-[300px] w-[280px] p-0 bg-white/95 backdrop-blur-xl border-0 shadow-2xl rounded-2xl mx-auto">
+          <div className="p-5">
+            <DialogHeader className="pb-4">
+              <DialogTitle className="text-lg font-semibold text-gray-900 text-center">
                 Que souhaitez-vous faire ?
               </DialogTitle>
             </DialogHeader>
@@ -1015,7 +1015,7 @@ export default function PlanningResponsive() {
             <div className="space-y-3">
               <Button 
                 onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
-                className="w-full h-12 bg-gradient-to-r from-purple-500/20 to-purple-600/20 hover:from-purple-500/30 hover:to-purple-600/30 text-purple-800 border border-purple-300/40 backdrop-blur-sm rounded-2xl transition-all duration-200 font-medium"
+                className="w-full h-11 bg-gradient-to-r from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 text-gray-900 border-0 rounded-xl transition-all duration-200 font-medium shadow-sm"
               >
                 <User className="h-4 w-4 mr-2" />
                 Ajouter un rendez-vous client
@@ -1023,7 +1023,7 @@ export default function PlanningResponsive() {
               
               <Button 
                 onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
-                className="w-full h-12 bg-gradient-to-r from-orange-400/15 to-orange-500/15 hover:from-orange-400/25 hover:to-orange-500/25 text-orange-700 border border-orange-300/40 backdrop-blur-sm rounded-2xl transition-all duration-200 font-medium"
+                className="w-full h-11 bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 text-gray-900 border-0 rounded-xl transition-all duration-200 font-medium shadow-sm"
               >
                 <Clock className="h-4 w-4 mr-2" />
                 Bloquer ce créneau
