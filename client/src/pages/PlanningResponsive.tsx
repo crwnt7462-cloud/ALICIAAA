@@ -148,6 +148,13 @@ export default function PlanningResponsive() {
     return currentTime >= appointment.startTime && currentTime <= appointment.endTime;
   };
 
+  // Fonction pour vérifier si un RDV est terminé
+  const isAppointmentFinished = (appointment: any) => {
+    const now = new Date();
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    return currentTime > appointment.endTime;
+  };
+
   // Fonction pour gérer le nouveau RDV
   const handleNewAppointment = () => {
     // Placeholder pour le moment - will be implemented later
@@ -318,24 +325,26 @@ export default function PlanningResponsive() {
               const isSelected = selectedDate?.toDateString() === date.toDateString();
               
               return (
-                <button
+                <div
                   key={index}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     console.log('Date cliquée:', date);
                     setSelectedDate(date);
                   }}
-                  className={`w-10 h-10 text-sm rounded-lg transition-all relative cursor-pointer touch-manipulation ${
+                  className={`w-10 h-10 text-sm rounded-lg transition-all relative cursor-pointer select-none flex items-center justify-center ${
                     !isCurrentMonth 
-                      ? 'text-gray-300' 
+                      ? 'text-gray-300 pointer-events-none' 
                       : isSelected
-                        ? 'bg-green-500 text-white font-bold'
+                        ? 'bg-purple-500 text-white font-bold shadow-lg'
                         : isToday
-                          ? 'bg-purple-500 text-white font-bold ring-2 ring-purple-200'
-                          : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
+                          ? 'bg-purple-400 text-white font-bold ring-2 ring-purple-200'
+                          : 'text-gray-700 hover:bg-purple-100 active:bg-purple-200 border border-transparent hover:border-purple-300'
                   }`}
                   style={{ 
-                    pointerEvents: 'auto',
-                    zIndex: 10
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
                   }}
                 >
                   {date.getDate()}
@@ -343,7 +352,7 @@ export default function PlanningResponsive() {
                   {isToday && (
                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full border border-white"></div>
                   )}
-                </button>
+                </div>
               );
             })}
           </div>
@@ -364,6 +373,7 @@ export default function PlanningResponsive() {
             {/* Rendez-vous de la journée sélectionnée */}
             {getAppointmentsForDate(selectedDate || new Date()).map((appointment, index) => {
               const isCurrentAppointment = isAppointmentCurrent(appointment);
+              const isFinishedAppointment = isAppointmentFinished(appointment);
               
               return (
                 <div key={index} className="relative mb-6">
@@ -378,10 +388,12 @@ export default function PlanningResponsive() {
                       </span>
                       <div className={`w-3 h-3 rounded-full border-2 ${
                         isCurrentAppointment 
-                          ? 'bg-purple-500 border-purple-500' 
-                          : appointment.status === 'confirmed'
-                            ? 'bg-green-500 border-green-500'
-                            : 'bg-gray-300 border-gray-300'
+                          ? 'bg-purple-500 border-purple-500 animate-pulse' 
+                          : isFinishedAppointment
+                            ? 'bg-gray-400 border-gray-400'
+                            : appointment.status === 'confirmed'
+                              ? 'bg-green-500 border-green-500'
+                              : 'bg-gray-300 border-gray-300'
                       }`}></div>
                       
                       {/* Point violet pour RDV en cours */}
@@ -558,7 +570,7 @@ export default function PlanningResponsive() {
                   </SelectContent>
                 </Select>
 
-                <Button onClick={() => setIsDialogOpen(true)} className="bg-purple-600 hover:bg-purple-700">
+                <Button onClick={() => handleNewAppointment()} className="bg-purple-600 hover:bg-purple-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Nouveau RDV
                 </Button>
@@ -651,15 +663,25 @@ export default function PlanningResponsive() {
                   const isCurrentMonth = date.getMonth() === selectedMonth;
                   const dayEvents = beautySampleEvents.filter(() => Math.random() > 0.8).slice(0, 3);
 
+                  const isSelected = selectedDate?.toDateString() === date.toDateString();
+                  
                   return (
                     <div
                       key={index}
-                      className={`min-h-[120px] p-2 border rounded-lg ${
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Date desktop cliquée:', date);
+                        setSelectedDate(date);
+                      }}
+                      className={`min-h-[120px] p-2 border rounded-lg cursor-pointer transition-all ${
                         !isCurrentMonth 
-                          ? 'bg-gray-50 text-gray-400' 
-                          : isToday
-                            ? 'bg-purple-50 border-purple-200'
-                            : 'bg-white border-gray-200'
+                          ? 'bg-gray-50 text-gray-400 pointer-events-none' 
+                          : isSelected
+                            ? 'bg-purple-100 border-purple-300 shadow-lg'
+                            : isToday
+                              ? 'bg-purple-50 border-purple-200'
+                              : 'bg-white border-gray-200 hover:bg-purple-50 hover:border-purple-200'
                       }`}
                     >
                       <div className={`text-sm font-medium mb-2 ${
