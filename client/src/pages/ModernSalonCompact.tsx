@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Share2, Heart, Phone, MapPin, Star, Clock, ChevronDown, ChevronUp, User, Calendar, Info, MessageSquare, Image, Map } from 'lucide-react';
+import { ArrowLeft, Share2, Heart, Phone, MapPin, Star, Clock, ChevronDown, ChevronUp, User, Calendar, Info, MessageSquare, Image, Map, Instagram, Facebook } from 'lucide-react';
+import { FaTiktok } from 'react-icons/fa';
 import logoAvyento from '@assets/Logo avyento._1755714467098.png';
 
 export default function ModernSalonCompact() {
@@ -519,6 +520,54 @@ export default function ModernSalonCompact() {
                       <span className="font-medium">Dimanche</span>
                       <span className="text-gray-600">Fermé</span>
                     </div>
+                  </div>
+                </div>
+                
+                {/* Section Réseaux Sociaux */}
+                <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-3xl p-6">
+                  <h3 className="font-bold text-xl text-gray-900 mb-4 flex items-center">
+                    <Share2 className="h-5 w-5 mr-3 text-purple-600" />
+                    Retrouvez-nous sur les réseaux
+                  </h3>
+                  <div className="flex flex-wrap gap-4">
+                    {/* Instagram */}
+                    <a 
+                      href="https://instagram.com/salon_avyento" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 bg-gradient-to-r from-pink-500/90 to-purple-500/90 backdrop-blur-xl border border-white/30 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:from-pink-600/90 hover:to-purple-600/90 transition-all duration-300 shadow-lg hover:shadow-pink/20"
+                    >
+                      <Instagram className="h-5 w-5" />
+                      <span className="text-sm sm:text-base">Instagram</span>
+                    </a>
+                    
+                    {/* Facebook */}
+                    <a 
+                      href="https://facebook.com/salon.avyento" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 bg-gradient-to-r from-blue-600/90 to-blue-500/90 backdrop-blur-xl border border-white/30 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:from-blue-700/90 hover:to-blue-600/90 transition-all duration-300 shadow-lg hover:shadow-blue/20"
+                    >
+                      <Facebook className="h-5 w-5" />
+                      <span className="text-sm sm:text-base">Facebook</span>
+                    </a>
+                    
+                    {/* TikTok */}
+                    <a 
+                      href="https://tiktok.com/@salon_avyento" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 bg-gradient-to-r from-gray-900/90 to-black/90 backdrop-blur-xl border border-white/30 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:from-black/90 hover:to-gray-800/90 transition-all duration-300 shadow-lg hover:shadow-gray/20"
+                    >
+                      <FaTiktok className="h-5 w-5" />
+                      <span className="text-sm sm:text-base">TikTok</span>
+                    </a>
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-purple-50/80 backdrop-blur-xl border border-purple-200/40 rounded-xl">
+                    <p className="text-sm text-purple-700">
+                      Suivez-nous pour découvrir nos dernières créations, tendances beauté et conseils d'experts !
+                    </p>
                   </div>
                 </div>
               </div>
