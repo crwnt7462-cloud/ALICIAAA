@@ -74,6 +74,7 @@ import StaffManagement from "@/pages/StaffManagement";
 import ServicesManagement from "@/pages/ServicesManagement";
 import ProfessionalSettingsDemo from "@/pages/ProfessionalSettingsDemo";
 import ModernSalonMobileFixed from "@/pages/ModernSalonMobileFixed";
+import TestSalon from "@/pages/TestSalon";
 import ClientAnalytics from "@/pages/ClientAnalytics";
 import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
@@ -1096,13 +1097,11 @@ function Router() {
     );
   }
 
-  // TEST DIRECT - SALON ROUTE
+  // Page salon mobile moderne - Route spéciale "/salon" 
   if (location === '/salon') {
     return (
-      <div className="min-h-screen bg-purple-600 text-white p-8">
-        <h1 className="text-4xl font-bold mb-4">SALON PAGE TEST</h1>
-        <p>Si vous voyez ceci, la route /salon fonctionne !</p>
-        <p>Location actuelle: {location}</p>
+      <div className="h-full">
+        <TestSalon />
       </div>
     );
   }

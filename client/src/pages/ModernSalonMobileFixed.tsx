@@ -39,6 +39,7 @@ export default function ModernSalonMobileFixed() {
   ];
 
   console.log('ModernSalonMobileFixed loaded - no API calls');
+  console.log('DEBUGGING - Current location:', location);
 
   return (
     <div className="min-h-screen bg-gray-50 lg:bg-gradient-to-br lg:from-purple-50 lg:via-pink-50 lg:to-indigo-50">
