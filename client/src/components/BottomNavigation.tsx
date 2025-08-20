@@ -74,8 +74,8 @@ export function BottomNavigation() {
 
   return (
     <>
-      {/* Navigation mobile - en bas - COMPLÈTEMENT MASQUÉE SUR MOBILE */}
-      {isMobile && location !== '/planning' && (
+      {/* Navigation mobile - en bas - TOUJOURS VISIBLE SUR MOBILE */}
+      {isMobile && (
         <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
           {/* Barre flottante glassmorphism compacte mobile */}
           <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-full px-4 py-1.5">
@@ -101,8 +101,8 @@ export function BottomNavigation() {
         </div>
       )}
 
-      {/* Navigation desktop - à gauche - COMPLÈTEMENT MASQUÉE SUR MOBILE */}
-      {!isMobile && (
+      {/* Navigation desktop - à gauche - DÉSACTIVÉE POUR TOUTES LES TAILLES */}
+      {false && !isMobile && (
         <div className="fixed left-4 top-1/2 transform -translate-y-1/2 z-50">
           {/* Sidebar verticale glassmorphism */}
           <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-2xl px-3 py-4">
