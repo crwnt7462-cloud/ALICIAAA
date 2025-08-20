@@ -49,7 +49,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-50 relative">
         {/* Sidebar Desktop uniquement */}
-        <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full bg-gradient-to-b from-purple-600 to-purple-700"></div>
+        <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full bg-slate-50/80 backdrop-blur-16 border-r border-slate-400/20"></div>
         
         <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 lg:pb-0">
           <MobileBottomNav userType="pro" />
@@ -71,70 +71,65 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 relative">
       {/* Sidebar Desktop uniquement */}
-      <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full flex-col items-center py-6 z-30" style={{
-        background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        border: '1px solid rgba(255, 255, 255, 0.125)',
-        boxShadow: '0 8px 32px rgba(139, 69, 219, 0.25)'
-      }}>
+      <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full flex-col items-center py-6 z-30 bg-slate-50/80 backdrop-blur-16 border-r border-slate-400/20">
         {/* Logo */}
-        <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/25">
-          <Sparkles className="w-6 h-6 text-white" />
+        <div className="w-12 h-12 bg-white/80 backdrop-blur-16 rounded-2xl flex items-center justify-center mb-8 border border-slate-200">
+          <Sparkles className="w-6 h-6 text-gray-700" />
         </div>
         
         {/* Navigation Icons */}
         <div className="space-y-4">
-          <div className="w-12 h-12 bg-white/25 backdrop-blur-sm border border-white/30 shadow-sm rounded-2xl flex items-center justify-center">
-            <Home className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 bg-white/80 backdrop-blur-16 border border-slate-200 shadow-sm rounded-2xl flex items-center justify-center">
+            <Home className="w-6 h-6 text-gray-700" />
           </div>
           
           <div 
             onClick={() => setLocation('/planning')}
-            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
           >
-            <Calendar className="w-6 h-6 text-white/80" />
+            <Calendar className="w-6 h-6 text-gray-600" />
           </div>
           
           <div 
             onClick={() => setLocation('/clients-modern')}
-            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
           >
-            <Users className="w-6 h-6 text-white/80" />
+            <Users className="w-6 h-6 text-gray-600" />
           </div>
           
           <div 
             onClick={() => setLocation('/services-management')}
-            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
           >
-            <SettingsIcon className="w-6 h-6 text-white/80" />
+            <SettingsIcon className="w-6 h-6 text-gray-600" />
           </div>
           
           <div 
             onClick={() => setLocation('/messaging-hub')}
-            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
           >
-            <MessageSquare className="w-6 h-6 text-white/80" />
+            <MessageSquare className="w-6 h-6 text-gray-600" />
           </div>
           
           <div 
             onClick={() => setLocation('/client-analytics')}
-            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
           >
-            <BarChart3 className="w-6 h-6 text-white/80" />
+            <BarChart3 className="w-6 h-6 text-gray-600" />
           </div>
           
           <div 
             onClick={() => setLocation('/inventory')}
-            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
           >
-            <Activity className="w-6 h-6 text-white/80" />
+            <Activity className="w-6 h-6 text-gray-600" />
           </div>
         </div>
         
         {/* User Avatar */}
         <div className="mt-auto">
-          <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center">
-            <User className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 bg-white/80 backdrop-blur-16 border border-slate-200 rounded-2xl flex items-center justify-center">
+            <User className="w-6 h-6 text-gray-700" />
           </div>
         </div>
       </div>
