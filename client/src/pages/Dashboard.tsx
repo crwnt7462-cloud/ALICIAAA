@@ -24,6 +24,47 @@ import { MobileBottomNav } from "@/components/MobileBottomNav";
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [selectedPeriod, setSelectedPeriod] = useState("Week");
+  
+  // Données simulées pour le chiffre d'affaires
+  const generateRevenueData = (period: string) => {
+    const baseData = {
+      Day: { value: 285, data: [0, 0, 0, 0, 0, 285, 0] }, // Seulement aujourd'hui
+      Week: { value: 2850, data: [420, 380, 510, 290, 340, 450, 460] }, // Lun-Dim
+      Month: { value: 12400, data: [2850, 2920, 2780, 3100, 2650, 2890, 3200] }, // 4 semaines
+      Year: { value: 148800, data: [12400, 11800, 13200, 12900, 14100, 13600, 12700] } // 12 mois (7 derniers)
+    };
+    return baseData[period as keyof typeof baseData] || baseData.Week;
+  };
+  
+  const revenueData = generateRevenueData(selectedPeriod);
+  
+  // Services populaires simulés
+  const popularServicesData = [
+    { name: "Coupe + Brushing", count: 24, revenue: 1200, growth: "+12%" },
+    { name: "Coloration", count: 18, revenue: 1440, growth: "+8%" },
+    { name: "Balayage", count: 12, revenue: 1080, growth: "+15%" },
+    { name: "Soin Capillaire", count: 15, revenue: 675, growth: "+5%" }
+  ];
+
+  // Planning du jour simulé
+  const todaySchedule = [
+    { time: "09:00", client: "Marie Dubois", service: "Coupe + Brushing", duration: "1h30" },
+    { time: "10:30", client: "Sophie Martin", service: "Coloration", duration: "2h30" },
+    { time: "14:00", client: "Julie Petit", service: "Balayage", duration: "3h00" },
+    { time: "16:30", client: "Claire Moreau", service: "Soin + Coupe", duration: "2h00" },
+    { time: "18:30", client: "Emma Bernard", service: "Brushing", duration: "45min" }
+  ];
+  
+  // Labels pour les graphiques selon la période
+  const getLabels = (period: string) => {
+    const labels = {
+      Day: ["00h", "04h", "08h", "12h", "16h", "20h", "24h"],
+      Week: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+      Month: ["S1", "S2", "S3", "S4", "S5", "S6", "S7"],
+      Year: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul"]
+    };
+    return labels[period as keyof typeof labels] || labels.Week;
+  };
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"],
@@ -211,30 +252,30 @@ export default function Dashboard() {
                 <CardContent className="p-6">
                   <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Revenus - Cette Semaine</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">Chiffre d'affaires</h3>
                       <div className="flex items-center space-x-2 mt-2 overflow-x-auto">
                         <div className="flex items-center space-x-1 md:space-x-2">
                           <button 
                             onClick={() => setSelectedPeriod("Day")}
-                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Day" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap transition-colors ${selectedPeriod === "Day" ? 'text-purple-600 bg-purple-50 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
                           >
                             Jour
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Week")}
-                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Week" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap transition-colors ${selectedPeriod === "Week" ? 'text-purple-600 bg-purple-50 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
                           >
                             Semaine
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Month")}
-                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Month" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap transition-colors ${selectedPeriod === "Month" ? 'text-purple-600 bg-purple-50 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
                           >
                             Mois
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Year")}
-                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Year" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap transition-colors ${selectedPeriod === "Year" ? 'text-purple-600 bg-purple-50 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
                           >
                             Année
                           </button>
@@ -248,9 +289,15 @@ export default function Dashboard() {
                     </Button>
                   </div>
                   
-                  {/* Montant principal */}
+                  {/* Montant principal - Données dynamiques */}
                   <div className="mb-6">
-                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{(stats as any)?.monthlyRevenue || 0}€</div>
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{revenueData.value}€</div>
+                    <div className="text-sm text-gray-500">
+                      {selectedPeriod === "Day" && "Aujourd'hui"}
+                      {selectedPeriod === "Week" && "Cette semaine"}
+                      {selectedPeriod === "Month" && "Ce mois"}
+                      {selectedPeriod === "Year" && "Cette année"}
+                    </div>
                   </div>
                   
                   {/* Graphique simulé - Courbe comme dans l'image */}
@@ -283,14 +330,11 @@ export default function Dashboard() {
                     </svg>
                   </div>
                   
-                  {/* Labels des jours */}
+                  {/* Labels dynamiques selon la période */}
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>Lun</span>
-                    <span>Mar</span>
-                    <span>Mer</span>
-                    <span>Jeu</span>
-                    <span>Ven</span>
-                    <span>Sam</span>
+                    {getLabels(selectedPeriod).map((label, index) => (
+                      <span key={index}>{label}</span>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -305,23 +349,18 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="space-y-4">
-                    {popularServices && Array.isArray(popularServices) && popularServices.length > 0 ? (
-                      popularServices.map((service: any, index: number) => (
-                        <div key={index} className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="font-medium text-gray-900">{service.name}</div>
-                            <div className="text-sm text-gray-500">{service.price}€</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm font-medium text-gray-900">{service.bookings || 0}</div>
-                          </div>
+                    {popularServicesData.map((service, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">{service.name}</div>
+                          <div className="text-sm text-gray-500">{service.count} réservations</div>
                         </div>
-                      ))
-                    ) : (
-                      <div className="text-center py-8 text-gray-500">
-                        <p>Aucun service encore</p>
+                        <div className="text-right">
+                          <div className="text-sm font-semibold text-gray-900">{service.revenue}€</div>
+                          <div className="text-xs text-green-600">{service.growth}</div>
+                        </div>
                       </div>
-                    )}
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -342,35 +381,30 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="flex items-center justify-between md:justify-start md:space-x-4">
-                    <div className="text-xl md:text-2xl font-bold text-gray-900">{Array.isArray(todayAppointments) ? todayAppointments.length : 0} RDV</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">{todaySchedule.length} RDV</div>
                     <Button variant="outline" size="sm" className="hidden md:flex">
                       <Calendar className="w-4 h-4 mr-2" />
-                      Aujourd'hui
+                      Voir Planning
                     </Button>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                  {todayAppointments && Array.isArray(todayAppointments) && todayAppointments.length > 0 ? (
-                    todayAppointments.slice(0, 6).map((appointment: any, index: number) => (
-                      <div key={index} className="bg-gray-50 rounded-2xl p-3 md:p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="font-medium text-gray-900 text-sm md:text-base">{appointment.service?.name || 'Service'}</div>
-                          <div className="text-xs md:text-sm text-gray-500">{appointment.time || '10:00'}</div>
-                        </div>
+                  {todaySchedule.map((appointment, index) => (
+                    <div key={index} className="bg-gray-50 rounded-2xl p-3 md:p-4 hover:bg-gray-100 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="font-medium text-gray-900 text-sm md:text-base">{appointment.service}</div>
+                        <div className="text-xs md:text-sm text-purple-600 font-medium">{appointment.time}</div>
+                      </div>
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 text-xs md:text-sm text-gray-600">
                           <User className="w-3 md:w-4 h-3 md:h-4" />
-                          <span>{appointment.client?.name || 'Client'}</span>
+                          <span>{appointment.client}</span>
                         </div>
+                        <div className="text-xs text-gray-500">{appointment.duration}</div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-8 md:py-12 text-gray-500">
-                      <Calendar className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-gray-300" />
-                      <p className="text-base md:text-lg font-medium">Aucun rendez-vous aujourd'hui</p>
-                      <p className="text-sm">Votre planning est libre</p>
                     </div>
-                  )}
+                  ))}
                 </div>
               </CardContent>
             </Card>
