@@ -152,13 +152,13 @@ export default function DashboardPeymen() {
           {/* CTA Card - Style Peymen */}
           <div className="p-4">
             <div className="bg-gradient-to-br from-blue-500 to-violet-600 rounded-3xl p-6 text-white">
-              <h4 className="font-bold text-center mb-2">Get a Premium Account</h4>
-              <p className="text-blue-100 text-sm text-center mb-4">Unlock all features</p>
+              <h4 className="font-bold text-center mb-2">Obtenez un Compte Premium</h4>
+              <p className="text-blue-100 text-sm text-center mb-4">Débloquez toutes les fonctionnalités</p>
               <Button 
                 className="w-full bg-white/20 hover:bg-white/30 text-white border-0 rounded-2xl font-medium py-3"
                 onClick={() => setLocation('/premium')}
               >
-                Get Now
+                Obtenir maintenant
               </Button>
             </div>
           </div>
@@ -171,8 +171,8 @@ export default function DashboardPeymen() {
           {/* Header - Style Peymen */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="text-gray-500 text-sm mb-1">Hi Nanas,</p>
-              <h1 className="text-3xl font-bold text-gray-800">Welcome to Avyento</h1>
+              <p className="text-gray-500 text-sm mb-1">Salut Nanas,</p>
+              <h1 className="text-3xl font-bold text-gray-800">Bienvenue sur Avyento</h1>
             </div>
             
             <div className="flex items-center space-x-4">
@@ -186,7 +186,7 @@ export default function DashboardPeymen() {
                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input 
                   type="text" 
-                  placeholder="Search..."
+                  placeholder="Rechercher..."
                   className="pl-10 pr-4 py-2.5 border border-gray-200 rounded-2xl w-72 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -249,10 +249,10 @@ export default function DashboardPeymen() {
                   <Card className="bg-white rounded-3xl shadow-sm border-0 h-full">
                     <CardContent className="p-6">
                       <div className="mb-6">
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">Reach financial goals faster</h3>
-                        <p className="text-gray-500 text-sm mb-6">Use your Avyento card around the world with no hidden fees. Hold, transfer and spend money</p>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">Atteignez vos objectifs financiers plus rapidement</h3>
+                        <p className="text-gray-500 text-sm mb-6">Utilisez votre carte Avyento partout dans le monde sans frais cachés. Conservez, transférez et dépensez de l'argent</p>
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-6 py-3">
-                          Learn More
+                          En savoir plus
                         </Button>
                       </div>
                     </CardContent>
@@ -282,13 +282,13 @@ export default function DashboardPeymen() {
               {/* Saved This Month */}
               <Card className="bg-white rounded-3xl shadow-sm border-0">
                 <CardContent className="p-6 text-center">
-                  <h4 className="text-gray-500 text-sm mb-2">Saved This Month</h4>
-                  <p className="text-4xl font-bold text-gray-800 mb-4">€{Math.round(revenue * 0.2)}.2</p>
+                  <h4 className="text-gray-500 text-sm mb-2">Revenus - Cette Semaine</h4>
+                  <p className="text-4xl font-bold text-gray-800 mb-4">€{Math.round(revenue * 0.2)}</p>
                   <div className="flex items-center justify-center space-x-4 text-sm">
-                    <span className="text-gray-400">Day</span>
-                    <span className="text-gray-400">Week</span>
-                    <span className="bg-blue-600 text-white px-4 py-2 rounded-full">Month</span>
-                    <span className="text-gray-400">Year</span>
+                    <span className="text-gray-400">Jour</span>
+                    <span className="bg-blue-600 text-white px-4 py-2 rounded-full">Semaine</span>
+                    <span className="text-gray-400">Mois</span>
+                    <span className="text-gray-400">Année</span>
                   </div>
                   {/* Simple line chart placeholder */}
                   <div className="mt-6 h-32 flex items-end justify-center space-x-2">
@@ -303,6 +303,16 @@ export default function DashboardPeymen() {
                       />
                     ))}
                   </div>
+                  {/* Jours de la semaine */}
+                  <div className="flex items-center justify-center space-x-4 mt-2 text-xs text-gray-400">
+                    <span>Lun</span>
+                    <span>Mar</span>
+                    <span>Mer</span>
+                    <span>Jeu</span>
+                    <span>Ven</span>
+                    <span>Sam</span>
+                    <span>Dim</span>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -311,8 +321,8 @@ export default function DashboardPeymen() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h4 className="font-bold mb-1">Plan for 2025</h4>
-                      <p className="text-blue-200 text-sm">Completed</p>
+                      <h4 className="font-bold mb-1">Plan pour 2025</h4>
+                      <p className="text-blue-200 text-sm">Terminé</p>
                     </div>
                     <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center">
                       <span className="text-white font-bold">100%</span>
