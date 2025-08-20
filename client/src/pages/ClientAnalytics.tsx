@@ -290,49 +290,52 @@ export default function ClientAnalytics() {
           {/* Contenu principal avec tabs */}
           <div className="flex-1 p-4 lg:p-6">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-6xl mx-auto">
-              <TabsList className="grid w-full grid-cols-3 mb-8 bg-white/50 backdrop-blur-lg border border-white/20">
-                <TabsTrigger value="real-data" className="data-[state=active]:bg-white/80">
-                  <Database className="w-4 h-4 mr-2" />
-                  Données Réelles
+              <TabsList className="grid w-full grid-cols-3 mb-6 lg:mb-8 bg-white/50 backdrop-blur-lg border border-white/20">
+                <TabsTrigger value="real-data" className="data-[state=active]:bg-white/80 text-xs sm:text-sm px-2 py-2">
+                  <Database className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Données Réelles</span>
+                  <span className="sm:hidden">Données</span>
                 </TabsTrigger>
-                <TabsTrigger value="single-analysis" className="data-[state=active]:bg-white/80">
-                  <Brain className="w-4 h-4 mr-2" />
-                  Analyse Individuelle
+                <TabsTrigger value="single-analysis" className="data-[state=active]:bg-white/80 text-xs sm:text-sm px-2 py-2">
+                  <Brain className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Analyse Individuelle</span>
+                  <span className="sm:hidden">Analyse</span>
                 </TabsTrigger>
-                <TabsTrigger value="examples" className="data-[state=active]:bg-white/80">
-                  <Star className="w-4 h-4 mr-2" />
-                  Cas d'Exemples
+                <TabsTrigger value="examples" className="data-[state=active]:bg-white/80 text-xs sm:text-sm px-2 py-2">
+                  <Star className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Cas d'Exemples</span>
+                  <span className="sm:hidden">Exemples</span>
                 </TabsTrigger>
               </TabsList>
 
               {/* Onglet Données réelles */}
-              <TabsContent value="real-data" className="space-y-6">
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Analyse de Votre Clientèle Réelle</h2>
-                  <p className="text-gray-600">L'IA analyse automatiquement tous vos clients pour identifier les risques et optimiser la rétention</p>
+              <TabsContent value="real-data" className="space-y-4 lg:space-y-6">
+                <div className="text-center mb-6 lg:mb-8">
+                  <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">Analyse de Votre Clientèle Réelle</h2>
+                  <p className="text-sm lg:text-base text-gray-600 px-2">L'IA analyse automatiquement tous vos clients pour identifier les risques et optimiser la rétention</p>
                 </div>
 
                 <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50">
-                  <CardContent className="p-8 text-center">
+                  <CardContent className="p-4 lg:p-8 text-center">
                     <Button
                       onClick={handleAnalyzeRealClients}
                       disabled={isAnalyzing}
                       size="lg"
-                      className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-4 text-lg"
+                      className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-lg"
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="w-5 h-5 mr-3 animate-spin" />
-                          Analyse en cours...
+                          <RefreshCw className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3 animate-spin" />
+                          <span className="text-sm lg:text-base">Analyse en cours...</span>
                         </>
                       ) : (
                         <>
-                          <Zap className="w-5 h-5 mr-3" />
-                          Lancer l'Analyse IA
+                          <Zap className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3" />
+                          <span className="text-sm lg:text-base">Lancer l'Analyse IA</span>
                         </>
                       )}
                     </Button>
-                    <p className="text-purple-700 mt-4 text-sm">
+                    <p className="text-purple-700 mt-4 text-xs lg:text-sm px-2">
                       Analyse complète de votre base client avec recommandations personnalisées
                     </p>
                   </CardContent>
@@ -350,22 +353,22 @@ export default function ClientAnalytics() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                          <div className="text-center p-4 bg-blue-50 rounded-lg">
-                            <div className="text-2xl font-bold text-blue-600">{realDataAnalysis.report.resume.total_clients}</div>
-                            <div className="text-sm text-blue-700">Total clients</div>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                          <div className="text-center p-3 lg:p-4 bg-blue-50 rounded-lg">
+                            <div className="text-lg lg:text-2xl font-bold text-blue-600">{realDataAnalysis.report.resume.total_clients}</div>
+                            <div className="text-xs lg:text-sm text-blue-700">Total clients</div>
                           </div>
-                          <div className="text-center p-4 bg-red-50 rounded-lg">
-                            <div className="text-2xl font-bold text-red-600">{realDataAnalysis.report.resume.clients_a_risque}</div>
-                            <div className="text-sm text-red-700">Clients à risque</div>
+                          <div className="text-center p-3 lg:p-4 bg-red-50 rounded-lg">
+                            <div className="text-lg lg:text-2xl font-bold text-red-600">{realDataAnalysis.report.resume.clients_a_risque}</div>
+                            <div className="text-xs lg:text-sm text-red-700">Clients à risque</div>
                           </div>
-                          <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                            <div className="text-2xl font-bold text-yellow-600">{realDataAnalysis.report.resume.taux_annulation_moyen}%</div>
-                            <div className="text-sm text-yellow-700">Taux annulation moyen</div>
+                          <div className="text-center p-3 lg:p-4 bg-yellow-50 rounded-lg">
+                            <div className="text-lg lg:text-2xl font-bold text-yellow-600">{realDataAnalysis.report.resume.taux_annulation_moyen}%</div>
+                            <div className="text-xs lg:text-sm text-yellow-700">Taux annulation</div>
                           </div>
-                          <div className="text-center p-4 bg-green-50 rounded-lg">
-                            <div className="text-2xl font-bold text-green-600">{realDataAnalysis.report.resume.probabilite_conversion_moyenne}%</div>
-                            <div className="text-sm text-green-700">Conversion moyenne</div>
+                          <div className="text-center p-3 lg:p-4 bg-green-50 rounded-lg">
+                            <div className="text-lg lg:text-2xl font-bold text-green-600">{realDataAnalysis.report.resume.probabilite_conversion_moyenne}%</div>
+                            <div className="text-xs lg:text-sm text-green-700">Conversion</div>
                           </div>
                         </div>
                       </CardContent>
@@ -382,12 +385,12 @@ export default function ClientAnalytics() {
                       <CardContent>
                         <div className="space-y-3">
                           {realDataAnalysis.report.actions_prioritaires.map((action, index) => (
-                            <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                              <div>
-                                <div className="font-medium">{action.client}</div>
-                                <div className="text-sm text-gray-600">{action.action_immediate}</div>
+                            <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 lg:p-4 border rounded-lg space-y-2 sm:space-y-0">
+                              <div className="flex-1">
+                                <div className="font-medium text-sm lg:text-base">{action.client}</div>
+                                <div className="text-xs lg:text-sm text-gray-600 mt-1">{action.action_immediate}</div>
                               </div>
-                              <Badge className={getRiskColor(action.niveau.toLowerCase())}>
+                              <Badge className={`${getRiskColor(action.niveau.toLowerCase())} text-xs whitespace-nowrap`}>
                                 {action.niveau}
                               </Badge>
                             </div>
@@ -398,32 +401,32 @@ export default function ClientAnalytics() {
 
                     {/* Insights détaillés */}
                     <div className="space-y-4">
-                      <h3 className="text-xl font-bold">Analyses Détaillées par Client</h3>
+                      <h3 className="text-lg lg:text-xl font-bold">Analyses Détaillées par Client</h3>
                       {realDataAnalysis.insights.map((insight, index) => (
                         <Card key={index} className="border-l-4 border-l-purple-500">
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                              <h4 className="text-lg font-bold">{insight.client.nom}</h4>
-                              <Badge className={getRiskColor(insight.niveau_risque)}>
+                          <CardContent className="p-4 lg:p-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+                              <h4 className="text-base lg:text-lg font-bold">{insight.client.nom}</h4>
+                              <Badge className={`${getRiskColor(insight.niveau_risque)} text-xs w-fit`}>
                                 {getRiskIcon(insight.niveau_risque)}
                                 <span className="ml-1 capitalize">{insight.niveau_risque}</span>
                               </Badge>
                             </div>
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-4">
                               <div className="text-center">
-                                <div className="text-xl font-bold">{insight.client.rdv_total}</div>
+                                <div className="text-lg lg:text-xl font-bold">{insight.client.rdv_total}</div>
                                 <div className="text-xs text-gray-500">RDV total</div>
                               </div>
                               <div className="text-center">
-                                <div className="text-xl font-bold">{insight.client.rdv_annules}</div>
+                                <div className="text-lg lg:text-xl font-bold">{insight.client.rdv_annules}</div>
                                 <div className="text-xs text-gray-500">RDV annulés</div>
                               </div>
                               <div className="text-center">
-                                <div className="text-xl font-bold">{insight.client.taux_annulation}%</div>
+                                <div className="text-lg lg:text-xl font-bold">{insight.client.taux_annulation}%</div>
                                 <div className="text-xs text-gray-500">Taux annulation</div>
                               </div>
                               <div className="text-center">
-                                <div className="text-xl font-bold">{insight.probabilite_conversion}%</div>
+                                <div className="text-lg lg:text-xl font-bold">{insight.probabilite_conversion}%</div>
                                 <div className="text-xs text-gray-500">Récupération</div>
                               </div>
                             </div>
@@ -451,11 +454,11 @@ export default function ClientAnalytics() {
               </TabsContent>
 
               {/* Onglet Analyse individuelle */}
-              <TabsContent value="single-analysis" className="space-y-6">
+              <TabsContent value="single-analysis" className="space-y-4 lg:space-y-6">
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <UserCheck className="w-5 h-5 mr-2 text-blue-600" />
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center text-base lg:text-lg">
+                      <UserCheck className="w-4 h-4 lg:w-5 lg:h-5 mr-2 text-blue-600" />
                       Analyseur de Client Individuel
                     </CardTitle>
                   </CardHeader>
@@ -522,9 +525,9 @@ export default function ClientAnalytics() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-sm text-gray-600">Taux d'annulation calculé:</span>
-                      <Badge variant="outline" className="text-lg font-bold">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
+                      <span className="text-xs lg:text-sm text-gray-600">Taux d'annulation calculé:</span>
+                      <Badge variant="outline" className="text-sm lg:text-lg font-bold w-fit">
                         {clientData.rdv_total > 0 ? Math.round((clientData.rdv_annules / clientData.rdv_total) * 100) : 0}%
                       </Badge>
                     </div>
@@ -532,17 +535,17 @@ export default function ClientAnalytics() {
                     <Button 
                       onClick={handleAnalyzeClient}
                       disabled={isLoading || !clientData.nom.trim()}
-                      className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                      className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 py-3"
                     >
                       {isLoading ? (
                         <>
                           <Activity className="w-4 h-4 mr-2 animate-spin" />
-                          Analyse en cours...
+                          <span className="text-sm lg:text-base">Analyse en cours...</span>
                         </>
                       ) : (
                         <>
                           <Brain className="w-4 h-4 mr-2" />
-                          Analyser avec l'IA
+                          <span className="text-sm lg:text-base">Analyser avec l'IA</span>
                         </>
                       )}
                     </Button>
@@ -552,40 +555,40 @@ export default function ClientAnalytics() {
                 {/* Résultats d'analyse */}
                 {analysisResult && (
                   <Card className="border-2 border-violet-200">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <span className="flex items-center">
-                          <Lightbulb className="w-5 h-5 mr-2 text-violet-600" />
-                          Analyse Complète: {analysisResult.client.nom}
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                        <span className="flex items-center text-sm lg:text-base">
+                          <Lightbulb className="w-4 h-4 lg:w-5 lg:h-5 mr-2 text-violet-600" />
+                          Analyse: {analysisResult.client.nom}
                         </span>
-                        <Badge className={`${getRiskColor(analysisResult.niveau_risque)} border`}>
+                        <Badge className={`${getRiskColor(analysisResult.niveau_risque)} border text-xs w-fit`}>
                           {getRiskIcon(analysisResult.niveau_risque)}
                           <span className="ml-1 capitalize">{analysisResult.niveau_risque}</span>
                         </Badge>
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="space-y-4 lg:space-y-6">
                       {/* Métriques clés */}
-                      <div className="grid grid-cols-3 gap-4">
-                        <Card className="p-4">
+                      <div className="grid grid-cols-3 gap-3 lg:gap-4">
+                        <Card className="p-3 lg:p-4">
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-red-600">
+                            <div className="text-lg lg:text-2xl font-bold text-red-600">
                               {Math.round((analysisResult.client.probabilite_prochaine_annulation || 0) * 100)}%
                             </div>
                             <div className="text-xs text-gray-500">Risque annulation</div>
                           </div>
                         </Card>
-                        <Card className="p-4">
+                        <Card className="p-3 lg:p-4">
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-blue-600">
+                            <div className="text-lg lg:text-2xl font-bold text-blue-600">
                               {Math.round((analysisResult.client.score_risque || 0) * 100)}
                             </div>
                             <div className="text-xs text-gray-500">Score risque</div>
                           </div>
                         </Card>
-                        <Card className="p-4">
+                        <Card className="p-3 lg:p-4">
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-green-600">
+                            <div className="text-lg lg:text-2xl font-bold text-green-600">
                               {Math.round(analysisResult.probabilite_conversion * 100)}%
                             </div>
                             <div className="text-xs text-gray-500">Récupération</div>
@@ -643,33 +646,33 @@ export default function ClientAnalytics() {
               {/* Cas d'exemples */}
               <TabsContent value="examples" className="space-y-4">
                 <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Cas d'Étude Clients</h2>
-                  <p className="text-gray-600">Profils clients types pour tester l'analyse IA</p>
+                  <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">Cas d'Étude Clients</h2>
+                  <p className="text-sm lg:text-base text-gray-600 px-2">Profils clients types pour tester l'analyse IA</p>
                 </div>
 
                 <div className="space-y-4">
                   {exampleCases.map((example, index) => (
                     <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => loadExampleCase(example)}>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                      <CardContent className="p-4 lg:p-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                          <div className="flex items-center space-x-3 lg:space-x-4">
+                            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm lg:text-base">
                               {example.nom.charAt(0)}
                             </div>
                             <div>
-                              <h3 className="font-bold text-gray-900">{example.nom}</h3>
-                              <p className="text-sm text-gray-600">
+                              <h3 className="font-bold text-gray-900 text-sm lg:text-base">{example.nom}</h3>
+                              <p className="text-xs lg:text-sm text-gray-600">
                                 {example.rdv_total} RDV • {example.rdv_annules} annulés • {example.profil}
                               </p>
                             </div>
                           </div>
-                          <div className="text-right">
+                          <div className="text-left sm:text-right">
                             <Badge 
-                              className={getRiskColor(
+                              className={`${getRiskColor(
                                 example.taux_annulation >= 60 ? "critique" 
                                 : example.taux_annulation >= 40 ? "élevé"
                                 : example.taux_annulation >= 20 ? "moyen" : "faible"
-                              )}
+                              )} text-xs whitespace-nowrap`}
                             >
                               {example.taux_annulation}% annulation
                             </Badge>
