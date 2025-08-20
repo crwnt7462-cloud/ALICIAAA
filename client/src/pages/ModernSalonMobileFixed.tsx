@@ -42,20 +42,20 @@ export default function ModernSalonMobileFixed() {
   console.log('DEBUGGING - Current location:', location);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
-      {/* Image de fond avec overlay moderne - Responsive */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30">
+      {/* Image de fond avec overlay glassmorphisme - Responsive */}
       <div className="relative h-screen lg:h-[70vh]">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${salonData.backgroundImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-800/40 to-transparent lg:from-slate-900/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent lg:from-black/50"></div>
 
-        {/* Header moderne - RESPONSIVE avec logo Avyento */}
+        {/* Header glassmorphisme - RESPONSIVE avec logo Avyento */}
         <div className="relative z-10 flex items-center justify-between p-4 lg:p-6">
           <button 
             onClick={() => setLocation('/')}
-            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3 lg:p-4 text-white hover:bg-white/20 transition-all duration-300 shadow-lg"
+            className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl p-3 lg:p-4 text-white hover:bg-white/30 transition-all duration-300 shadow-2xl hover:shadow-white/10"
           >
             <ArrowLeft className="h-5 w-5 lg:h-6 lg:w-6" />
           </button>
@@ -69,19 +69,19 @@ export default function ModernSalonMobileFixed() {
             />
           </div>
 
-          {/* Boutons actions modernes - RESPONSIVE */}
+          {/* Boutons glassmorphisme - RESPONSIVE */}
           <div className="flex items-center gap-3">
-            <button className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3 lg:p-4 text-white hover:bg-white/20 transition-all duration-300 shadow-lg">
+            <button className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl p-3 lg:p-4 text-white hover:bg-white/30 transition-all duration-300 shadow-2xl hover:shadow-white/10">
               <Share2 className="h-5 w-5 lg:h-6 lg:w-6" />
               <span className="hidden lg:inline ml-2 font-medium">Partager</span>
             </button>
-            <button className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3 lg:p-4 text-white hover:bg-white/20 transition-all duration-300 shadow-lg">
+            <button className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl p-3 lg:p-4 text-white hover:bg-white/30 transition-all duration-300 shadow-2xl hover:shadow-white/10">
               <Heart className="h-5 w-5 lg:h-6 lg:w-6" />
               <span className="hidden lg:inline ml-2 font-medium">Favoris</span>
             </button>
             <button 
               onClick={() => window.open('tel:+33123456789')}
-              className="bg-purple-500/80 backdrop-blur-md border border-purple-300/30 rounded-2xl p-3 lg:p-4 text-white hover:bg-purple-400/80 transition-all duration-300 shadow-lg"
+              className="bg-gradient-to-r from-purple-500/80 to-violet-500/80 backdrop-blur-xl border border-purple-300/40 rounded-2xl p-3 lg:p-4 text-white hover:from-purple-400/90 hover:to-violet-400/90 transition-all duration-300 shadow-2xl hover:shadow-purple/20"
             >
               <Phone className="h-5 w-5 lg:h-6 lg:w-6" />
               <span className="hidden lg:inline ml-2 font-medium">Appeler</span>
@@ -92,8 +92,8 @@ export default function ModernSalonMobileFixed() {
         {/* Spacer pour pousser le contenu vers le bas - Responsive */}
         <div className="flex-1 lg:flex-none lg:mt-20"></div>
 
-        {/* Informations du salon en bas - RESPONSIVE LAYOUT moderne */}
-        <div className="bg-gradient-to-t from-slate-900/95 via-slate-800/80 to-transparent pt-20 pb-6 lg:pt-32">
+        {/* Informations du salon en bas - RESPONSIVE LAYOUT glassmorphisme */}
+        <div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-20 pb-6 lg:pt-32">
           <div className="px-6 lg:px-8 max-w-7xl mx-auto">
             <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-end">
               
@@ -134,17 +134,17 @@ export default function ModernSalonMobileFixed() {
                 </div>
               </div>
 
-              {/* Informations rapides modernes - Colonne droite sur desktop */}
+              {/* Informations rapides glassmorphisme - Colonne droite sur desktop */}
               <div className="hidden lg:block">
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+                <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl p-8 shadow-2xl hover:bg-white/25 transition-all duration-300">
                   <div className="grid grid-cols-2 gap-6 mb-8">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-white mb-2">{salonData.rating}</div>
-                      <div className="text-sm text-white/80 font-medium">Note moyenne</div>
+                      <div className="text-sm text-white/90 font-medium">Note moyenne</div>
                     </div>
                     <div className="text-center">
                       <div className="text-3xl font-bold text-white mb-2">{salonData.reviewCount}</div>
-                      <div className="text-sm text-white/80 font-medium">Avis clients</div>
+                      <div className="text-sm text-white/90 font-medium">Avis clients</div>
                     </div>
                   </div>
                   
@@ -157,7 +157,7 @@ export default function ModernSalonMobileFixed() {
                     </button>
                     <button 
                       onClick={() => window.open(`tel:+33123456789`)}
-                      className="w-full bg-white/10 backdrop-blur-md border border-white/30 text-white py-3 px-6 rounded-2xl font-medium hover:bg-white/20 transition-all duration-300 shadow-lg"
+                      className="w-full bg-white/20 backdrop-blur-xl border border-white/30 text-white py-3 px-6 rounded-2xl font-medium hover:bg-white/30 transition-all duration-300 shadow-2xl hover:shadow-white/10"
                     >
                       Appeler le salon
                     </button>
@@ -192,30 +192,30 @@ export default function ModernSalonMobileFixed() {
           </div>
         </div>
 
-        {/* Contenu des onglets - Panel responsive avec glassmorphism */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-t-3xl lg:rounded-3xl shadow-2xl max-h-[50vh] lg:max-h-none overflow-y-auto lg:mx-8 lg:max-w-7xl lg:mx-auto lg:mb-8">
+        {/* Contenu des onglets - Panel glassmorphisme pur */}
+        <div className="bg-white/95 backdrop-blur-xl border-t border-white/30 shadow-2xl max-h-[50vh] lg:max-h-none overflow-y-auto lg:mx-8 lg:max-w-7xl lg:mx-auto lg:mb-8 rounded-t-3xl lg:rounded-3xl">
           {activeTab === 'services' && (
             <div className="p-6 lg:p-8">
               <div className="space-y-6">
-                {/* Catégorie Coiffure avec glassmorphism moderne */}
-                <div className="bg-white/80 backdrop-blur-xl border border-slate-200/50 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <div className="p-6 bg-gradient-to-r from-slate-50/90 to-purple-50/90 backdrop-blur-sm border-b border-slate-200/50">
+                {/* Catégorie Coiffure avec glassmorphism parfait */}
+                <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple/10 hover:bg-white/85 transition-all duration-300">
+                  <div className="p-6 bg-gradient-to-r from-purple-50/70 to-violet-50/70 backdrop-blur-xl border-b border-white/30">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-bold text-xl text-slate-800">Coiffure</h3>
-                        <p className="text-slate-600">Coupes, colorations et coiffages</p>
+                        <h3 className="font-bold text-xl bg-gradient-to-r from-purple-700 to-violet-700 bg-clip-text text-transparent">Coiffure</h3>
+                        <p className="text-gray-600">Coupes, colorations et coiffages</p>
                       </div>
-                      <div className="text-sm text-slate-600 bg-white/80 px-4 py-2 rounded-full font-medium border border-slate-200/50">4 services</div>
+                      <div className="text-sm text-purple-700 bg-white/90 backdrop-blur-xl px-4 py-2 rounded-full font-medium border border-white/50 shadow-lg">4 services</div>
                     </div>
                   </div>
                   
-                  {/* Services détaillés avec prix alignés modernes */}
+                  {/* Services détaillés avec glassmorphisme complet */}
                   <div className="p-6 space-y-4">
-                    <div className="bg-white/70 backdrop-blur-md border border-slate-200/50 rounded-2xl p-6 hover:bg-white/90 hover:shadow-lg transition-all duration-300">
+                    <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl p-6 hover:bg-white/90 hover:shadow-xl hover:shadow-purple/10 transition-all duration-300">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h4 className="font-semibold text-slate-900 text-lg mb-2">Coupe homme classique</h4>
-                          <p className="text-slate-600">Coupe traditionnelle avec finition soignée</p>
+                          <h4 className="font-semibold text-gray-900 text-lg mb-2">Coupe homme classique</h4>
+                          <p className="text-gray-600">Coupe traditionnelle avec finition soignée</p>
                         </div>
                         <div className="text-xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent ml-6">35€</div>
                       </div>
