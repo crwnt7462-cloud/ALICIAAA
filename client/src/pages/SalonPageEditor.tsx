@@ -102,7 +102,7 @@ export default function SalonPageEditor() {
     description: 'Salon de démonstration - Version Premium Pro',
     longDescription: 'Bienvenue dans votre salon de démonstration avec toutes les fonctionnalités Premium Pro activées.',
     ownerId: 'demo-user',
-    ownerEmail: 'demo@beautyapp.com',
+    ownerEmail: 'demo@avyento.com',
     subscriptionPlan: 'premium',
     shareableUrl: '/salon/salon-demo',
     isPublished: true,

@@ -34,7 +34,7 @@ export default function Confidentialite() {
     },
     {
       title: "Finalité",
-      description: "Vos données sont utilisées uniquement pour améliorer votre expérience sur BeautyApp."
+      description: "Vos données sont utilisées uniquement pour améliorer votre expérience sur Avyento."
     },
     {
       title: "Sécurité",
@@ -83,7 +83,7 @@ export default function Confidentialite() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Votre vie privée est notre priorité</h3>
                   <p className="text-sm text-gray-600">
-                    Chez BeautyApp, nous nous engageons à protéger et respecter votre vie privée. 
+                    Chez Avyento, nous nous engageons à protéger et respecter votre vie privée. 
                     Cette politique explique comment nous collectons, utilisons et protégeons vos données personnelles 
                     conformément au RGPD.
                   </p>
@@ -197,7 +197,7 @@ export default function Confidentialite() {
                   whileTap={{ scale: 0.98 }}
                   className="glass-button text-black px-6 py-2 rounded-xl"
                 >
-                  dpo@beautyapp.com
+                  dpo@avyento.com
                 </motion.button>
               </div>
             </CardContent>

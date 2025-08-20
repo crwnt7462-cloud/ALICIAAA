@@ -1985,13 +1985,13 @@ function SalonBooking() {
               <p className="font-medium text-black mb-2">🧪 Compte de test :</p>
               <div className="flex justify-between items-center mb-2">
                 <div>
-                  <p className="text-gray-700">Email: client@beautyapp.com</p>
+                  <p className="text-gray-700">Email: client@avyento.com</p>
                   <p className="text-gray-700">Mot de passe: test123</p>
                 </div>
                 <Button
                   onClick={() => {
                     setLoginData({
-                      email: 'client@beautyapp.com',
+                      email: 'client@avyento.com',
                       password: 'test123'
                     });
                   }}
@@ -2006,7 +2006,7 @@ function SalonBooking() {
               <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
               <Input
                 type="email"
-                placeholder="client@beautyapp.com"
+                placeholder="client@avyento.com"
                 value={loginData.email}
                 onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                 className="w-full"

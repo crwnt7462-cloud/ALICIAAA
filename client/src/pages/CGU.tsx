@@ -9,15 +9,15 @@ export default function CGU() {
   const sections = [
     {
       title: "1. Objet",
-      content: "Les présentes Conditions Générales d'Utilisation (CGU) définissent les modalités d'utilisation de la plateforme BeautyApp, service de réservation en ligne pour les professionnels de la beauté."
+      content: "Les présentes Conditions Générales d'Utilisation (CGU) définissent les modalités d'utilisation de la plateforme Avyento, service de réservation en ligne pour les professionnels de la beauté."
     },
     {
       title: "2. Acceptation des conditions",
-      content: "L'utilisation de BeautyApp implique l'acceptation pleine et entière des présentes CGU. Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser nos services."
+      content: "L'utilisation d'Avyento implique l'acceptation pleine et entière des présentes CGU. Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser nos services."
     },
     {
       title: "3. Services proposés",
-      content: "BeautyApp permet aux utilisateurs de rechercher, comparer et réserver des rendez-vous auprès de professionnels de la beauté (coiffeurs, esthéticiennes, manucures, masseurs, etc.)."
+      content: "Avyento permet aux utilisateurs de rechercher, comparer et réserver des rendez-vous auprès de professionnels de la beauté (coiffeurs, esthéticiennes, manucures, masseurs, etc.)."
     },
     {
       title: "4. Inscription et compte utilisateur",
@@ -37,7 +37,7 @@ export default function CGU() {
     },
     {
       title: "8. Responsabilités",
-      content: "BeautyApp agit en qualité d'intermédiaire entre les utilisateurs et les professionnels. Nous ne sommes pas responsables de la qualité des prestations fournies par les professionnels."
+      content: "Avyento agit en qualité d'intermédiaire entre les utilisateurs et les professionnels. Nous ne sommes pas responsables de la qualité des prestations fournies par les professionnels."
     },
     {
       title: "9. Propriété intellectuelle",
@@ -45,7 +45,7 @@ export default function CGU() {
     },
     {
       title: "10. Modification des CGU",
-      content: "BeautyApp se réserve le droit de modifier les présentes CGU à tout moment. Les utilisateurs seront informés des modifications importantes."
+      content: "Avyento se réserve le droit de modifier les présentes CGU à tout moment. Les utilisateurs seront informés des modifications importantes."
     }
   ];
 
@@ -86,7 +86,7 @@ export default function CGU() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Informations importantes</h3>
                   <p className="text-sm text-gray-600 mb-3">
-                    Ces conditions générales d'utilisation régissent votre accès et votre utilisation de la plateforme BeautyApp.
+                    Ces conditions générales d'utilisation régissent votre accès et votre utilisation de la plateforme Avyento.
                   </p>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Calendar className="w-4 h-4" />
