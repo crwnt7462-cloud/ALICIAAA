@@ -473,7 +473,7 @@ export default function PlanningResponsive() {
         {/* PLUS DE CALENDRIER SIDEBAR - SUPPRIMÉ */}
 
         {/* Grille horaire complète 6h-23h */}
-        <div className="bg-white pb-20">
+        <div className="bg-white pb-24">
           <div className="relative">
             {/* Ligne violette d'heure actuelle */}
             {(() => {
