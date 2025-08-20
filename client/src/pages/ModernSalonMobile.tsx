@@ -21,22 +21,40 @@ export default function ModernSalonMobile({ }: SalonMobileProps) {
   
   // Données du salon
   const salonData = {
-    name: "Salon Démo",
+    name: "Salon Avyento Démo",
     verified: true,
     rating: 4.8,
-    reviewCount: 0,
-    priceRange: "€€",
-    address: "123 Rue de la Beauté",
-    backgroundImage: "https://images.unsplash.com/photo-1559599189-fe84dea4eb79?w=500&h=800&fit=crop&q=80",
+    reviewCount: 127,
+    priceRange: "€€€",
+    address: "123 Avenue des Champs-Élysées, 75008 Paris",
+    backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
     services: [
       {
         id: 1,
-        name: "Coupe homme classique",
-        description: "Coupe traditionnelle avec finition soignée",
-        price: 35,
-        duration: 45,
-        rating: 4.5,
-        reviewCount: 2
+        name: "Coupe Femme",
+        description: "Coupe personnalisée avec shampoing et brushing",
+        price: 45,
+        duration: 60,
+        rating: 4.8,
+        reviewCount: 89
+      },
+      {
+        id: 2,
+        name: "Coloration Complète",
+        description: "Coloration racines et longueurs avec soin protecteur",
+        price: 85,
+        duration: 120,
+        rating: 4.9,
+        reviewCount: 67
+      },
+      {
+        id: 3,
+        name: "Soin Visage Premium",
+        description: "Nettoyage profond, gommage et masque hydratant",
+        price: 65,
+        duration: 75,
+        rating: 4.7,
+        reviewCount: 43
       }
     ]
   };

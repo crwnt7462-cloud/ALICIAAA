@@ -1110,7 +1110,7 @@ function Router() {
   if (location === '/salon') {
     return (
       <div className="h-full">
-        <SalonBooking salonSlug="salon-demo" />
+        <ModernSalonMobile pageUrl="salon-demo" />
       </div>
     );
   }
