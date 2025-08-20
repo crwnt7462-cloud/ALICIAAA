@@ -972,8 +972,12 @@ export default function SalonCreation() {
             <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
               <h4 className="font-semibold mb-4 text-gray-900">Aperçu</h4>
               <Button 
-                style={getButtonStyle('solid')} 
-                className="w-full h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-white font-semibold"
+                style={{
+                  backgroundColor: primaryColor,
+                  color: 'white',
+                  border: 'none'
+                }}
+                className="w-full h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-semibold hover:opacity-90"
               >
                 Réserver maintenant
               </Button>
