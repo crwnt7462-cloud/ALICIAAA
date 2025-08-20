@@ -1333,12 +1333,13 @@ export default function PublicLanding() {
               >
                 <button
                   onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                  className="w-full text-left p-6 rounded-2xl transition-all duration-300 glass-button hover:shadow-lg"
+                  className="w-full text-left p-6 rounded-2xl transition-all duration-300 hover:shadow-lg"
                   style={{
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                    background: 'rgba(248, 250, 252, 0.8)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)'
                   }}
                 >
                   <div className="flex items-center justify-between">
