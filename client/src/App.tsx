@@ -73,6 +73,7 @@ import DirectMessaging from "@/pages/DirectMessaging";
 import StaffManagement from "@/pages/StaffManagement";
 import ServicesManagement from "@/pages/ServicesManagement";
 import ProfessionalSettingsDemo from "@/pages/ProfessionalSettingsDemo";
+import ModernSalonMobile from "@/pages/ModernSalonMobile";
 import ClientAnalytics from "@/pages/ClientAnalytics";
 import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
@@ -94,7 +95,6 @@ import SalonDynamicPage from "@/pages/SalonDynamicPage";
 import SalonBooking from "@/pages/SalonBooking";
 
 import SalonPageFixed from "@/pages/SalonPageFixed";
-import ModernSalonMobile from "@/pages/ModernSalonMobile";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
 import MessagingSystem from "@/pages/MessagingSystem";
