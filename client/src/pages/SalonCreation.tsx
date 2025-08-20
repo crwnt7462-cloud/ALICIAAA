@@ -18,8 +18,6 @@ import {
   Palette,
   ExternalLink,
   Eye,
-  X,
-  GripVertical,
   Camera,
   Facebook,
   Instagram
@@ -203,38 +201,42 @@ export default function SalonCreation() {
     setTeamMembers(prev => [...prev, newMember]);
   };
 
-  // Palettes de couleurs prédéfinies
+  // Palettes de couleurs prédéfinies (simplifié - une seule couleur)
   const colorPresets = [
-    { name: 'Violet & Amber', primary: '#8b5cf6', accent: '#f59e0b' },
-    { name: 'Rose & Teal', primary: '#ec4899', accent: '#06b6d4' },
-    { name: 'Indigo & Orange', primary: '#6366f1', accent: '#f97316' },
-    { name: 'Emerald & Purple', primary: '#10b981', accent: '#a855f7' },
-    { name: 'Blue & Yellow', primary: '#3b82f6', accent: '#eab308' },
-    { name: 'Cyan & Pink', primary: '#06b6d4', accent: '#ec4899' }
+    { name: 'Violet Modern', color: '#8b5cf6' },
+    { name: 'Rose Élégant', color: '#ec4899' },
+    { name: 'Indigo Pro', color: '#6366f1' },
+    { name: 'Émeraude Fresh', color: '#10b981' },
+    { name: 'Bleu Classic', color: '#3b82f6' },
+    { name: 'Cyan Moderne', color: '#06b6d4' }
   ];
 
-  // Fonction pour appliquer les couleurs aux boutons
-  const getButtonStyle = (type: 'primary' | 'accent' = 'primary') => {
-    const color = customColors[type];
-    const textColor = customColors.buttonText;
+  // État pour la couleur unique
+  const [primaryColor, setPrimaryColor] = useState('#8b5cf6');
+
+  // Fonction pour appliquer la couleur aux boutons
+  const getButtonStyle = (variant: 'solid' | 'outline' = 'solid') => {
+    if (variant === 'outline') {
+      return {
+        backgroundColor: 'transparent',
+        color: primaryColor,
+        borderColor: primaryColor,
+        border: `1px solid ${primaryColor}`
+      };
+    }
     
     return {
-      backgroundColor: color,
-      color: textColor,
+      backgroundColor: primaryColor,
+      color: 'white',
       border: 'none'
     };
   };
 
   // Fonction pour appliquer une palette
   const applyColorPreset = (preset: typeof colorPresets[0]) => {
-    setCustomColors(prev => ({
-      ...prev,
-      primary: preset.primary,
-      accent: preset.accent
-    }));
-    
+    setPrimaryColor(preset.color);
     toast({
-      title: "Couleurs appliquées",
+      title: "Couleur appliquée",
       description: `Palette "${preset.name}" appliquée avec succès`,
     });
   };
@@ -413,7 +415,7 @@ export default function SalonCreation() {
             
             <Button 
               className="mt-8" 
-              style={getButtonStyle('primary')}
+              style={getButtonStyle('solid')}
             >
               Réserver
             </Button>
@@ -430,9 +432,10 @@ export default function SalonCreation() {
               onClick={() => setActiveTab(tab.id)}
               className={`whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
                 tab.active
-                  ? 'border-violet-500 text-violet-600'
+                  ? 'text-gray-900 hover:text-gray-900 hover:border-gray-300'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
               }`}
+              style={tab.active ? { borderColor: primaryColor, color: primaryColor } : {}}
             >
               {tab.label}
             </button>
@@ -669,7 +672,7 @@ export default function SalonCreation() {
                         <Button 
                           size="sm" 
                           variant="outline"
-                          style={getButtonStyle('accent')}
+                          style={getButtonStyle('outline')}
                         >
                           Réserver avec {member.name.split(' ')[0]}
                         </Button>
@@ -904,107 +907,93 @@ export default function SalonCreation() {
         </div>
       </div>
 
-      {/* Modal de personnalisation des couleurs */}
+      {/* Modal de personnalisation moderne */}
       <Dialog open={isColorModalOpen} onOpenChange={setIsColorModalOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5 text-violet-600" />
-              Personnaliser les couleurs
+        <DialogContent className="max-w-md mx-auto bg-white/80 backdrop-blur-xl border-white/20 shadow-2xl">
+          <DialogHeader className="text-center pb-4">
+            <DialogTitle className="text-xl font-semibold text-gray-900">
+              Personnaliser la couleur
             </DialogTitle>
+            <p className="text-sm text-gray-600 mt-1">
+              Choisissez la couleur de votre salon
+            </p>
           </DialogHeader>
           
           <div className="space-y-6">
-            {/* Palettes prédéfinies */}
+            {/* Palettes prédéfinies - Grid responsive */}
             <div>
-              <h4 className="font-medium mb-3">Palettes prédéfinies</h4>
-              <div className="grid grid-cols-2 gap-3">
+              <h4 className="font-medium mb-4 text-gray-800">Couleurs prédéfinies</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {colorPresets.map((preset, index) => (
                   <button
                     key={index}
                     onClick={() => applyColorPreset(preset)}
-                    className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                    className={`group flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02] ${
+                      primaryColor === preset.color 
+                        ? 'border-current bg-white/50 shadow-md' 
+                        : 'border-gray-200/50 bg-white/20 hover:bg-white/30'
+                    }`}
+                    style={{ borderColor: primaryColor === preset.color ? preset.color : undefined }}
                   >
-                    <div className="flex gap-1">
-                      <div 
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: preset.primary }}
-                      />
-                      <div 
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: preset.accent }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium">{preset.name}</span>
+                    <div 
+                      className="w-6 h-6 rounded-full shadow-sm"
+                      style={{ backgroundColor: preset.color }}
+                    />
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                      {preset.name}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Couleurs personnalisées */}
-            <div>
-              <h4 className="font-medium mb-3">Couleurs personnalisées</h4>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Couleur principale
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      value={customColors.primary}
-                      onChange={(e) => setCustomColors(prev => ({ ...prev, primary: e.target.value }))}
-                      className="w-12 h-10 rounded border cursor-pointer"
-                    />
-                    <Input
-                      value={customColors.primary}
-                      onChange={(e) => setCustomColors(prev => ({ ...prev, primary: e.target.value }))}
-                      placeholder="#8b5cf6"
-                      className="flex-1"
-                    />
-                  </div>
+            {/* Couleur personnalisée */}
+            <div className="bg-white/30 backdrop-blur-md rounded-xl p-4 border border-white/20">
+              <h4 className="font-medium mb-3 text-gray-800">Couleur personnalisée</h4>
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                    className="w-12 h-12 rounded-xl border-2 border-white/30 cursor-pointer shadow-md"
+                  />
                 </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Couleur d'accent
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      value={customColors.accent}
-                      onChange={(e) => setCustomColors(prev => ({ ...prev, accent: e.target.value }))}
-                      className="w-12 h-10 rounded border cursor-pointer"
-                    />
-                    <Input
-                      value={customColors.accent}
-                      onChange={(e) => setCustomColors(prev => ({ ...prev, accent: e.target.value }))}
-                      placeholder="#f59e0b"
-                      className="flex-1"
-                    />
-                  </div>
-                </div>
+                <Input
+                  value={primaryColor}
+                  onChange={(e) => setPrimaryColor(e.target.value)}
+                  placeholder="#8b5cf6"
+                  className="flex-1 bg-white/50 border-white/30"
+                />
               </div>
             </div>
 
-            {/* Aperçu */}
-            <div>
-              <h4 className="font-medium mb-3">Aperçu</h4>
+            {/* Aperçu moderne */}
+            <div className="bg-white/20 backdrop-blur-md rounded-xl p-4 border border-white/20">
+              <h4 className="font-medium mb-4 text-gray-800">Aperçu</h4>
               <div className="space-y-3">
-                <Button style={getButtonStyle('primary')} className="w-full">
-                  Bouton principal - Réserver maintenant
+                <Button 
+                  style={getButtonStyle('solid')} 
+                  className="w-full shadow-lg hover:shadow-xl transition-shadow duration-200"
+                >
+                  Bouton de réservation
                 </Button>
-                <Button style={getButtonStyle('accent')} className="w-full" variant="outline">
-                  Bouton d'accent - Voir plus
+                <Button 
+                  style={getButtonStyle('outline')} 
+                  variant="outline"
+                  className="w-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors duration-200"
+                >
+                  Bouton secondaire
                 </Button>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-2 pt-4 border-t">
+            <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
                 onClick={() => setIsColorModalOpen(false)}
+                className="flex-1 bg-white/10 border-white/30 hover:bg-white/20"
               >
                 Annuler
               </Button>
@@ -1012,11 +1001,12 @@ export default function SalonCreation() {
                 onClick={() => {
                   setIsColorModalOpen(false);
                   toast({
-                    title: "Couleurs sauvegardées",
-                    description: "Vos couleurs personnalisées ont été appliquées",
+                    title: "Couleur appliquée",
+                    description: "Votre couleur personnalisée a été sauvegardée",
                   });
                 }}
-                style={getButtonStyle('primary')}
+                style={getButtonStyle('solid')}
+                className="flex-1 shadow-lg hover:shadow-xl transition-shadow duration-200"
               >
                 Appliquer
               </Button>
