@@ -392,13 +392,13 @@ export default function PublicLanding() {
       id: 'client-login', 
       label: 'Se connecter', 
       icon: <User className="w-5 h-5" />,
-      action: () => setLocation("/client-login-modern")
+      action: () => window.location.href = "/api/login"
     },
     { 
       id: 'login', 
       label: 'Espace Pro', 
       icon: <LogIn className="w-5 h-5" />,
-      action: () => setLocation("/pro-login")
+      action: () => window.location.href = "/api/login"
     },
     { 
       id: 'pro', 
@@ -633,7 +633,7 @@ export default function PublicLanding() {
             <div className="flex items-center gap-3 md:gap-5">
               <button 
                 className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
-                onClick={() => setLocation("/client-login-modern")}
+                onClick={() => window.location.href = "/api/login"}
               >
                 <span className="hidden md:inline">Se connecter</span>
                 <span className="md:hidden">Connexion</span>
