@@ -323,8 +323,11 @@ export default function PlanningResponsive() {
               return (
                 <button
                   key={index}
-                  onClick={() => setSelectedDate(date)}
-                  className={`w-10 h-10 text-sm rounded-lg transition-all relative ${
+                  onClick={() => {
+                    console.log('Date cliquée:', date);
+                    setSelectedDate(date);
+                  }}
+                  className={`w-10 h-10 text-sm rounded-lg transition-all relative cursor-pointer touch-manipulation ${
                     !isCurrentMonth 
                       ? 'text-gray-300' 
                       : isSelected
@@ -333,6 +336,10 @@ export default function PlanningResponsive() {
                           ? 'bg-purple-500 text-white font-bold ring-2 ring-purple-200'
                           : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
                   }`}
+                  style={{ 
+                    pointerEvents: 'auto',
+                    zIndex: 10
+                  }}
                 >
                   {date.getDate()}
                   {/* Repère supplémentaire pour aujourd'hui */}
