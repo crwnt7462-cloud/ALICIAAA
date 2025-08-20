@@ -286,23 +286,26 @@ export default function SalonPage() {
                               </div>
                             </div>
                             <p className="text-sm text-gray-600">{service.description}</p>
-                            <div className="flex items-center justify-between mt-2">
-                              <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1">
-                                  <Clock className="w-3 h-3 text-gray-400" />
-                                  <span className="text-xs text-gray-500">{formatDuration(service.duration)}</span>
-                                </div>
-                                {service.rating && (
-                                  <div className="flex items-center gap-1">
-                                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                    <span className="text-xs text-gray-600">{service.rating}</span>
-                                    <span className="text-xs text-gray-400">({service.reviews})</span>
-                                  </div>
-                                )}
+                            <div className="flex items-center gap-3 mt-2">
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-gray-400" />
+                                <span className="text-xs text-gray-500">{formatDuration(service.duration)}</span>
                               </div>
+                              {service.rating && (
+                                <div className="flex items-center gap-1">
+                                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                  <span className="text-xs text-gray-600">{service.rating}</span>
+                                  <span className="text-xs text-gray-400">({service.reviews})</span>
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Bouton Réserver centré en bas */}
+                            <div className="flex justify-center mt-3">
                               <Button 
                                 size="sm" 
                                 style={getButtonStyle('outline')}
+                                className="px-6"
                               >
                                 Réserver
                               </Button>
