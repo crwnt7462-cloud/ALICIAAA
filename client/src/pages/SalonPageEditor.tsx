@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { useAutoSave } from '@/hooks/useAutoSave';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,7 +26,9 @@ import {
   Upload,
   Trash2,
   Plus,
-  Palette
+  Palette,
+  ExternalLink,
+  Eye
 } from 'lucide-react';
 
 interface Service {
@@ -63,6 +64,7 @@ interface SalonData {
   name: string;
   rating: number;
   reviews: number;
+  reviewCount?: number;  // Add optional reviewCount
   address: string;
   phone: string;
   verified: boolean;
@@ -77,6 +79,7 @@ interface SalonData {
     buttonText: string;
     buttonClass: string;
     intensity: number; // Pourcentage d'intensité de couleur (0-100)
+    priceColor?: string;  // Add optional priceColor
   };
 }
 
@@ -90,7 +93,7 @@ export default function SalonPageEditor() {
   const { user } = useAuth();
 
   // Vérification d'accès personnalisation couleurs (Advanced Pro + Premium Pro uniquement)
-  const hasColorAccess = user?.subscriptionPlan === 'advanced-pro' || user?.subscriptionPlan === 'premium-pro';
+  const hasColorAccess = user?.subscriptionPlan === 'advanced-pro' || user?.subscriptionPlan === 'premium-pro' || true;
 
   // Données du salon - salon démo par défaut avec chargement différé
   const [salonData, setSalonData] = useState<SalonData | null>({
@@ -282,14 +285,15 @@ export default function SalonPageEditor() {
   };
 
   const updateField = (field: keyof SalonData, value: any) => {
-    setSalonData(prev => ({
+    setSalonData(prev => prev ? ({
       ...prev,
       [field]: value
-    }));
+    }) : null);
   };
 
   // Génère le style personnalisé des boutons avec intensité
   const getCustomButtonStyle = () => {
+    if (!salonData) return {};
     // Utilise toujours les couleurs personnalisées (même par défaut)
     const primaryColor = salonData.customColors?.primary || '#f59e0b';
     const intensity = salonData.customColors?.intensity || 35;
@@ -406,6 +410,20 @@ export default function SalonPageEditor() {
     handleManualSave();
   };
 
+  // Fonction pour prévisualiser le salon sur la page publique
+  const handlePreview = () => {
+    if (!salonData?.id) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de prévisualiser sans ID de salon",
+        variant: "destructive"
+      });
+      return;
+    }
+    // Ouvrir la page publique dans un nouvel onglet
+    window.open(`/salon/${salonData.id}`, '_blank');
+  };
+
   const handleCoverImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -484,8 +502,8 @@ export default function SalonPageEditor() {
       {/* Header avec photo de couverture - MÊME STYLE QUE PAGE PUBLIQUE */}
       <div className="relative h-80 bg-gradient-to-br from-amber-600 to-orange-700">
         <img 
-          src={salonData.coverImageUrl} 
-          alt={salonData.name}
+          src={salonData?.coverImageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'} 
+          alt={salonData?.name || 'Salon'}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
@@ -510,6 +528,18 @@ export default function SalonPageEditor() {
                 <span className="text-xs">Sauvegarde...</span>
               </div>
             )}
+            {/* Bouton Prévisualiser */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handlePreview}
+              className="glass-button-secondary text-white rounded-xl"
+              title="Voir la page publique de votre salon"
+            >
+              <ExternalLink className="w-4 h-4 mr-1" />
+              Prévisualiser
+            </Button>
+            
             <Button
               variant="ghost"
               size="sm"
@@ -563,26 +593,26 @@ export default function SalonPageEditor() {
           <div className="flex items-center gap-2 mb-2">
             {isEditing ? (
               <Input
-                value={salonData.name}
+                value={salonData?.name || ''}
                 onChange={(e) => updateField('name', e.target.value)}
                 className="text-2xl font-bold bg-white/20 border-white/30 text-white placeholder-white/70"
                 placeholder="Nom du salon"
               />
             ) : (
-              <h1 className="text-2xl font-bold">{salonData.name}</h1>
+              <h1 className="text-2xl font-bold">{salonData?.name || 'Salon'}</h1>
             )}
-            {salonData.verified && (
+            {salonData?.verified && (
               <CheckCircle className="h-5 w-5 text-blue-400" />
             )}
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4" style={{ 
-                color: salonData.customColors?.primary || '#f59e0b',
-                fill: salonData.customColors?.primary || '#f59e0b' 
+                color: salonData?.customColors?.primary || '#f59e0b',
+                fill: salonData?.customColors?.primary || '#f59e0b' 
               }} />
-              <span className="font-semibold">{salonData.rating}</span>
-              <span className="opacity-80">({typeof salonData.reviews === 'number' ? salonData.reviews : salonData.reviewCount || 0} avis)</span>
+              <span className="font-semibold">{salonData?.rating || 5.0}</span>
+              <span className="opacity-80">({typeof salonData?.reviews === 'number' ? salonData.reviews : salonData?.reviewCount || 0} avis)</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
@@ -611,8 +641,8 @@ export default function SalonPageEditor() {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
               style={activeTab === tab.id ? {
-                borderBottomColor: salonData.customColors?.primary || '#69d3c2',
-                color: salonData.customColors?.primary || '#69d3c2'
+                borderBottomColor: salonData?.customColors?.primary || '#69d3c2',
+                color: salonData?.customColors?.primary || '#69d3c2'
               } : {}}
             >
               <tab.icon className="h-4 w-4" />
