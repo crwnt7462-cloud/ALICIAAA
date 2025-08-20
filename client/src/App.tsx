@@ -1315,7 +1315,9 @@ function Router() {
         <main className="flex-1 overflow-y-auto">
           <BusinessFeaturesWithBottomSheets />
         </main>
-        {/* BOTTOM NAVIGATION SUPPRIMÉE - Plus de barre en bas sur mobile */}
+        <div className="lg:hidden">
+          <BottomNavigation />
+        </div>
       </div>
     );
   }
