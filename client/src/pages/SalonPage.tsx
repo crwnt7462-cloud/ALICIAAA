@@ -7,7 +7,9 @@ import {
   User,
   CheckCircle,
   Facebook,
-  Instagram
+  Instagram,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,7 +42,7 @@ export default function SalonPage() {
     { id: 'avis', label: 'Avis', active: activeTab === 'avis' }
   ];
 
-  // Services avec photos
+  // Services avec photos et avis
   const serviceCategories = [
     {
       id: 'coiffure',
@@ -52,21 +54,27 @@ export default function SalonPage() {
           price: 45,
           duration: 60,
           description: 'Coupe personnalisée avec brushing professionnel',
-          photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80'
+          photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
+          rating: 4.8,
+          reviews: 23
         },
         {
           name: 'Coloration complète',
           price: 85,
           duration: 120,
           description: 'Coloration permanente avec soin protecteur',
-          photo: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=200&h=200&fit=crop&q=80'
+          photo: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=200&h=200&fit=crop&q=80',
+          rating: 4.9,
+          reviews: 18
         },
         {
           name: 'Mèches + Balayage',
           price: 95,
           duration: 150,
           description: 'Technique de balayage pour un effet naturel',
-          photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=200&fit=crop&q=80'
+          photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=200&fit=crop&q=80',
+          rating: 4.7,
+          reviews: 31
         }
       ]
     },
@@ -80,18 +88,35 @@ export default function SalonPage() {
           price: 65,
           duration: 75,
           description: 'Nettoyage en profondeur et hydratation',
-          photo: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&q=80'
+          photo: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&q=80',
+          rating: 4.6,
+          reviews: 14
         },
         {
           name: 'Épilation sourcils',
           price: 25,
           duration: 30,
           description: 'Mise en forme professionnelle des sourcils',
-          photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=200&h=200&fit=crop&q=80'
+          photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=200&h=200&fit=crop&q=80',
+          rating: 4.8,
+          reviews: 42
         }
       ]
     }
   ];
+
+  // Fonction pour formater la durée intelligemment
+  const formatDuration = (minutes: number) => {
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      if (remainingMinutes === 0) {
+        return `${hours}h`;
+      }
+      return `${hours}h${remainingMinutes.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}min`;
+  };
 
   // Équipe - MODE AFFICHAGE
   const teamMembers = [
@@ -239,6 +264,13 @@ export default function SalonPage() {
                         <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
                           {category.services.length} service{category.services.length > 1 ? 's' : ''}
                         </span>
+                        <div className="p-1">
+                          {expandedCategory === category.id ? (
+                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                          )}
+                        </div>
                       </div>
                     </button>
                   </div>
@@ -257,14 +289,23 @@ export default function SalonPage() {
                               <h4 className="font-medium text-gray-900">{service.name}</h4>
                               <div className="text-right">
                                 <span className="font-semibold text-gray-900">{service.price}€</span>
-                                <p className="text-xs text-gray-500">{service.duration}min</p>
+                                <p className="text-xs text-gray-500">{formatDuration(service.duration)}</p>
                               </div>
                             </div>
                             <p className="text-sm text-gray-600">{service.description}</p>
                             <div className="flex items-center justify-between mt-2">
-                              <div className="flex items-center gap-2">
-                                <Clock className="w-3 h-3 text-gray-400" />
-                                <span className="text-xs text-gray-500">{service.duration} minutes</span>
+                              <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3 text-gray-400" />
+                                  <span className="text-xs text-gray-500">{formatDuration(service.duration)}</span>
+                                </div>
+                                {service.rating && (
+                                  <div className="flex items-center gap-1">
+                                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                    <span className="text-xs text-gray-600">{service.rating}</span>
+                                    <span className="text-xs text-gray-400">({service.reviews})</span>
+                                  </div>
+                                )}
                               </div>
                               <Button 
                                 size="sm" 

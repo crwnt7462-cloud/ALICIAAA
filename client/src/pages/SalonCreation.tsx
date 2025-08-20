@@ -648,8 +648,8 @@ export default function SalonCreation() {
                                     </div>
                                     <span className="self-center text-sm text-gray-500">€</span>
                                     
-                                    {/* Durée : Heures et Minutes séparées */}
-                                    <div className="flex items-center gap-2">
+                                    {/* Durée : Heures et Minutes séparées - RESPONSIVE */}
+                                    <div className="flex items-center gap-1 sm:gap-2">
                                       {/* Sélecteur Heures */}
                                       <div className="relative">
                                         <Input
@@ -660,12 +660,12 @@ export default function SalonCreation() {
                                             const minutes = service.duration % 60;
                                             updateServiceField(category.id, index, 'duration', hours * 60 + minutes);
                                           }}
-                                          className="w-16 pr-8"
+                                          className="w-12 sm:w-16 pr-6 sm:pr-8 text-center text-sm"
                                           min="0"
                                           max="8"
                                           placeholder="0"
                                         />
-                                        <div className="absolute right-1 top-0 bottom-0 flex flex-col">
+                                        <div className="absolute right-0.5 sm:right-1 top-0 bottom-0 flex flex-col">
                                           <button
                                             onClick={() => {
                                               const currentHours = Math.floor(service.duration / 60);
@@ -673,9 +673,9 @@ export default function SalonCreation() {
                                               const newHours = Math.min(8, currentHours + 1);
                                               updateServiceField(category.id, index, 'duration', newHours * 60 + minutes);
                                             }}
-                                            className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                            className="flex-1 px-0.5 sm:px-1 text-gray-400 hover:text-gray-600 text-xs"
                                           >
-                                            <ChevronUp className="w-3 h-3" />
+                                            <ChevronUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                           </button>
                                           <button
                                             onClick={() => {
@@ -684,13 +684,13 @@ export default function SalonCreation() {
                                               const newHours = Math.max(0, currentHours - 1);
                                               updateServiceField(category.id, index, 'duration', newHours * 60 + minutes);
                                             }}
-                                            className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                            className="flex-1 px-0.5 sm:px-1 text-gray-400 hover:text-gray-600 text-xs"
                                           >
-                                            <ChevronDown className="w-3 h-3" />
+                                            <ChevronDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                           </button>
                                         </div>
                                       </div>
-                                      <span className="text-sm text-gray-500">h</span>
+                                      <span className="text-xs sm:text-sm text-gray-500">h</span>
                                       
                                       {/* Sélecteur Minutes (par créneaux de 5) */}
                                       <div className="relative">
@@ -701,7 +701,7 @@ export default function SalonCreation() {
                                             const minutes = parseInt(e.target.value);
                                             updateServiceField(category.id, index, 'duration', hours * 60 + minutes);
                                           }}
-                                          className="w-16 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
+                                          className="w-12 sm:w-16 px-1 sm:px-2 py-1 border border-gray-300 rounded text-xs sm:text-sm bg-white text-center"
                                         >
                                           {[...Array(12)].map((_, i) => (
                                             <option key={i} value={i * 5}>
@@ -710,7 +710,7 @@ export default function SalonCreation() {
                                           ))}
                                         </select>
                                       </div>
-                                      <span className="text-sm text-gray-500">min</span>
+                                      <span className="text-xs sm:text-sm text-gray-500">min</span>
                                     </div>
                                   </div>
                                 </div>
