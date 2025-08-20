@@ -607,10 +607,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Vérifier d'abord l'auth professionnelle (sessions classiques)
     if (req.session && req.session.user) {
       req.user = req.session.user;
+      console.log('✅ Session professionnelle détectée:', req.user.claims?.sub);
       return next();
     }
     
     // Sinon utiliser l'auth Replit
+    console.log('🔄 Basculement vers auth Replit');
     return isAuthenticated(req, res, next);
   };
 
@@ -621,14 +623,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Adapter selon le type d'auth
       if (req.session && req.session.user) {
-        // Auth professionnelle classique
-        userId = req.user.id;
+        // Auth professionnelle classique - utiliser claims.sub
+        userId = req.user.claims.sub;
+        console.log('✅ Session professionnelle détectée, userId:', userId);
       } else {
         // Auth Replit
         userId = req.user.claims.sub;
+        console.log('✅ Session Replit détectée, userId:', userId);
+      }
+      
+      // Si c'est le compte pro hardcodé, retourner directement les données
+      if (userId === 'pro-user-1') {
+        const professionalUser = {
+          id: 'pro-user-1',
+          email: 'pro@avyento.com',
+          firstName: 'Professionnel',
+          lastName: 'Avyento',
+          businessName: 'Salon Avyento Pro',
+          subscriptionPlan: 'Premium Pro',
+          subscriptionStatus: 'active',
+          subscriptionEnd: new Date('2026-08-30'),
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        console.log('✅ Utilisateur professionnel trouvé et retourné');
+        return res.json(professionalUser);
       }
       
       const user = await storage.getUser(userId);
+      
+      // Si l'utilisateur n'existe pas, retourner une erreur claire
+      if (!user) {
+        console.log('❌ Utilisateur non trouvé avec userId:', userId);
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
+      
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
