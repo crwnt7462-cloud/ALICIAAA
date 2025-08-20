@@ -397,7 +397,7 @@ export default function PlanningResponsive() {
       {!isMobile && <Sidebar />}
       
       {/* Contenu principal */}
-      <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto' : 'lg:max-w-none lg:w-full'}`}>
+      <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto' : 'lg:ml-20 lg:max-w-none lg:w-full'}`}>
         {/* Version Mobile - Interface propre */}
         <div className="lg:hidden w-full min-h-screen bg-gray-50">
         {/* Header mobile simple */}
@@ -1177,113 +1177,136 @@ export default function PlanningResponsive() {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog pour bloquer un créneau */}
+      {/* Dialog pour bloquer un créneau - RESPONSIVE SELON L'IMAGE */}
       <Dialog open={isBlockTimeOpen} onOpenChange={setIsBlockTimeOpen}>
-        <DialogContent className="max-w-[95vw] w-[280px] p-4 bg-white rounded-3xl border-0 shadow-2xl mx-auto overflow-hidden">
-          <DialogHeader>
-            <DialogTitle>Bloquer un créneau</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="employee">Employé</Label>
-              <Select 
-                value={newAppointment.employee} 
-                onValueChange={(value) => setNewAppointment({...newAppointment, employee: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Choisir un employé" />
-                </SelectTrigger>
-                <SelectContent>
-                  {employees.map((employee) => (
-                    <SelectItem key={employee.id} value={employee.id}>
-                      {employee.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        <DialogContent className="max-w-[95vw] w-[380px] sm:w-[420px] mx-auto bg-white rounded-3xl border-0 shadow-2xl overflow-hidden p-0">
+          <div className="p-6 sm:p-8">
+            <DialogHeader className="pb-6">
+              <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-900 text-center">
+                Bloquer un créneau
+              </DialogTitle>
+            </DialogHeader>
 
-            <div>
-              <Label htmlFor="date">Date</Label>
-              <Input
-                id="date"
-                type="date"
-                value={newAppointment.date}
-                onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="timeRange">Date & Heure</Label>
-              <div className="grid grid-cols-3 gap-1 items-center">
+            <div className="space-y-5 sm:space-y-6">
+              {/* Employé */}
+              <div>
+                <Label htmlFor="employee" className="text-base font-semibold text-gray-900 block mb-3">
+                  Employé
+                </Label>
                 <Select 
-                  value={newAppointment.time} 
-                  onValueChange={(value) => setNewAppointment({...newAppointment, time: value})}
+                  value={newAppointment.employee} 
+                  onValueChange={(value) => setNewAppointment({...newAppointment, employee: value})}
                 >
-                  <SelectTrigger className="h-10 text-sm">
-                    <SelectValue placeholder="Début" />
+                  <SelectTrigger className="w-full h-14 text-base border-2 border-purple-200 rounded-2xl focus:border-purple-500">
+                    <SelectValue placeholder="Choisir un employé" className="text-gray-500" />
                   </SelectTrigger>
                   <SelectContent>
-                    {timeSlots.map((time) => (
-                      <SelectItem key={time} value={time}>{time}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <div className="text-center text-gray-600 font-medium">à</div>
-                
-                <Select 
-                  value={newAppointment.endTime || ""} 
-                  onValueChange={(value) => setNewAppointment({...newAppointment, endTime: value})}
-                >
-                  <SelectTrigger className="h-10 text-sm">
-                    <SelectValue placeholder="Fin" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {timeSlots.map((time) => (
-                      <SelectItem key={time} value={time}>{time}</SelectItem>
+                    {employees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            <div>
-              <Label htmlFor="blockTitle">Nom du créneau bloqué</Label>
-              <Input
-                id="blockTitle"
-                value={newAppointment.clientName}
-                onChange={(e) => setNewAppointment({...newAppointment, clientName: e.target.value})}
-                placeholder="Ex: Pause déjeuner, Formation..."
-              />
-            </div>
+              {/* Date */}
+              <div>
+                <Label htmlFor="date" className="text-base font-semibold text-gray-900 block mb-3">
+                  Date
+                </Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={newAppointment.date}
+                  onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
+                  className="w-full h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500"
+                />
+              </div>
 
-            <div>
-              <Label htmlFor="blockReason">Raison du blocage (optionnel)</Label>
-              <Textarea
-                id="blockReason"
-                value={blockReason}
-                onChange={(e) => setBlockReason(e.target.value)}
-                placeholder="Détails supplémentaires..."
-                rows={2}
-              />
-            </div>
+              {/* Heure de début et fin */}
+              <div>
+                <Label className="text-base font-semibold text-gray-900 block mb-3">
+                  Date & Heure
+                </Label>
+                <div className="flex items-center gap-3">
+                  <Select 
+                    value={newAppointment.time} 
+                    onValueChange={(value) => setNewAppointment({...newAppointment, time: value})}
+                  >
+                    <SelectTrigger className="flex-1 h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500">
+                      <SelectValue placeholder="06:00" className="text-gray-500" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeSlots.map((time) => (
+                        <SelectItem key={time} value={time}>{time}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <span className="text-gray-500 text-lg font-medium">à</span>
+                  
+                  <Select 
+                    value={newAppointment.endTime || ""} 
+                    onValueChange={(value) => setNewAppointment({...newAppointment, endTime: value})}
+                  >
+                    <SelectTrigger className="flex-1 h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500">
+                      <SelectValue placeholder="Fin" className="text-gray-500" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeSlots.map((time) => (
+                        <SelectItem key={time} value={time}>{time}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
-            <div className="flex gap-2 pt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsBlockTimeOpen(false)}
-                className="flex-1"
-              >
-                Annuler
-              </Button>
-              <Button 
-                onClick={handleSaveBlockTime}
-                className="flex-1 bg-orange-600 hover:bg-orange-700"
-                disabled={!newAppointment.employee || !newAppointment.date || !newAppointment.time}
-              >
-                Bloquer le créneau
-              </Button>
+              {/* Nom du créneau bloqué */}
+              <div>
+                <Label htmlFor="blockTitle" className="text-base font-semibold text-gray-900 block mb-3">
+                  Nom du créneau bloqué
+                </Label>
+                <Input
+                  id="blockTitle"
+                  value={newAppointment.clientName}
+                  onChange={(e) => setNewAppointment({...newAppointment, clientName: e.target.value})}
+                  placeholder="Ex: Pause déjeuner, Formation..."
+                  className="w-full h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500"
+                />
+              </div>
+
+              {/* Raison du blocage */}
+              <div>
+                <Label htmlFor="blockReason" className="text-base font-semibold text-gray-900 block mb-3">
+                  Raison du blocage (optionnel)
+                </Label>
+                <Textarea
+                  id="blockReason"
+                  value={blockReason}
+                  onChange={(e) => setBlockReason(e.target.value)}
+                  placeholder="Détails supplémentaires..."
+                  rows={3}
+                  className="w-full text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500 resize-none"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-6">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsBlockTimeOpen(false)}
+                  className="flex-1 h-14 text-base font-semibold border-2 border-gray-200 rounded-2xl hover:bg-gray-50"
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  onClick={handleSaveBlockTime}
+                  className="flex-1 h-14 text-base font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-2xl"
+                  disabled={!newAppointment.employee || !newAppointment.date || !newAppointment.time}
+                >
+                  Bloquer le créneau
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
