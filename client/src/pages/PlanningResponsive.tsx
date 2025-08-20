@@ -1021,7 +1021,7 @@ export default function PlanningResponsive() {
 
       {/* Dialog de choix d'action - OPTIMISÉ MOBILE selon l'image */}
       <Dialog open={isActionChoiceOpen} onOpenChange={setIsActionChoiceOpen}>
-        <DialogContent className="max-w-[90vw] w-[300px] p-0 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
+        <DialogContent className="max-w-[95vw] w-[280px] p-0 bg-white rounded-3xl border-0 shadow-2xl mx-auto overflow-hidden">
           <div className="relative">
             {/* Bouton fermer optimisé */}
             <button
@@ -1041,7 +1041,7 @@ export default function PlanningResponsive() {
               <div className="space-y-4">
                 <Button 
                   onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
-                  className="w-full h-14 bg-purple-100 hover:bg-purple-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-base flex items-center justify-start px-6"
+                  className="w-full h-14 bg-purple-100 hover:bg-purple-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-sm flex items-center justify-start px-4"
                 >
                   <div className="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center mr-3">
                     <User className="h-5 w-5 text-purple-700" />
@@ -1051,7 +1051,7 @@ export default function PlanningResponsive() {
                 
                 <Button 
                   onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
-                  className="w-full h-14 bg-gray-100 hover:bg-gray-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-base flex items-center justify-start px-6"
+                  className="w-full h-14 bg-gray-100 hover:bg-gray-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-sm flex items-center justify-start px-4"
                 >
                   <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
                     <Clock className="h-5 w-5 text-gray-700" />
@@ -1173,7 +1173,7 @@ export default function PlanningResponsive() {
 
       {/* Dialog pour bloquer un créneau */}
       <Dialog open={isBlockTimeOpen} onOpenChange={setIsBlockTimeOpen}>
-        <DialogContent className="max-w-[90vw] w-[300px] p-4 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
+        <DialogContent className="max-w-[95vw] w-[280px] p-4 bg-white rounded-3xl border-0 shadow-2xl mx-auto overflow-hidden">
           <DialogHeader>
             <DialogTitle>Bloquer un créneau</DialogTitle>
           </DialogHeader>
