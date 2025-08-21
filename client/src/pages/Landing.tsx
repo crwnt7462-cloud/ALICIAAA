@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search, MapPin, Menu } from "lucide-react";
-import logoAvyento from '@assets/Logo avyento._1755714467098.png';
+import logoAvyento from '@assets/Avyento transparent_1755518589119.png';
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { getGenericGlassButton } from "@/lib/salonColors";

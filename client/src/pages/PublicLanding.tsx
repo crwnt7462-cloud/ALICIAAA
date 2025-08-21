@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, X, LogIn, UserCheck, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, ChevronDown, HelpCircle, Cookie, Scissors, Palette, Users, Sparkles } from "lucide-react";
+import { Star, Clock, CheckCircle2, X, LogIn, UserCheck, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, ChevronDown, HelpCircle, Cookie, Scissors, Palette, Users, Sparkles, Menu } from "lucide-react";
 
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
+import logoAvyento from '@assets/Avyento transparent_1755518589119.png';
 
 
 
@@ -587,12 +588,12 @@ export default function PublicLanding() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center" style={{ gap: '2px' }}>
-              {/* Bouton hamburger animé avec Framer Motion */}
+            <div className="flex items-center gap-4">
+              {/* Bouton hamburger animé avec Framer Motion - Desktop et mobile */}
               <motion.button
                 id="hamburger-button"
                 onClick={toggleMenu}
-                className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200 lg:hidden"
+                className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200"
                 aria-label="Menu"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -626,7 +627,7 @@ export default function PublicLanding() {
               </motion.button>
 
               <div>
-                <img src={logoImage} alt="Logo" className="h-24 w-auto" />
+                <img src={logoAvyento} alt="Avyento" className="h-12 w-auto" />
               </div>
             </div>
             
