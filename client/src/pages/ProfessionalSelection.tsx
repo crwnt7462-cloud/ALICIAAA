@@ -17,6 +17,17 @@ export default function ProfessionalSelection() {
   // Utiliser le hook de gestion du staff synchronisé (lecture seule)
   const { professionals } = useStaffManagement();
 
+  // Si un seul professionnel ou aucun, rediriger directement
+  React.useEffect(() => {
+    if (professionals.length <= 1) {
+      if (professionals.length === 1) {
+        // Stocker l'unique professionnel et passer à la date/heure
+        localStorage.setItem('selectedProfessional', JSON.stringify(professionals[0]));
+      }
+      setLocation('/booking-datetime');
+    }
+  }, [professionals, setLocation]);
+
   const handleContinue = () => {
     if (selectedProfessional) {
       // Stocker la sélection et passer à la sélection date/heure
@@ -26,6 +37,11 @@ export default function ProfessionalSelection() {
       setLocation('/booking-datetime');
     }
   };
+
+  // N'afficher la page que s'il y a plusieurs professionnels
+  if (professionals.length <= 1) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

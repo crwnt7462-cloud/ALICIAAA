@@ -14,7 +14,7 @@ import {
   ChevronUp,
   ChevronDown
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -588,24 +588,30 @@ export default function SalonPage() {
         <div className="relative h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-16">
           <div className="max-w-md space-y-6">
             <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight">
-                Révélez votre
-                <br />
-                <span className="font-bold">beauté naturelle</span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+                {salonData.name}
               </h1>
               <p className="text-white/90 text-sm md:text-base font-light">
-                {salonData.name} • {salonData.address}
+                {salonData.address}
               </p>
             </div>
             
-            {/* Réseaux sociaux - seulement si les liens existent */}
+            {/* Boutons glassmorphism violets */}
             <div className="flex flex-wrap gap-3">
+              <button 
+                className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg"
+                onClick={() => navigate('/booking')}
+              >
+                Réserver
+              </button>
+              
+              {/* Réseaux sociaux - seulement si les liens existent */}
               {salonData.instagram && (
                 <a 
                   href={salonData.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                  className="bg-gradient-to-r from-pink-500/80 to-purple-600/80 backdrop-blur-md text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2 border border-white/20"
                 >
                   <Instagram className="w-4 h-4" />
                   Instagram
@@ -616,7 +622,7 @@ export default function SalonPage() {
                   href={salonData.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-blue-600 text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                  className="bg-blue-600/80 backdrop-blur-md text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2 border border-white/20"
                 >
                   <Facebook className="w-4 h-4" />
                   Facebook
@@ -627,7 +633,7 @@ export default function SalonPage() {
                   href={salonData.tiktok}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-black text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                  className="bg-black/80 backdrop-blur-md text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2 border border-white/20"
                 >
                   <span className="w-4 h-4 font-bold">♪</span>
                   TikTok

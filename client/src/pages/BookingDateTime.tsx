@@ -133,7 +133,7 @@ export default function BookingDateTime() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-md mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
@@ -148,12 +148,38 @@ export default function BookingDateTime() {
         </div>
       </div>
 
-      <div className="max-w-md mx-auto">
-        {/* Bouton "Ajouter une prestation" */}
-        <div className="px-4 pt-4 pb-2">
+      <div className="max-w-4xl mx-auto px-4 lg:px-8">
+        {/* Récapitulatif de réservation - style salon glassmorphism */}
+        <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/50 shadow-sm p-4 lg:p-6 mx-4 lg:mx-0 mt-6 mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Coupe Bonhomme</h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Durée :</span>
+              <span className="font-medium">30 min</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Prix :</span>
+              <span className="font-medium">39,00 €</span>
+            </div>
+            {selectedDate && selectedTime && (
+              <div className="pt-2 border-t border-gray-100">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Date :</span>
+                  <span className="font-medium">{selectedDate}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Heure :</span>
+                  <span className="font-medium">{selectedTime}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Bouton "Ajouter une prestation" avec même style que "Continuer" */}
+        <div className="px-4 lg:px-0 pb-2">
           <Button 
-            variant="outline" 
-            className="w-full h-12 bg-black text-white hover:bg-gray-800 border-black"
+            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold"
           >
             Ajouter une prestation à la suite
           </Button>
@@ -164,14 +190,14 @@ export default function BookingDateTime() {
           <div className="text-sm text-violet-600 font-medium mb-1">2. Choix de la date & heure</div>
         </div>
 
-        {/* Planning par jour */}
-        <div className="space-y-1">
+        {/* Planning par jour - responsive */}
+        <div className="space-y-1 mx-4 lg:mx-0">
           {schedule.map((day, index) => (
-            <div key={day.date} className="bg-white border-b border-gray-100">
+            <div key={day.date} className="bg-white/95 backdrop-blur-md rounded-xl border border-gray-200/50 shadow-sm overflow-hidden">
               {/* En-tête du jour */}
               <button
                 onClick={() => toggleDay(index)}
-                className="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                className="w-full px-4 lg:px-6 py-4 flex items-center justify-between hover:bg-gray-50/50 transition-colors"
               >
                 <span className="font-medium text-gray-900">{day.date}</span>
                 {day.expanded ? (
@@ -181,20 +207,20 @@ export default function BookingDateTime() {
                 )}
               </button>
 
-              {/* Créneaux horaires */}
+              {/* Créneaux horaires - responsive grid */}
               {day.expanded && (
-                <div className="px-4 pb-4">
-                  <div className="grid grid-cols-3 gap-2">
+                <div className="px-4 lg:px-6 pb-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-3">
                     {day.slots.map((slot) => (
                       <button
                         key={slot.time}
                         onClick={() => selectTimeSlot(day.date, slot.time)}
                         disabled={!slot.available}
-                        className={`h-10 rounded-lg border text-sm font-medium transition-all ${
+                        className={`h-10 lg:h-12 rounded-xl border text-sm font-medium transition-all ${
                           selectedDate === day.date && selectedTime === slot.time
-                            ? 'bg-violet-600 text-white border-violet-600'
+                            ? 'bg-violet-600 text-white border-violet-600 shadow-lg'
                             : slot.available
-                            ? 'bg-gray-50 text-gray-900 border-gray-200 hover:bg-gray-100'
+                            ? 'bg-gray-50 text-gray-900 border-gray-200 hover:bg-gray-100 hover:border-violet-300'
                             : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                         }`}
                       >
@@ -208,15 +234,17 @@ export default function BookingDateTime() {
           ))}
         </div>
 
-        {/* Footer avec bouton Continuer */}
-        <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-          <Button
-            onClick={handleContinue}
-            disabled={!selectedDate || !selectedTime}
-            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold disabled:bg-gray-300"
-          >
-            Continuer
-          </Button>
+        {/* Footer avec bouton Continuer - responsive */}
+        <div className="sticky bottom-0 bg-white/95 backdrop-blur-md border-t border-gray-200/50 p-4 lg:p-6">
+          <div className="max-w-4xl mx-auto">
+            <Button
+              onClick={handleContinue}
+              disabled={!selectedDate || !selectedTime}
+              className="w-full h-12 lg:h-14 bg-violet-600 hover:bg-violet-700 text-white font-semibold disabled:bg-gray-300 rounded-xl text-base lg:text-lg"
+            >
+              Continuer
+            </Button>
+          </div>
         </div>
 
         {/* Footer Avyento */}
