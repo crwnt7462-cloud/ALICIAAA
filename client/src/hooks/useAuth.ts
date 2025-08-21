@@ -3,15 +3,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 export function useAuth() {
   const queryClient = useQueryClient();
   
-  const { data: user, isLoading, error, refetch } = useQuery({
+  const { data: user, isLoading, refetch } = useQuery({
     queryKey: ["/api/auth/user"],
-    retry: false,
-    staleTime: 5 * 60 * 1000, // Cache 5 minutes pour éviter les déconnexions
-    gcTime: 10 * 60 * 1000, // Garder en cache 10 minutes
+    retry: 3, // Retry 3 fois avant d'échouer - évite déconnexion au premier échec réseau
+    staleTime: 60 * 60 * 1000, // Cache 1 heure - beaucoup plus long pour éviter déconnexions auto
+    gcTime: 4 * 60 * 60 * 1000, // Garder en cache 4 heures
   });
-
-  // Si erreur 401, on est sûr que pas authentifié
-  const isNotAuthenticated = error && error.message.includes('401');
 
   // Fonction pour rafraîchir l'état d'authentification
   const refreshAuth = () => {
@@ -21,7 +18,7 @@ export function useAuth() {
 
   return {
     user,
-    isLoading: isLoading && !isNotAuthenticated, // Arrêter le loading si 401
+    isLoading, // Plus d'arrêt du loading sur 401 - maintenir l'état utilisateur
     isAuthenticated: !!user,
     refreshAuth, // Exposer la fonction de rafraîchissement
   };

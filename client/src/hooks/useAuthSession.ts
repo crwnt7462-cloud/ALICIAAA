@@ -19,8 +19,9 @@ export function useAuthSession() {
   // Vérifier la session actuelle
   const { data: session, isLoading } = useQuery<SessionData>({
     queryKey: ['/api/auth/check-session'],
-    retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3, // Retry 3 fois pour éviter déconnexion sur échecs réseau temporaires
+    staleTime: 60 * 60 * 1000, // Cache 1 heure - sessions persistantes
+    gcTime: 4 * 60 * 60 * 1000, // Garder 4 heures en mémoire
   });
 
   // Mutation pour se connecter (professionnel)
