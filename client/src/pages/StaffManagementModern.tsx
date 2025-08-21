@@ -11,6 +11,7 @@ import {
   Users,
   Clock
 } from "lucide-react";
+import { useStaffManagement, type Professional } from "@/hooks/useStaffManagement";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge as UIBadge } from "@/components/ui/badge";
@@ -26,102 +27,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 
-interface StaffMember {
-  id: string;
-  name: string;
-  role: string;
-  email: string;
-  phone: string;
-  photo: string;
-  bio: string;
-  specialties: string[];
-  experience: string;
-  rating: number;
-  reviewsCount: number;
-  availableToday: boolean;
-  nextAvailable: string;
-  workSchedule: {
-    [key: string]: { start: string; end: string; };
-  };
-}
+
 
 export default function StaffManagementModern() {
   const [, setLocation] = useLocation();
   const [isAddingStaff, setIsAddingStaff] = useState(false);
-  const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
+  const [editingStaff, setEditingStaff] = useState<Professional | null>(null);
   
-  // Données d'équipe simulées - celles qui apparaissent dans la page de sélection
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([
-    {
-      id: "1",
-      name: "Sarah Delacroix",
-      role: "Coloriste Experte",
-      email: "sarah@avyento.fr",
-      phone: "06 12 34 56 78",
-      photo: "https://images.unsplash.com/photo-1494790108755-2616b612b742?w=400&h=400&fit=crop&crop=face",
-      bio: "Spécialiste des colorations complexes et des techniques de balayage depuis plus de 8 ans.",
-      specialties: ["Coloration", "Balayage", "Mèches"],
-      experience: "8 ans d'expérience",
-      rating: 4.9,
-      reviewsCount: 127,
-      availableToday: true,
-      nextAvailable: "Aujourd'hui 14h30",
-      workSchedule: {
-        monday: { start: "09:00", end: "18:00" },
-        tuesday: { start: "09:00", end: "18:00" },
-        wednesday: { start: "10:00", end: "19:00" },
-        thursday: { start: "09:00", end: "18:00" },
-        friday: { start: "09:00", end: "20:00" },
-        saturday: { start: "08:00", end: "17:00" }
-      }
-    },
-    {
-      id: "2", 
-      name: "Emma Rousseau",
-      role: "Coiffeuse Senior",
-      email: "emma@avyento.fr",
-      phone: "06 98 76 54 32",
-      photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-      bio: "Experte en coupes tendances et soins capillaires haut de gamme.",
-      specialties: ["Coupe", "Brushing", "Soins"],
-      experience: "6 ans d'expérience",
-      rating: 4.8,
-      reviewsCount: 89,
-      availableToday: false,
-      nextAvailable: "Demain 09h00",
-      workSchedule: {
-        tuesday: { start: "09:00", end: "17:00" },
-        wednesday: { start: "09:00", end: "17:00" },
-        thursday: { start: "09:00", end: "17:00" },
-        friday: { start: "09:00", end: "19:00" },
-        saturday: { start: "08:00", end: "16:00" }
-      }
-    },
-    {
-      id: "3",
-      name: "Julie Martin",
-      role: "Styliste Junior",
-      email: "julie@avyento.fr", 
-      phone: "06 55 44 33 22",
-      photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
-      bio: "Jeune talent passionnée par les tendances actuelles et les coupes modernes.",
-      specialties: ["Coupe", "Styling", "Extensions"],
-      experience: "2 ans d'expérience",
-      rating: 4.7,
-      reviewsCount: 34,
-      availableToday: true,
-      nextAvailable: "Aujourd'hui 16h00",
-      workSchedule: {
-        monday: { start: "10:00", end: "18:00" },
-        wednesday: { start: "10:00", end: "18:00" },
-        thursday: { start: "10:00", end: "18:00" },
-        friday: { start: "10:00", end: "19:00" },
-        saturday: { start: "09:00", end: "17:00" }
-      }
-    }
-  ]);
+  // Utiliser le hook synchronisé de gestion du staff
+  const { professionals: staffMembers, addProfessional, updateProfessional, deleteProfessional } = useStaffManagement();
 
-  const [newStaff, setNewStaff] = useState<Partial<StaffMember>>({
+  const [newStaff, setNewStaff] = useState<Partial<Professional>>({
     name: "",
     role: "",
     email: "",
@@ -131,26 +47,17 @@ export default function StaffManagementModern() {
     specialties: [],
     experience: "",
     rating: 5.0,
-    reviewsCount: 0,
-    availableToday: true,
+    reviewCount: 0,
     nextAvailable: "Disponible maintenant"
   });
 
   const handleAddStaff = () => {
     if (newStaff.name && newStaff.role && newStaff.email) {
-      const id = (staffMembers.length + 1).toString();
-      setStaffMembers([...staffMembers, { 
-        ...newStaff as StaffMember, 
-        id,
-        workSchedule: {
-          monday: { start: "09:00", end: "18:00" },
-          tuesday: { start: "09:00", end: "18:00" },
-          wednesday: { start: "09:00", end: "18:00" },
-          thursday: { start: "09:00", end: "18:00" },
-          friday: { start: "09:00", end: "18:00" },
-          saturday: { start: "08:00", end: "17:00" }
-        }
-      }]);
+      addProfessional({
+        ...newStaff as Omit<Professional, 'id'>,
+        photo: newStaff.photo || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format",
+        specialties: newStaff.specialties || []
+      });
       setNewStaff({
         name: "",
         role: "",
@@ -161,8 +68,7 @@ export default function StaffManagementModern() {
         specialties: [],
         experience: "",
         rating: 5.0,
-        reviewsCount: 0,
-        availableToday: true,
+        reviewCount: 0,
         nextAvailable: "Disponible maintenant"
       });
       setIsAddingStaff(false);
@@ -170,18 +76,16 @@ export default function StaffManagementModern() {
   };
 
   const handleDeleteStaff = (id: string) => {
-    setStaffMembers(staffMembers.filter(member => member.id !== id));
+    deleteProfessional(id);
   };
 
-  const handleEditStaff = (staff: StaffMember) => {
+  const handleEditStaff = (staff: Professional) => {
     setEditingStaff(staff);
   };
 
   const handleUpdateStaff = () => {
     if (editingStaff) {
-      setStaffMembers(staffMembers.map(member => 
-        member.id === editingStaff.id ? editingStaff : member
-      ));
+      updateProfessional(editingStaff.id, editingStaff);
       setEditingStaff(null);
     }
   };
@@ -364,7 +268,7 @@ export default function StaffManagementModern() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <h3 className="font-bold text-gray-900 text-lg truncate">{member.name}</h3>
-                          {member.availableToday && (
+                          {member.nextAvailable.includes("Aujourd'hui") && (
                             <UIBadge variant="secondary" className="bg-green-50 text-green-700 text-xs">
                               <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
                               Dispo
@@ -387,7 +291,7 @@ export default function StaffManagementModern() {
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span>{member.rating} ({member.reviewsCount} avis)</span>
+                        <span>{member.rating} ({member.reviewCount} avis)</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Clock className="w-4 h-4" />

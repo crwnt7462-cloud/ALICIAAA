@@ -14,21 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-
-interface Professional {
-  id: string;
-  name: string;
-  photo: string;
-  rating: number;
-  reviewCount: number;
-  specialties: string[];
-  nextAvailable: string;
-  role?: string;
-  email?: string;
-  phone?: string;
-  bio?: string;
-  experience?: string;
-}
+import { useStaffManagement, type Professional } from "@/hooks/useStaffManagement";
 
 export default function ProfessionalSelection() {
   const [, setLocation] = useLocation();
@@ -41,65 +27,9 @@ export default function ProfessionalSelection() {
   const selectedServiceData = localStorage.getItem('selectedService');
   const selectedService = selectedServiceData ? JSON.parse(selectedServiceData) : null;
 
-  // Données des professionnels du salon - maintenant modifiables
-  const [professionals, setProfessionals] = useState<Professional[]>([
-    {
-      id: "antoine",
-      name: "Antoine",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format",
-      rating: 4.9,
-      reviewCount: 127,
-      specialties: ["Coupe homme", "Barbe", "Coiffure classique"],
-      nextAvailable: "Aujourd'hui 14h30",
-      role: "Barbier Senior",
-      email: "antoine@salon.fr",
-      phone: "06 12 34 56 78",
-      bio: "Spécialiste des coupes masculines traditionnelles et modernes",
-      experience: "8 ans d'expérience"
-    },
-    {
-      id: "marie",
-      name: "Marie",
-      photo: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&auto=format",
-      rating: 4.8,
-      reviewCount: 89,
-      specialties: ["Coupe femme", "Coloration", "Brushing"],
-      nextAvailable: "Demain 10h00",
-      role: "Coloriste Experte",
-      email: "marie@salon.fr",
-      phone: "06 98 76 54 32",
-      bio: "Experte en colorations et soins capillaires",
-      experience: "6 ans d'expérience"
-    },
-    {
-      id: "julien",
-      name: "Julien",
-      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format",
-      rating: 4.7,
-      reviewCount: 156,
-      specialties: ["Coupe moderne", "Styling", "Coupe dégradée"],
-      nextAvailable: "Aujourd'hui 16h00",
-      role: "Styliste Créatif",
-      email: "julien@salon.fr",
-      phone: "06 55 44 33 22",
-      bio: "Passionné par les coupes tendances et créatives",
-      experience: "4 ans d'expérience"
-    },
-    {
-      id: "sophie",
-      name: "Sophie",
-      photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&auto=format",
-      rating: 4.9,
-      reviewCount: 203,
-      specialties: ["Coiffure mixte", "Extensions", "Chignon"],
-      nextAvailable: "Demain 9h30",
-      role: "Coiffeuse Polyvalente",
-      email: "sophie@salon.fr",
-      phone: "06 77 88 99 00",
-      bio: "Experte en coiffures événementielles et extensions",
-      experience: "10 ans d'expérience"
-    }
-  ]);
+  // Utiliser le hook de gestion du staff synchronisé
+  const { professionals, addProfessional, updateProfessional, deleteProfessional } = useStaffManagement();
+
 
   const handleContinue = () => {
     if (selectedProfessional) {
@@ -115,20 +45,17 @@ export default function ProfessionalSelection() {
 
   const handleSaveProfessional = () => {
     if (editingProfessional) {
-      setProfessionals(prev => 
-        prev.map(p => p.id === editingProfessional.id ? editingProfessional : p)
-      );
+      updateProfessional(editingProfessional.id, editingProfessional);
       setEditingProfessional(null);
     }
   };
 
   const handleDeleteProfessional = (id: string) => {
-    setProfessionals(prev => prev.filter(p => p.id !== id));
+    deleteProfessional(id);
   };
 
   const handleAddNewProfessional = () => {
-    const newProfessional: Professional = {
-      id: `new_${Date.now()}`,
+    const newProfessional = {
       name: "Nouveau Professionnel",
       photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format",
       rating: 5.0,
@@ -141,7 +68,7 @@ export default function ProfessionalSelection() {
       bio: "Description du professionnel",
       experience: "Débutant"
     };
-    setProfessionals(prev => [...prev, newProfessional]);
+    addProfessional(newProfessional);
     setIsAddingNew(false);
   };
 
