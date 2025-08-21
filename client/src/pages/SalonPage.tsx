@@ -57,8 +57,11 @@ export default function SalonPage() {
         reviewCount: 127,
         priceRange: "€€€",
         address: "75001 Paris, France",
-        backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
-        primaryColor: '#8b5cf6'
+        backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&q=80",
+        primaryColor: '#8b5cf6',
+        instagram: "https://instagram.com/salon.avyento",
+        facebook: "https://facebook.com/salon.avyento",
+        tiktok: "https://tiktok.com/@salon.avyento"
       };
     } else if (location === '/salon-excellence-paris' || location.includes('excellence-paris')) {
       return {
@@ -518,7 +521,7 @@ export default function SalonPage() {
     }
   ];
 
-  // Avis
+  // Avis avec réponses du salon
   const reviews = [
     {
       id: 1,
@@ -528,7 +531,24 @@ export default function SalonPage() {
       comment: 'Service exceptionnel ! Sarah a réalisé exactement la coupe que je souhaitais.',
       service: 'Coupe + Brushing',
       verified: true,
-      photos: ['https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80']
+      photos: ['https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80'],
+      salonResponse: {
+        date: 'Il y a 1 jour',
+        message: 'Merci Marie pour votre confiance ! Sarah sera ravie de lire votre commentaire. À très bientôt ! 😊'
+      }
+    },
+    {
+      id: 2,
+      name: 'Sophie M.',
+      rating: 4,
+      date: 'Il y a 1 semaine',
+      comment: 'Très bon salon, accueil chaleureux et résultat parfait. Je recommande !',
+      service: 'Soin visage',
+      verified: true,
+      salonResponse: {
+        date: 'Il y a 6 jours',
+        message: 'Merci Sophie ! Nous sommes ravis que vous ayez apprécié votre expérience chez nous. 💜'
+      }
     }
   ];
 
@@ -557,12 +577,11 @@ export default function SalonPage() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
-            backgroundImage: `url(https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&h=600&fit=crop&q=80)`,
-            backgroundPosition: 'center 20%'
+            backgroundImage: `url(${salonData.backgroundImage || 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&q=80'})`,
+            backgroundPosition: 'center center'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 to-purple-900/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
         </div>
         
         {/* Contenu superposé au style skincare */}
@@ -579,19 +598,41 @@ export default function SalonPage() {
               </p>
             </div>
             
+            {/* Réseaux sociaux - seulement si les liens existent */}
             <div className="flex flex-wrap gap-3">
-              <button 
-                className="bg-white/95 backdrop-blur-sm text-gray-900 px-6 py-3 rounded-full font-medium text-sm hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl"
-                onClick={() => navigate('/booking')}
-              >
-                Réserver
-              </button>
-              <button 
-                className="bg-white/20 backdrop-blur-sm text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300"
-                onClick={() => setActiveTab('services')}
-              >
-                Nos services
-              </button>
+              {salonData.instagram && (
+                <a 
+                  href={salonData.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                >
+                  <Instagram className="w-4 h-4" />
+                  Instagram
+                </a>
+              )}
+              {salonData.facebook && (
+                <a 
+                  href={salonData.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                >
+                  <Facebook className="w-4 h-4" />
+                  Facebook
+                </a>
+              )}
+              {salonData.tiktok && (
+                <a 
+                  href={salonData.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-black text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                >
+                  <span className="w-4 h-4 font-bold">♪</span>
+                  TikTok
+                </a>
+              )}
             </div>
             
             {/* Info badges */}
@@ -673,54 +714,59 @@ export default function SalonPage() {
                     {category.services.map((service: any, index: any) => (
                       <div 
                         key={index} 
-                        className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/30 p-4 hover:bg-white/95 hover:shadow-sm transition-all duration-200"
+                        className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/40 overflow-hidden hover:shadow-lg transition-all duration-300 group"
                       >
-                        <div className="flex items-start gap-4">
-                          <img
-                            src={service.photo}
-                            alt={service.name}
-                            className="w-16 h-16 rounded-xl object-cover shadow-sm border border-gray-200/50"
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop&q=80';
-                            }}
-                          />
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between mb-2">
-                              <h4 className="font-semibold text-gray-900 text-base">{service.name}</h4>
-                              <div className="text-right">
-                                <span className="font-bold text-gray-900 text-lg">{service.price}€</span>
-                                <p className="text-xs text-gray-500 font-medium">{formatDuration(service.duration)}</p>
-                              </div>
+                        <div className="flex">
+                          {/* Image plus grande et moderne */}
+                          <div className="relative w-32 h-32 flex-shrink-0">
+                            <img
+                              src={service.photo}
+                              alt={service.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=300&fit=crop&q=80';
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                            <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                              {formatDuration(service.duration)}
                             </div>
-                            <p className="text-sm text-gray-600 mb-3">{service.description}</p>
-                            
-                            <div className="flex items-center justify-between mt-2">
-                              <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1.5">
-                                  <Clock className="w-3.5 h-3.5 text-gray-400" />
-                                  <span className="text-sm text-gray-600 font-medium">{formatDuration(service.duration)}</span>
+                          </div>
+
+                          {/* Contenu */}
+                          <div className="flex-1 p-4 flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-start justify-between mb-2">
+                                <h4 className="font-semibold text-gray-900 text-lg group-hover:text-purple-700 transition-colors">{service.name}</h4>
+                                <div className="text-right">
+                                  <span className="font-bold text-purple-600 text-xl">{service.price}€</span>
                                 </div>
+                              </div>
+                              <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-3">{service.description}</p>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
                                 {service.rating && (
-                                  <div className="flex items-center gap-1.5">
-                                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                                    <span className="text-sm text-gray-700 font-medium">{service.rating}</span>
-                                    <span className="text-sm text-gray-500">({service.reviews} avis)</span>
+                                  <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                    <span className="text-xs font-medium text-gray-700">{service.rating}</span>
+                                    <span className="text-xs text-gray-500">({service.reviews})</span>
                                   </div>
                                 )}
                               </div>
+                              
                               <Button 
                                 size="sm" 
-                                style={getButtonStyle('outline')}
-                                className="bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
+                                className="rounded-full px-4 py-2 text-xs font-medium"
+                                style={getButtonStyle()}
                                 onClick={() => {
-                                  // Stocker le service sélectionné
                                   localStorage.setItem('selectedService', JSON.stringify({
                                     name: service.name,
                                     price: service.price,
                                     duration: service.duration,
                                     description: service.description
                                   }));
-                                  // Rediriger vers sélection du professionnel
                                   navigate('/professional-selection');
                                 }}
                               >
@@ -878,8 +924,22 @@ export default function SalonPage() {
                     </div>
                     <p className="text-sm text-gray-600 leading-relaxed mb-3">{review.comment}</p>
                     {review.service && (
-                      <div className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-3 py-1 rounded-full inline-block border border-purple-200/50">
+                      <div className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-3 py-1 rounded-full inline-block border border-purple-200/50 mb-3">
                         {review.service}
+                      </div>
+                    )}
+                    
+                    {/* Réponse du salon */}
+                    {review.salonResponse && (
+                      <div className="mt-3 ml-4 p-3 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/50">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-bold text-white">S</span>
+                          </div>
+                          <span className="text-xs font-semibold text-gray-900">{salonData.name}</span>
+                          <span className="text-xs text-gray-500">{review.salonResponse.date}</span>
+                        </div>
+                        <p className="text-sm text-gray-700">{review.salonResponse.message}</p>
                       </div>
                     )}
                   </div>
@@ -889,11 +949,69 @@ export default function SalonPage() {
           </div>
         )}
 
-        {/* Footer identique à la page d'accueil */}
-        <div className="text-center text-xs text-gray-500 pb-4 mt-8">
-          <p>© 2025 Avyento. Plateforme de gestion professionnelle.</p>
-        </div>
       </div>
+
+      {/* Footer complet identique à ClientRegister.tsx */}
+      <footer className="bg-gray-900 text-white py-8 w-full mt-12">
+        <div className="mx-auto px-6 lg:px-12 xl:px-20">
+          <div className="grid md:grid-cols-5 gap-8">
+            <div>
+              <h3 className="text-xl font-bold mb-4">Avyento</h3>
+              <p className="text-gray-400 text-sm">
+                La solution intelligente qui anticipe, planifie et maximise vos résultats.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Services</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div className="cursor-pointer hover:text-white transition-colors">Coiffure</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Esthétique</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Manucure</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Massage</div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Partenaires</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div className="cursor-pointer hover:text-white transition-colors">Devenir partenaire</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Tarifs professionnels</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Formation & Support</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Témoignages</div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div className="cursor-pointer hover:text-white transition-colors">Centre d'aide</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Contact</div>
+                <div className="cursor-pointer hover:text-white transition-colors">CGU</div>
+                <div className="cursor-pointer hover:text-white transition-colors">Confidentialité</div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Suivez-nous</h4>
+              <div className="flex space-x-3">
+                <a href="https://twitter.com/useavyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84"></path>
+                  </svg>
+                </a>
+                <a href="https://instagram.com/useavyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd"></path>
+                  </svg>
+                </a>
+                <a href="https://tiktok.com/@useavyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
+                  <span className="w-4 h-4 font-bold text-current">♪</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400 text-sm">
+            <p>© 2024 Avyento. Tous droits réservés.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
