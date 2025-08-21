@@ -552,68 +552,77 @@ export default function SalonPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header salon moderne avec effet glass */}
-      <div className="relative overflow-hidden">
+      {/* Header salon moderne inspiration skincare avec image */}
+      <div className="relative overflow-hidden h-[50vh] min-h-[400px]">
         <div 
-          className="h-40 bg-cover bg-center relative"
-          style={{ backgroundImage: `url(${salonData.backgroundImage})` }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ 
+            backgroundImage: `url(https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&h=600&fit=crop&q=80)`,
+            backgroundPosition: 'center 20%'
+          }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 to-purple-900/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 to-purple-900/30"></div>
         </div>
         
-        {/* Card informations salon avec glassmorphism */}
-        <div className="relative -mt-20 mx-4">
-          <div className="bg-white/95 backdrop-blur-20 rounded-3xl border border-white/30 shadow-2xl p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl shadow-xl flex items-center justify-center">
-                <span className="text-3xl font-bold text-white">
-                  {salonData.name.charAt(0)}
-                </span>
+        {/* Contenu superposé au style skincare */}
+        <div className="relative h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-16">
+          <div className="max-w-md space-y-6">
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight">
+                Révélez votre
+                <br />
+                <span className="font-bold">beauté naturelle</span>
+              </h1>
+              <p className="text-white/90 text-sm md:text-base font-light">
+                {salonData.name} • {salonData.address}
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-3">
+              <button 
+                className="bg-white/95 backdrop-blur-sm text-gray-900 px-6 py-3 rounded-full font-medium text-sm hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl"
+                onClick={() => navigate('/booking')}
+              >
+                Réserver
+              </button>
+              <button 
+                className="bg-white/20 backdrop-blur-sm text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300"
+                onClick={() => setActiveTab('services')}
+              >
+                Nos services
+              </button>
+            </div>
+            
+            {/* Info badges */}
+            <div className="flex items-center gap-4 pt-2">
+              <div className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/20">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm font-medium text-white">{salonData.rating}</span>
+                <span className="text-xs text-white/80">({salonData.reviewCount})</span>
               </div>
-              
-              <div className="flex-1">
-                <div className="mb-3">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{salonData.name}</h1>
-                  <p className="text-sm text-gray-600 flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    {salonData.address}
-                  </p>
+              {salonData.verified && (
+                <div className="flex items-center gap-1.5 bg-green-500/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-green-400/30">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span className="text-xs font-medium text-green-200">Vérifié</span>
                 </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-1.5 bg-yellow-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-yellow-200/50">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold text-gray-900">{salonData.rating}</span>
-                    <span className="text-xs text-gray-600">({salonData.reviewCount} avis)</span>
-                  </div>
-                  {salonData.verified && (
-                    <div className="flex items-center gap-1.5 bg-green-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-green-200/50">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-xs font-medium text-green-700">Vérifié</span>
-                    </div>
-                  )}
-                  <div className="bg-slate-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-slate-200/50">
-                    <span className="text-xs font-medium text-gray-700">{salonData.priceRange}</span>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation par onglets */}
-      <div className="bg-white/80 backdrop-blur-16 border-b border-gray-200/50 mt-6">
+      {/* Navigation par onglets modernisée */}
+      <div className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-10">
         <div className="flex justify-center overflow-x-auto px-4 lg:px-8">
-          <div className="flex space-x-8 lg:space-x-12">
+          <div className="flex space-x-6 lg:space-x-8">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`whitespace-nowrap py-3 px-2 text-sm font-medium border-b-2 transition-colors ${
+                className={`whitespace-nowrap py-4 px-3 text-sm font-medium border-b-2 transition-all duration-200 ${
                   tab.active
-                    ? 'text-gray-900 hover:text-gray-900 hover:border-gray-300'
+                    ? 'text-gray-900 hover:text-gray-900'
                     : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
                 }`}
                 style={tab.active ? { borderColor: primaryColor, color: primaryColor } : {}}
@@ -625,33 +634,33 @@ export default function SalonPage() {
         </div>
       </div>
 
-      {/* Contenu des onglets */}
-      <div className="p-4 space-y-6">
+      {/* Contenu des onglets - plus compact et moderne */}
+      <div className="max-w-4xl mx-auto p-4 lg:p-6 space-y-4">
         {activeTab === 'services' && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {serviceCategories.map((category: any) => (
               <div 
                 key={category.id}
-                className="bg-slate-50/90 backdrop-blur-20 border border-slate-400/30 rounded-2xl shadow-md overflow-hidden"
+                className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm overflow-hidden"
               >
                 <div className="p-4">
                   <button
                     onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
-                    className="w-full flex items-center justify-between text-left group hover:bg-white/40 rounded-xl p-3 -m-3 transition-all duration-200"
+                    className="w-full flex items-center justify-between text-left group hover:bg-gray-50/50 rounded-xl p-3 -m-3 transition-all duration-200"
                   >
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900 text-lg">{category.name}</h3>
                       <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs bg-violet-500/20 backdrop-blur-12 px-4 py-2 rounded-full border border-violet-400/30 font-semibold text-violet-800 shadow-sm">
+                      <span className="text-xs bg-purple-100/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-purple-200/50 font-medium text-purple-800">
                         {category.services.length} service{category.services.length > 1 ? 's' : ''}
                       </span>
-                      <div className="p-2 rounded-lg bg-violet-500/15 backdrop-blur-8 border border-violet-400/25 group-hover:bg-violet-500/25 transition-all duration-200 shadow-sm">
+                      <div className="p-2 rounded-lg bg-gray-100/80 backdrop-blur-sm border border-gray-200/50 group-hover:bg-gray-200/80 transition-all duration-200">
                         {expandedCategory === category.id ? (
-                          <ChevronUp className="w-4 h-4 text-violet-700" />
+                          <ChevronUp className="w-4 h-4 text-gray-600" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-violet-700" />
+                          <ChevronDown className="w-4 h-4 text-gray-600" />
                         )}
                       </div>
                     </div>
@@ -660,17 +669,20 @@ export default function SalonPage() {
 
                 {expandedCategory === category.id && (
                   <div className="px-4 pb-4 space-y-3">
-                    <div className="h-px bg-gradient-to-r from-transparent via-slate-300/40 to-transparent"></div>
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-300/40 to-transparent"></div>
                     {category.services.map((service: any, index: any) => (
                       <div 
                         key={index} 
-                        className="bg-white/60 backdrop-blur-8 rounded-xl border border-slate-300/30 p-4 hover:bg-white/80 transition-all duration-200"
+                        className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/30 p-4 hover:bg-white/95 hover:shadow-sm transition-all duration-200"
                       >
                         <div className="flex items-start gap-4">
                           <img
                             src={service.photo}
                             alt={service.name}
-                            className="w-16 h-16 rounded-xl object-cover shadow-sm border border-slate-200/50"
+                            className="w-16 h-16 rounded-xl object-cover shadow-sm border border-gray-200/50"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop&q=80';
+                            }}
                           />
                           <div className="flex-1">
                             <div className="flex items-start justify-between mb-2">
@@ -727,67 +739,71 @@ export default function SalonPage() {
         )}
 
         {activeTab === 'equipe' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {teamMembers.map((member) => (
-              <Card key={member.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-4">
-                    <img
-                      src={member.avatar}
-                      alt={member.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">{member.name}</h3>
-                          <p className="text-sm text-gray-600">{member.role}</p>
-                          <p className="text-xs text-gray-500">{member.experience}</p>
-                        </div>
-                        {member.availableToday && (
-                          <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                            Disponible
-                          </Badge>
-                        )}
+              <div 
+                key={member.id}
+                className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4"
+              >
+                <div className="flex items-start gap-4">
+                  <img
+                    src={member.avatar}
+                    alt={member.name}
+                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-200/50"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=150&h=150&fit=crop&crop=face';
+                    }}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-lg">{member.name}</h3>
+                        <p className="text-sm text-gray-600">{member.role}</p>
+                        <p className="text-xs text-gray-500">{member.experience}</p>
                       </div>
-
-                      <p className="text-sm text-gray-600 mb-3">{member.bio}</p>
-
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {member.specialties.map((specialty, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
-                            {specialty}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="text-sm font-medium">{member.rating}</span>
-                            <span className="text-xs text-gray-500">({member.reviewsCount})</span>
-                          </div>
+                      {member.availableToday && (
+                        <div className="bg-green-100/80 backdrop-blur-sm text-green-700 text-xs px-3 py-1.5 rounded-full border border-green-200/50 flex items-center gap-1.5">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          Disponible
                         </div>
-                        
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          style={getButtonStyle('outline')}
-                          onClick={() => {
-                            // Pré-sélectionner ce professionnel et rediriger vers services
-                            localStorage.setItem('selectedProfessional', member.id);
-                            navigate('/service-selection');
-                          }}
+                      )}
+                    </div>
+
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{member.bio}</p>
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {member.specialties.map((specialty, idx) => (
+                        <span 
+                          key={idx} 
+                          className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-2 py-1 rounded-full border border-purple-200/50"
                         >
-                          Réserver avec {member.name.split(' ')[0]}
-                        </Button>
+                          {specialty}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium">{member.rating}</span>
+                        <span className="text-xs text-gray-500">({member.reviewsCount})</span>
                       </div>
+                      
+                      <Button 
+                        size="sm" 
+                        className="rounded-full px-4 py-2 text-xs font-medium"
+                        style={getButtonStyle()}
+                        onClick={() => {
+                          localStorage.setItem('selectedProfessional', member.id.toString());
+                          navigate('/service-selection');
+                        }}
+                      >
+                        Réserver avec {member.name.split(' ')[0]}
+                      </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -796,75 +812,79 @@ export default function SalonPage() {
 
         {activeTab === 'infos' && (
           <div className="space-y-4">
-            <Card>
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Informations pratiques</h3>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">01 23 45 67 89</span>
+            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-6">
+              <h3 className="font-semibold text-gray-900 text-lg mb-4">Informations pratiques</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50/80 backdrop-blur-sm rounded-xl border border-gray-200/30">
+                    <Phone className="w-5 h-5 text-gray-500" />
+                    <span className="text-sm font-medium">01 23 45 67 89</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Facebook className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm">@salon-avyento</span>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50/80 backdrop-blur-sm rounded-xl border border-gray-200/30">
+                    <Clock className="w-5 h-5 text-gray-500" />
+                    <span className="text-sm font-medium">Lun-Ven: 9h-19h, Sam: 9h-17h</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Instagram className="w-4 h-4 text-pink-600" />
-                    <span className="text-sm">@salon.avyento</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">Lun-Ven: 9h-19h, Sam: 9h-17h</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{salonData.address}</span>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50/80 backdrop-blur-sm rounded-xl border border-gray-200/30">
+                    <MapPin className="w-5 h-5 text-gray-500" />
+                    <span className="text-sm font-medium">{salonData.address}</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-3 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/30">
+                    <Facebook className="w-5 h-5 text-blue-600" />
+                    <span className="text-sm font-medium">@salon-avyento</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-pink-50/80 backdrop-blur-sm rounded-xl border border-pink-200/30">
+                    <Instagram className="w-5 h-5 text-pink-600" />
+                    <span className="text-sm font-medium">@salon.avyento</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {activeTab === 'avis' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {reviews.map((review) => (
-              <Card key={review.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                      <User className="w-5 h-5 text-gray-400" />
-                    </div>
-                    <div className="flex-1">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="font-medium">{review.name}</span>
-                          <div className="flex gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`w-3 h-3 ${
-                                  i < review.rating 
-                                    ? 'fill-yellow-400 text-yellow-400' 
-                                    : 'text-gray-300'
-                                }`} 
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-500">{review.date}</span>
-                        </div>
-                        <p className="text-sm text-gray-600">{review.comment}</p>
-                        {review.service && (
-                          <Badge variant="outline" className="text-xs mt-2">
-                            {review.service}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
+              <div 
+                key={review.id}
+                className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center border border-gray-200/50">
+                    <User className="w-5 h-5 text-purple-600" />
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-gray-900">{review.name}</span>
+                        <div className="flex gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`w-3 h-3 ${
+                                i < review.rating 
+                                  ? 'fill-yellow-400 text-yellow-400' 
+                                  : 'text-gray-300'
+                              }`} 
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <span className="text-xs text-gray-500">{review.date}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed mb-3">{review.comment}</p>
+                    {review.service && (
+                      <div className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-3 py-1 rounded-full inline-block border border-purple-200/50">
+                        {review.service}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         )}
