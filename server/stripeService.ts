@@ -121,8 +121,16 @@ export async function createPaymentCheckout(params: PaymentCheckoutParams): Prom
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
-      // ✅ 3D SECURE pour Checkout Sessions
-      automatic_tax: { enabled: false },
+      // ✅ 3D SECURE FORCÉ même en mode test
+      payment_intent_data: {
+        confirmation_method: 'automatic',
+        capture_method: 'automatic',
+        payment_method_options: {
+          card: {
+            request_three_d_secure: 'any', // Force 3D Secure systématiquement
+          },
+        },
+      },
       customer_email: params.customerEmail,
       line_items: [{
         price_data: {

@@ -2729,9 +2729,15 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
-        // ✅ 3D SECURE configuré via payment_intent_data
+        // ✅ 3D SECURE FORCÉ même en mode test
         payment_intent_data: {
-          setup_future_usage: 'off_session',
+          confirmation_method: 'automatic',
+          capture_method: 'automatic',
+          payment_method_options: {
+            card: {
+              request_three_d_secure: 'any', // Force 3D Secure systématiquement
+            },
+          },
         },
         line_items: [{
           price_data: {
