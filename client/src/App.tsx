@@ -121,6 +121,7 @@ import ClientRegister from "@/pages/ClientRegister";
 import ClientAccueil from "@/pages/ClientAccueil";
 import ClientRdv from "@/pages/ClientRdv";
 import ClientParametres from "@/pages/ClientParametres";
+import ForgotPassword from "@/pages/ForgotPassword";
 
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import ClientLoginModern from "@/pages/ClientLoginModern";
@@ -458,6 +459,15 @@ function Router() {
     return (
       <div className="h-full">
         <ProLogin />
+      </div>
+    );
+  }
+
+  // Page de récupération de mot de passe
+  if (location === '/forgot-password') {
+    return (
+      <div className="h-full">
+        <ForgotPassword />
       </div>
     );
   }
