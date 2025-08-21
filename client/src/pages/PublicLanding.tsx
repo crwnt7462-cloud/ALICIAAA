@@ -55,15 +55,15 @@ function HeroSlash() {
     const interval = setInterval(() => {
       // Changement de ville 
       const currentCity = frenchCities[cityIndex];
-      if (!isCityDeleting && cityCharIndex < currentCity.length) {
+      if (currentCity && !isCityDeleting && cityCharIndex < currentCity.length) {
         setCityText(currentCity.slice(0, cityCharIndex + 1));
         setCityCharIndex(prev => prev + 1);
-      } else if (isCityDeleting && cityCharIndex > 0) {
+      } else if (currentCity && isCityDeleting && cityCharIndex > 0) {
         setCityText(currentCity.slice(0, cityCharIndex - 1));
         setCityCharIndex(prev => prev - 1);
-      } else if (!isCityDeleting && cityCharIndex === currentCity.length) {
+      } else if (currentCity && !isCityDeleting && cityCharIndex === currentCity.length) {
         setTimeout(() => setIsCityDeleting(true), 2000);
-      } else if (isCityDeleting && cityCharIndex === 0) {
+      } else if (currentCity && isCityDeleting && cityCharIndex === 0) {
         setIsCityDeleting(false);
         setCityIndex(prev => (prev + 1) % frenchCities.length);
       }
@@ -71,15 +71,15 @@ function HeroSlash() {
       // Changement de service (décalé de 1 seconde pour éviter la simultanéité)
       setTimeout(() => {
         const currentService = beautyServices[serviceIndex];
-        if (!isServiceDeleting && serviceCharIndex < currentService.length) {
+        if (currentService && !isServiceDeleting && serviceCharIndex < currentService.length) {
           setServiceText(currentService.slice(0, serviceCharIndex + 1));
           setServiceCharIndex(prev => prev + 1);
-        } else if (isServiceDeleting && serviceCharIndex > 0) {
+        } else if (currentService && isServiceDeleting && serviceCharIndex > 0) {
           setServiceText(currentService.slice(0, serviceCharIndex - 1));
           setServiceCharIndex(prev => prev - 1);
-        } else if (!isServiceDeleting && serviceCharIndex === currentService.length) {
+        } else if (currentService && !isServiceDeleting && serviceCharIndex === currentService.length) {
           setTimeout(() => setIsServiceDeleting(true), 2000);
-        } else if (isServiceDeleting && serviceCharIndex === 0) {
+        } else if (currentService && isServiceDeleting && serviceCharIndex === 0) {
           setIsServiceDeleting(false);
           setServiceIndex(prev => (prev + 1) % beautyServices.length);
         }
@@ -87,7 +87,7 @@ function HeroSlash() {
     }, 80);
 
     return () => clearInterval(interval);
-  }, [cityCharIndex, cityIndex, isCityDeleting, serviceCharIndex, serviceIndex, isServiceDeleting, frenchCities, beautyServices]);
+  }, [cityCharIndex, cityIndex, isCityDeleting, serviceCharIndex, serviceIndex, isServiceDeleting]);
 
   // Fonction de recherche
   const handleSearch = () => {

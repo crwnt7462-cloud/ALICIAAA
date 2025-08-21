@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import { 
   Calendar, 
   Users, 
@@ -28,22 +27,18 @@ import SearchResults from "@/pages/SearchResults";
 import Dashboard from "@/pages/Dashboard";
 import DashboardPeymen from "@/pages/DashboardPeymen";
 
-import Planning from "@/pages/Planning";
-import PlanningFresha from "@/pages/PlanningFresha";
 import PlanningResponsive from "@/pages/PlanningResponsive";
-import Clients from "@/pages/Clients";
-import Booking from "@/pages/Booking";
 
 
 
 import ChatGPTInterface from "@/pages/ChatGPTInterface";
 
-import ClientBooking from "@/pages/ClientBooking";
+
 import ShareBooking from "@/pages/ShareBooking";
 
-import NotFound from "@/pages/not-found";
+
 import Register from "@/pages/Register";
-import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
+
 import FullScreenMessage from "@/pages/FullScreenMessage";
 import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
@@ -56,7 +51,7 @@ import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 
 import BusinessFeaturesWithBottomSheets from "@/pages/BusinessFeaturesWithBottomSheets";
-import DashboardModern from "@/pages/DashboardModern";
+
 import SalonSettingsModern from "@/pages/SalonSettingsModern";
 import ProMessagingModern from "@/pages/ProMessagingModern";
 import InventoryModern from "@/pages/InventoryModern";
@@ -124,7 +119,7 @@ import ClientRegister from "@/pages/ClientRegister";
 import ClientAccueil from "@/pages/ClientAccueil";
 import ClientRdv from "@/pages/ClientRdv";
 import ClientParametres from "@/pages/ClientParametres";
-import ClientLoginWhite from "@/pages/ClientLoginWhite";
+
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import ClientLoginModern from "@/pages/ClientLoginModern";
 import ClientDashboard from "@/pages/ClientDashboard";
@@ -148,8 +143,7 @@ import PageCreator from "@/pages/PageCreator";
 import ProPagesManager from "@/pages/ProPagesManager";
 import SalonBookingEditor from "@/pages/SalonBookingEditor";
 import BookingCustomization from "@/pages/BookingCustomization";
-import ForgotPassword from "@/pages/ForgotPassword";
-import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
+
 import PaymentMethodsSimple from "@/pages/PaymentMethodsSimple";
 import SalonPayment from "@/pages/SalonPayment";
 import ClientProDashboard from "@/pages/ClientProDashboard";

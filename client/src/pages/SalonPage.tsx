@@ -22,7 +22,7 @@ export default function SalonPage() {
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [location, navigate] = useLocation();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Charger les données du salon du professionnel connecté si on est sur /salon
   const { data: userSalon } = useQuery({
@@ -38,14 +38,14 @@ export default function SalonPage() {
       // Si utilisateur connecté et a un salon, utiliser ses données
       if (isAuthenticated && userSalon) {
         return {
-          name: userSalon.name || "Mon Salon",
+          name: (userSalon as any)?.name || "Mon Salon",
           verified: true,
-          rating: userSalon.rating || 4.8,
-          reviewCount: userSalon.reviewCount || 0,
+          rating: (userSalon as any)?.rating || 4.8,
+          reviewCount: (userSalon as any)?.reviewCount || 0,
           priceRange: "€€€",
-          address: userSalon.address || "Paris, France",
-          backgroundImage: userSalon.coverImageUrl || "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
-          primaryColor: userSalon.customColors?.primary || '#8b5cf6'
+          address: (userSalon as any)?.address || "Paris, France",
+          backgroundImage: (userSalon as any)?.coverImageUrl || "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
+          primaryColor: (userSalon as any)?.customColors?.primary || '#8b5cf6'
         };
       }
       
@@ -157,12 +157,12 @@ export default function SalonPage() {
   const getServiceCategories = () => {
     if (location === '/salon') {
       // Si utilisateur connecté avec des services, utiliser ses données
-      if (isAuthenticated && userSalon?.serviceCategories?.length > 0) {
-        return userSalon.serviceCategories.map(category => ({
+      if (isAuthenticated && (userSalon as any)?.serviceCategories?.length > 0) {
+        return (userSalon as any).serviceCategories.map((category: any) => ({
           id: category.name?.toLowerCase().replace(/\s+/g, '-') || 'services',
           name: category.name || 'Services',
           description: category.description || 'Nos services professionnels',
-          services: category.services?.map(service => ({
+          services: category.services?.map((service: any) => ({
             name: service.name || 'Service',
             price: service.price || 50,
             duration: service.duration || '60 min',
@@ -629,7 +629,7 @@ export default function SalonPage() {
       <div className="p-4 space-y-6">
         {activeTab === 'services' && (
           <div className="space-y-3">
-            {serviceCategories.map((category) => (
+            {serviceCategories.map((category: any) => (
               <div 
                 key={category.id}
                 className="bg-slate-50/90 backdrop-blur-20 border border-slate-400/30 rounded-2xl shadow-md overflow-hidden"
@@ -661,7 +661,7 @@ export default function SalonPage() {
                 {expandedCategory === category.id && (
                   <div className="px-4 pb-4 space-y-3">
                     <div className="h-px bg-gradient-to-r from-transparent via-slate-300/40 to-transparent"></div>
-                    {category.services.map((service, index) => (
+                    {category.services.map((service: any, index: any) => (
                       <div 
                         key={index} 
                         className="bg-white/60 backdrop-blur-8 rounded-xl border border-slate-300/30 p-4 hover:bg-white/80 transition-all duration-200"
