@@ -287,7 +287,8 @@ function Router() {
     '/services',
     '/staff',
     '/inventory',
-    '/professional-settings-demo'
+    '/professional-settings-demo',
+    '/planity-style-booking-fixed'
   ];
   
   // Page de paiement Stripe
@@ -1388,7 +1389,7 @@ function Router() {
           }} />
         </Switch>
       </main>
-      <BottomNavigation />
+      {!hideBottomNavPages.includes(location) && <BottomNavigation />}
     </div>
   );
 }
