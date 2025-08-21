@@ -26,7 +26,7 @@ export function useAuthSession() {
   // Mutation pour se connecter (professionnel)
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const response = await apiRequest('POST', '/api/auth/login', credentials);
+      const response = await apiRequest('POST', '/api/login/professional', credentials);
       return response.json();
     },
     onSuccess: () => {
@@ -48,7 +48,7 @@ export function useAuthSession() {
   // Mutation pour s'inscrire (professionnel)
   const registerMutation = useMutation({
     mutationFn: async (userData: any) => {
-      const response = await apiRequest('POST', '/api/auth/register', userData);
+      const response = await apiRequest('POST', '/api/register/professional', userData);
       return response.json();
     },
     onSuccess: () => {
