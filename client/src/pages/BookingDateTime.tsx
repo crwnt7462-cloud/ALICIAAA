@@ -121,7 +121,7 @@ export default function BookingDateTime() {
         date: selectedDate,
         time: selectedTime
       }));
-      setLocation('/planity-booking');
+      setLocation('/planity-style-booking-fixed');
     }
   };
 

@@ -74,7 +74,7 @@ export default function ProfessionalSelection() {
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/salon/demo-user')}
+              onClick={() => setLocation('/service-selection')}
               className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4" />
