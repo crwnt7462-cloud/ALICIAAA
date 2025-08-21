@@ -113,21 +113,20 @@ export default function Dashboard() {
 
       {/* Contenu principal avec marge pour header fixe */}
       <div className="pt-20 md:pt-24 pb-20 md:pb-8">
-        <div className="p-4 sm:p-5 md:p-6 lg:p-8">
+        <div className="p-4 sm:p-5 md:p-6 lg:p-8 max-w-full">
           {/* Header - Responsive */}
           <div className="flex flex-col space-y-4 sm:space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6 md:mb-7 lg:mb-8">
-            <div>
-              <p className="text-gray-500 text-sm sm:text-base mb-1">Avyento</p>
+            <div className="flex items-center">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Tableau de Bord</h1>
             </div>
             
-            <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
-              <div className="relative flex-1 sm:flex-none md:flex-none">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4">
+              <div className="relative flex-shrink-0 w-full sm:w-auto md:w-64 lg:w-72">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Rechercher..."
-                  className="pl-10 pr-4 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full sm:w-56 md:w-64 lg:w-72"
+                  className="pl-10 pr-4 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full"
                 />
               </div>
               
@@ -202,9 +201,9 @@ export default function Dashboard() {
           </div>
 
           {/* Content Grid - Responsive */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 md:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 md:gap-6 w-full">
             {/* Graphique des revenus - Section principale gauche */}
-            <div className="lg:col-span-8">
+            <div className="lg:col-span-8 w-full">
               <Card className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border-0">
                 <CardContent className="p-4 sm:p-5 md:p-6">
                   <div className="flex flex-col space-y-4 sm:space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-4 sm:mb-5 md:mb-6">
