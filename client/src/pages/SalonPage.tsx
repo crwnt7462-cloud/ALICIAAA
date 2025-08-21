@@ -839,6 +839,9 @@ export default function SalonPage() {
                       src="https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=400&h=300&fit=crop&q=80"
                       alt="Galerie Coiffure"
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80';
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
@@ -858,6 +861,9 @@ export default function SalonPage() {
                       src="https://images.unsplash.com/photo-1544717301-9cdcb1f5940f?w=400&h=300&fit=crop&q=80"
                       alt="Galerie Soins"
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80';
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
@@ -877,6 +883,9 @@ export default function SalonPage() {
                       src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80"
                       alt="Galerie Salon"
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=400&h=300&fit=crop&q=80';
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
@@ -890,11 +899,7 @@ export default function SalonPage() {
                 </div>
               </div>
 
-              <div className="mt-6 p-4 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/50">
-                <p className="text-sm text-blue-800">
-                  <strong>Pour les professionnels :</strong> Vous pouvez renommer vos galeries et ajouter des descriptions personnalisées à chaque photo depuis votre espace de gestion.
-                </p>
-              </div>
+
             </div>
           </div>
         )}
