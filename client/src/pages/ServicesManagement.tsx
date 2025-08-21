@@ -36,6 +36,10 @@ export default function ServicesManagement() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   
+  // États séparés pour l'édition
+  const [editingServiceHours, setEditingServiceHours] = useState(1);
+  const [editingServiceMinutes, setEditingServiceMinutes] = useState(0);
+  
   const salonId = "demo-user"; // TODO: récupérer dynamiquement
   
   const [newService, setNewService] = useState<NewService>({
@@ -46,6 +50,10 @@ export default function ServicesManagement() {
     requiresDeposit: false,
     depositPercentage: 30
   });
+
+  // États séparés pour les heures et minutes
+  const [newServiceHours, setNewServiceHours] = useState(1);
+  const [newServiceMinutes, setNewServiceMinutes] = useState(0);
 
   // Récupération des services
   const { data: servicesData, isLoading: isLoadingServices } = useQuery({
@@ -62,6 +70,8 @@ export default function ServicesManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonId}/services`] });
       setNewService({ name: '', price: 0, duration: 60, description: '', requiresDeposit: false, depositPercentage: 30 });
+      setNewServiceHours(1);
+      setNewServiceMinutes(0);
       setShowAddForm(false);
       toast({
         title: "Service ajouté",
@@ -102,12 +112,19 @@ export default function ServicesManagement() {
       return;
     }
 
-    createServiceMutation.mutate(newService);
+    // Calculer la durée totale en minutes
+    const totalDuration = newServiceHours * 60 + newServiceMinutes;
+    const serviceToCreate = { ...newService, duration: totalDuration };
+
+    createServiceMutation.mutate(serviceToCreate);
   };
 
   const handleUpdate = () => {
     if (editingService) {
-      updateServiceMutation.mutate(editingService);
+      // Calculer la durée totale en minutes
+      const totalDuration = editingServiceHours * 60 + editingServiceMinutes;
+      const serviceToUpdate = { ...editingService, duration: totalDuration };
+      updateServiceMutation.mutate(serviceToUpdate);
     }
   };
 
@@ -161,15 +178,44 @@ export default function ServicesManagement() {
                     className="pl-10"
                   />
                 </div>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    type="number"
-                    placeholder="Durée (min)"
-                    value={newService.duration || ''}
-                    onChange={(e) => setNewService(prev => ({ ...prev, duration: parseInt(e.target.value) || 60 }))}
-                    className="pl-10"
-                  />
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Durée du service</label>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Select 
+                        value={newServiceHours.toString()} 
+                        onValueChange={(value) => setNewServiceHours(parseInt(value))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Heures" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({length: 8}, (_, i) => (
+                            <SelectItem key={i} value={i.toString()}>{i}h</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex-1">
+                      <Select 
+                        value={newServiceMinutes.toString()} 
+                        onValueChange={(value) => setNewServiceMinutes(parseInt(value))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Minutes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">0 min</SelectItem>
+                          <SelectItem value="15">15 min</SelectItem>
+                          <SelectItem value="30">30 min</SelectItem>
+                          <SelectItem value="45">45 min</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Durée totale: {newServiceHours}h{newServiceMinutes > 0 ? ` ${newServiceMinutes}min` : ''} ({newServiceHours * 60 + newServiceMinutes} minutes)
+                  </p>
                 </div>
               </div>
               
@@ -284,14 +330,44 @@ export default function ServicesManagement() {
                             className="pl-10"
                           />
                         </div>
-                        <div className="relative">
-                          <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                          <Input
-                            type="number"
-                            value={editingService.duration || ''}
-                            onChange={(e) => setEditingService(prev => prev ? { ...prev, duration: parseInt(e.target.value) || 60 } : null)}
-                            className="pl-10"
-                          />
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-gray-700">Durée du service</label>
+                          <div className="flex gap-2">
+                            <div className="flex-1">
+                              <Select 
+                                value={editingServiceHours.toString()} 
+                                onValueChange={(value) => setEditingServiceHours(parseInt(value))}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Heures" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({length: 8}, (_, i) => (
+                                    <SelectItem key={i} value={i.toString()}>{i}h</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="flex-1">
+                              <Select 
+                                value={editingServiceMinutes.toString()} 
+                                onValueChange={(value) => setEditingServiceMinutes(parseInt(value))}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Minutes" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="0">0 min</SelectItem>
+                                  <SelectItem value="15">15 min</SelectItem>
+                                  <SelectItem value="30">30 min</SelectItem>
+                                  <SelectItem value="45">45 min</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-500">
+                            Durée totale: {editingServiceHours}h{editingServiceMinutes > 0 ? ` ${editingServiceMinutes}min` : ''} ({editingServiceHours * 60 + editingServiceMinutes} minutes)
+                          </p>
                         </div>
                       </div>
                       
@@ -351,7 +427,14 @@ export default function ServicesManagement() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setEditingService(service)}
+                          onClick={() => {
+                            setEditingService(service);
+                            // Convertir la durée en heures et minutes
+                            const hours = Math.floor(service.duration / 60);
+                            const minutes = service.duration % 60;
+                            setEditingServiceHours(hours);
+                            setEditingServiceMinutes(minutes);
+                          }}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
