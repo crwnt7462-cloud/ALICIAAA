@@ -186,7 +186,7 @@ export default function ServicesManagement() {
       <MobileBottomNav />
       
       {/* Contenu principal avec marge pour header fixe */}
-      <div className="pt-16 md:pt-20 pb-20 md:pb-8">
+      <div className="pt-20 md:pt-24 pb-20 md:pb-8">
         <div className="min-h-screen bg-transparent py-4 sm:py-8">
           <div className="max-w-4xl mx-auto px-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
