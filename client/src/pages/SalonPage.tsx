@@ -700,7 +700,7 @@ export default function SalonPage() {
                                 size="sm" 
                                 style={getButtonStyle('outline')}
                                 className="bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
-                                onClick={() => navigate('/avyento-booking')}
+                                onClick={() => navigate('/salon-booking')}
                               >
                                 Réserver
                               </Button>
