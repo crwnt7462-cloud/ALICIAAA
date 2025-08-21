@@ -240,83 +240,91 @@ export default function SalonPage() {
       {/* Contenu des onglets */}
       <div className="p-4 space-y-6">
         {activeTab === 'services' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {serviceCategories.map((category) => (
-              <Card key={category.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <button
-                      onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
-                      className="flex items-center gap-2 text-left flex-1"
-                    >
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{category.name}</h3>
-                        <p className="text-sm text-gray-600">{category.description}</p>
+              <div 
+                key={category.id}
+                className="bg-slate-50/80 backdrop-blur-16 border border-slate-400/20 rounded-2xl shadow-sm overflow-hidden"
+              >
+                <div className="p-4">
+                  <button
+                    onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
+                    className="w-full flex items-center justify-between text-left group hover:bg-white/30 rounded-xl p-3 -m-3 transition-all duration-200"
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 text-lg">{category.name}</h3>
+                      <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs bg-white/60 backdrop-blur-8 px-3 py-1.5 rounded-full border border-slate-300/30 font-medium text-gray-700">
+                        {category.services.length} service{category.services.length > 1 ? 's' : ''}
+                      </span>
+                      <div className="p-2 rounded-lg bg-white/50 backdrop-blur-8 border border-slate-300/20 group-hover:bg-white/70 transition-all duration-200">
+                        {expandedCategory === category.id ? (
+                          <ChevronUp className="w-4 h-4 text-gray-600" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-gray-600" />
+                        )}
                       </div>
-                      <div className="ml-auto flex items-center gap-2">
-                        <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                          {category.services.length} service{category.services.length > 1 ? 's' : ''}
-                        </span>
-                        <div className="p-1">
-                          {expandedCategory === category.id ? (
-                            <ChevronUp className="w-4 h-4 text-gray-400" />
-                          ) : (
-                            <ChevronDown className="w-4 h-4 text-gray-400" />
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  </div>
+                    </div>
+                  </button>
+                </div>
 
-                  {expandedCategory === category.id && (
-                    <div className="space-y-3 mt-4 pt-3 border-t border-gray-100">
-                      {category.services.map((service, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                {expandedCategory === category.id && (
+                  <div className="px-4 pb-4 space-y-3">
+                    <div className="h-px bg-gradient-to-r from-transparent via-slate-300/40 to-transparent"></div>
+                    {category.services.map((service, index) => (
+                      <div 
+                        key={index} 
+                        className="bg-white/60 backdrop-blur-8 rounded-xl border border-slate-300/30 p-4 hover:bg-white/80 transition-all duration-200"
+                      >
+                        <div className="flex items-start gap-4">
                           <img
                             src={service.photo}
                             alt={service.name}
-                            className="w-16 h-16 rounded-lg object-cover"
+                            className="w-16 h-16 rounded-xl object-cover shadow-sm border border-slate-200/50"
                           />
                           <div className="flex-1">
-                            <div className="flex items-start justify-between mb-1">
-                              <h4 className="font-medium text-gray-900">{service.name}</h4>
+                            <div className="flex items-start justify-between mb-2">
+                              <h4 className="font-semibold text-gray-900 text-base">{service.name}</h4>
                               <div className="text-right">
-                                <span className="font-semibold text-gray-900">{service.price}€</span>
-                                <p className="text-xs text-gray-500">{formatDuration(service.duration)}</p>
+                                <span className="font-bold text-gray-900 text-lg">{service.price}€</span>
+                                <p className="text-xs text-gray-500 font-medium">{formatDuration(service.duration)}</p>
                               </div>
                             </div>
-                            <p className="text-sm text-gray-600">{service.description}</p>
-                            <div className="flex items-center gap-3 mt-2">
-                              <div className="flex items-center gap-1">
-                                <Clock className="w-3 h-3 text-gray-400" />
-                                <span className="text-xs text-gray-500">{formatDuration(service.duration)}</span>
+                            <p className="text-sm text-gray-600 mb-3">{service.description}</p>
+                            
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="flex items-center gap-1.5">
+                                <Clock className="w-3.5 h-3.5 text-gray-400" />
+                                <span className="text-sm text-gray-600 font-medium">{formatDuration(service.duration)}</span>
                               </div>
                               {service.rating && (
-                                <div className="flex items-center gap-1">
-                                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                  <span className="text-xs text-gray-600">{service.rating}</span>
-                                  <span className="text-xs text-gray-400">({service.reviews})</span>
+                                <div className="flex items-center gap-1.5">
+                                  <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                                  <span className="text-sm text-gray-700 font-medium">{service.rating}</span>
+                                  <span className="text-sm text-gray-500">({service.reviews} avis)</span>
                                 </div>
                               )}
                             </div>
                             
-                            {/* Bouton Réserver centré en bas */}
-                            <div className="flex justify-center mt-3">
+                            {/* Bouton Réserver centré en bas avec effet glass */}
+                            <div className="flex justify-center">
                               <Button 
                                 size="sm" 
                                 style={getButtonStyle('outline')}
-                                className="px-6"
+                                className="px-8 py-2 bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
                               >
                                 Réserver
                               </Button>
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
