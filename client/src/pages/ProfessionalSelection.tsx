@@ -2,7 +2,18 @@ import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Star, Plus } from "lucide-react";
+import { ArrowLeft, Star, Plus, Edit3, Save, X, Trash2, Settings } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface Professional {
   id: string;
@@ -12,18 +23,26 @@ interface Professional {
   reviewCount: number;
   specialties: string[];
   nextAvailable: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+  bio?: string;
+  experience?: string;
 }
 
 export default function ProfessionalSelection() {
   const [, setLocation] = useLocation();
   const [selectedProfessional, setSelectedProfessional] = useState<string | null>(null);
+  const [editingProfessional, setEditingProfessional] = useState<Professional | null>(null);
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [showEditMode, setShowEditMode] = useState(false);
   
   // Récupérer le service sélectionné depuis localStorage
   const selectedServiceData = localStorage.getItem('selectedService');
   const selectedService = selectedServiceData ? JSON.parse(selectedServiceData) : null;
 
-  // Données des professionnels du salon Bonhomme
-  const professionals: Professional[] = [
+  // Données des professionnels du salon - maintenant modifiables
+  const [professionals, setProfessionals] = useState<Professional[]>([
     {
       id: "antoine",
       name: "Antoine",
@@ -31,7 +50,12 @@ export default function ProfessionalSelection() {
       rating: 4.9,
       reviewCount: 127,
       specialties: ["Coupe homme", "Barbe", "Coiffure classique"],
-      nextAvailable: "Aujourd'hui 14h30"
+      nextAvailable: "Aujourd'hui 14h30",
+      role: "Barbier Senior",
+      email: "antoine@salon.fr",
+      phone: "06 12 34 56 78",
+      bio: "Spécialiste des coupes masculines traditionnelles et modernes",
+      experience: "8 ans d'expérience"
     },
     {
       id: "marie",
@@ -40,7 +64,12 @@ export default function ProfessionalSelection() {
       rating: 4.8,
       reviewCount: 89,
       specialties: ["Coupe femme", "Coloration", "Brushing"],
-      nextAvailable: "Demain 10h00"
+      nextAvailable: "Demain 10h00",
+      role: "Coloriste Experte",
+      email: "marie@salon.fr",
+      phone: "06 98 76 54 32",
+      bio: "Experte en colorations et soins capillaires",
+      experience: "6 ans d'expérience"
     },
     {
       id: "julien",
@@ -49,7 +78,12 @@ export default function ProfessionalSelection() {
       rating: 4.7,
       reviewCount: 156,
       specialties: ["Coupe moderne", "Styling", "Coupe dégradée"],
-      nextAvailable: "Aujourd'hui 16h00"
+      nextAvailable: "Aujourd'hui 16h00",
+      role: "Styliste Créatif",
+      email: "julien@salon.fr",
+      phone: "06 55 44 33 22",
+      bio: "Passionné par les coupes tendances et créatives",
+      experience: "4 ans d'expérience"
     },
     {
       id: "sophie",
@@ -58,9 +92,14 @@ export default function ProfessionalSelection() {
       rating: 4.9,
       reviewCount: 203,
       specialties: ["Coiffure mixte", "Extensions", "Chignon"],
-      nextAvailable: "Demain 9h30"
+      nextAvailable: "Demain 9h30",
+      role: "Coiffeuse Polyvalente",
+      email: "sophie@salon.fr",
+      phone: "06 77 88 99 00",
+      bio: "Experte en coiffures événementielles et extensions",
+      experience: "10 ans d'expérience"
     }
-  ];
+  ]);
 
   const handleContinue = () => {
     if (selectedProfessional) {
@@ -68,6 +107,42 @@ export default function ProfessionalSelection() {
       localStorage.setItem('selectedProfessional', selectedProfessional);
       setLocation('/booking-datetime');
     }
+  };
+
+  const handleEditProfessional = (professional: Professional) => {
+    setEditingProfessional({ ...professional });
+  };
+
+  const handleSaveProfessional = () => {
+    if (editingProfessional) {
+      setProfessionals(prev => 
+        prev.map(p => p.id === editingProfessional.id ? editingProfessional : p)
+      );
+      setEditingProfessional(null);
+    }
+  };
+
+  const handleDeleteProfessional = (id: string) => {
+    setProfessionals(prev => prev.filter(p => p.id !== id));
+  };
+
+  const handleAddNewProfessional = () => {
+    const newProfessional: Professional = {
+      id: `new_${Date.now()}`,
+      name: "Nouveau Professionnel",
+      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format",
+      rating: 5.0,
+      reviewCount: 0,
+      specialties: ["Coupe"],
+      nextAvailable: "Disponible maintenant",
+      role: "Coiffeur",
+      email: "nouveau@salon.fr",
+      phone: "06 00 00 00 00",
+      bio: "Description du professionnel",
+      experience: "Débutant"
+    };
+    setProfessionals(prev => [...prev, newProfessional]);
+    setIsAddingNew(false);
   };
 
   return (
@@ -84,7 +159,13 @@ export default function ProfessionalSelection() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <h1 className="text-lg font-semibold text-gray-900">avec Justine</h1>
-            <div className="w-10" />
+            <Button
+              variant="ghost"
+              onClick={() => setShowEditMode(!showEditMode)}
+              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
@@ -109,13 +190,30 @@ export default function ProfessionalSelection() {
         <div className="p-4">
           {/* Étape */}
           <div className="mb-6">
-            <div className="text-sm text-violet-600 font-medium mb-1">1. Choix du professionnel</div>
-            <h2 className="text-xl font-bold text-gray-900">
-              Choisissez votre coiffeur
-            </h2>
-            <p className="text-gray-600 text-sm mt-1">
-              Sélectionnez le professionnel avec qui vous souhaitez prendre rendez-vous
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm text-violet-600 font-medium mb-1">1. Choix du professionnel</div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  {showEditMode ? "Gérer l'équipe" : "Choisissez votre coiffeur"}
+                </h2>
+                <p className="text-gray-600 text-sm mt-1">
+                  {showEditMode 
+                    ? "Ajoutez, modifiez ou supprimez des professionnels"
+                    : "Sélectionnez le professionnel avec qui vous souhaitez prendre rendez-vous"
+                  }
+                </p>
+              </div>
+              {showEditMode && (
+                <Button
+                  onClick={() => setIsAddingNew(true)}
+                  size="sm"
+                  className="bg-violet-600 hover:bg-violet-700 text-white"
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Ajouter
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Liste des professionnels */}
@@ -148,14 +246,42 @@ export default function ProfessionalSelection() {
 
                   <div className="flex-1 min-w-0">
                     {/* Nom et note */}
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h3 className="font-semibold text-gray-900">{pro.name}</h3>
-                      <div className="flex items-center space-x-1">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span className="text-xs text-gray-600">
-                          {pro.rating} ({pro.reviewCount})
-                        </span>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="font-semibold text-gray-900">{pro.name}</h3>
+                        <div className="flex items-center space-x-1">
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          <span className="text-xs text-gray-600">
+                            {pro.rating} ({pro.reviewCount})
+                          </span>
+                        </div>
                       </div>
+                      {showEditMode && (
+                        <div className="flex items-center space-x-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditProfessional(pro);
+                            }}
+                            className="h-8 w-8 p-0 hover:bg-violet-100"
+                          >
+                            <Edit3 className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteProfessional(pro.id);
+                            }}
+                            className="h-8 w-8 p-0 hover:bg-red-100 text-red-600"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
 
                     {/* Spécialités */}
@@ -218,16 +344,124 @@ export default function ProfessionalSelection() {
           </Card>
           </div>
 
-          {/* Bouton Continuer */}
-          <Button
-          onClick={handleContinue}
-          disabled={!selectedProfessional}
-          className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold disabled:bg-gray-300"
-          >
-            Continuer
-          </Button>
+          {/* Bouton Continuer - masqué en mode édition */}
+          {!showEditMode && (
+            <Button
+              onClick={handleContinue}
+              disabled={!selectedProfessional}
+              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold disabled:bg-gray-300"
+            >
+              Continuer
+            </Button>
+          )}
         </div>
       </div>
+
+      {/* Dialog d'édition d'un professionnel */}
+      {editingProfessional && (
+        <Dialog open={!!editingProfessional} onOpenChange={() => setEditingProfessional(null)}>
+          <DialogContent className="max-w-sm mx-4">
+            <DialogHeader>
+              <DialogTitle>Modifier {editingProfessional.name}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-name">Nom</Label>
+                <Input
+                  id="edit-name"
+                  value={editingProfessional.name}
+                  onChange={(e) => setEditingProfessional({...editingProfessional, name: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-role">Poste</Label>
+                <Input
+                  id="edit-role"
+                  value={editingProfessional.role || ""}
+                  onChange={(e) => setEditingProfessional({...editingProfessional, role: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  value={editingProfessional.email || ""}
+                  onChange={(e) => setEditingProfessional({...editingProfessional, email: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-phone">Téléphone</Label>
+                <Input
+                  id="edit-phone"
+                  value={editingProfessional.phone || ""}
+                  onChange={(e) => setEditingProfessional({...editingProfessional, phone: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-specialties">Spécialités (séparées par des virgules)</Label>
+                <Input
+                  id="edit-specialties"
+                  value={editingProfessional.specialties.join(", ")}
+                  onChange={(e) => setEditingProfessional({
+                    ...editingProfessional, 
+                    specialties: e.target.value.split(", ").filter(s => s.trim())
+                  })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-bio">Biographie</Label>
+                <Textarea
+                  id="edit-bio"
+                  value={editingProfessional.bio || ""}
+                  onChange={(e) => setEditingProfessional({...editingProfessional, bio: e.target.value})}
+                  rows={3}
+                />
+              </div>
+            </div>
+            <div className="flex space-x-2">
+              <Button variant="outline" onClick={() => setEditingProfessional(null)} className="flex-1">
+                Annuler
+              </Button>
+              <Button onClick={handleSaveProfessional} className="flex-1 bg-violet-600 hover:bg-violet-700">
+                <Save className="w-4 h-4 mr-2" />
+                Sauvegarder
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog d'ajout d'un nouveau professionnel */}
+      <Dialog open={isAddingNew} onOpenChange={setIsAddingNew}>
+        <DialogContent className="max-w-sm mx-4">
+          <DialogHeader>
+            <DialogTitle>Ajouter un professionnel</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Nom complet</Label>
+              <Input placeholder="Ex: Sarah Dupont" />
+            </div>
+            <div className="space-y-2">
+              <Label>Poste</Label>
+              <Input placeholder="Ex: Coloriste Experte" />
+            </div>
+            <div className="space-y-2">
+              <Label>Spécialités</Label>
+              <Input placeholder="Ex: Coloration, Balayage" />
+            </div>
+          </div>
+          <div className="flex space-x-2">
+            <Button variant="outline" onClick={() => setIsAddingNew(false)} className="flex-1">
+              Annuler
+            </Button>
+            <Button onClick={handleAddNewProfessional} className="flex-1 bg-violet-600 hover:bg-violet-700">
+              <Plus className="w-4 h-4 mr-2" />
+              Ajouter
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
