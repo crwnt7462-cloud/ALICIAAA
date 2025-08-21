@@ -451,12 +451,13 @@ export default function PlanningResponsive() {
   // Fonction supprimée car dupliquée plus haut
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex">
-      {/* Sidebar Desktop */}
-      {/* Sidebar supprimée - navigation desktop intégrée directement dans le planning */}
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative">
+      {/* Sidebar Desktop uniquement */}
+      <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full bg-slate-50/80 backdrop-blur-16 border-r border-slate-400/20"></div>
       
       {/* Contenu principal */}
-      <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto' : 'lg:ml-20 lg:max-w-none lg:w-full'}`}>
+      <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto pb-20' : 'lg:ml-20 lg:max-w-none lg:w-full lg:pb-0'}`}>
+        <MobileBottomNav userType="pro" />
         {/* Version Mobile - Interface propre */}
         <div className="lg:hidden w-full min-h-screen bg-gray-50">
         {/* Header mobile simple */}
@@ -1420,8 +1421,7 @@ export default function PlanningResponsive() {
         </DialogContent>
       </Dialog>
       
-      {/* Navigation mobile en bas - SEULEMENT SUR MOBILE */}
-      {isMobile && <MobileBottomNav />}
+
       </div>
     </div>
   );
