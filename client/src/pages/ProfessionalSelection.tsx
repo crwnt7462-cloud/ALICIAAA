@@ -80,11 +80,13 @@ export default function ProfessionalSelection() {
             >
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4 mb-4">
-                  <img
-                    src={professional.photo}
-                    alt={professional.name}
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
+                  {professional.photo && (
+                    <img
+                      src={professional.photo}
+                      alt={professional.name}
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                  )}
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg text-gray-900">{professional.name}</h3>
                     <p className="text-sm text-violet-600 font-medium">{professional.role}</p>

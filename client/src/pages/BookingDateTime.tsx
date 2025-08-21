@@ -130,8 +130,8 @@ export default function BookingDateTime() {
   };
 
   const handleAddService = () => {
-    // Retourner à la sélection de services pour ajouter une prestation
-    setLocation('/salon');
+    // Aller à la sélection de services pour ajouter une prestation
+    setLocation('/service-selection');
   };
 
   return (
