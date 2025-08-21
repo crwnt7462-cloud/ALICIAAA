@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { loadStripe } from '@stripe/stripe-js';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Check, CreditCard } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, CreditCard, Shield, Check } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-// Stripe public key (à remplacer par votre vraie clé)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 interface CheckoutFormProps {
-  clientSecret: string;
-  bookingId: string;
+  plan: string;
+  amount: number;
+  email: string;
 }
 
-function CheckoutForm({ clientSecret, bookingId }: CheckoutFormProps) {
+function CheckoutForm({ plan, amount, email }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
     if (!stripe || !elements) {
       return;
@@ -31,133 +31,179 @@ function CheckoutForm({ clientSecret, bookingId }: CheckoutFormProps) {
 
     setIsProcessing(true);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/booking-success?booking_id=${bookingId}`,
-      },
-    });
+    try {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/dashboard?payment=success`,
+        },
+      });
 
-    if (error) {
+      if (error) {
+        console.error('❌ Erreur paiement Stripe:', error);
+        toast({
+          title: "Erreur de paiement",
+          description: error.message || "Une erreur est survenue",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      console.error('❌ Erreur:', err);
       toast({
-        title: "Erreur de paiement",
-        description: error.message || "Une erreur est survenue",
+        title: "Erreur",
+        description: "Une erreur inattendue est survenue",
         variant: "destructive",
       });
+    } finally {
       setIsProcessing(false);
-    } else {
-      // Le paiement est confirmé, redirection automatique
-      toast({
-        title: "Paiement réussi",
-        description: "Votre réservation est confirmée",
-      });
-      setLocation(`/booking-success?booking_id=${bookingId}`);
     }
   };
 
+  const planNames: { [key: string]: string } = {
+    'basic-pro': 'Basic Pro',
+    'advanced-pro': 'Advanced Pro', 
+    'premium-pro': 'Premium Pro'
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <Card>
+    <div className="max-w-md mx-auto">
+      <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
-            Informations de paiement
+            <CreditCard className="w-5 h-5 text-violet-600" />
+            Finaliser votre abonnement
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <PaymentElement />
+          <div className="mb-4 p-4 bg-violet-50 rounded-lg">
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium">{planNames[plan] || plan}</span>
+              <span className="text-xl font-bold text-violet-600">{amount}€/mois</span>
+            </div>
+            <p className="text-sm text-gray-600">Compte: {email}</p>
+          </div>
+
+          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-2 text-green-700">
+              <Shield className="w-4 h-4" />
+              <span className="text-sm font-medium">Paiement 100% sécurisé</span>
+            </div>
+            <div className="mt-2 text-xs text-green-600">
+              <div className="flex items-center gap-1">
+                <Check className="w-3 h-3" />
+                3D Secure activé
+              </div>
+              <div className="flex items-center gap-1">
+                <Check className="w-3 h-3" />
+                Cryptage SSL 256-bit
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <PaymentElement />
+            <Button 
+              type="submit" 
+              className="w-full bg-violet-600 hover:bg-violet-700" 
+              disabled={!stripe || isProcessing}
+            >
+              {isProcessing ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Traitement en cours...
+                </div>
+              ) : (
+                `Payer ${amount}€/mois`
+              )}
+            </Button>
+          </form>
         </CardContent>
       </Card>
-
-      <Button
-        type="submit"
-        disabled={!stripe || isProcessing}
-        className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold"
-      >
-        {isProcessing ? "Traitement en cours..." : "Confirmer le paiement"}
-      </Button>
-    </form>
+    </div>
   );
 }
 
 export default function StripeCheckout() {
   const [, setLocation] = useLocation();
-  const [clientSecret, setClientSecret] = useState<string>('');
-  const [bookingId, setBookingId] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState("");
+  const [plan, setPlan] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
+    // Récupérer les paramètres URL
     const urlParams = new URLSearchParams(window.location.search);
-    const secret = urlParams.get('client_secret');
-    const id = urlParams.get('booking_id');
-    
-    if (secret && id) {
-      setClientSecret(secret);
-      setBookingId(id);
-    } else {
-      // Rediriger si pas de paramètres
-      setLocation('/');
-    }
+    const planParam = urlParams.get('plan') || 'basic-pro';
+    const amountParam = parseFloat(urlParams.get('amount') || '29');
+    const emailParam = urlParams.get('email') || '';
+
+    setPlan(planParam);
+    setAmount(amountParam);
+    setEmail(emailParam);
+
+    // Créer l'intention de paiement
+    const createPaymentIntent = async () => {
+      try {
+        const response = await fetch('/api/stripe/create-subscription-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            plan: planParam,
+            amount: amountParam,
+            email: emailParam
+          }),
+        });
+
+        const data = await response.json();
+        if (data.clientSecret) {
+          setClientSecret(data.clientSecret);
+        } else {
+          throw new Error(data.error || 'Erreur création checkout');
+        }
+      } catch (error) {
+        console.error('❌ Erreur création checkout:', error);
+        setLocation('/dashboard');
+      }
+    };
+
+    createPaymentIntent();
   }, [setLocation]);
 
-  if (!clientSecret || !bookingId) {
+  if (!clientSecret) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-violet-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Préparation du paiement...</p>
+        </div>
       </div>
     );
   }
 
-  const options = {
-    clientSecret,
-    appearance: {
-      theme: 'stripe' as const,
-      variables: {
-        colorPrimary: '#8B5CF6',
-      },
-    },
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-md mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              onClick={() => setLocation('/salon-booking')}
-              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-lg font-semibold text-gray-900">Paiement sécurisé</h1>
-            <div className="w-10" />
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-md mx-auto p-4">
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CreditCard className="w-8 h-8 text-violet-600" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
-            Finaliser votre réservation
-          </h2>
-          <p className="text-gray-600">
-            Paiement 100% sécurisé par Stripe
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation("/dashboard")}
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au tableau de bord
+          </Button>
+          
+          <h1 className="text-2xl font-bold text-gray-900">
+            Paiement sécurisé
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Finalisez votre abonnement professionnel
           </p>
         </div>
 
-        <Elements stripe={stripePromise} options={options}>
-          <CheckoutForm clientSecret={clientSecret} bookingId={bookingId} />
+        <Elements stripe={stripePromise} options={{ clientSecret }}>
+          <CheckoutForm plan={plan} amount={amount} email={email} />
         </Elements>
-
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
-            Vos informations de paiement sont cryptées et sécurisées
-          </p>
-        </div>
       </div>
     </div>
   );

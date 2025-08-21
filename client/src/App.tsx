@@ -507,6 +507,15 @@ function Router() {
     );
   }
 
+  // Page de paiement Stripe
+  if (location === '/stripe-checkout') {
+    return (
+      <div className="h-full">
+        <StripeCheckout />
+      </div>
+    );
+  }
+
   // Pages de support publiques
   if (location === '/centre-aide') {
     return (

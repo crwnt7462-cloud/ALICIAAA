@@ -4409,6 +4409,17 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       try {
         createdAccount = await storage.createUser(userDataWithSubscription);
         console.log('✅ Compte professionnel créé avec succès:', userData.email);
+      
+      // 🔐 CRÉER SESSION AUTOMATIQUE APRÈS INSCRIPTION
+      const session = req.session as any;
+      session.user = {
+        id: createdAccount.id,
+        email: createdAccount.email,
+        type: 'professional',
+        businessName: userData.businessName,
+        isAuthenticated: true
+      };
+      console.log('🔑 Session automatique créée pour:', createdAccount.email);
       } catch (error: any) {
         console.error('❌ Erreur création compte pro:', error);
         if (error.code === '23505') {
@@ -4491,6 +4502,108 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.error('❌ Erreur inscription client:', error);
       res.status(500).json({ 
         error: 'Erreur serveur lors de l\'inscription' 
+      });
+    }
+  });
+
+  // ============= AUTH API CORRECTED =============
+  
+  // Endpoint auth/user corrigé pour gérer les sessions créées à l'inscription
+  app.get('/api/auth/user', async (req, res) => {
+    try {
+      const session = req.session as any;
+      
+      // Vérifier si l'utilisateur a une session active
+      if (!session || !session.user) {
+        console.log('❌ Aucune session trouvée');
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const sessionUser = session.user;
+      console.log('🔍 Session utilisateur trouvée:', sessionUser.email, 'Type:', sessionUser.type);
+      
+      // Pour les professionnels, récupérer les données complètes depuis la BDD
+      if (sessionUser.type === 'professional') {
+        try {
+          const fullUser = await storage.getUser?.(sessionUser.id);
+          if (fullUser) {
+            console.log('✅ Utilisateur professionnel authentifié:', fullUser.email);
+            return res.json({
+              id: fullUser.id,
+              email: fullUser.email,
+              firstName: fullUser.firstName,
+              lastName: fullUser.lastName,
+              businessName: fullUser.businessName,
+              type: 'professional',
+              isAuthenticated: true
+            });
+          }
+        } catch (error) {
+          console.error('❌ Erreur récupération utilisateur:', error);
+        }
+      }
+      
+      // Fallback sur les données de session
+      res.json({
+        id: sessionUser.id,
+        email: sessionUser.email,
+        businessName: sessionUser.businessName,
+        type: sessionUser.type,
+        isAuthenticated: true
+      });
+      
+    } catch (error: any) {
+      console.error('❌ Erreur endpoint auth/user:', error);
+      res.status(500).json({ message: "Erreur serveur" });
+    }
+  });
+
+  // ============= STRIPE CHECKOUT API =============
+  
+  // Route pour créer un checkout d'abonnement Stripe
+  app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
+    try {
+      const { plan, amount, email } = req.body;
+      console.log('💳 Création checkout Stripe:', { plan, amount, email });
+
+      if (!process.env.STRIPE_SECRET_KEY) {
+        return res.status(500).json({ error: 'Configuration Stripe manquante' });
+      }
+
+      const Stripe = (await import('stripe')).default;
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: "2023-10-16",
+      });
+
+      // Créer un PaymentIntent avec 3D Secure obligatoire
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Conversion en centimes
+        currency: 'eur',
+        receipt_email: email,
+        payment_method_options: {
+          card: {
+            request_three_d_secure: 'always' // 3D Secure obligatoire
+          }
+        },
+        metadata: {
+          plan,
+          email,
+          type: 'subscription'
+        }
+      });
+
+      console.log('✅ PaymentIntent créé:', paymentIntent.id, 'Montant:', amount, '€');
+
+      res.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id
+      });
+
+    } catch (error: any) {
+      console.error('❌ Erreur création checkout Stripe:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la création du checkout',
+        details: error.message
       });
     }
   });

@@ -120,12 +120,55 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
   const handleEmailVerificationSuccess = (result: any) => {
     console.log('✅ Email vérifié avec succès:', result);
     setCreatedAccount(result.account);
-    setShowSuccess(true);
     
-    toast({
-      title: "Compte professionnel créé !",
-      description: "Votre salon a été créé avec succès.",
-    });
+    // 💳 AUTO-CONNECTER ET OUVRIR LE SHELL DE PAIEMENT STRIPE
+    const autoLoginAndPay = async () => {
+      try {
+        // 1️⃣ Connexion automatique avec les données d'inscription
+        const loginResponse = await fetch('/api/login/professional', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.step1.email,
+            password: formData.step1.password
+          }),
+        });
+
+        if (loginResponse.ok) {
+          const loginData = await loginResponse.json();
+          console.log('🔐 Connexion automatique réussie:', loginData);
+          
+          // 2️⃣ Sauvegarder les données localement pour persistance
+          localStorage.setItem('proEmail', formData.step1.email);
+          localStorage.setItem('proPassword', formData.step1.password);
+          localStorage.setItem('proToken', `pro-${result.account.id}`);
+          localStorage.setItem('proData', JSON.stringify(result.account));
+          
+          // 3️⃣ Rediriger vers le shell de paiement Stripe
+          const planPrice = formData.step3.planType === 'basic-pro' ? 29 : 
+                           formData.step3.planType === 'advanced-pro' ? 79 : 149;
+          
+          window.location.href = `/stripe-checkout?plan=${formData.step3.planType}&amount=${planPrice}&email=${formData.step1.email}`;
+          
+        } else {
+          console.error('❌ Échec connexion automatique');
+          setShowSuccess(true);
+          toast({
+            title: "Compte créé !",
+            description: "Connectez-vous pour finaliser votre abonnement.",
+          });
+        }
+      } catch (error) {
+        console.error('❌ Erreur auto-login:', error);
+        setShowSuccess(true);
+        toast({
+          title: "Compte créé !",
+          description: "Connectez-vous pour finaliser votre abonnement.",
+        });
+      }
+    };
+
+    autoLoginAndPay();
   };
 
   // Gestion du retour depuis la vérification email
