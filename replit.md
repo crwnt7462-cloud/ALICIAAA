@@ -60,7 +60,7 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
-- **CORRECTION CRITIQUE STRIPE (21/08/2025 14h33)**: Système d'auto-détection des montants pour éviter les erreurs de facturation (11.70€ facturé 1170€). Le système détecte automatiquement si le montant est en euros décimaux ou centimes et applique la conversion appropriée pour Stripe. Protection universelle sur tous les paiements.
+- **CORRECTION CRITIQUE STRIPE COMPLÈTE (21/08/2025 16h47)**: Système d'auto-détection des montants corrigé sur TOUS les endpoints Stripe (/api/stripe/create-deposit-checkout, /api/stripe/create-payment-checkout, /api/create-professional-payment-intent). Protection universelle: ≤999 = euros (×100), >999 = centimes (inchangé). Plus jamais de facturation 1170€ au lieu de 11.70€. Tests validés sur tous les endpoints.
 - **SÉCURITÉ MAJEURE - Authentification Renforcée (18/08/2025 21h26)**:
   * Suppression du système de démo utilisateur automatique qui bypassait l'authentification
   * Protection complète de toutes les pages professionnelles (/dashboard, /planning, /services-management, /business-features, /clients, etc.)

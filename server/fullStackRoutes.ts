@@ -2658,7 +2658,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
               name: `Abonnement ${planType.charAt(0).toUpperCase() + planType.slice(1)}`,
               description: `Plan ${planType} pour votre salon`,
             },
-            unit_amount: planAmount,
+            unit_amount: planAmount, // Déjà en centimes
             recurring: { interval: 'month' },
           },
           quantity: 1,
@@ -2696,7 +2696,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     try {
       const { amount, description, customerEmail, customerName, salonName, appointmentId } = req.body;
       
-      console.log('💳 Création session paiement Stripe:', { amount, description });
+      const amountInCents = Math.round(amount <= 999 ? amount * 100 : amount);
+      console.log(`💳 Création session paiement Stripe: ${(amountInCents/100).toFixed(2)}€ (${amountInCents} centimes) [INPUT: ${amount}]`);
       
       if (!process.env.STRIPE_SECRET_KEY) {
         return res.status(500).json({ error: 'Clé Stripe non configurée' });
@@ -2717,7 +2718,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
               name: `Acompte - ${description}`,
               description: `Réservation chez ${salonName}`,
             },
-            unit_amount: Math.round(amount * 100), // Convertir en centimes
+            unit_amount: Math.round(amount <= 999 ? amount * 100 : amount), // 🔒 PROTECTION: ≤999 = euros, >999 = centimes
           },
           quantity: 1,
         }],
@@ -2753,7 +2754,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     try {
       const { salonId, plan, amount } = req.body;
       
-      console.log('💳 Création Payment Intent professionnel:', { salonId, plan, amount });
+      const amountInCents = Math.round(parseFloat(amount) <= 999 ? parseFloat(amount) * 100 : parseFloat(amount));
+      console.log(`💳 Création Payment Intent professionnel: ${(amountInCents/100).toFixed(2)}€ (${amountInCents} centimes) [INPUT: ${amount}]`);
       
       if (!process.env.STRIPE_SECRET_KEY) {
         return res.status(500).json({ error: 'Clé Stripe non configurée' });
@@ -2764,9 +2766,6 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
         apiVersion: '2025-06-30.basil',
       });
-      
-      // Calcul du montant en centimes
-      const amountInCents = Math.round(parseFloat(amount) * 100);
       
       // Créer le Payment Intent
       const paymentIntent = await stripe.paymentIntents.create({
