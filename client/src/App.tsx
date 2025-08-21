@@ -187,16 +187,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 function Router() {
   const [location, setLocation] = useLocation();
-  
-  // Pages salon TOUJOURS publiques - pas d'authentification requise
-  const isPublicSalonPage = location === '/salon' || 
-                            location.startsWith('/salon/') || 
-                            location.startsWith('/salon-booking/');
-  
-  // Si c'est une page salon publique, pas besoin d'auth
-  const { isAuthenticated, isLoading } = isPublicSalonPage ? 
-    { isAuthenticated: true, isLoading: false } : 
-    useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   
   // Pages qui nécessitent une authentification (pages professionnelles + pages clients personnelles)  
   const protectedPages = [
