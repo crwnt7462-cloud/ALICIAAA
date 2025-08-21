@@ -129,6 +129,11 @@ export default function BookingDateTime() {
     setLocation('/professional-selection');
   };
 
+  const handleAddService = () => {
+    // Retourner à la sélection de services pour ajouter une prestation
+    setLocation('/salon');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -142,7 +147,12 @@ export default function BookingDateTime() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">Bonhomme - Paris Archives</h1>
+            <img 
+              src="/avyento-logo.png" 
+              alt="Avyento"
+              className="w-auto"
+              style={{ height: '115px' }}
+            />
             <div className="w-10" />
           </div>
         </div>
@@ -179,6 +189,7 @@ export default function BookingDateTime() {
         {/* Bouton "Ajouter une prestation" avec même style que "Continuer" */}
         <div className="px-4 lg:px-0 pb-2">
           <Button 
+            onClick={handleAddService}
             className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold"
           >
             Ajouter une prestation à la suite
