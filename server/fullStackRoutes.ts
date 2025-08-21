@@ -1392,29 +1392,55 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // Auth middleware (activé pour les pages salon)
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Route pour vérifier la session (utilisée par useAuthSession)
+  app.get('/api/auth/check-session', async (req, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      const session = req.session as any;
+      
+      if (!session || !session.user) {
+        return res.status(401).json({ 
+          authenticated: false,
+          message: "No active session" 
+        });
+      }
+      
+      const sessionUser = session.user;
+      res.json({
+        authenticated: true,
+        userType: sessionUser.type,
+        userId: sessionUser.id,
+        email: sessionUser.email,
+        businessName: sessionUser.businessName,
+        firstName: sessionUser.firstName,
+        lastName: sessionUser.lastName
+      });
+      
     } catch (error: any) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
+      console.error('❌ Erreur vérification session:', error);
+      res.status(500).json({ 
+        authenticated: false,
+        message: "Erreur serveur" 
+      });
     }
   });
 
   // 🏢 ROUTES SALON AVEC AUTHENTIFICATION PRO
   
   // Récupérer le salon d'un propriétaire authentifié
-  app.get('/api/salon/my-salon', isAuthenticated, async (req: any, res) => {
+  app.get('/api/salon/my-salon', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const session = req.session as any;
+      if (!session || !session.user) {
+        return res.status(401).json({ message: "Non authentifié" });
+      }
+      
+      const userId = session.user.id;
+      const userEmail = session.user.email;
       console.log('🏢 Récupération salon pour propriétaire:', userId);
       
       // Chercher le salon personnel de l'utilisateur authentifié
       const userSalons = Array.from(storage.salons?.values() || []).filter(salon => 
-        salon.ownerId === userId || salon.ownerEmail === req.user.claims.email
+        salon.ownerId === userId || salon.ownerEmail === userEmail
       );
       
       let userSalon = userSalons[0];
@@ -1422,21 +1448,21 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       if (!userSalon) {
         // Création automatique d'un salon unique pour ce propriétaire
         const uniqueSlug = `salon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const salonName = `${req.user.claims.first_name || 'Mon'} Salon`;
+        const salonName = `${session.user.firstName || 'Mon'} Salon`;
         
         console.log('🏗️ Création salon automatique pour:', userId);
         
         userSalon = {
           id: uniqueSlug,
           ownerId: userId,
-          ownerEmail: req.user.claims.email,
+          ownerEmail: userEmail,
           name: salonName,
           slug: uniqueSlug,
           description: 'Nouveau salon - À personnaliser depuis votre dashboard',
           longDescription: 'Bienvenue dans votre salon ! Modifiez cette description depuis votre tableau de bord professionnel.',
           address: 'Adresse à renseigner',
           phone: 'Téléphone à renseigner',
-          email: req.user.claims.email,
+          email: userEmail,
           website: '',
           photos: [
             'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
