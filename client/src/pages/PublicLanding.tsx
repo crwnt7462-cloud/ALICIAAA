@@ -561,48 +561,43 @@ export default function PublicLanding() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center" style={{ gap: '8px' }}>
-              {/* Bouton hamburger animé avec Framer Motion - visible sur toutes tailles */}
-              <motion.button
-                id="hamburger-button"
-                onClick={toggleMenu}
-                className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200"
-                aria-label="Menu"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="w-6 h-6 flex flex-col justify-center items-center gap-1">
-                  <motion.span 
-                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
-                    animate={{
-                      rotate: isMenuOpen ? 45 : 0,
-                      y: isMenuOpen ? 6 : 0
-                    }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                  />
-                  <motion.span 
-                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
-                    animate={{
-                      opacity: isMenuOpen ? 0 : 1,
-                      scale: isMenuOpen ? 0 : 1
-                    }}
-                    transition={{ duration: 0.2 }}
-                  />
-                  <motion.span 
-                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
-                    animate={{
-                      rotate: isMenuOpen ? -45 : 0,
-                      y: isMenuOpen ? -6 : 0
-                    }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                  />
-                </div>
-              </motion.button>
-
-              <div>
-                <img src={logoImage} alt="Logo" className="h-24 w-auto" />
-              </div>
+            <div className="flex items-center">
+              <img src={logoImage} alt="Logo" className="h-24 w-auto" />
             </div>
+            
+            {/* Menu de navigation horizontal */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              <button 
+                onClick={() => setLocation('/search-results')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Services
+              </button>
+              <button 
+                onClick={() => setLocation('/professional-plans')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Professionnels
+              </button>
+              <button 
+                onClick={() => setLocation('/centre-aide')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Support
+              </button>
+              <button 
+                onClick={() => setLocation('/contact')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Contact
+              </button>
+              <button 
+                onClick={() => setLocation('/register')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Devenir partenaire
+              </button>
+            </nav>
             
             <div className="flex items-center gap-3 md:gap-5">
               <button 

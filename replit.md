@@ -60,6 +60,12 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
+- **MENU NAVIGATION HORIZONTAL FINALISÉ (21/08/2025 20h54)**: Menu desktop horizontal implementé selon design final
+  * ✅ **Hamburger supprimé** : Retour au menu horizontal visible en permanence
+  * ✅ **Menu horizontal centré** : Services, Professionnels, Support, Contact, Devenir partenaire
+  * ✅ **Boutons CTA simplifiés** : Uniquement "Se connecter" et "Espace Pro" 
+  * ✅ **Navigation fonctionnelle** : Tous liens connectés aux bonnes pages
+  * 🎯 **RÉSULTAT** : Interface header propre et professionnelle selon spécifications exactes
 - **RÉCUPÉRATION MOT DE PASSE CORRIGÉE (21/08/2025 18h45)**: Page /forgot-password maintenant accessible depuis /pro-login
   * ✅ **Route /forgot-password ajoutée** : Import ForgotPassword et route dans App.tsx
   * ✅ **Navigation fonctionnelle** : Lien "Mot de passe oublié ?" redirige correctement
