@@ -459,26 +459,23 @@ export default function SearchResults() {
                             </p>
                           </div>
 
-                          {/* Boutons réseaux sociaux glassmorphism */}
-                          <div className="flex gap-2">
-                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-xs font-medium flex items-center gap-2">
-                              <Instagram className="h-4 w-4" />
-                              Instagram
-                            </div>
-                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-xs font-medium flex items-center gap-2">
-                              <Facebook className="h-4 w-4" />
-                              Facebook
-                            </div>
-                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-xs font-medium flex items-center gap-2">
-                              TikTok
-                            </div>
+                          {/* Services du salon glassmorphism */}
+                          <div className="flex gap-2 flex-wrap">
+                            {salon.services.slice(0, 3).map((service: string, idx: number) => (
+                              <div key={idx} className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-xs font-medium">
+                                {service}
+                              </div>
+                            ))}
                           </div>
 
-                          {/* Note et badge vérifié */}
-                          <div className="flex gap-3">
+                          {/* Note, prix et badge vérifié */}
+                          <div className="flex gap-3 flex-wrap">
                             <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-sm font-medium flex items-center gap-2">
                               <Star className="h-4 w-4 text-yellow-400 fill-current" />
                               {salon.rating} ({salon.reviewsCount})
+                            </div>
+                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-sm font-medium">
+                              {salon.priceRange}
                             </div>
                             {salon.verified && (
                               <div className="px-4 py-2 bg-emerald-500/80 backdrop-blur-sm border border-emerald-400/50 rounded-full text-white text-sm font-medium flex items-center gap-2">
