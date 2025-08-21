@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Star, MapPin, Clock, Calendar, User } from "lucide-react";
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 interface Service {
   id: number;
@@ -89,27 +90,27 @@ export default function AvyentoStyleBooking() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6 h-screen overflow-y-auto">
+      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6 pb-20 lg:pb-6">
         {/* En-tête réservation */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+        <div className="mb-6 lg:mb-8">
+          <h2 className="text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-900 mb-2 lg:mb-4">
             Réserver en ligne pour un RDV chez {salon.name}
           </h2>
-          <div className="flex items-center gap-4 text-sm text-gray-600">
+          <div className="flex items-center gap-4 text-sm lg:text-base text-gray-600">
             <span>24h/24 • Gratuitement • Confirmation immédiate</span>
           </div>
         </div>
 
         {currentStep === 'service' && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Choix de la prestation</h3>
+          <div className="space-y-4 lg:space-y-6">
+            <div className="flex items-center justify-between mb-4 lg:mb-6">
+              <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold text-gray-900">Choix de la prestation</h3>
             </div>
 
-            <div className="space-y-3">
-              <div className="text-sm font-medium text-gray-700 mb-3">Cheveux</div>
+            <div className="space-y-4 lg:space-y-6">
+              <div className="text-base lg:text-lg font-semibold text-gray-700 mb-4 lg:mb-6">Cheveux</div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
                 {services.map((service) => (
                   <Card 
                     key={service.id}
@@ -196,16 +197,16 @@ export default function AvyentoStyleBooking() {
             </div>
 
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Choisir un créneau</h3>
+              <h3 className="text-lg lg:text-xl xl:text-2xl font-semibold text-gray-900 mb-4 lg:mb-6">Choisir un créneau</h3>
               
-              <div className="mb-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                  <Calendar className="h-4 w-4" />
+              <div className="mb-6 lg:mb-8">
+                <div className="flex items-center gap-2 text-sm lg:text-base text-gray-600 mb-4">
+                  <Calendar className="h-4 w-4 lg:h-5 lg:w-5 text-violet-600" />
                   <span>Aujourd'hui, 27 janvier 2025</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 lg:gap-4">
                 {timeSlots.map((time) => (
                   <Button
                     key={time}
@@ -270,6 +271,9 @@ export default function AvyentoStyleBooking() {
           </div>
         )}
       </div>
+      
+      {/* Navigation mobile */}
+      <MobileBottomNav />
     </div>
   );
 }
