@@ -369,10 +369,10 @@ export default function SalonCreation() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* En-tête fixe avec actions d'édition - RESPONSIVE */}
+      {/* En-tête fixe avec actions d'édition */}
       <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
-        <div className="flex items-center justify-between p-3 md:p-4">
-          <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="sm"
@@ -382,14 +382,14 @@ export default function SalonCreation() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-base md:text-lg font-semibold text-gray-900">Créateur de salon</h1>
-              <p className="text-xs md:text-sm text-gray-500 hidden sm:block">Mode édition activé</p>
+              <h1 className="text-lg font-semibold text-gray-900">Créateur de salon</h1>
+              <p className="text-sm text-gray-500">Mode édition activé</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 md:gap-2">
+          <div className="flex items-center gap-2">
             {isAutoSaving && (
-              <div className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-1 bg-blue-50 text-blue-600 rounded-full">
+              <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-600 rounded-full">
                 <div className="animate-spin h-3 w-3 border border-blue-300 border-t-blue-600 rounded-full"></div>
                 <span className="text-xs">Sauvegarde...</span>
               </div>
@@ -399,33 +399,33 @@ export default function SalonCreation() {
               variant="outline"
               size="sm"
               onClick={() => window.open('/salon', '_blank')}
-              className="flex items-center gap-1 md:gap-2 px-2 md:px-3"
+              className="flex items-center gap-2"
             >
               <Eye className="h-4 w-4" />
-              <span className="hidden sm:inline">Aperçu</span>
+              Aperçu
             </Button>
 
             <Button
               size="sm"
               onClick={autoSave}
-              className="flex items-center gap-1 md:gap-2 bg-violet-600 hover:bg-violet-700 px-2 md:px-3"
+              className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700"
             >
               <Save className="h-4 w-4" />
-              <span className="hidden sm:inline">Sauvegarder</span>
+              Sauvegarder
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Header salon avec image de fond - RESPONSIVE */}
+      {/* Header salon avec image de fond */}
       <div className="relative">
         <div 
-          className="h-24 sm:h-32 bg-cover bg-center relative"
+          className="h-32 bg-cover bg-center relative"
           style={{ backgroundImage: `url(${salonData.backgroundImage})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
           {isEditing && (
-            <div className="absolute top-2 right-2 flex gap-1 sm:gap-2">
+            <div className="absolute top-2 right-2 flex gap-2">
               <input
                 type="file"
                 accept="image/*"
@@ -435,78 +435,78 @@ export default function SalonCreation() {
               />
               <label 
                 htmlFor="cover-image-upload"
-                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 bg-white/90 hover:bg-white rounded-lg text-xs sm:text-sm font-medium cursor-pointer transition-colors"
+                className="flex items-center gap-1 px-3 py-2 bg-white/90 hover:bg-white rounded-lg text-sm font-medium cursor-pointer transition-colors"
               >
-                <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Changer</span>
+                <Upload className="h-4 w-4" />
+                Changer
               </label>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleCropImage}
-                className="bg-violet-600/90 hover:bg-violet-700 text-white px-2 sm:px-3"
+                className="bg-violet-600/90 hover:bg-violet-700 text-white"
               >
-                <Camera className="h-3 w-3 sm:h-4 sm:w-4" />
+                <Camera className="h-4 w-4" />
               </Button>
             </div>
           )}
         </div>
         
-        {/* Informations salon - RESPONSIVE */}
-        <div className="bg-white px-3 sm:px-4 pb-3 sm:pb-4">
-          <div className="flex items-start gap-3 sm:gap-4 -mt-6 sm:-mt-8 relative z-10">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl shadow-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg sm:text-2xl font-bold text-violet-600">
+        {/* Informations salon */}
+        <div className="bg-white px-4 pb-4">
+          <div className="flex items-start gap-4 -mt-8 relative z-10">
+            <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center">
+              <span className="text-2xl font-bold text-violet-600">
                 {salonData.name.charAt(0)}
               </span>
             </div>
             
-            <div className="flex-1 mt-6 sm:mt-8 min-w-0">
+            <div className="flex-1 mt-8">
               {isEditing ? (
                 <div className="space-y-2">
                   <Input
                     value={salonData.name}
                     onChange={(e) => handleSalonDataChange('name', e.target.value)}
-                    className="text-lg sm:text-xl font-bold border-0 p-0 h-auto bg-transparent"
+                    className="text-xl font-bold border-0 p-0 h-auto bg-transparent"
                     placeholder="Nom du salon"
                   />
                   <Input
                     value={salonData.address}
                     onChange={(e) => handleSalonDataChange('address', e.target.value)}
-                    className="text-xs sm:text-sm text-gray-600 border-0 p-0 h-auto bg-transparent"
+                    className="text-sm text-gray-600 border-0 p-0 h-auto bg-transparent"
                     placeholder="Adresse complète"
                   />
                 </div>
               ) : (
                 <div>
-                  <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{salonData.name}</h1>
-                  <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 flex-shrink-0" />
-                    <span className="truncate">{salonData.address}</span>
+                  <h1 className="text-xl font-bold text-gray-900">{salonData.name}</h1>
+                  <p className="text-sm text-gray-600 flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    {salonData.address}
                   </p>
                 </div>
               )}
 
-              <div className="flex items-center gap-2 sm:gap-4 mt-2 overflow-x-auto">
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-xs sm:text-sm font-medium">{salonData.rating}</span>
+              <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-medium">{salonData.rating}</span>
                   <span className="text-xs text-gray-500">({salonData.reviewCount} avis)</span>
                 </div>
                 {salonData.verified && (
-                  <Badge variant="secondary" className="bg-green-50 text-green-700 flex-shrink-0 text-xs">
+                  <Badge variant="secondary" className="bg-green-50 text-green-700">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Vérifié
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-xs flex-shrink-0">
+                <Badge variant="outline" className="text-xs">
                   {salonData.priceRange}
                 </Badge>
               </div>
             </div>
             
             <Button 
-              className="mt-6 sm:mt-8 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm flex-shrink-0" 
+              className="mt-8" 
               style={getButtonStyle('solid')}
             >
               Réserver
@@ -535,8 +535,8 @@ export default function SalonCreation() {
         </div>
       </div>
 
-      {/* Contenu des onglets - RESPONSIVE */}
-      <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
+      {/* Contenu des onglets */}
+      <div className="p-4 space-y-6">
         {activeTab === 'services' && (
           <div className="space-y-4">
             {serviceCategories.map((category) => (
@@ -1047,58 +1047,58 @@ export default function SalonCreation() {
         )}
       </div>
 
-      {/* Barre d'actions flottante - RESPONSIVE MOBILE */}
-      <div className="fixed bottom-3 right-3 md:bottom-4 md:right-4 bg-white rounded-full shadow-lg border border-gray-200 p-1.5 md:p-2">
-        <div className="flex items-center gap-1 md:gap-2">
+      {/* Barre d'actions flottante */}
+      <div className="fixed bottom-4 right-4 bg-white rounded-full shadow-lg border border-gray-200 p-2">
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsEditing(!isEditing)}
-            className={`rounded-full p-2 md:p-2.5 ${isEditing ? 'bg-violet-100 text-violet-600' : ''}`}
+            className={`rounded-full ${isEditing ? 'bg-violet-100 text-violet-600' : ''}`}
           >
-            <Edit3 className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <Edit3 className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsColorModalOpen(true)}
-            className="rounded-full p-2 md:p-2.5"
+            className="rounded-full"
           >
-            <Palette className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <Palette className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => window.open('/salon', '_blank')}
-            className="rounded-full p-2 md:p-2.5"
+            className="rounded-full"
           >
-            <ExternalLink className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <ExternalLink className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Modal de personnalisation moderne - RESPONSIVE */}
+      {/* Modal de personnalisation moderne */}
       <Dialog open={isColorModalOpen} onOpenChange={setIsColorModalOpen}>
-        <DialogContent className="max-w-lg mx-auto bg-white/90 backdrop-blur-2xl border-white/30 shadow-2xl rounded-3xl max-h-[90vh] overflow-y-auto w-[95%] sm:w-full">
-          <DialogHeader className="text-center pb-4 sm:pb-6">
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-900">
+        <DialogContent className="max-w-lg mx-auto bg-white/90 backdrop-blur-2xl border-white/30 shadow-2xl rounded-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="text-center pb-6">
+            <DialogTitle className="text-2xl font-bold text-gray-900">
               Couleur du salon
             </DialogTitle>
-            <p className="text-xs sm:text-sm text-gray-600 mt-2">
+            <p className="text-sm text-gray-600 mt-2">
               Cette couleur apparaîtra sur vos boutons et accents
             </p>
           </DialogHeader>
           
-          <div className="space-y-6 sm:space-y-8">
-            {/* Palettes prédéfinies - Design minimaliste RESPONSIVE */}
+          <div className="space-y-8">
+            {/* Palettes prédéfinies - Design minimaliste */}
             <div>
-              <h4 className="font-semibold mb-4 sm:mb-6 text-gray-900 text-sm sm:text-base">Couleurs prédéfinies</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <h4 className="font-semibold mb-6 text-gray-900">Couleurs prédéfinies</h4>
+              <div className="grid grid-cols-2 gap-4">
                 {colorPresets.map((preset, index) => (
                   <button
                     key={index}
                     onClick={() => applyColorPreset(preset)}
-                    className={`group flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${
+                    className={`group flex items-center gap-4 p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${
                       primaryColor === preset.color 
                         ? 'border-current bg-white/70 shadow-lg scale-[1.02]' 
                         : 'border-gray-200/40 bg-white/40 hover:bg-white/60'
@@ -1106,10 +1106,10 @@ export default function SalonCreation() {
                     style={{ borderColor: primaryColor === preset.color ? preset.color : undefined }}
                   >
                     <div 
-                      className="w-6 h-6 sm:w-8 sm:h-8 rounded-full shadow-md flex-shrink-0"
+                      className="w-8 h-8 rounded-full shadow-md flex-shrink-0"
                       style={{ backgroundColor: preset.color }}
                     />
-                    <span className="text-sm sm:text-base font-medium text-gray-800 group-hover:text-gray-900 truncate">
+                    <span className="text-base font-medium text-gray-800 group-hover:text-gray-900 truncate">
                       {preset.name}
                     </span>
                   </button>
@@ -1117,36 +1117,36 @@ export default function SalonCreation() {
               </div>
             </div>
 
-            {/* Couleur personnalisée - RESPONSIVE */}
-            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/30">
-              <h4 className="font-semibold mb-3 sm:mb-4 text-gray-900 text-sm sm:text-base">Couleur personnalisée</h4>
-              <div className="flex items-center gap-3 sm:gap-4">
+            {/* Couleur personnalisée */}
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+              <h4 className="font-semibold mb-4 text-gray-900">Couleur personnalisée</h4>
+              <div className="flex items-center gap-4">
                 <div className="relative">
                   <input
                     type="color"
                     value={primaryColor}
                     onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border-2 border-white/50 cursor-pointer shadow-lg"
+                    className="w-14 h-14 rounded-2xl border-2 border-white/50 cursor-pointer shadow-lg"
                   />
                 </div>
                 <Input
                   value={primaryColor}
                   onChange={(e) => setPrimaryColor(e.target.value)}
                   placeholder="#8b5cf6"
-                  className="flex-1 bg-white/60 border-white/50 rounded-xl text-sm sm:text-base"
+                  className="flex-1 bg-white/60 border-white/50 rounded-xl text-base"
                 />
               </div>
             </div>
 
-            {/* Aperçu simplifié - RESPONSIVE */}
-            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/30">
-              <h4 className="font-semibold mb-3 sm:mb-4 text-gray-900 text-sm sm:text-base">Aperçu</h4>
+            {/* Aperçu simplifié */}
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+              <h4 className="font-semibold mb-4 text-gray-900">Aperçu</h4>
               <div 
                 style={{
                   backgroundColor: primaryColor,
                   color: 'white',
                   borderRadius: '12px',
-                  padding: '10px 14px',
+                  padding: '12px 16px',
                   textAlign: 'center',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -1154,13 +1154,11 @@ export default function SalonCreation() {
                   boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
                   transition: 'all 0.2s',
                   width: '100%',
-                  height: '44px',
+                  height: '48px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '14px'
+                  justifyContent: 'center'
                 }}
-                className="sm:text-base sm:h-12 sm:px-4"
                 onMouseEnter={(e) => {
                   e.currentTarget.style.opacity = '0.9';
                   e.currentTarget.style.transform = 'translateY(-1px)';
@@ -1176,12 +1174,12 @@ export default function SalonCreation() {
               </div>
             </div>
 
-            {/* Actions - RESPONSIVE */}
-            <div className="flex gap-3 sm:gap-4 pt-3 sm:pt-4">
+            {/* Actions */}
+            <div className="flex gap-4 pt-4">
               <Button
                 variant="outline"
                 onClick={() => setIsColorModalOpen(false)}
-                className="flex-1 h-10 sm:h-12 bg-white/30 border-white/50 hover:bg-white/50 rounded-xl text-sm sm:text-base"
+                className="flex-1 h-12 bg-white/30 border-white/50 hover:bg-white/50 rounded-xl"
               >
                 Annuler
               </Button>
@@ -1199,7 +1197,7 @@ export default function SalonCreation() {
                   color: 'white',
                   border: 'none'
                 }}
-                className="flex-1 h-10 sm:h-12 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold rounded-xl hover:opacity-90 text-sm sm:text-base"
+                className="flex-1 h-12 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold rounded-xl hover:opacity-90"
               >
                 Appliquer
               </Button>
