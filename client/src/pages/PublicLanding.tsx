@@ -613,7 +613,7 @@ export default function PublicLanding() {
               </motion.button>
 
               <div>
-                <img src={logoImage} alt="Logo" className="h-12 w-auto" />
+                <img src={logoImage} alt="Logo" className="w-auto" style={{ height: '115px' }} />
               </div>
             </div>
             
