@@ -142,8 +142,8 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
       localStorage.setItem('proData', JSON.stringify(createdAccount));
     }
     
-    // Redirection vers le dashboard professionnel
-    window.location.href = '/business-features';
+    // CORRECTION: Redirection vers dashboard au lieu de "/"  
+    setLocation('/dashboard');
   };
 
   const plans = {
@@ -210,8 +210,10 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
       vatNumber: formData.step2.vatNumber || "",
       description: "",
       
-      // Données étape 3 (plan et conditions)
+      // Données étape 3 (plan et conditions) - Support multiple formats
       planType: formData.step3.planType || finalSelectedPlan || 'basic-pro',
+      subscriptionPlan: formData.step3.planType || finalSelectedPlan || 'basic-pro',
+      plan: formData.step3.planType || finalSelectedPlan || 'basic-pro',
     };
 
     // Inscription directe sans vérification email

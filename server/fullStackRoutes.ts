@@ -4369,15 +4369,21 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         });
       }
 
-      // Valider le plan d'abonnement
+      // Valider le plan d'abonnement - SUPPORT MULTIPLE FORMATS
       const validPlans = ['basic-pro', 'advanced-pro', 'premium-pro'];
-      const selectedPlan = userData.subscriptionPlan || 'basic-pro';
+      const selectedPlan = userData.subscriptionPlan || userData.planType || userData.plan || 'basic-pro';
+      
+      console.log('🔍 DEBUG PLAN - Données reçues:', JSON.stringify(userData, null, 2));
+      console.log('🎯 Plan sélectionné:', selectedPlan, 'Type:', typeof selectedPlan);
       
       if (!validPlans.includes(selectedPlan)) {
+        console.log('❌ Plan invalide reçu:', selectedPlan, 'Plans valides:', validPlans);
         return res.status(400).json({ 
-          error: 'Plan d\'abonnement invalide' 
+          error: `Plan d'abonnement invalide: "${selectedPlan}". Plans acceptés: ${validPlans.join(', ')}` 
         });
       }
+      
+      console.log('✅ Plan validé:', selectedPlan);
 
       // Préparer les données utilisateur avec abonnement
       const userDataWithSubscription = {
