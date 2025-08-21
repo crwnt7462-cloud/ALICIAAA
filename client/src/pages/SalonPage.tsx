@@ -551,83 +551,70 @@ export default function SalonPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header salon moderne avec effet glass */}
-      <div className="relative overflow-hidden">
+    <div className="min-h-screen bg-black">
+      {/* Header salon style mobile avec photo plein écran */}
+      <div className="relative h-screen">
         <div 
-          className="h-40 bg-cover bg-center relative"
+          className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${salonData.backgroundImage})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 to-purple-900/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
         </div>
         
-        {/* Card informations salon avec glassmorphism */}
-        <div className="relative -mt-20 mx-4">
-          <div className="bg-white/95 backdrop-blur-20 rounded-3xl border border-white/30 shadow-2xl p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl shadow-xl flex items-center justify-center">
-                <span className="text-3xl font-bold text-white">
-                  {salonData.name.charAt(0)}
-                </span>
-              </div>
-              
-              <div className="flex-1">
-                <div className="mb-3">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{salonData.name}</h1>
-                  <p className="text-sm text-gray-600 flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    {salonData.address}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-1.5 bg-yellow-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-yellow-200/50">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold text-gray-900">{salonData.rating}</span>
-                    <span className="text-xs text-gray-600">({salonData.reviewCount} avis)</span>
-                  </div>
-                  {salonData.verified && (
-                    <div className="flex items-center gap-1.5 bg-green-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-green-200/50">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-xs font-medium text-green-700">Vérifié</span>
-                    </div>
-                  )}
-                  <div className="bg-slate-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-slate-200/50">
-                    <span className="text-xs font-medium text-gray-700">{salonData.priceRange}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Boutons de navigation en haut */}
+        <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 pt-12 z-10">
+          <button className="w-10 h-10 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div className="flex gap-3">
+            <button className="w-10 h-10 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <button className="w-10 h-10 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+              </svg>
+            </button>
           </div>
         </div>
-      </div>
-
-      {/* Navigation par onglets */}
-      <div className="bg-white/80 backdrop-blur-16 border-b border-gray-200/50 mt-6">
-        <div className="flex justify-center overflow-x-auto px-4 lg:px-8">
-          <div className="flex space-x-8 lg:space-x-12">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`whitespace-nowrap py-3 px-2 text-sm font-medium border-b-2 transition-colors ${
-                  tab.active
-                    ? 'text-gray-900 hover:text-gray-900 hover:border-gray-300'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                }`}
-                style={tab.active ? { borderColor: primaryColor, color: primaryColor } : {}}
-              >
-                {tab.label}
-              </button>
-            ))}
+        
+        {/* Informations salon en bas */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 pb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <h1 className="text-3xl font-bold text-white">{salonData.name}</h1>
+            {salonData.verified && (
+              <CheckCircle className="w-6 h-6 text-blue-400 fill-blue-400" />
+            )}
           </div>
+          
+          <div className="flex items-center gap-1 mb-3">
+            <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+            <span className="text-white font-semibold text-lg">{salonData.rating}</span>
+            <span className="text-gray-300">({salonData.reviewCount} avis)</span>
+            <span className="text-gray-300 ml-2">{salonData.priceRange}</span>
+          </div>
+          
+          <div className="flex items-center gap-2 mb-6">
+            <MapPin className="w-5 h-5 text-gray-300" />
+            <span className="text-gray-300 text-lg">{salonData.address}</span>
+          </div>
+          
+          {/* Bouton de réservation */}
+          <button
+            onClick={() => navigate('/planity-style-booking-fixed')}
+            className="w-full bg-white text-black font-semibold py-4 rounded-2xl text-lg hover:bg-gray-100 transition-colors shadow-lg"
+          >
+            Réserver
+          </button>
         </div>
       </div>
-
-      {/* Contenu des onglets */}
-      <div className="p-4 space-y-6">
-        {activeTab === 'services' && (
+    </div>
+  );
+}
           <div className="space-y-3">
             {serviceCategories.map((category) => (
               <div 
