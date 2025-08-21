@@ -149,7 +149,7 @@ export default function ModernSubscriptionPlans() {
     },
     {
       id: 'professional' as const,
-      name: 'Beauty Pro',
+      name: 'Avyento Pro',
       subtitle: 'Boostez votre business',
       monthlyPrice: 79,
       yearlyPrice: 790,
@@ -186,7 +186,7 @@ export default function ModernSubscriptionPlans() {
       icon: Crown,
       ribbon: 'PREMIUM',
       features: [
-        'TOUT du plan Beauty Pro +',
+        'TOUT du plan Avyento Pro +',
         'Avyento AI - Assistant révolutionnaire',
         'Messagerie clients illimitée temps réel',
         'Pages de réservation infinies',
@@ -197,7 +197,7 @@ export default function ModernSubscriptionPlans() {
         'Support VIP 24/7 avec account manager',
         'Formation 1-à-1 et certification',
         'API et développements sur mesure',
-        'Certification Beauty Pro offerte'
+        'Certification Avyento Pro offerte'
       ],
       limits: 'Clients illimités • Salons illimités'
     }
@@ -547,7 +547,7 @@ export default function ModernSubscriptionPlans() {
         <div className="mt-16 text-center">
           <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-8 max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Pourquoi choisir Beauty Pro ?
+              Pourquoi choisir Avyento ?
             </h3>
             
             <div className="grid md:grid-cols-3 gap-6 text-left">
@@ -588,7 +588,7 @@ export default function ModernSubscriptionPlans() {
         {/* Testimonial */}
         <div className="mt-12 text-center">
           <blockquote className="text-lg text-gray-700 italic max-w-3xl mx-auto">
-            "Beauty Pro a transformé mon salon. +280% de réservations en 3 mois, des clients plus fidèles et un business automatisé. Je recommande à 100% !"
+            "Avyento a transformé mon salon. +280% de réservations en 3 mois, des clients plus fidèles et un business automatisé. Je recommande à 100% !"
           </blockquote>
           <div className="mt-4 flex items-center justify-center space-x-2">
             <img 
