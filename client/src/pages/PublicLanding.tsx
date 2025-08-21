@@ -561,8 +561,51 @@ export default function PublicLanding() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <img src={logoImage} alt="Logo" className="h-24 w-auto" />
+            <div className="flex items-center gap-3">
+              {/* Menu hamburger pour mobile/tablette */}
+              <motion.button
+                id="hamburger-button"
+                onClick={toggleMenu}
+                className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200 lg:hidden"
+                aria-label="Menu"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="w-6 h-6 flex flex-col justify-center items-center gap-1">
+                  <motion.span 
+                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
+                    animate={{
+                      rotate: isMenuOpen ? 45 : 0,
+                      y: isMenuOpen ? 6 : 0
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  />
+                  <motion.span 
+                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
+                    animate={{
+                      opacity: isMenuOpen ? 0 : 1,
+                      scale: isMenuOpen ? 0 : 1
+                    }}
+                    transition={{ duration: 0.2 }}
+                  />
+                  <motion.span 
+                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
+                    animate={{
+                      rotate: isMenuOpen ? -45 : 0,
+                      y: isMenuOpen ? -6 : 0
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  />
+                </div>
+              </motion.button>
+
+              {/* Logo cliquable */}
+              <div 
+                className="cursor-pointer"
+                onClick={() => setLocation('/')}
+              >
+                <img src={logoImage} alt="Logo" className="h-24 w-auto" />
+              </div>
             </div>
             
             {/* Menu de navigation horizontal */}
@@ -599,18 +642,20 @@ export default function PublicLanding() {
               </button>
             </nav>
             
-            <div className="flex items-center gap-3 md:gap-5">
+            <div className="flex items-center gap-2 md:gap-5">
               <button 
-                className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
+                className="glass-button text-black px-4 py-2 md:px-6 md:py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl text-sm md:text-base"
                 onClick={() => setLocation("/client-login-modern")}
               >
-                Se connecter
+                <span className="hidden sm:inline">Se connecter</span>
+                <span className="sm:hidden">Connexion</span>
               </button>
               <button 
-                className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
+                className="glass-button text-black px-4 py-2 md:px-6 md:py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl text-sm md:text-base"
                 onClick={() => setLocation("/pro-login")}
               >
-                Espace Pro
+                <span className="hidden sm:inline">Espace Pro</span>
+                <span className="sm:hidden">Pro</span>
               </button>
             </div>
           </div>
