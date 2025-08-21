@@ -10,19 +10,18 @@ import {
   Facebook,
   Instagram,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  ArrowLeft
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 export default function SalonPage() {
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [, navigate] = useLocation();
-
-  // Couleur primaire du salon
-  const primaryColor = '#8b5cf6';
 
   // Données du salon - MODE AFFICHAGE UNIQUEMENT
   const salonData = {
@@ -151,182 +150,150 @@ export default function SalonPage() {
     }
   ];
 
-  // Fonction pour appliquer la couleur aux boutons
-  const getButtonStyle = (variant: 'solid' | 'outline' = 'solid') => {
-    if (variant === 'outline') {
-      return {
-        backgroundColor: 'transparent',
-        color: primaryColor,
-        borderColor: primaryColor,
-        border: `1px solid ${primaryColor}`
-      };
-    }
-    
-    return {
-      backgroundColor: primaryColor,
-      color: 'white',
-      border: 'none'
-    };
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header salon moderne avec effet glass */}
-      <div className="relative overflow-hidden">
-        <div 
-          className="h-40 bg-cover bg-center relative"
-          style={{ backgroundImage: `url(${salonData.backgroundImage})` }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 to-purple-900/20"></div>
-        </div>
-        
-        {/* Card informations salon avec glassmorphism */}
-        <div className="relative -mt-20 mx-4">
-          <div className="bg-white/95 backdrop-blur-20 rounded-3xl border border-white/30 shadow-2xl p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl shadow-xl flex items-center justify-center">
-                <span className="text-3xl font-bold text-white">
-                  {salonData.name.charAt(0)}
-                </span>
-              </div>
-              
-              <div className="flex-1">
-                <div className="mb-3">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{salonData.name}</h1>
-                  <p className="text-sm text-gray-600 flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    {salonData.address}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-1.5 bg-yellow-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-yellow-200/50">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold text-gray-900">{salonData.rating}</span>
-                    <span className="text-xs text-gray-600">({salonData.reviewCount} avis)</span>
-                  </div>
-                  {salonData.verified && (
-                    <div className="flex items-center gap-1.5 bg-green-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-green-200/50">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-xs font-medium text-green-700">Vérifié</span>
-                    </div>
-                  )}
-                  <div className="bg-slate-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-slate-200/50">
-                    <span className="text-xs font-medium text-gray-700">{salonData.priceRange}</span>
-                  </div>
-                </div>
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50">
+      {/* Header salon responsive avec effet glass */}
+      <div className="bg-white/90 backdrop-blur-16 border-b border-violet-200/50 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => window.history.back()}
+              className="h-10 w-10 rounded-full bg-violet-100/50 hover:bg-violet-200/70"
+            >
+              <ArrowLeft className="h-4 w-4 text-violet-700" />
+            </Button>
+            <div className="flex-1">
+              <h1 className="font-semibold text-gray-900">{salonData.name}</h1>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <MapPin className="h-3 w-3 text-violet-600" />
+                <span>{salonData.address}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation par onglets */}
-      <div className="bg-white/80 backdrop-blur-16 border-b border-gray-200/50 mt-6">
-        <div className="flex justify-center overflow-x-auto px-4 lg:px-8">
-          <div className="flex space-x-8 lg:space-x-12">
+      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6 pb-20 lg:pb-6">
+        {/* En-tête salon avec infos */}
+        <div className="mb-6 lg:mb-8">
+          <div className="flex items-center gap-2 mb-2 lg:mb-4">
+            <h2 className="text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-900">{salonData.name}</h2>
+            {salonData.verified && (
+              <CheckCircle className="h-5 w-5 lg:h-6 lg:w-6 text-violet-600" />
+            )}
+          </div>
+          <div className="flex items-center gap-4 mb-4 lg:mb-6">
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 lg:h-5 lg:w-5 fill-current text-amber-400" />
+              <span className="font-medium text-gray-900">{salonData.rating}</span>
+              <span className="text-sm text-gray-600">({salonData.reviewCount} avis)</span>
+            </div>
+            <Badge variant="secondary" className="bg-violet-100/70 text-violet-700 border-violet-200/50">
+              {salonData.priceRange}
+            </Badge>
+          </div>
+          
+          {/* Bouton de réservation principal */}
+          <Button 
+            onClick={() => navigate('/avyento-booking')}
+            className="w-full lg:w-auto bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white font-semibold text-base lg:text-lg px-6 lg:px-8 h-12 lg:h-14 shadow-md hover:shadow-lg transition-all duration-200"
+          >
+            Réserver maintenant
+          </Button>
+        </div>
+
+        {/* Onglets de navigation */}
+        <div className="mb-6 lg:mb-8">
+          <div className="flex space-x-1 bg-slate-50/90 backdrop-blur-8 p-1 rounded-lg border border-violet-200/30">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`whitespace-nowrap py-3 px-2 text-sm font-medium border-b-2 transition-colors ${
+                className={`flex-1 px-3 lg:px-4 py-2 lg:py-3 text-sm lg:text-base font-medium rounded-md transition-all duration-200 ${
                   tab.active
-                    ? 'text-gray-900 hover:text-gray-900 hover:border-gray-300'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                    ? 'bg-white/80 text-violet-700 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/40'
                 }`}
-                style={tab.active ? { borderColor: primaryColor, color: primaryColor } : {}}
               >
                 {tab.label}
               </button>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Contenu des onglets */}
-      <div className="p-4 space-y-6">
+        {/* Contenu des onglets */}
         {activeTab === 'services' && (
-          <div className="space-y-3">
+          <div className="space-y-4 lg:space-y-6">
             {serviceCategories.map((category) => (
-              <div 
-                key={category.id}
-                className="bg-slate-50/90 backdrop-blur-20 border border-slate-400/30 rounded-2xl shadow-md overflow-hidden"
-              >
-                <div className="p-4">
-                  <button
-                    onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
-                    className="w-full flex items-center justify-between text-left group hover:bg-white/40 rounded-xl p-3 -m-3 transition-all duration-200"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 text-lg">{category.name}</h3>
-                      <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs bg-violet-500/20 backdrop-blur-12 px-4 py-2 rounded-full border border-violet-400/30 font-semibold text-violet-800 shadow-sm">
-                        {category.services.length} service{category.services.length > 1 ? 's' : ''}
-                      </span>
-                      <div className="p-2 rounded-lg bg-violet-500/15 backdrop-blur-8 border border-violet-400/25 group-hover:bg-violet-500/25 transition-all duration-200 shadow-sm">
-                        {expandedCategory === category.id ? (
-                          <ChevronUp className="w-4 h-4 text-violet-700" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-violet-700" />
-                        )}
+              <div key={category.id}>
+                <div 
+                  className="bg-white/70 backdrop-blur-12 border border-violet-200/50 rounded-xl shadow-sm mb-4 cursor-pointer transition-all duration-200 hover:shadow-md"
+                  onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
+                >
+                  <div className="p-4 lg:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg lg:text-xl font-semibold text-gray-900">{category.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{category.description}</p>
                       </div>
+                      {expandedCategory === category.id ? (
+                        <ChevronUp className="h-5 w-5 text-violet-600" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-violet-600" />
+                      )}
                     </div>
-                  </button>
+                  </div>
                 </div>
 
                 {expandedCategory === category.id && (
-                  <div className="px-4 pb-4 space-y-3">
-                    <div className="h-px bg-gradient-to-r from-transparent via-slate-300/40 to-transparent"></div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-6">
                     {category.services.map((service, index) => (
-                      <div 
-                        key={index} 
-                        className="bg-white/60 backdrop-blur-8 rounded-xl border border-slate-300/30 p-4 hover:bg-white/80 transition-all duration-200"
+                      <Card 
+                        key={index}
+                        className="bg-white/70 backdrop-blur-12 border border-violet-200/50 hover:border-violet-300/70 hover:bg-white/80 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-lg"
+                        onClick={() => navigate('/avyento-booking')}
                       >
-                        <div className="flex items-start gap-4">
-                          <img
-                            src={service.photo}
-                            alt={service.name}
-                            className="w-16 h-16 rounded-xl object-cover shadow-sm border border-slate-200/50"
-                          />
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between mb-2">
-                              <h4 className="font-semibold text-gray-900 text-base">{service.name}</h4>
-                              <div className="text-right">
-                                <span className="font-bold text-gray-900 text-lg">{service.price}€</span>
-                                <p className="text-xs text-gray-500 font-medium">{formatDuration(service.duration)}</p>
+                        <CardContent className="p-4 lg:p-6">
+                          <div className="flex items-center gap-3 mb-3">
+                            <img 
+                              src={service.photo} 
+                              alt={service.name}
+                              className="w-12 h-12 lg:w-16 lg:h-16 rounded-lg object-cover"
+                            />
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-900 text-base lg:text-lg">{service.name}</h4>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Star className="h-3 w-3 fill-current text-amber-400" />
+                                <span className="text-sm text-gray-600">{service.rating} ({service.reviews})</span>
                               </div>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-3">{service.description}</p>
-                            
-                            <div className="flex items-center justify-between mt-2">
-                              <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1.5">
-                                  <Clock className="w-3.5 h-3.5 text-gray-400" />
-                                  <span className="text-sm text-gray-600 font-medium">{formatDuration(service.duration)}</span>
-                                </div>
-                                {service.rating && (
-                                  <div className="flex items-center gap-1.5">
-                                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                                    <span className="text-sm text-gray-700 font-medium">{service.rating}</span>
-                                    <span className="text-sm text-gray-500">({service.reviews} avis)</span>
-                                  </div>
-                                )}
-                              </div>
-                              <Button 
-                                size="sm" 
-                                style={getButtonStyle('outline')}
-                                className="bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
-                                onClick={() => navigate('/avyento-booking')}
-                              >
-                                Réserver
-                              </Button>
                             </div>
                           </div>
-                        </div>
-                      </div>
+                          
+                          <p className="text-sm text-gray-600 mb-3">{service.description}</p>
+                          
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                              <Clock className="h-3 w-3 text-violet-600" />
+                              <span>{formatDuration(service.duration)}</span>
+                            </div>
+                            <div className="text-xl font-bold text-violet-700">
+                              {service.price}€
+                            </div>
+                          </div>
+                          
+                          <Button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate('/avyento-booking');
+                            }}
+                            className="w-full mt-4 bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white font-medium shadow-sm hover:shadow-md transition-all duration-200"
+                          >
+                            Réserver
+                          </Button>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 )}
@@ -336,135 +303,53 @@ export default function SalonPage() {
         )}
 
         {activeTab === 'equipe' && (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
             {teamMembers.map((member) => (
-              <Card key={member.id}>
-                <CardContent className="p-4">
+              <Card key={member.id} className="bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+                <CardContent className="p-4 lg:p-6">
                   <div className="flex items-start gap-4">
-                    <img
-                      src={member.avatar}
+                    <img 
+                      src={member.avatar} 
                       alt={member.name}
-                      className="w-16 h-16 rounded-full object-cover"
+                      className="w-16 h-16 lg:w-20 lg:h-20 rounded-full object-cover"
                     />
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">{member.name}</h3>
-                          <p className="text-sm text-gray-600">{member.role}</p>
-                          <p className="text-xs text-gray-500">{member.experience}</p>
-                        </div>
-                        {member.availableToday && (
-                          <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                            Disponible
-                          </Badge>
-                        )}
+                      <h4 className="font-semibold text-gray-900 text-lg">{member.name}</h4>
+                      <p className="text-violet-600 font-medium">{member.role}</p>
+                      <div className="flex items-center gap-1 mt-2">
+                        <Star className="h-4 w-4 fill-current text-amber-400" />
+                        <span className="text-sm text-gray-600">{member.rating} ({member.reviewsCount} avis)</span>
                       </div>
-
-                      <p className="text-sm text-gray-600 mb-3">{member.bio}</p>
-
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {member.specialties.map((specialty, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
-                            {specialty}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="text-sm font-medium">{member.rating}</span>
-                            <span className="text-xs text-gray-500">({member.reviewsCount})</span>
-                          </div>
-                        </div>
-                        
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          style={getButtonStyle('outline')}
-                        >
-                          Réserver avec {member.name.split(' ')[0]}
-                        </Button>
-                      </div>
+                      <p className="text-sm text-gray-600 mt-2">{member.bio}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
-          </div>
-        )}
-
-
-
-        {activeTab === 'infos' && (
-          <div className="space-y-4">
-            <Card>
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Informations pratiques</h3>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">01 23 45 67 89</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Facebook className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm">@salon-avyento</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Instagram className="w-4 h-4 text-pink-600" />
-                    <span className="text-sm">@salon.avyento</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">Lun-Ven: 9h-19h, Sam: 9h-17h</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{salonData.address}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         )}
 
         {activeTab === 'avis' && (
           <div className="space-y-4">
             {reviews.map((review) => (
-              <Card key={review.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                      <User className="w-5 h-5 text-gray-400" />
-                    </div>
+              <Card key={review.id} className="bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+                <CardContent className="p-4 lg:p-6">
+                  <div className="flex items-start gap-4">
                     <div className="flex-1">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="font-medium">{review.name}</span>
-                          <div className="flex gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`w-3 h-3 ${
-                                  i < review.rating 
-                                    ? 'fill-yellow-400 text-yellow-400' 
-                                    : 'text-gray-300'
-                                }`} 
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-500">{review.date}</span>
-                        </div>
-                        <p className="text-sm text-gray-600">{review.comment}</p>
-                        {review.service && (
-                          <Badge variant="outline" className="text-xs mt-2">
-                            {review.service}
-                          </Badge>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium text-gray-900">{review.name}</span>
+                        {review.verified && (
+                          <CheckCircle className="h-4 w-4 text-violet-600" />
                         )}
+                        <span className="text-sm text-gray-500">{review.date}</span>
                       </div>
+                      <div className="flex items-center gap-1 mb-2">
+                        {[...Array(review.rating)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-current text-amber-400" />
+                        ))}
+                      </div>
+                      <p className="text-gray-600 mb-2">{review.comment}</p>
+                      <p className="text-sm text-violet-600">Service: {review.service}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -473,11 +358,45 @@ export default function SalonPage() {
           </div>
         )}
 
-        {/* Footer identique à la page d'accueil */}
-        <div className="text-center text-xs text-gray-500 pb-4 mt-8">
-          <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
-        </div>
+        {activeTab === 'infos' && (
+          <Card className="bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+            <CardContent className="p-4 lg:p-6">
+              <h3 className="font-semibold text-gray-900 text-lg mb-4">Informations pratiques</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-violet-600" />
+                  <span className="text-gray-600">{salonData.address}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-violet-600" />
+                  <span className="text-gray-600">Lun-Sam: 9h-19h, Dim: 10h-18h</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-violet-600" />
+                  <span className="text-gray-600">01 42 36 25 14</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {activeTab === 'galerie' && (
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="aspect-square bg-white/70 backdrop-blur-12 border border-violet-200/50 rounded-lg overflow-hidden shadow-sm">
+                <img 
+                  src={`https://images.unsplash.com/photo-${1522337360788 + i}?w=300&h=300&fit=crop&q=80`}
+                  alt={`Photo ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+      
+      {/* Navigation mobile */}
+      <MobileBottomNav />
     </div>
   );
 }
