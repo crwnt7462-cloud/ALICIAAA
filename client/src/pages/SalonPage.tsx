@@ -259,14 +259,14 @@ export default function SalonPage() {
                       <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs bg-white/60 backdrop-blur-8 px-3 py-1.5 rounded-full border border-slate-300/30 font-medium text-gray-700">
+                      <span className="text-xs bg-violet-500/20 backdrop-blur-12 px-4 py-2 rounded-full border border-violet-400/30 font-semibold text-violet-800 shadow-sm">
                         {category.services.length} service{category.services.length > 1 ? 's' : ''}
                       </span>
-                      <div className="p-2 rounded-lg bg-white/50 backdrop-blur-8 border border-slate-300/20 group-hover:bg-white/70 transition-all duration-200">
+                      <div className="p-2 rounded-lg bg-violet-500/15 backdrop-blur-8 border border-violet-400/25 group-hover:bg-violet-500/25 transition-all duration-200 shadow-sm">
                         {expandedCategory === category.id ? (
-                          <ChevronUp className="w-4 h-4 text-gray-600" />
+                          <ChevronUp className="w-4 h-4 text-violet-700" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-600" />
+                          <ChevronDown className="w-4 h-4 text-violet-700" />
                         )}
                       </div>
                     </div>
