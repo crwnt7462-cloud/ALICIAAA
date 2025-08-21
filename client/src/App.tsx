@@ -1335,6 +1335,7 @@ function Router() {
           <Route path="/advanced-booking" component={AdvancedBookingManager} />
           <Route path="/booking-success" component={BookingSuccess} />
           <Route path="/salon-booking" component={SalonBookingFlow} />
+          <Route path="/planity-style-booking-fixed" component={PlanityStyleBookingFixed} />
 
           {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />
