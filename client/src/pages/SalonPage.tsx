@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 
 export default function SalonPage() {
   const [activeTab, setActiveTab] = useState('services');
@@ -57,7 +56,7 @@ export default function SalonPage() {
         reviewCount: 127,
         priceRange: "€€€",
         address: "75001 Paris, France",
-        backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&q=80",
+        backgroundImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&q=80",
         primaryColor: '#8b5cf6',
         description: "Salon Avyento vous accueille dans un cadre moderne et chaleureux au cœur de Paris. Notre équipe de professionnels passionnés vous propose des services de coiffure et de beauté de haute qualité, en utilisant les dernières techniques et produits premium.",
         instagram: "https://instagram.com/salon.avyento",
@@ -573,6 +572,29 @@ export default function SalonPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Barre de navigation Avyento */}
+      <div className="bg-white/95 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo Avyento */}
+            <div className="flex-shrink-0">
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
+                avyento.
+              </span>
+            </div>
+            
+            {/* Bouton Connexion */}
+            <div>
+              <button 
+                className="bg-white/20 backdrop-blur-md text-gray-900 border border-gray-300/50 px-6 py-2 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-sm"
+                onClick={() => navigate('/client-register')}
+              >
+                Se connecter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Header salon moderne inspiration skincare avec image */}
       <div className="relative overflow-hidden h-[50vh] min-h-[400px]">
         <div 
@@ -606,7 +628,7 @@ export default function SalonPage() {
                   href={salonData.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-r from-pink-500/80 to-purple-600/80 backdrop-blur-md text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2 border border-white/20"
+                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-2"
                 >
                   <Instagram className="w-4 h-4" />
                   Instagram
@@ -617,7 +639,7 @@ export default function SalonPage() {
                   href={salonData.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-blue-600/80 backdrop-blur-md text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2 border border-white/20"
+                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-2"
                 >
                   <Facebook className="w-4 h-4" />
                   Facebook
@@ -628,7 +650,7 @@ export default function SalonPage() {
                   href={salonData.tiktok}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-black/80 backdrop-blur-md text-white px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2 border border-white/20"
+                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-2"
                 >
                   <span className="w-4 h-4 font-bold">♪</span>
                   TikTok
@@ -655,7 +677,7 @@ export default function SalonPage() {
       </div>
 
       {/* Navigation par onglets modernisée */}
-      <div className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-10">
+      <div className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-16 z-10">
         <div className="flex justify-center overflow-x-auto px-4 lg:px-8">
           <div className="flex space-x-6 lg:space-x-8">
             {tabs.map((tab) => (
@@ -677,7 +699,7 @@ export default function SalonPage() {
       </div>
 
       {/* Contenu des onglets - plus compact et moderne */}
-      <div className="max-w-4xl mx-auto p-4 lg:p-6 space-y-4">
+      <div className="max-w-full lg:max-w-7xl mx-auto p-4 lg:p-6 space-y-4">
         {activeTab === 'services' && (
           <div className="space-y-4">
             {serviceCategories.map((category: any) => (
@@ -993,11 +1015,7 @@ export default function SalonPage() {
                 </div>
               </div>
               
-              <div className="mt-6 p-4 bg-green-50/80 backdrop-blur-sm rounded-xl border border-green-200/50">
-                <p className="text-sm text-green-800">
-                  <strong>Pour les professionnels :</strong> Personnalisez cette section en ajoutant une description de votre salon depuis votre espace de gestion.
-                </p>
-              </div>
+
             </div>
           </div>
         )}
