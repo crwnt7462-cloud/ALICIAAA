@@ -60,19 +60,6 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
-- **SYSTÈME DE TEMPLATE SALON UNIFIÉ (21/08/2025 00h54)**:
-  * Design actuel de la page salon enregistré comme template unique pour toutes les pages /salon/
-  * Architecture modulaire avec AvyentoSalonTemplate.ts (configuration), SalonPageTemplate.tsx (composant), SalonPage.tsx (page)
-  * Standardisation complète du design glassmorphism Avyento avec couleurs cohérentes
-  * Système type-safe permettant personnalisation tout en maintenant cohérence visuelle
-  * Documentation complète dans SALON_TEMPLATE_SYSTEM.md
-  * Maintenance centralisée : modifier le template met à jour tous les salons automatiquement
-- **FLOW DE RÉSERVATION OPTIMISÉ (21/08/2025 00h43)**:
-  * Suppression de l'étape redondante de sélection de prestation
-  * Accès direct aux créneaux horaires avec service pré-sélectionné
-  * Page booking-success redesignée avec glassmorphism Avyento (fond gris/blanc, containers glass)
-  * Navigation mobile retirée de la page de confirmation pour un design plus épuré
-  * Confirmation que le système Stripe de paiement d'acompte reste pleinement opérationnel
 - **SÉCURITÉ MAJEURE - Authentification Renforcée (18/08/2025 21h26)**:
   * Suppression du système de démo utilisateur automatique qui bypassait l'authentification
   * Protection complète de toutes les pages professionnelles (/dashboard, /planning, /services-management, /business-features, /clients, etc.)
