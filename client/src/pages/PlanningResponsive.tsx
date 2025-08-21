@@ -9,8 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { Sidebar } from "@/components/Sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { ProHeader } from "@/components/ProHeader";
 
 // Types simplifiés pour éviter les erreurs
 
@@ -452,11 +451,12 @@ export default function PlanningResponsive() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative">
-      {/* Sidebar Desktop uniquement */}
-      <Sidebar />
+      {/* Header horizontal avec logo et navigation */}
+      <ProHeader currentPage="planning" />
       
-      {/* Contenu principal */}
-      <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto pb-20' : 'lg:ml-20 lg:max-w-none lg:w-full lg:pb-0'}`}>
+      {/* Contenu principal avec marge pour header fixe */}
+      <div className="pt-20 md:pt-24 pb-20 md:pb-8">
+        <div className="flex-1 relative max-w-md mx-auto lg:max-w-none lg:w-full pb-20 lg:pb-0">
         <MobileBottomNav userType="pro" />
         {/* Version Mobile - Interface propre */}
         <div className="lg:hidden w-full min-h-screen bg-gray-50">
@@ -1422,6 +1422,7 @@ export default function PlanningResponsive() {
       </Dialog>
       
 
+        </div>
       </div>
     </div>
   );
