@@ -579,15 +579,17 @@ export default function SalonPage() {
           <div className="flex justify-between items-center h-16">
             {/* Logo Avyento */}
             <div className="flex-shrink-0">
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
-                avyento.
-              </span>
+              <img 
+                src="/avyento-logo.png" 
+                alt="Avyento"
+                className="h-8 w-auto"
+              />
             </div>
             
             {/* Bouton Connexion */}
             <div>
               <button 
-                className="bg-white/20 backdrop-blur-md text-gray-900 border border-gray-300/50 px-6 py-2 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-sm"
+                className="bg-purple-600/20 backdrop-blur-md text-purple-900 border border-purple-300/50 px-6 py-2 rounded-full font-medium text-sm hover:bg-purple-600/30 transition-all duration-300 shadow-lg"
                 onClick={() => navigate('/client-register')}
               >
                 Se connecter
@@ -597,11 +599,11 @@ export default function SalonPage() {
         </div>
       </div>
       {/* Header salon moderne inspiration skincare avec image */}
-      <div className="relative overflow-hidden h-[50vh] min-h-[400px]">
+      <div className="relative overflow-hidden h-[50vh] min-h-[400px] sm:h-[60vh] lg:h-[70vh]">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
-            backgroundImage: `url(${salonData.backgroundImage || 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&q=80'})`,
+            backgroundImage: `url(${salonData.backgroundImage || '/salon-skincare-header.png'})`,
             backgroundPosition: 'center center'
           }}
         >
@@ -609,19 +611,19 @@ export default function SalonPage() {
         </div>
         
         {/* Contenu superposé au style skincare */}
-        <div className="relative h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-16">
-          <div className="max-w-md space-y-6">
+        <div className="relative h-full flex flex-col justify-center items-start px-4 sm:px-6 md:px-12 lg:px-16">
+          <div className="max-w-md sm:max-w-lg space-y-4 sm:space-y-6">
             <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 {salonData.name}
               </h1>
-              <p className="text-white/90 text-sm md:text-base font-light">
+              <p className="text-white/90 text-xs sm:text-sm md:text-base font-light">
                 {salonData.address}
               </p>
             </div>
             
             {/* Boutons glassmorphism violets */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               
               {/* Réseaux sociaux - seulement si les liens existent */}
               {salonData.instagram && (
@@ -629,10 +631,10 @@ export default function SalonPage() {
                   href={salonData.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-2"
+                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-3 sm:px-6 py-2 sm:py-3 rounded-full font-medium text-xs sm:text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1 sm:gap-2"
                 >
-                  <Instagram className="w-4 h-4" />
-                  Instagram
+                  <Instagram className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Instagram</span>
                 </a>
               )}
               {salonData.facebook && (
@@ -640,10 +642,10 @@ export default function SalonPage() {
                   href={salonData.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-2"
+                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-3 sm:px-6 py-2 sm:py-3 rounded-full font-medium text-xs sm:text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1 sm:gap-2"
                 >
-                  <Facebook className="w-4 h-4" />
-                  Facebook
+                  <Facebook className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Facebook</span>
                 </a>
               )}
               {salonData.tiktok && (
@@ -651,24 +653,24 @@ export default function SalonPage() {
                   href={salonData.tiktok}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-2"
+                  className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-3 sm:px-6 py-2 sm:py-3 rounded-full font-medium text-xs sm:text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1 sm:gap-2"
                 >
-                  <span className="w-4 h-4 font-bold">♪</span>
-                  TikTok
+                  <span className="w-3 h-3 sm:w-4 sm:h-4 font-bold">♪</span>
+                  <span className="hidden sm:inline">TikTok</span>
                 </a>
               )}
             </div>
             
             {/* Info badges */}
-            <div className="flex items-center gap-4 pt-2">
-              <div className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/20">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-medium text-white">{salonData.rating}</span>
+            <div className="flex items-center gap-2 sm:gap-4 pt-2">
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/20">
+                <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs sm:text-sm font-medium text-white">{salonData.rating}</span>
                 <span className="text-xs text-white/80">({salonData.reviewCount})</span>
               </div>
               {salonData.verified && (
-                <div className="flex items-center gap-1.5 bg-green-500/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-green-400/30">
-                  <CheckCircle className="w-4 h-4 text-green-400" />
+                <div className="flex items-center gap-1 sm:gap-1.5 bg-green-500/20 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-green-400/30">
+                  <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
                   <span className="text-xs font-medium text-green-200">Vérifié</span>
                 </div>
               )}
@@ -679,13 +681,13 @@ export default function SalonPage() {
 
       {/* Navigation par onglets modernisée */}
       <div className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-16 z-10">
-        <div className="flex justify-center overflow-x-auto px-4 lg:px-8">
-          <div className="flex space-x-6 lg:space-x-8">
+        <div className="flex justify-center overflow-x-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex space-x-2 sm:space-x-6 lg:space-x-8">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`whitespace-nowrap py-4 px-3 text-sm font-medium border-b-2 transition-all duration-200 ${
+                className={`whitespace-nowrap py-3 sm:py-4 px-2 sm:px-3 text-xs sm:text-sm font-medium border-b-2 transition-all duration-200 ${
                   tab.active
                     ? 'text-gray-900 hover:text-gray-900'
                     : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
@@ -700,7 +702,7 @@ export default function SalonPage() {
       </div>
 
       {/* Contenu des onglets - plus compact et moderne */}
-      <div className="max-w-full lg:max-w-7xl mx-auto p-4 lg:p-6 space-y-4">
+      <div className="max-w-full lg:max-w-7xl mx-auto p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4">
         {activeTab === 'services' && (
           <div className="space-y-4">
             {serviceCategories.map((category: any) => (
