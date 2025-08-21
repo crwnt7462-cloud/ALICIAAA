@@ -5,10 +5,10 @@ import {
   Users, 
   Settings, 
   BarChart3, 
-  MessageSquare,
   Package,
   User
 } from 'lucide-react';
+import avyentoProLogo from '@assets/avyento-pro-logo.png';
 
 interface ProHeaderProps {
   currentPage?: string;
@@ -48,13 +48,6 @@ export function ProHeader({ currentPage = 'services' }: ProHeaderProps) {
       active: currentPage === 'analytics'
     },
     {
-      id: 'messages',
-      label: 'Messages',
-      icon: MessageSquare,
-      path: '/messaging-hub',
-      active: currentPage === 'messages'
-    },
-    {
       id: 'compte',
       label: 'Mon Compte',
       icon: User,
@@ -66,23 +59,44 @@ export function ProHeader({ currentPage = 'services' }: ProHeaderProps) {
   return (
     <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center h-16">
           {/* Logo */}
           <div 
             onClick={() => setLocation('/')}
-            className="flex items-center space-x-2 cursor-pointer group"
+            className="flex items-center cursor-pointer group mr-8"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
-              avyento.
-            </span>
+            <img 
+              src={avyentoProLogo} 
+              alt="Avyento Pro" 
+              className="h-8 w-auto"
+            />
           </div>
 
-          {/* Navigation menu */}
-          <nav className="flex items-center space-x-8">
-            {menuItems.map((item) => (
+          {/* Navigation menu centré avec Mon Compte à droite */}
+          <div className="flex-1 flex items-center justify-center">
+            <nav className="flex items-center space-x-8">
+              {menuItems.filter(item => item.id !== 'compte').map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setLocation(item.path)}
+                  className={`
+                    flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+                    ${item.active 
+                      ? 'text-purple-600 bg-purple-50 border-b-2 border-purple-600' 
+                      : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50'
+                    }
+                  `}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* Mon Compte à droite */}
+          <div className="ml-8">
+            {menuItems.filter(item => item.id === 'compte').map((item) => (
               <button
                 key={item.id}
                 onClick={() => setLocation(item.path)}
@@ -98,7 +112,7 @@ export function ProHeader({ currentPage = 'services' }: ProHeaderProps) {
                 <span>{item.label}</span>
               </button>
             ))}
-          </nav>
+          </div>
         </div>
       </div>
     </header>
