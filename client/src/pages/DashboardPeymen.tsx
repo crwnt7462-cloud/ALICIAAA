@@ -42,9 +42,9 @@ export default function DashboardPeymen() {
   };
 
   // Ensure we have proper default values for all accessed properties
-  const appointments = safeStats.appointmentsToday || 0;
-  const revenue = safeStats.monthlyRevenue || 0;
-  const clients = safeStats.totalClients || 0;
+  const appointments = (safeStats as any).appointmentsToday || 0;
+  const revenue = (safeStats as any).monthlyRevenue || 0;
+  const clients = (safeStats as any).totalClients || 0;
 
   if (statsLoading || revenueLoading || appointmentsLoading) {
     return (
@@ -106,6 +106,16 @@ export default function DashboardPeymen() {
                 <Calendar className="w-4 h-4" />
               </div>
               <span className="font-medium">Planning</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/staff-management')}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+                <User className="w-4 h-4" />
+              </div>
+              <span className="font-medium">Équipe</span>
             </button>
             
             <button 

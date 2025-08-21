@@ -67,6 +67,7 @@ import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
 import StaffManagement from "@/pages/StaffManagement";
+import StaffManagementModern from "@/pages/StaffManagementModern";
 import ServicesManagement from "@/pages/ServicesManagement";
 import ProfessionalSettingsDemo from "@/pages/ProfessionalSettingsDemo";
 import ModernSalonCompact from "@/pages/ModernSalonCompact";
@@ -1254,7 +1255,7 @@ function Router() {
           {/* ROUTES PROFESSIONNELLES PROTÉGÉES */}
           <Route path="/dashboard-old" component={() => <ProtectedRoute><DashboardPeymen /></ProtectedRoute>} />
           <Route path="/admin-dashboard" component={() => <ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/staff-management" component={() => <ProtectedRoute><StaffManagement /></ProtectedRoute>} />
+          <Route path="/staff-management" component={() => <ProtectedRoute><StaffManagementModern /></ProtectedRoute>} />
           <Route path="/services-management" component={() => <ProtectedRoute><ServicesManagement /></ProtectedRoute>} />
           <Route path="/professional-settings-demo" component={() => <ProtectedRoute><ProfessionalSettingsDemo /></ProtectedRoute>} />
           <Route path="/business-features" component={() => <ProtectedRoute><BusinessFeaturesWithBottomSheets /></ProtectedRoute>} />
