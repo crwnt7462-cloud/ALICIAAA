@@ -60,9 +60,9 @@ export default function ProfessionalSelection() {
 
   const handleContinue = () => {
     if (selectedProfessional) {
-      // Stocker la sélection et passer à l'étape suivante
+      // Stocker la sélection et passer à la sélection de service
       localStorage.setItem('selectedProfessional', selectedProfessional);
-      setLocation('/booking-datetime');
+      setLocation('/service-selection');
     }
   };
 
