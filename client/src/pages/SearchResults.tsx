@@ -190,28 +190,10 @@ export default function SearchResults() {
 
 
 
-  // Salon de démo Avyento uniquement (modèle officiel)
-  const demoSalons = [
-    {
-      id: "salon-avyento",
-      name: "Salon Avyento",
-      rating: 4.8,
-      reviews: 127,
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=200&fit=crop",
-      location: "Paris 1er",
-      distance: "0.5 km",
-      nextSlot: "Aujourd'hui 14h00",
-      services: ["Coiffure Premium", "Soins Visage", "Manucure"],
-      priceRange: "€€€",
-      category: "coiffure",
-      verified: true,
-      popular: true,
-      route: "/salon"
-    }
-  ];
+  // Le salon Avyento officiel vient maintenant uniquement du backend
 
-  // Combiner API et démo pour avoir plus de résultats
-  const allResults = [...(apiResults || []), ...demoSalons];
+  // Utiliser seulement les données du backend
+  const allResults = apiResults || [];
 
   const filteredResults = selectedCategory === "all" 
     ? allResults 
