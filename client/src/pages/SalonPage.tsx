@@ -59,6 +59,7 @@ export default function SalonPage() {
         address: "75001 Paris, France",
         backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&q=80",
         primaryColor: '#8b5cf6',
+        description: "Salon Avyento vous accueille dans un cadre moderne et chaleureux au cœur de Paris. Notre équipe de professionnels passionnés vous propose des services de coiffure et de beauté de haute qualité, en utilisant les dernières techniques et produits premium.",
         instagram: "https://instagram.com/salon.avyento",
         facebook: "https://facebook.com/salon.avyento",
         tiktok: "https://tiktok.com/@salon.avyento"
@@ -598,12 +599,6 @@ export default function SalonPage() {
             
             {/* Boutons glassmorphism violets */}
             <div className="flex flex-wrap gap-3">
-              <button 
-                className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full font-medium text-sm hover:bg-white/30 transition-all duration-300 shadow-lg"
-                onClick={() => navigate('/booking')}
-              >
-                Réserver
-              </button>
               
               {/* Réseaux sociaux - seulement si les liens existent */}
               {salonData.instagram && (
@@ -787,6 +782,97 @@ export default function SalonPage() {
                 )}
               </div>
             ))}
+            
+            {/* Carte de localisation */}
+            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm overflow-hidden mt-6">
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-900 text-lg mb-3 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-purple-600" />
+                  Notre localisation
+                </h3>
+                <div className="bg-gray-100 rounded-xl h-48 flex items-center justify-center">
+                  <div className="text-center">
+                    <MapPin className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-600">{salonData.address}</p>
+                    <p className="text-xs text-gray-500 mt-1">Carte interactive disponible prochainement</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'galerie' && (
+          <div className="space-y-4">
+            {/* Galeries de photos */}
+            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-6">
+              <h3 className="font-semibold text-gray-900 text-lg mb-4">Nos galeries photos</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Galerie Coiffure */}
+                <div className="bg-white/95 backdrop-blur-md border border-gray-200/40 rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-300">
+                  <div className="relative h-32">
+                    <img
+                      src="https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=400&h=300&fit=crop&q=80"
+                      alt="Galerie Coiffure"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                      12 photos
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">Coiffure & Styling</h4>
+                    <p className="text-sm text-gray-600 line-clamp-2">Découvrez nos dernières créations en coiffure, coupes tendances et colorations.</p>
+                  </div>
+                </div>
+
+                {/* Galerie Soins */}
+                <div className="bg-white/95 backdrop-blur-md border border-gray-200/40 rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-300">
+                  <div className="relative h-32">
+                    <img
+                      src="https://images.unsplash.com/photo-1544717301-9cdcb1f5940f?w=400&h=300&fit=crop&q=80"
+                      alt="Galerie Soins"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                      8 photos
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">Soins & Bien-être</h4>
+                    <p className="text-sm text-gray-600 line-clamp-2">Moments de détente et soins personnalisés pour sublimer votre beauté naturelle.</p>
+                  </div>
+                </div>
+
+                {/* Galerie Salon */}
+                <div className="bg-white/95 backdrop-blur-md border border-gray-200/40 rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-300">
+                  <div className="relative h-32">
+                    <img
+                      src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80"
+                      alt="Galerie Salon"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                      15 photos
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">Atmosphère du Salon</h4>
+                    <p className="text-sm text-gray-600 line-clamp-2">Plongez dans l'univers raffiné et moderne de notre institut de beauté.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 p-4 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/50">
+                <p className="text-sm text-blue-800">
+                  <strong>Pour les professionnels :</strong> Vous pouvez renommer vos galeries et ajouter des descriptions personnalisées à chaque photo depuis votre espace de gestion.
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -864,6 +950,14 @@ export default function SalonPage() {
 
         {activeTab === 'infos' && (
           <div className="space-y-4">
+            {/* Description du salon - optionnelle */}
+            {salonData.description && (
+              <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-6">
+                <h3 className="font-semibold text-gray-900 text-lg mb-4">À propos de nous</h3>
+                <p className="text-gray-700 leading-relaxed">{salonData.description}</p>
+              </div>
+            )}
+
             <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-6">
               <h3 className="font-semibold text-gray-900 text-lg mb-4">Informations pratiques</h3>
               
@@ -884,15 +978,25 @@ export default function SalonPage() {
                 </div>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/30">
-                    <Facebook className="w-5 h-5 text-blue-600" />
-                    <span className="text-sm font-medium">@salon-avyento</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-pink-50/80 backdrop-blur-sm rounded-xl border border-pink-200/30">
-                    <Instagram className="w-5 h-5 text-pink-600" />
-                    <span className="text-sm font-medium">@salon.avyento</span>
-                  </div>
+                  {salonData.facebook && (
+                    <div className="flex items-center gap-3 p-3 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/30">
+                      <Facebook className="w-5 h-5 text-blue-600" />
+                      <span className="text-sm font-medium">@salon-avyento</span>
+                    </div>
+                  )}
+                  {salonData.instagram && (
+                    <div className="flex items-center gap-3 p-3 bg-pink-50/80 backdrop-blur-sm rounded-xl border border-pink-200/30">
+                      <Instagram className="w-5 h-5 text-pink-600" />
+                      <span className="text-sm font-medium">@salon.avyento</span>
+                    </div>
+                  )}
                 </div>
+              </div>
+              
+              <div className="mt-6 p-4 bg-green-50/80 backdrop-blur-sm rounded-xl border border-green-200/50">
+                <p className="text-sm text-green-800">
+                  <strong>Pour les professionnels :</strong> Personnalisez cette section en ajoutant une description de votre salon depuis votre espace de gestion.
+                </p>
               </div>
             </div>
           </div>
