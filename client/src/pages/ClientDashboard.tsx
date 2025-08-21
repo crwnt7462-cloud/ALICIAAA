@@ -69,7 +69,7 @@ export default function ClientDashboard() {
   const handleLogout = () => {
     localStorage.removeItem('clientToken');
     localStorage.removeItem('clientData');
-    setLocation('/');
+    setLocation('/client-login');
   };
 
   const now = new Date();

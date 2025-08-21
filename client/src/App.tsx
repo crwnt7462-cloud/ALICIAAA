@@ -1137,9 +1137,9 @@ function Router() {
 
   // Page Dashboard - PROTÉGÉE - Plein écran sans contraintes avec glassmorphism
   if (location === '/dashboard') {
-    // Redirection immédiate vers l'accueil si pas authentifié
+    // Redirection vers login professionnel si pas authentifié
     if (!isAuthenticated && !isLoading) {
-      window.location.href = '/';
+      window.location.href = '/pro-login';
       return null;
     }
     return (
@@ -1154,9 +1154,9 @@ function Router() {
   // Pages professionnelles PROTÉGÉES avec sidebar persistant
   const proPages = ['/planning', '/clients', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics', '/business-features', '/ai'];
   if (proPages.includes(location)) {
-    // Redirection immédiate vers l'accueil si pas authentifié
+    // Redirection vers login professionnel si pas authentifié
     if (!isAuthenticated && !isLoading) {
-      window.location.href = '/';
+      window.location.href = '/pro-login';
       return null;
     }
     return (

@@ -92,7 +92,7 @@ export default function ClientRegister() {
       
       {/* Bouton retour en haut à gauche avec style /home */}
       <button
-        onClick={() => setLocation('/')}
+        onClick={() => setLocation('/client-login')}
         className="absolute left-6 top-6 z-10 glass-button p-3 rounded-xl transition-all duration-200 hover:scale-105"
       >
         <ArrowLeft className="h-5 w-5 text-gray-700" />
