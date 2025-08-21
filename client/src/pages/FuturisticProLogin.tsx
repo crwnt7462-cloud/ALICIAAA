@@ -11,7 +11,7 @@ export default function FuturisticProLogin() {
   const [, setLocation] = useLocation();
   const [isLogin, setIsLogin] = useState(true);
   const { toast } = useToast();
-  const { login, register, isLoggingIn, isRegistering, loginError, registerError } = useAuthSession();
+  const { loginMutation, registerMutation } = useAuthSession();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -25,13 +25,13 @@ export default function FuturisticProLogin() {
     
     if (isLogin) {
       // Connexion
-      login({ email: formData.email, password: formData.password }, {
+      loginMutation.mutate({ email: formData.email, password: formData.password }, {
         onSuccess: () => {
           toast({
             title: "Connexion réussie",
             description: "Bienvenue dans votre espace professionnel",
           });
-          setLocation('/pro-dashboard');
+          setLocation('/dashboard');
         },
         onError: (error: any) => {
           toast({
@@ -52,7 +52,7 @@ export default function FuturisticProLogin() {
         return;
       }
       
-      register({
+      registerMutation.mutate({
         email: formData.email,
         password: formData.password,
         businessName: formData.businessName
@@ -62,7 +62,7 @@ export default function FuturisticProLogin() {
             title: "Inscription réussie",
             description: "Votre compte professionnel a été créé",
           });
-          setLocation('/pro-dashboard');
+          setLocation('/dashboard');
         },
         onError: (error: any) => {
           toast({
@@ -213,10 +213,10 @@ export default function FuturisticProLogin() {
 
                 <Button 
                   type="submit" 
-                  disabled={isLoggingIn || isRegistering}
+                  disabled={loginMutation.isPending || registerMutation.isPending}
                   className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {(isLoggingIn || isRegistering) ? "Connexion en cours..." : (isLogin ? "Se connecter" : "Créer mon espace pro")}
+                  {(loginMutation.isPending || registerMutation.isPending) ? "Connexion en cours..." : (isLogin ? "Se connecter" : "Créer mon espace pro")}
                 </Button>
               </form>
 
