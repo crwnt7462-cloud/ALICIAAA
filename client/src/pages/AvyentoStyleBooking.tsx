@@ -65,23 +65,23 @@ export default function AvyentoStyleBooking() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-4">
+      <div className="bg-white/90 backdrop-blur-16 border-b border-violet-200/50 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8 py-4">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => window.history.back()}
-              className="h-10 w-10 rounded-full"
+              className="h-10 w-10 rounded-full bg-violet-100/50 hover:bg-violet-200/70"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4 text-violet-700" />
             </Button>
             <div className="flex-1">
               <h1 className="font-semibold text-gray-900">{salon.name}</h1>
               <div className="flex items-center gap-2 text-sm text-gray-600">
-                <MapPin className="h-3 w-3" />
+                <MapPin className="h-3 w-3 text-violet-600" />
                 <span>{salon.address}</span>
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function AvyentoStyleBooking() {
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-4 py-6">
+      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6 h-screen overflow-y-auto">
         {/* En-tête réservation */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -109,64 +109,66 @@ export default function AvyentoStyleBooking() {
             <div className="space-y-3">
               <div className="text-sm font-medium text-gray-700 mb-3">Cheveux</div>
               
-              {services.map((service) => (
-                <Card 
-                  key={service.id}
-                  className="border border-gray-200 hover:border-gray-300 cursor-pointer transition-colors"
-                  onClick={() => handleServiceSelect(service)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium text-gray-900">{service.name}</h4>
-                        </div>
-                        {service.description && (
-                          <p className="text-sm text-gray-600 mb-2">{service.description}</p>
-                        )}
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            <span>{service.duration}</span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {services.map((service) => (
+                  <Card 
+                    key={service.id}
+                    className="bg-white/70 backdrop-blur-12 border border-violet-200/50 hover:border-violet-300/70 hover:bg-white/80 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-lg"
+                    onClick={() => handleServiceSelect(service)}
+                  >
+                    <CardContent className="p-4 lg:p-6">
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-semibold text-gray-900 text-base lg:text-lg">{service.name}</h4>
+                          </div>
+                          {service.description && (
+                            <p className="text-sm text-gray-600 mb-3 lg:mb-2">{service.description}</p>
+                          )}
+                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3 text-violet-600" />
+                              <span>{service.duration}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className="text-lg font-semibold text-gray-900 mb-1">
-                          {service.price}
+                        
+                        <div className="text-center lg:text-right flex-shrink-0">
+                          <div className="text-xl lg:text-2xl font-bold text-violet-700 mb-2">
+                            {service.price}
+                          </div>
+                          <Button 
+                            size="sm"
+                            className="bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white px-4 lg:px-6 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200"
+                          >
+                            Choisir
+                          </Button>
                         </div>
-                        <Button 
-                          size="sm"
-                          className="bg-gray-900 hover:bg-gray-800 text-white px-4"
-                        >
-                          Choisir
-                        </Button>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
 
             {/* Section avis */}
-            <Card className="mt-6 border-gray-200">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm font-medium">
+            <Card className="mt-6 bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+              <CardContent className="p-4 lg:p-6">
+                <div className="flex items-center gap-4">
+                  <div className="bg-violet-600/90 backdrop-blur-8 text-white px-4 py-2 rounded-xl text-lg font-bold shadow-sm">
                     {salon.rating}
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-1 mb-1">
-                      <span className="font-medium text-gray-900">Accueil</span>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-semibold text-gray-900 text-base">Accueil</span>
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-3 w-3 fill-current text-amber-400" />
+                          <Star key={i} className="h-4 w-4 fill-current text-amber-400" />
                         ))}
                       </div>
-                      <span className="text-sm text-gray-600">{salon.rating}</span>
+                      <span className="text-sm text-gray-600 font-medium">{salon.rating}</span>
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-sm text-gray-500">
                       {salon.reviewCount} clients ont donné leur avis
                     </div>
                   </div>
@@ -203,12 +205,12 @@ export default function AvyentoStyleBooking() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {timeSlots.map((time) => (
                   <Button
                     key={time}
                     variant="outline"
-                    className="h-12 border-gray-300 hover:border-gray-900 hover:bg-gray-900 hover:text-white"
+                    className="h-12 lg:h-14 bg-white/70 backdrop-blur-8 border-violet-200/50 hover:border-violet-400/70 hover:bg-violet-600/90 hover:text-white transition-all duration-200 font-medium text-base shadow-sm hover:shadow-md"
                     onClick={() => setCurrentStep('details')}
                   >
                     {time}
@@ -236,24 +238,24 @@ export default function AvyentoStyleBooking() {
               </div>
             </div>
 
-            <Card className="border-gray-200">
-              <CardContent className="p-4">
-                <div className="space-y-3">
+            <Card className="bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+              <CardContent className="p-4 lg:p-6">
+                <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Service</span>
-                    <span className="font-medium">{selectedService.name}</span>
+                    <span className="font-semibold text-gray-900">{selectedService.name}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Durée</span>
-                    <span className="font-medium">{selectedService.duration}</span>
+                    <span className="font-semibold text-gray-900">{selectedService.duration}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Horaire</span>
-                    <span className="font-medium">Aujourd'hui à 14:00</span>
+                    <span className="font-semibold text-gray-900">Aujourd'hui à 14:00</span>
                   </div>
-                  <div className="border-t pt-3 flex justify-between items-center">
-                    <span className="font-medium text-gray-900">Total</span>
-                    <span className="text-xl font-semibold text-gray-900">{selectedService.price}</span>
+                  <div className="border-t border-violet-200/30 pt-4 flex justify-between items-center">
+                    <span className="font-semibold text-gray-900 text-lg">Total</span>
+                    <span className="text-2xl font-bold text-violet-700">{selectedService.price}</span>
                   </div>
                 </div>
               </CardContent>
@@ -261,7 +263,7 @@ export default function AvyentoStyleBooking() {
 
             <Button
               onClick={handleBooking}
-              className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-medium"
+              className="w-full h-12 lg:h-14 bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white font-semibold text-base lg:text-lg shadow-md hover:shadow-lg transition-all duration-200"
             >
               Confirmer la réservation
             </Button>
