@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search, MapPin } from "lucide-react";
+import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search, MapPin, Home, BarChart3, Settings } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { getGenericGlassButton } from "@/lib/salonColors";
 import { useState } from "react";
-import { Header } from "@/components/Header";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
@@ -57,7 +56,7 @@ export default function Landing() {
   return (
     <>
       {/* Menu de navigation desktop - Affiché directement */}
-      <div className="hidden lg:block bg-white/95 backdrop-blur-lg border-b border-gray-200/50 px-6 py-4 shadow-sm">
+      <div className="lg:block bg-white/95 backdrop-blur-lg border-b border-gray-200/50 px-6 py-4 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-3">
@@ -76,7 +75,7 @@ export default function Landing() {
               onClick={() => setLocation('/dashboard')}
               className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
             >
-              <Calendar className="w-4 h-4" />
+              <Home className="w-4 h-4" />
               <span className="font-medium">Tableau de bord</span>
             </button>
             
@@ -100,7 +99,7 @@ export default function Landing() {
               onClick={() => setLocation('/client-analytics')}
               className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
             >
-              <TrendingUp className="w-4 h-4" />
+              <BarChart3 className="w-4 h-4" />
               <span className="font-medium">Analytics</span>
             </button>
             
@@ -116,7 +115,7 @@ export default function Landing() {
               onClick={() => setLocation('/business-features')}
               className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
             >
-              <MapPin className="w-4 h-4" />
+              <Settings className="w-4 h-4" />
               <span className="font-medium">Paramètres</span>
             </button>
           </div>
