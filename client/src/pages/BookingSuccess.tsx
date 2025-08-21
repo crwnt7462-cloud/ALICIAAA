@@ -2,7 +2,6 @@ import React from 'react';
 import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Calendar, MapPin, Clock, User, ArrowLeft } from "lucide-react";
-import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 export default function BookingSuccess() {
   const [, setLocation] = useLocation();
@@ -40,7 +39,7 @@ export default function BookingSuccess() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6 pb-20 lg:pb-6">
+      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6">
         {/* Animation de succès avec glassmorphism */}
         <div className="text-center py-8 lg:py-12">
           <div className="inline-flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 bg-green-500/10 backdrop-blur-12 border border-green-200/30 rounded-full mb-6 animate-pulse shadow-lg">
@@ -180,9 +179,6 @@ export default function BookingSuccess() {
           </Button>
         </div>
       </div>
-
-      {/* Navigation mobile */}
-      <MobileBottomNav />
     </div>
   );
 }
