@@ -1063,7 +1063,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     password: z.string().min(6, "Mot de passe requis")
   });
 
-  // Route de connexion professionnelle
+  // Route de connexion professionnelle - SUPPRIMÉE (conflit avec fullStackRoutes.ts)
+  /*
   app.post('/api/login/professional', validateRequest(professionalLoginSchema), async (req: any, res) => {
     try {
       const { email, password } = req.validatedData;
@@ -1113,6 +1114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  */
 
   // Route de connexion classique (compatible avec LoginClassic.tsx)
   app.post('/api/login-classic', validateRequest(professionalLoginSchema), async (req: any, res) => {

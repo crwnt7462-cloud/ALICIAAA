@@ -144,16 +144,17 @@ export async function setupAuth(app: Express) {
     })(req, res, next);
   });
 
-  app.get("/api/logout", (req, res) => {
-    req.logout(() => {
-      res.redirect(
-        client.buildEndSessionUrl(config, {
-          client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
-        }).href
-      );
-    });
-  });
+  // Route logout Replit Auth désactivée - utilisation de /api/auth/logout unifié
+  // app.get("/api/logout", (req, res) => {
+  //   req.logout(() => {
+  //     res.redirect(
+  //       client.buildEndSessionUrl(config, {
+  //         client_id: process.env.REPL_ID!,
+  //         post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+  //       }).href
+  //     );
+  //   });
+  // });
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {

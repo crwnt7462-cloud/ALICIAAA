@@ -6,8 +6,8 @@ export function useAuth() {
   const { data: user, isLoading, error, refetch } = useQuery({
     queryKey: ["/api/auth/user"],
     retry: false,
-    staleTime: 0, // Forcer la vérification immédiate
-    gcTime: 0, // Pas de cache
+    staleTime: 5 * 60 * 1000, // Cache 5 minutes pour éviter les déconnexions
+    gcTime: 10 * 60 * 1000, // Garder en cache 10 minutes
   });
 
   // Si erreur 401, on est sûr que pas authentifié

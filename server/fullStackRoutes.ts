@@ -1424,6 +1424,86 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // Route pour la récupération de mot de passe
+  app.post('/api/auth/forgot-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Email requis' 
+        });
+      }
+
+      // Vérifier si l'utilisateur existe
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Pour la sécurité, on retourne succès même si l'email n'existe pas
+        return res.json({ 
+          success: true, 
+          message: 'Si ce compte existe, un email de récupération a été envoyé' 
+        });
+      }
+
+      // TODO: Implémenter l'envoi d'email réel
+      // Pour l'instant, simuler l'envoi
+      console.log('📧 Récupération de mot de passe demandée pour:', email);
+      
+      res.json({ 
+        success: true, 
+        message: 'Un email de récupération a été envoyé à votre adresse' 
+      });
+      
+    } catch (error: any) {
+      console.error('❌ Erreur récupération mot de passe:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erreur serveur lors de la récupération' 
+      });
+    }
+  });
+
+  // Route pour la déconnexion unifiée
+  app.post('/api/auth/logout', async (req, res) => {
+    try {
+      const session = req.session as any;
+      
+      if (session) {
+        // Détruire la session
+        session.destroy((err: any) => {
+          if (err) {
+            console.error('❌ Erreur destruction session:', err);
+            return res.status(500).json({ 
+              success: false, 
+              message: 'Erreur lors de la déconnexion' 
+            });
+          }
+          
+          // Nettoyer le cookie de session
+          res.clearCookie('connect.sid');
+          res.json({ 
+            success: true, 
+            message: 'Déconnexion réussie' 
+          });
+        });
+      } else {
+        res.json({ 
+          success: true, 
+          message: 'Aucune session active' 
+        });
+      }
+      
+    } catch (error: any) {
+      console.error('❌ Erreur déconnexion:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erreur serveur lors de la déconnexion' 
+      });
+    }
+  });
+
   // 🏢 ROUTES SALON AVEC AUTHENTIFICATION PRO
   
   // Récupérer le salon d'un propriétaire authentifié

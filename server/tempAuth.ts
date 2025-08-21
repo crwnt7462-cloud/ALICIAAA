@@ -41,39 +41,11 @@ export const tempAuthMiddleware: RequestHandler = async (req: any, res, next) =>
 };
 
 export const setupTempAuth = (app: Express) => {
-  // Route de connexion temporaire
-  app.get('/api/login', (req: any, res) => {
-    const demoUser = {
-      id: 'demo-pro-' + Date.now(),
-      email: 'pro@avyento-demo.fr',
-      firstName: 'Professionnel',
-      lastName: 'Démo',
-      businessName: 'Salon Avyento Démo',
-      isProfessional: true,
-      subscriptionPlan: 'premium-pro'
-    };
-    
-    const sessionId = 'demo-session-' + Date.now();
-    tempSessions.set(sessionId, demoUser);
-    
-    res.cookie('sessionId', sessionId, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.redirect('/dashboard');
-  });
+  // SYSTEME TEMP AUTH DESACTIVE - Utilisation du système d'authentification principal
+  console.log('⚠️ TempAuth désactivé - Système d\'authentification principal utilisé');
   
-  // Route de déconnexion
-  app.get('/api/logout', (req: any, res) => {
-    const sessionId = req.cookies?.sessionId;
-    if (sessionId) {
-      tempSessions.delete(sessionId);
-      res.clearCookie('sessionId');
-    }
-    res.redirect('/');
-  });
-  
-  // Route pour récupérer l'utilisateur
-  app.get('/api/auth/user', tempAuthMiddleware, (req: any, res) => {
-    res.json(req.user);
-  });
+  // Pas de routes en conflit avec le système principal
+  // Les routes d'authentification sont gérées dans fullStackRoutes.ts
 };
 
 // Middleware simple qui autorise toujours l'accès (pour les tests)

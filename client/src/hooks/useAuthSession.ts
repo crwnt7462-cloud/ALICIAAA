@@ -75,6 +75,8 @@ export function useAuthSession() {
     },
     onSuccess: () => {
       queryClient.clear(); // Vider tout le cache
+      // Rediriger vers la page d'accueil après déconnexion
+      window.location.href = '/';
     }
   });
 
