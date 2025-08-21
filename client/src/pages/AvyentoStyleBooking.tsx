@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Star, MapPin, Clock, Calendar, User } from "lucide-react";
+import { ArrowLeft, Star, MapPin, Clock, Calendar } from "lucide-react";
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 interface Service {
@@ -14,10 +13,34 @@ interface Service {
   description?: string;
 }
 
+const services: Service[] = [
+  {
+    id: 1,
+    name: "Coupe Signature",
+    duration: "30min",
+    price: "39 €",
+    description: "Coupe personnalisée avec consultation morphologique"
+  },
+  {
+    id: 2,
+    name: "Coupe Dégradée",
+    duration: "45min", 
+    price: "46 €",
+    description: "Coupe moderne avec dégradé sur-mesure"
+  },
+  {
+    id: 3,
+    name: "Coupe Transformation",
+    duration: "45min",
+    price: "45 €",
+    description: "Changement complet de style avec conseils"
+  }
+];
+
 export default function AvyentoStyleBooking() {
   const [, setLocation] = useLocation();
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [currentStep, setCurrentStep] = useState<'service' | 'time' | 'details'>('service');
+  const [selectedService, setSelectedService] = useState<Service | null>(services[0] || null);
+  const [currentStep, setCurrentStep] = useState<'service' | 'time' | 'details'>('time');
 
   const salon = {
     name: "Salon Excellence Paris",
@@ -26,30 +49,6 @@ export default function AvyentoStyleBooking() {
     reviewCount: 343,
     verified: true
   };
-
-  const services: Service[] = [
-    {
-      id: 1,
-      name: "Coupe Signature",
-      duration: "30min",
-      price: "39 €",
-      description: "Coupe personnalisée avec consultation morphologique"
-    },
-    {
-      id: 2,
-      name: "Coupe Dégradée",
-      duration: "45min", 
-      price: "46 €",
-      description: "Coupe moderne avec dégradé sur-mesure"
-    },
-    {
-      id: 3,
-      name: "Coupe Transformation",
-      duration: "45min",
-      price: "45 €",
-      description: "Changement complet de style avec conseils"
-    }
-  ];
 
   const timeSlots = [
     "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -114,8 +113,7 @@ export default function AvyentoStyleBooking() {
                 {services.map((service) => (
                   <Card 
                     key={service.id}
-                    className="bg-white/70 backdrop-blur-12 border border-violet-200/50 hover:border-violet-300/70 hover:bg-white/80 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-lg"
-                    onClick={() => handleServiceSelect(service)}
+                    className="bg-white/70 backdrop-blur-12 border border-violet-200/50 hover:border-violet-300/70 hover:bg-white/80 transition-all duration-200 shadow-sm hover:shadow-lg"
                   >
                     <CardContent className="p-4 lg:p-6">
                       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -141,6 +139,10 @@ export default function AvyentoStyleBooking() {
                           <Button 
                             size="sm"
                             className="bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white px-4 lg:px-6 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleServiceSelect(service);
+                            }}
                           >
                             Choisir
                           </Button>

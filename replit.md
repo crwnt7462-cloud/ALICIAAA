@@ -60,6 +60,28 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
+- **MOBILE RESPONSIVENESS SALON CREATION (21/08/2025 01h08)**:
+  * Page /salon-creation entièrement optimisée pour mobile avec design adaptatif
+  * En-tête responsive : boutons compacts sur mobile avec texte masqué sur petits écrans
+  * Header salon adapté : hauteur réduite mobile (h-24 vs h-32), images et boutons redimensionnés
+  * Section informations salon : texte tronqué, layout flexible avec gap réduit mobile
+  * Contenu onglets : padding adaptatif (p-3 mobile, p-6 desktop) et espacement responsive
+  * Barre actions flottante : taille et position ajustées pour mobile (bottom-3 vs bottom-4)
+  * Modal couleurs responsive : largeur 95% mobile, grid adaptatif, textes et boutons redimensionnés
+  * Tous les éléments maintiennent la cohérence design glassmorphism Avyento sur mobile
+- **SYSTÈME DE TEMPLATE SALON UNIFIÉ (21/08/2025 00h54)**:
+  * Design actuel de la page salon enregistré comme template unique pour toutes les pages /salon/
+  * Architecture modulaire avec AvyentoSalonTemplate.ts (configuration), SalonPageTemplate.tsx (composant), SalonPage.tsx (page)
+  * Standardisation complète du design glassmorphism Avyento avec couleurs cohérentes
+  * Système type-safe permettant personnalisation tout en maintenant cohérence visuelle
+  * Documentation complète dans SALON_TEMPLATE_SYSTEM.md
+  * Maintenance centralisée : modifier le template met à jour tous les salons automatiquement
+- **FLOW DE RÉSERVATION OPTIMISÉ (21/08/2025 00h43)**:
+  * Suppression de l'étape redondante de sélection de prestation
+  * Accès direct aux créneaux horaires avec service pré-sélectionné
+  * Page booking-success redesignée avec glassmorphism Avyento (fond gris/blanc, containers glass)
+  * Navigation mobile retirée de la page de confirmation pour un design plus épuré
+  * Confirmation que le système Stripe de paiement d'acompte reste pleinement opérationnel
 - **SÉCURITÉ MAJEURE - Authentification Renforcée (18/08/2025 21h26)**:
   * Suppression du système de démo utilisateur automatique qui bypassait l'authentification
   * Protection complète de toutes les pages professionnelles (/dashboard, /planning, /services-management, /business-features, /clients, etc.)
@@ -80,10 +102,3 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Objectif Mensuel Éditable**: Ajout d'un système d'édition pour l'objectif mensuel en euros avec basculement intuitif mode affichage/édition
 - **Nettoyage Codebase Complet**: Suppression définitive des 6 pages obsolètes (/home, /pro/login, /client-login-modern, /pro-dashboard, /client-dashboard, /client-dashboard-new) et de leurs routes associées pour simplifier l'architecture
 - **Navigation Mobile Optimisée (20/08/2025 19h12)**: Suppression définitive de la sidebar grise qui s'affichait sur mobile, remplacement par navigation MobileBottomNav avec 4 icônes (Accueil, Planning, Clients, Analytics), suppression de Messages, popup de planning optimisé mobile-friendly avec boutons tactiles et design amélioré
-- **TRANSFORMATION TEMPLATE UNIFIÉ COMPLÈTE (21/08/2025 02h25)**: 
-  * Mise en place du système de template unifié avec design violet glassmorphism responsive
-  * SalonPageTemplateFixed.tsx complètement transformé avec bg-gradient-to-br from-violet-50 to-purple-50
-  * TOUS les salons (SalonExcellenceParis, BarbierGentlemanMarais, BeautyLoungeMontparnasse, etc.) utilisent maintenant automatiquement le même design
-  * Layout responsive desktop/mobile avec max-w-4xl, header sticky, navigation MobileBottomNav intégrée
-  * Cards glassmorphism bg-white/70 backdrop-blur-12, onglets navigation cohérents
-  * Design 100% cohérent avec /avyento-booking sur toutes les pages salon
