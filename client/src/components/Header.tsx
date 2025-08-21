@@ -48,8 +48,8 @@ export function Header() {
     {
       label: 'Planning',
       icon: Calendar,
-      path: '/planning',
-      active: location === '/planning'
+      path: '/planning-responsive',
+      active: location === '/planning-responsive' || location === '/planning'
     },
     {
       label: 'Clients',
@@ -61,13 +61,13 @@ export function Header() {
       label: 'Analytics',
       icon: BarChart3,
       path: '/client-analytics',
-      active: location === '/client-analytics' || location === '/business-features'
+      active: location === '/client-analytics' || location === '/analytics-dashboard'
     },
     {
       label: 'IA Assistant',
       icon: Sparkles,
-      path: '/ai',
-      active: location === '/ai'
+      path: '/ai-pro-complete',
+      active: location === '/ai-pro-complete' || location === '/ai'
     },
     {
       label: 'Paramètres',
@@ -82,25 +82,15 @@ export function Header() {
       <header className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between max-w-md mx-auto lg:max-w-none">
           <div className="flex items-center space-x-3">
-            {/* Menu hamburger pour desktop uniquement */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden lg:flex h-8 w-8 p-0"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Menu className="w-4 h-4 text-gray-600" />
-            </Button>
-            
             <Button
               variant="ghost"
               size="sm"
               className="p-0 h-8 w-8"
               onClick={() => {
-                setLocation("/business-features");
+                setLocation("/");
                 toast({
-                  title: "Configuration salon",
-                  description: "Paramètres généraux du salon"
+                  title: "Accueil",
+                  description: "Retour à l'accueil"
                 });
               }}
             >
@@ -110,7 +100,7 @@ export function Header() {
                 className="w-8 h-8 object-contain rounded-lg"
               />
             </Button>
-            <div>
+            <div className="lg:hidden">
               <h1 className="font-semibold text-gray-900 text-sm">{getPageTitle()}</h1>
               {(user as any)?.businessName && (
                 <p className="text-xs text-gray-500">
@@ -118,6 +108,30 @@ export function Header() {
                 </p>
               )}
             </div>
+          </div>
+
+          {/* Menu horizontal pour desktop */}
+          <div className="hidden lg:flex items-center space-x-6">
+            {navItems.map((item) => (
+              <button
+                key={item.path}
+                onClick={() => {
+                  setLocation(item.path);
+                  toast({
+                    title: item.label,
+                    description: `Navigation vers ${item.label}`
+                  });
+                }}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  item.active
+                    ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-purple-600'
+                }`}
+              >
+                <item.icon className="w-4 h-4" />
+                <span className="font-medium text-sm">{item.label}</span>
+              </button>
+            ))}
           </div>
 
           <div className="flex items-center space-x-2">
@@ -160,86 +174,7 @@ export function Header() {
       </div>
     </header>
 
-    {/* Menu hamburger slide-out pour desktop */}
-    {isMenuOpen && (
-      <div className="hidden lg:block fixed inset-0 z-50">
-        {/* Overlay */}
-        <div 
-          className="absolute inset-0 bg-black/20 backdrop-blur-sm"
-          onClick={() => setIsMenuOpen(false)}
-        />
-        
-        {/* Menu panel */}
-        <div className="absolute left-0 top-0 h-full w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl">
-          {/* Header du menu */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200/50">
-            <div className="flex items-center space-x-3">
-              <img 
-                src="/attached_assets/avyento. (1)_1755286272417.png" 
-                alt="Avyento Pro"
-                className="w-8 h-8 object-contain rounded-lg"
-              />
-              <div>
-                <h2 className="font-semibold text-gray-900">Avyento Pro</h2>
-                {(user as any)?.businessName && (
-                  <p className="text-sm text-gray-500">
-                    {(user as any).businessName}
-                  </p>
-                )}
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <X className="w-4 h-4 text-gray-600" />
-            </Button>
-          </div>
 
-          {/* Navigation items */}
-          <div className="p-4 space-y-2">
-            {navItems.map((item) => (
-              <button
-                key={item.path}
-                onClick={() => {
-                  setLocation(item.path);
-                  setIsMenuOpen(false);
-                  toast({
-                    title: item.label,
-                    description: `Navigation vers ${item.label}`
-                  });
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  item.active
-                    ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-purple-600'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* User info en bas */}
-          <div className="absolute bottom-6 left-4 right-4">
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Mode Professionnel</p>
-                  <p className="text-sm text-gray-500">Connecté</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
     </>
   );
 }
