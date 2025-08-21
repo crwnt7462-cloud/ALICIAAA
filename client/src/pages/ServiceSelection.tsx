@@ -16,7 +16,7 @@ export default function ServiceSelection() {
   const [, setLocation] = useLocation();
   const [selectedService, setSelectedService] = useState<string | null>(null);
 
-  // Services organisés par catégorie comme dans l'image Planity
+  // Services organisés par catégorie comme dans l'interface Avyento
   const serviceCategories = [
     {
       name: "ÉPILATION LASER",
@@ -170,9 +170,9 @@ export default function ServiceSelection() {
           </div>
         )}
 
-        {/* Footer style Planity */}
+        {/* Footer style Avyento */}
         <div className="text-center py-8 text-xs text-gray-500">
-          planity.com
+          avyento.com
         </div>
       </div>
     </div>

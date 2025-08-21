@@ -268,7 +268,7 @@ export default function PlanityStyleBookingFixed() {
         {/* Titre et bouton connexion */}
         <div className="bg-white p-4 border-b border-gray-100">
           <h2 className="text-lg font-semibold text-center text-gray-900 mb-4">
-            Nouveau sur Planity ?
+            Nouveau sur Avyento ?
           </h2>
           
           {/* Bouton "J'ai déjà un compte" */}
@@ -382,7 +382,7 @@ export default function PlanityStyleBookingFixed() {
               className="mt-1"
             />
             <label htmlFor="cgu" className="text-sm text-gray-600 leading-5">
-              J'accepte les <span className="text-violet-600 underline">CGU</span> de Planity.
+              J'accepte les <span className="text-violet-600 underline">CGU</span> d'Avyento.
             </label>
           </div>
 

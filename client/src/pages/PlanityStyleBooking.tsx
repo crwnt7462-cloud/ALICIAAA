@@ -7,10 +7,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-export default function PlanityStyleBooking() {
+export default function AvyentoStyleBooking() {
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -19,14 +19,10 @@ export default function PlanityStyleBooking() {
     password: '',
     acceptCGU: false
   });
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  });
+
   const { toast } = useToast();
 
   // Récupérer les données des étapes précédentes
-  const selectedProfessional = localStorage.getItem('selectedProfessional');
   const selectedDateTime = JSON.parse(localStorage.getItem('selectedDateTime') || '{}');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -299,7 +295,7 @@ export default function PlanityStyleBooking() {
           {isLogin && (
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
-                Nouveau sur Planity ?{' '}
+                Nouveau sur Avyento ?{' '}
                 <button
                   onClick={() => setIsLogin(false)}
                   className="text-blue-600 font-medium hover:underline"

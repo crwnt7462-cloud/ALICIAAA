@@ -85,7 +85,7 @@ import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
 
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
-import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
+import AvyentoStyleBooking from "@/pages/PlanityStyleBooking";
 import PlanityStyleBookingFixed from "@/pages/PlanityStyleBookingFixed";
 import ProfessionalSelection from "@/pages/ProfessionalSelection";
 import BookingDateTime from "@/pages/BookingDateTime";
@@ -284,7 +284,7 @@ function Router() {
     '/staff',
     '/inventory',
     '/professional-settings-demo',
-    '/planity-style-booking-fixed'
+    '/avyento-style-booking-fixed'
   ];
   
   // Page de paiement Stripe
@@ -1295,7 +1295,7 @@ function Router() {
           <Route path="/advanced-booking" component={AdvancedBookingManager} />
           <Route path="/booking-success" component={BookingSuccess} />
           <Route path="/salon-booking" component={SalonBookingFlow} />
-          <Route path="/planity-style-booking-fixed" component={PlanityStyleBookingFixed} />
+          <Route path="/avyento-style-booking-fixed" component={PlanityStyleBookingFixed} />
 
           {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />

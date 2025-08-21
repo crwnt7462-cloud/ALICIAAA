@@ -121,7 +121,7 @@ export default function BookingDateTime() {
         date: selectedDate,
         time: selectedTime
       }));
-      setLocation('/planity-style-booking-fixed');
+      setLocation('/avyento-style-booking-fixed');
     }
   };
 
@@ -219,9 +219,9 @@ export default function BookingDateTime() {
           </Button>
         </div>
 
-        {/* Footer Planity */}
+        {/* Footer Avyento */}
         <div className="text-center py-4 text-xs text-gray-500">
-          planity.com
+          avyento.com
         </div>
       </div>
     </div>
