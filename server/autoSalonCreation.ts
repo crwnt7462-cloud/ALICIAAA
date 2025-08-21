@@ -45,12 +45,18 @@ interface AutoCreatedSalon {
 /**
  * 🚀 CRÉATION AUTOMATIQUE DE PAGE SALON LORS INSCRIPTION PROFESSIONNELLE
  * 
+ * ⚠️ RÈGLE ABSOLUE: TOUS les salons créés utilisent le template officiel /salon
+ * Le template de la page /salon est INTOUCHABLE et ne doit JAMAIS être modifié
+ * 
  * Quand un professionnel s'inscrit avec abonnement, cette fonction :
  * 1. Génère automatiquement un ID unique pour le salon
- * 2. Crée une page salon personnalisée avec le nom du business
- * 3. Configure les couleurs et services par défaut
+ * 2. Crée les données du salon dans la base de données
+ * 3. Configure les couleurs et services par défaut (données uniquement)
  * 4. Rend la page accessible publiquement via /salon/[id]
- * 5. Permet au professionnel de modifier sa page
+ * 5. La page utilise AUTOMATIQUEMENT le template officiel SalonPage
+ * 
+ * NOTE IMPORTANTE: L'affichage utilise toujours SalonPage, aucune personnalisation
+ * du template n'est autorisée. Seules les données peuvent être personnalisées.
  */
 export async function createAutomaticSalonPage(
   professionalData: ProfessionalRegistrationData

@@ -1,12 +1,6 @@
-import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
-import { beautyLashStudioSalon } from "@/utils/salonTemplateData";
+import SalonPage from "@/pages/SalonPage";
 
 export default function BeautyLashStudio() {
-  return (
-    <SalonPageTemplateFixed 
-      salonSlug="beauty-lash-studio"
-      salonData={beautyLashStudioSalon}
-      customColors={beautyLashStudioSalon.customColors}
-    />
-  );
+  // Utilisation du template officiel /salon - AUCUNE MODIFICATION AUTORISÉE
+  return <SalonPage />;
 }

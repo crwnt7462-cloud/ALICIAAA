@@ -1,12 +1,6 @@
-import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
-import { salonModerneRepubliqueSalon } from "@/utils/salonTemplateData";
+import SalonPage from "@/pages/SalonPage";
 
 export default function SalonModerneRepublique() {
-  return (
-    <SalonPageTemplateFixed 
-      salonSlug="salon-moderne-republique"
-      salonData={salonModerneRepubliqueSalon}
-      customColors={salonModerneRepubliqueSalon.customColors}
-    />
-  );
+  // Utilisation du template officiel /salon - AUCUNE MODIFICATION AUTORISÉE
+  return <SalonPage />;
 }

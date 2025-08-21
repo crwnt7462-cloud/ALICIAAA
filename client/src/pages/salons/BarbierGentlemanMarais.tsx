@@ -1,12 +1,6 @@
-import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
-import { barbierGentlemanMaraisSalon } from "@/utils/salonTemplateData";
+import SalonPage from "@/pages/SalonPage";
 
 export default function BarbierGentlemanMarais() {
-  return (
-    <SalonPageTemplateFixed 
-      salonSlug="barbier-gentleman-marais"
-      salonData={barbierGentlemanMaraisSalon}
-      customColors={barbierGentlemanMaraisSalon.customColors}
-    />
-  );
+  // Utilisation du template officiel /salon - AUCUNE MODIFICATION AUTORISÉE
+  return <SalonPage />;
 }

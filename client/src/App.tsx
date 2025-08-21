@@ -628,11 +628,12 @@ function Router() {
     );
   }
 
-  // ✅ ROUTE DYNAMIQUE POUR TOUS LES AUTRES NOUVEAUX SALONS - UTILISE LE TEMPLATE
+  // ✅ ROUTE DYNAMIQUE POUR TOUS LES AUTRES NOUVEAUX SALONS - UTILISE LE TEMPLATE OFFICIEL
   if (location.startsWith('/salon/') && location !== '/salon') {
+    // RÈGLE ABSOLUE: Tous les salons dynamiques utilisent le template officiel /salon
     return (
       <div className="h-full">
-        <ModernSalonDetailNew />
+        <SalonPage />
       </div>
     );
   }

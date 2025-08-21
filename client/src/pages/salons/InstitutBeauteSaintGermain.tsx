@@ -1,12 +1,6 @@
-import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
-import { instituteSaintGermainSalon } from "@/utils/salonTemplateData";
+import SalonPage from "@/pages/SalonPage";
 
 export default function InstitutBeauteSaintGermain() {
-  return (
-    <SalonPageTemplateFixed 
-      salonSlug="institut-beaute-saint-germain"
-      salonData={instituteSaintGermainSalon}
-      customColors={instituteSaintGermainSalon.customColors}
-    />
-  );
+  // Utilisation du template officiel /salon - AUCUNE MODIFICATION AUTORISÉE
+  return <SalonPage />;
 }
