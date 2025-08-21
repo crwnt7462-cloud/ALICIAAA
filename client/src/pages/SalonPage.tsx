@@ -57,7 +57,7 @@ export default function SalonPage() {
         reviewCount: 127,
         priceRange: "€€€",
         address: "75001 Paris, France",
-        backgroundImage: "/salon-skincare-header.png",
+        backgroundImage: "/salon-skincare-cover.png",
         primaryColor: '#8b5cf6',
         description: "Salon Avyento vous accueille dans un cadre moderne et chaleureux au cœur de Paris. Notre équipe de professionnels passionnés vous propose des services de coiffure et de beauté de haute qualité, en utilisant les dernières techniques et produits premium.",
         instagram: "https://instagram.com/salon.avyento",
@@ -582,7 +582,8 @@ export default function SalonPage() {
               <img 
                 src="/avyento-logo.png" 
                 alt="Avyento"
-                className="h-8 w-auto"
+                className="w-auto"
+                style={{ height: '115px' }}
               />
             </div>
             
@@ -603,7 +604,7 @@ export default function SalonPage() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
-            backgroundImage: `url(${salonData.backgroundImage || '/salon-skincare-header.png'})`,
+            backgroundImage: `url(${salonData.backgroundImage || '/salon-skincare-cover.png'})`,
             backgroundPosition: 'center center'
           }}
         >
