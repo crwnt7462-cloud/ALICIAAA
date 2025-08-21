@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search, MapPin, Menu } from "lucide-react";
-import logoAvyento from '@assets/Avyento transparent_1755518589119.png';
+import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search, MapPin } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { getGenericGlassButton } from "@/lib/salonColors";
@@ -61,23 +60,6 @@ export default function Landing() {
       transition={{ duration: 0.8 }}
       className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
     >
-      {/* Header avec logo Avyento et bouton menu - Desktop uniquement */}
-      <div className="hidden lg:flex items-center justify-between max-w-6xl mx-auto mb-8">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => setLocation('/')}
-            className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl p-4 text-gray-700 hover:bg-white/30 transition-all duration-300 shadow-2xl hover:shadow-white/10"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-          <img 
-            src={logoAvyento} 
-            alt="Avyento" 
-            className="h-12 w-auto object-contain"
-          />
-        </div>
-      </div>
-
       <div className="max-w-md mx-auto lg:max-w-6xl space-y-8 lg:space-y-16">
         {/* Hero Section */}
         <motion.div 
