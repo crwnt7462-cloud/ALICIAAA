@@ -717,9 +717,6 @@ export default function SalonPage() {
                       <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs bg-purple-100/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-purple-200/50 font-medium text-purple-800">
-                        {category.services.length} service{category.services.length > 1 ? 's' : ''}
-                      </span>
                       <div className="p-2 rounded-lg bg-gray-100/80 backdrop-blur-sm border border-gray-200/50 group-hover:bg-gray-200/80 transition-all duration-200">
                         {expandedCategory === category.id ? (
                           <ChevronUp className="w-4 h-4 text-gray-600" />
