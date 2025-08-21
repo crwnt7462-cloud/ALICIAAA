@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Plus, Search, User, Phone, Mail, Calendar, Trash2, Edit } from "lucide-react";
+import { Plus, Search, User, Mail, Trash2, Edit } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -12,12 +11,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertClientSchema, type Client } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { ProHeader } from "@/components/ProHeader";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 type InsertClientForm = {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
   notes?: string;
 };
 
@@ -34,7 +34,7 @@ export default function Clients() {
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["/api/clients"],
-  });
+  }) as { data: Client[], isLoading: boolean };
 
   const createMutation = useMutation({
     mutationFn: (data: InsertClientForm) => 
@@ -103,15 +103,13 @@ export default function Clients() {
       firstName: "",
       lastName: "",
       email: "",
-      phone: "",
       notes: "",
     },
   });
 
   const filteredClients = clients.filter((client: Client) =>
     `${client.firstName} ${client.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.phone?.includes(searchQuery)
+    client.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleEdit = (client: Client) => {
@@ -120,7 +118,6 @@ export default function Clients() {
       firstName: client.firstName,
       lastName: client.lastName,
       email: client.email || "",
-      phone: client.phone || "",
       notes: client.notes || "",
     });
     setIsDialogOpen(true);
@@ -132,7 +129,6 @@ export default function Clients() {
       firstName: "",
       lastName: "",
       email: "",
-      phone: "",
       notes: "",
     });
     setIsDialogOpen(true);
@@ -147,13 +143,17 @@ export default function Clients() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="avyento-section-spacing">
-        <div className="avyento-container">
+    <div className="min-h-screen bg-gray-50 relative">
+      <ProHeader currentPage="clients" />
+      <MobileBottomNav userType="pro" />
+
+      <div className="pt-20 md:pt-24 pb-20 md:pb-8">
+        <div className="p-4 sm:p-5 md:p-6 lg:p-8">
           {/* Header */}
-          <div className="avyento-text-content">
-            <h1 className="avyento-title">Gestion des clients</h1>
-            <p className="avyento-subtitle">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Fichier Client</h1>
+            <p className="text-gray-600 mb-4">Salon Avyento Pro</p>
+            <p className="text-sm text-gray-500">
               {filteredClients.length} client{filteredClients.length > 1 ? "s" : ""} enregistré{filteredClients.length > 1 ? "s" : ""}
             </p>
           </div>
@@ -162,7 +162,7 @@ export default function Clients() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <button 
-                  className="avyento-button-primary inline-flex items-center"
+                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 inline-flex items-center"
                   onClick={handleNewClient}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -218,19 +218,7 @@ export default function Clients() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Téléphone</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
                 <FormField
                   control={form.control}
                   name="notes"
@@ -245,20 +233,20 @@ export default function Clients() {
                   )}
                 />
                 <div className="flex justify-end space-x-2 pt-4">
-                  <button 
+                  <Button 
                     type="button" 
+                    variant="outline"
                     onClick={() => setIsDialogOpen(false)}
-                    className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
                   >
                     Annuler
-                  </button>
-                  <button 
+                  </Button>
+                  <Button 
                     type="submit" 
                     disabled={createMutation.isPending || updateMutation.isPending}
-                    className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl disabled:opacity-50"
+                    className="bg-violet-600 hover:bg-violet-700 text-white"
                   >
                     {editingClient ? "Modifier" : "Créer"}
-                  </button>
+                  </Button>
                 </div>
               </form>
             </Form>
@@ -266,23 +254,23 @@ export default function Clients() {
         </Dialog>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-        <Input
-          placeholder="Rechercher un client..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 glass-effect border-white/20"
-        />
-      </div>
+          {/* Search */}
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Rechercher un client..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-white border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
 
-      {/* Clients List */}
-      <div className="grid gap-3">
+          {/* Clients List */}
+          <div className="grid gap-3">
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="glass-card border-0 shadow-md rounded-xl">
+              <Card key={i} className="bg-white border-0 shadow-md rounded-xl">
                 <CardContent className="p-4">
                   <div className="animate-pulse">
                     <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
@@ -293,7 +281,7 @@ export default function Clients() {
             ))}
           </div>
         ) : filteredClients.length === 0 ? (
-          <Card className="glass-card border-0 shadow-md rounded-xl">
+          <Card className="bg-white border-0 shadow-md rounded-xl">
             <CardContent className="p-8 text-center">
               <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -309,7 +297,7 @@ export default function Clients() {
           </Card>
         ) : (
           filteredClients.map((client: Client) => (
-            <Card key={client.id} className="glass-card border-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+            <Card key={client.id} className="bg-white border-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -325,12 +313,6 @@ export default function Clients() {
                           <div className="flex items-center">
                             <Mail className="w-3 h-3 mr-1" />
                             {client.email}
-                          </div>
-                        )}
-                        {client.phone && (
-                          <div className="flex items-center">
-                            <Phone className="w-3 h-3 mr-1" />
-                            {client.phone}
                           </div>
                         )}
                       </div>
@@ -364,6 +346,8 @@ export default function Clients() {
             </Card>
           ))
         )}
+          </div>
+        </div>
       </div>
     </div>
   );
