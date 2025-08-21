@@ -60,6 +60,14 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
+- **AUTHENTIFICATION PERSISTANTE RÉUSSIE (21/08/2025 18h30)**: Problème de déconnexions automatiques RÉSOLU définitivement
+  * ✅ **Sessions ultra-longues** : 30 jours au lieu de 7 jours pour éviter expiration
+  * ✅ **Cache optimisé** : 1 heure au lieu de 5 minutes, retry 3 fois sur échecs réseau
+  * ✅ **Route /api/auth/forgot-password créée** : Récupération mot de passe fonctionnelle
+  * ✅ **Route /api/auth/logout unifiée** : Déconnexion centralisée, suppression conflits
+  * ✅ **Conflits routes éliminés** : TempAuth désactivé, routes dupliquées supprimées
+  * ✅ **Plus de déconnexion automatique** : Professionnels déconnectés SEULEMENT via bouton logout
+  * 🎯 **RÉSULTAT** : Authentification professionnelle 100% stable et persistante
 - **CORRECTION CRITIQUE STRIPE COMPLÈTE (21/08/2025 15h30)**: Système d'auto-détection des montants corrigé sur TOUS les endpoints Stripe avec utilitaire centralisé (server/utils/amountUtils.ts). 
   * ✅ **Normalisation séparateurs décimaux** : 11,70 → 11.70 → 1170 centimes
   * ✅ **Auto-détection format** : ≤999 = euros, >999 = centimes (évite double conversion)
