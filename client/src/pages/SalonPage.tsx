@@ -57,7 +57,7 @@ export default function SalonPage() {
         reviewCount: 127,
         priceRange: "€€€",
         address: "75001 Paris, France",
-        backgroundImage: "/salon-skincare-cover.png",
+        backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
         primaryColor: '#8b5cf6',
         description: "Salon Avyento vous accueille dans un cadre moderne et chaleureux au cœur de Paris. Notre équipe de professionnels passionnés vous propose des services de coiffure et de beauté de haute qualité, en utilisant les dernières techniques et produits premium.",
         instagram: "https://instagram.com/salon.avyento",
