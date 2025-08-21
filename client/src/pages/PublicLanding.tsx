@@ -630,6 +630,40 @@ export default function PublicLanding() {
               </div>
             </div>
             
+            {/* Menu de navigation desktop */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              <button 
+                onClick={() => setLocation('/search-results')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Services
+              </button>
+              <button 
+                onClick={() => setLocation('/professional-plans')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Professionnels
+              </button>
+              <button 
+                onClick={() => setLocation('/centre-aide')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Support
+              </button>
+              <button 
+                onClick={() => setLocation('/contact')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Contact
+              </button>
+              <button 
+                onClick={() => setLocation('/register')}
+                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
+              >
+                Devenir partenaire
+              </button>
+            </nav>
+            
             <div className="flex items-center gap-3 md:gap-5">
               <button 
                 className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
@@ -640,7 +674,14 @@ export default function PublicLanding() {
               </button>
               <button 
                 className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
-                onClick={() => setLocation("/salon/salon-elegance")}
+                onClick={() => setLocation("/pro-login")}
+              >
+                <span className="hidden md:inline">Espace Pro</span>
+                <span className="md:hidden">Pro</span>
+              </button>
+              <button 
+                className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
+                onClick={() => setLocation("/search-results")}
               >
                 Réserver
               </button>
@@ -1409,25 +1450,25 @@ export default function PublicLanding() {
               <div className="space-y-2 text-sm text-gray-400">
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/search')}
+                  onClick={() => setLocation('/search-results?q=coiffure')}
                 >
                   Coiffure
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/search')}
+                  onClick={() => setLocation('/search-results?q=esthétique')}
                 >
                   Esthétique
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/search')}
+                  onClick={() => setLocation('/search-results?q=manucure')}
                 >
                   Manucure
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/search')}
+                  onClick={() => setLocation('/search-results?q=massage')}
                 >
                   Massage
                 </div>
@@ -1438,25 +1479,25 @@ export default function PublicLanding() {
               <div className="space-y-2 text-sm text-gray-400">
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/devenir-partenaire')}
+                  onClick={() => setLocation('/register')}
                 >
                   Devenir partenaire
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/tarifs-pros')}
+                  onClick={() => setLocation('/professional-plans')}
                 >
                   Tarifs professionnels
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/formation')}
+                  onClick={() => setLocation('/centre-aide')}
                 >
                   Formation & Support
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/success-stories')}
+                  onClick={() => setLocation('/contact')}
                 >
                   Témoignages
                 </div>
