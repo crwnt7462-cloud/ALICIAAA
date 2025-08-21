@@ -26,7 +26,7 @@ export function useAuthSession() {
   // Mutation pour se connecter (professionnel)
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const response = await apiRequest('POST', '/api/pro/login', credentials);
+      const response = await apiRequest('POST', '/api/login/professional', credentials);
       return response.json();
     },
     onSuccess: () => {

@@ -2520,6 +2520,58 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   });
 
   // === ROUTE PRO LOGIN (FIXES ROUTING VITE) ===
+  // Route de connexion professionnelle
+  app.post('/api/login/professional', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Email et mot de passe requis' 
+        });
+      }
+
+      // Authentifier le professionnel
+      const user = await storage.authenticateUser(email, password);
+      
+      if (!user) {
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Email ou mot de passe incorrect' 
+        });
+      }
+
+      // Créer la session
+      const session = req.session as any;
+      session.user = {
+        id: user.id,
+        email: user.email,
+        type: 'professional',
+        businessName: user.businessName,
+        isAuthenticated: true
+      };
+
+      res.json({ 
+        success: true, 
+        message: 'Connexion réussie',
+        user: {
+          id: user.id,
+          email: user.email,
+          businessName: user.businessName,
+          type: 'professional'
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Professional login error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erreur serveur lors de la connexion' 
+      });
+    }
+  });
+
   app.post('/api/pro/login', async (req, res) => {
     try {
       const { email, password } = req.body;
