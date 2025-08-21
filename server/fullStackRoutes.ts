@@ -2586,6 +2586,42 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // 💰 STRIPE - Route pour créer une session de paiement d'acompte
+  app.post('/api/stripe/create-deposit-checkout', async (req, res) => {
+    try {
+      const { amount, description, customerEmail, customerName, appointmentId, salonName } = req.body;
+      
+      console.log('💰 Création session paiement acompte:', { amount, customerEmail, salonName });
+      
+      const { createPaymentCheckout } = await import('./stripeService');
+      
+      const session = await createPaymentCheckout({
+        amount,
+        description: description || 'Acompte réservation',
+        customerEmail,
+        customerName,
+        appointmentId,
+        salonName,
+        successUrl: `${process.env.FRONTEND_URL || 'http://localhost:5000'}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${process.env.FRONTEND_URL || 'http://localhost:5000'}/booking`
+      });
+      
+      console.log('✅ Session Stripe créée:', session.sessionId);
+      
+      res.json({
+        success: true,
+        sessionId: session.sessionId,
+        url: session.url
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur création session paiement:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Erreur lors de la création de la session de paiement'
+      });
+    }
+  });
+
   // 💳 ROUTES STRIPE CHECKOUT - SUPPORT COMPLET DES 3 PLANS
   app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
     try {
