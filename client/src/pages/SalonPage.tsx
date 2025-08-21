@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { 
   Star, 
   MapPin, 
@@ -18,6 +19,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function SalonPage() {
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
+  const [, navigate] = useLocation();
 
   // Couleur primaire du salon
   const primaryColor = '#8b5cf6';
@@ -222,21 +224,23 @@ export default function SalonPage() {
 
       {/* Navigation par onglets */}
       <div className="bg-white/80 backdrop-blur-16 border-b border-gray-200/50 mt-6">
-        <div className="flex overflow-x-auto px-4">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
-                tab.active
-                  ? 'text-gray-900 hover:text-gray-900 hover:border-gray-300'
-                  : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-              }`}
-              style={tab.active ? { borderColor: primaryColor, color: primaryColor } : {}}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="flex justify-center overflow-x-auto px-4 lg:px-8">
+          <div className="flex space-x-8 lg:space-x-12">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`whitespace-nowrap py-3 px-2 text-sm font-medium border-b-2 transition-colors ${
+                  tab.active
+                    ? 'text-gray-900 hover:text-gray-900 hover:border-gray-300'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                }`}
+                style={tab.active ? { borderColor: primaryColor, color: primaryColor } : {}}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -247,12 +251,12 @@ export default function SalonPage() {
             {serviceCategories.map((category) => (
               <div 
                 key={category.id}
-                className="bg-slate-50/80 backdrop-blur-16 border border-slate-400/20 rounded-2xl shadow-sm overflow-hidden"
+                className="bg-slate-50/90 backdrop-blur-20 border border-slate-400/30 rounded-2xl shadow-md overflow-hidden"
               >
                 <div className="p-4">
                   <button
                     onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
-                    className="w-full flex items-center justify-between text-left group hover:bg-white/30 rounded-xl p-3 -m-3 transition-all duration-200"
+                    className="w-full flex items-center justify-between text-left group hover:bg-white/40 rounded-xl p-3 -m-3 transition-all duration-200"
                   >
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900 text-lg">{category.name}</h3>
@@ -315,6 +319,7 @@ export default function SalonPage() {
                                 size="sm" 
                                 style={getButtonStyle('outline')}
                                 className="bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
+                                onClick={() => navigate('/avyento-booking')}
                               >
                                 Réserver
                               </Button>
