@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { 
-  ArrowLeft, 
+  Menu, 
   Heart, 
   Share2, 
   Star, 
@@ -57,7 +57,7 @@ export default function ModernSalonMobileFixed() {
             onClick={() => setLocation('/')}
             className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl p-3 lg:p-4 text-white hover:bg-white/30 transition-all duration-300 shadow-2xl hover:shadow-white/10"
           >
-            <ArrowLeft className="h-5 w-5 lg:h-6 lg:w-6" />
+            <Menu className="h-5 w-5 lg:h-6 lg:w-6" />
           </button>
 
           {/* Logo Avyento centré */}
