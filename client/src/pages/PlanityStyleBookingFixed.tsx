@@ -248,29 +248,9 @@ export default function PlanityStyleBookingFixed() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header fixe */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setLocation('/booking-datetime')}
-              className="h-9 w-9"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="text-center">
-              <h1 className="text-lg font-semibold text-gray-900">Bonhomme</h1>
-              <p className="text-xs text-gray-500">Paris Archives</p>
-            </div>
-            <div className="w-9"></div>
-          </div>
-        </div>
-      </div>
 
       {/* Contenu principal */}
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-lg mx-auto pt-8">
         {/* Section service sélectionné */}
         <div className="bg-white border-b border-gray-100 p-4">
           <div className="flex items-center justify-between">
