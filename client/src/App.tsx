@@ -93,7 +93,7 @@ import PlanityStyleBookingFixed from "@/pages/PlanityStyleBookingFixed";
 import ProfessionalSelection from "@/pages/ProfessionalSelection";
 import BookingDateTime from "@/pages/BookingDateTime";
 import SalonDynamicPage from "@/pages/SalonDynamicPage";
-import SalonBooking from "@/pages/SalonBooking";
+
 
 import SalonPageFixed from "@/pages/SalonPageFixed";
 import SalonPage from "@/pages/SalonPage";
@@ -573,7 +573,7 @@ function Router() {
   if (location.startsWith('/salon-booking/')) {
     return (
       <div className="h-full">
-        <SalonBooking />
+        <SalonBookingFlow />
       </div>
     );
   }
