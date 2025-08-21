@@ -1,32 +1,40 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  ArrowLeft, Grid3X3, List, Heart, X, Calendar, Users, Star, TrendingUp
+  Grid3X3, List, Heart, X, Calendar, Users, Star, TrendingUp, Search, Eye, Phone, Mail
 } from 'lucide-react';
 import { ProHeader } from '@/components/ProHeader';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 
-// Interface pour les rendez-vous du jour
-interface TodayAppointment {
+// Interface pour les clients
+interface Client {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   avatar: string;
-  status: string;
-  date: string;
-  time: string;
-  situation: string;
+  lastService: string;
+  lastVisit: string;
+  firstVisit: string;
+  phone: string;
+  email: string;
+  totalVisits: number;
+  totalSpent: number;
+  notes: string;
 }
 
 // Interface Mediwave exacte reproduisant la capture d'écran
 export default function ClientsModern() {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const clientsPerPage = 10;
 
-  // Statistiques du dashboard - exactement comme dans la capture
+  // Statistiques du dashboard - modifiées selon demandes
   const dashboardStats = {
-    appointments: { count: 150, label: 'Todays', percentage: '+31%' },
-    consultations: { count: 22, label: 'Todays', percentage: '-6.4%' },
-    cancelled: { count: 3, label: 'Todays', percentage: '+30%' },
-    urgentResolve: { count: 5, label: 'Todays', percentage: '+31%' }
+    appointments: { count: 150, label: 'Aujourd\'hui', percentage: '+31%' },
+    cancelled: { count: 3, label: 'Aujourd\'hui', percentage: '+30%' },
+    inactiveClients: { count: 12, label: 'Dernière semaine', percentage: '-8%' }
   };
 
   // Insights clients avancés demandés
@@ -54,72 +62,189 @@ export default function ClientsModern() {
     }
   };
 
-  // Rendez-vous du jour - exactement comme dans la capture
-  const todayAppointments: TodayAppointment[] = [
+  // Liste des clients avec données complètes
+  const allClients: Client[] = [
     {
       id: '1',
-      name: 'Abdullah Al Ahmed Shawqi',
-      avatar: '👨🏽',
-      status: 'Consultation',
-      date: '03.01.2019',
-      time: '10:00 AM',
-      situation: '🟢'
+      firstName: 'Marie',
+      lastName: 'Dubois',
+      avatar: '👩🏻',
+      lastService: 'Coupe + Couleur',
+      lastVisit: '15/08/2025',
+      firstVisit: '12/03/2024',
+      phone: '06 12 34 56 78',
+      email: 'marie.dubois@email.com',
+      totalVisits: 18,
+      totalSpent: 1250,
+      notes: 'Préfère les RDV le matin. Allergique aux sulfates.'
     },
     {
       id: '2',
-      name: 'Al Shaheer Shasson',
-      avatar: '👨🏽',
-      status: 'Consultation',
-      date: '03.01.2019',
-      time: '10:20 AM',
-      situation: '🟢'
+      firstName: 'Sophie',
+      lastName: 'Martin',
+      avatar: '👩🏼',
+      lastService: 'Manucure française',
+      lastVisit: '20/08/2025',
+      firstVisit: '05/01/2024',
+      phone: '06 98 76 54 32',
+      email: 'sophie.martin@email.com',
+      totalVisits: 24,
+      totalSpent: 890,
+      notes: 'Cliente VIP. Préfère la styliste Emma.'
     },
     {
       id: '3',
-      name: 'Lyn R. Formus',
-      avatar: '👤',
-      status: 'Consultation',
-      date: '03.01.2019',
-      time: '10:40 AM',
-      situation: '🟢'
+      firstName: 'Julien',
+      lastName: 'Leroy',
+      avatar: '👨🏻',
+      lastService: 'Coupe + Barbe',
+      lastVisit: '18/08/2025',
+      firstVisit: '15/06/2024',
+      phone: '06 45 67 89 12',
+      email: 'julien.leroy@email.com',
+      totalVisits: 12,
+      totalSpent: 480,
+      notes: 'Coupe toujours très courte. RDV rapides.'
     },
     {
       id: '4',
-      name: 'Katherine A. Sheriff',
-      avatar: '👩🏼',
-      status: 'Consultation',
-      date: '03.01.2019',
-      time: '11:00 AM',
-      situation: '🟢'
+      firstName: 'Emma',
+      lastName: 'Petit',
+      avatar: '👩🏽',
+      lastService: 'Soin visage hydratant',
+      lastVisit: '21/08/2025',
+      firstVisit: '08/04/2024',
+      phone: '06 23 45 67 89',
+      email: 'emma.petit@email.com',
+      totalVisits: 15,
+      totalSpent: 750,
+      notes: 'Peau sensible. Utilise uniquement des produits bio.'
     },
     {
       id: '5',
-      name: 'Robert S. Perez',
+      firstName: 'Thomas',
+      lastName: 'Moreau',
       avatar: '👨🏻',
-      status: 'Consultation',
-      date: '03.01.2019',
-      time: '11:20 AM',
-      situation: '🟢'
+      lastService: 'Massage relaxant',
+      lastVisit: '19/08/2025',
+      firstVisit: '20/02/2024',
+      phone: '06 34 56 78 90',
+      email: 'thomas.moreau@email.com',
+      totalVisits: 22,
+      totalSpent: 1680,
+      notes: 'Vient tous les 15 jours. Préfère les RDV en fin de journée.'
     },
     {
       id: '6',
-      name: 'Jason L. Bowling',
-      avatar: '👨🏿',
-      status: 'Consultation',
-      date: '03.01.2019',
-      time: '11:40 AM',
-      situation: '🟢'
+      firstName: 'Claire',
+      lastName: 'Rousseau',
+      avatar: '👩🏻',
+      lastService: 'Épilation jambes',
+      lastVisit: '16/08/2025',
+      firstVisit: '11/05/2024',
+      phone: '06 56 78 90 12',
+      email: 'claire.rousseau@email.com',
+      totalVisits: 10,
+      totalSpent: 420,
+      notes: 'Nouvelle cliente. Très satisfaite du service.'
     },
     {
       id: '7',
-      name: 'Joseph A. Rose',
+      firstName: 'Alexandre',
+      lastName: 'Blanc',
       avatar: '👨🏼',
-      status: 'Consultation',
-      date: '03.01.2019',
-      time: '12:00 PM',
-      situation: '🟢'
+      lastService: 'Coupe tendance',
+      lastVisit: '22/08/2025',
+      firstVisit: '30/01/2024',
+      phone: '06 67 89 01 23',
+      email: 'alexandre.blanc@email.com',
+      totalVisits: 16,
+      totalSpent: 640,
+      notes: 'Aime essayer de nouvelles coupes. Très fidèle.'
+    },
+    {
+      id: '8',
+      firstName: 'Camille',
+      lastName: 'Garnier',
+      avatar: '👩🏼',
+      lastService: 'Balayage blond',
+      lastVisit: '17/08/2025',
+      firstVisit: '25/03/2024',
+      phone: '06 78 90 12 34',
+      email: 'camille.garnier@email.com',
+      totalVisits: 8,
+      totalSpent: 560,
+      notes: 'Adore les changements de couleur. Très patiente.'
+    },
+    {
+      id: '9',
+      firstName: 'Lucas',
+      lastName: 'Roux',
+      avatar: '👨🏽',
+      lastService: 'Soin du cuir chevelu',
+      lastVisit: '14/08/2025',
+      firstVisit: '18/04/2024',
+      phone: '06 89 01 23 45',
+      email: 'lucas.roux@email.com',
+      totalVisits: 14,
+      totalSpent: 770,
+      notes: 'Problèmes de pellicules. Traitement en cours.'
+    },
+    {
+      id: '10',
+      firstName: 'Léa',
+      lastName: 'Lambert',
+      avatar: '👩🏻',
+      lastService: 'Mise en plis',
+      lastVisit: '23/08/2025',
+      firstVisit: '07/02/2024',
+      phone: '06 90 12 34 56',
+      email: 'lea.lambert@email.com',
+      totalVisits: 20,
+      totalSpent: 900,
+      notes: 'Cliente régulière. Très ponctuelle.'
+    },
+    {
+      id: '11',
+      firstName: 'Nicolas',
+      lastName: 'Faure',
+      avatar: '👨🏻',
+      lastService: 'Coupe + Shampoing',
+      lastVisit: '13/08/2025',
+      firstVisit: '14/06/2024',
+      phone: '06 01 23 45 67',
+      email: 'nicolas.faure@email.com',
+      totalVisits: 9,
+      totalSpent: 270,
+      notes: 'Coupe classique. Pas compliqué.'
+    },
+    {
+      id: '12',
+      firstName: 'Anaïs',
+      lastName: 'Girard',
+      avatar: '👩🏽',
+      lastService: 'Extensions cheveux',
+      lastVisit: '12/08/2025',
+      firstVisit: '28/05/2024',
+      phone: '06 12 34 56 78',
+      email: 'anais.girard@email.com',
+      totalVisits: 6,
+      totalSpent: 1200,
+      notes: 'Aime les services premium. Budget élevé.'
     }
   ];
+
+  // Filtrage des clients selon la recherche
+  const filteredClients = allClients.filter(client => 
+    client.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.lastService.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Pagination
+  const totalPages = Math.ceil(filteredClients.length / clientsPerPage);
+  const startIndex = (currentPage - 1) * clientsPerPage;
+  const currentClients = filteredClients.slice(startIndex, startIndex + clientsPerPage);
 
   // Fonction pour créer le cercle de progression
   const ProgressCircle = ({ percentage, color }: { percentage: number; color: string }) => {
@@ -194,83 +319,65 @@ export default function ClientsModern() {
           </div>
         </motion.div>
 
-        {/* 4 Cartes statistiques colorées - exactement comme la capture */}
+        {/* 3 Cartes statistiques colorées avec meilleur contraste */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
         >
-          {/* Carte Appointments - Bleu pastel */}
-          <div className="bg-blue-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          {/* Carte Appointments - Bleu pastel avec meilleur contraste */}
+          <div className="bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-base sm:text-lg font-semibold">Rendez-vous</h3>
-              <Calendar className="h-5 w-5 sm:h-6 sm:w-6" />
+              <h3 className="text-base sm:text-lg font-semibold drop-shadow-sm">Rendez-vous</h3>
+              <Calendar className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-sm" />
             </div>
             <div className="flex items-end justify-between">
               <div>
-                <div className="text-2xl sm:text-4xl font-bold mb-1">{dashboardStats.appointments.count}</div>
-                <div className="text-blue-50 text-xs sm:text-sm">Aujourd'hui</div>
+                <div className="text-2xl sm:text-4xl font-bold mb-1 drop-shadow-sm">{dashboardStats.appointments.count}</div>
+                <div className="text-blue-100 text-xs sm:text-sm font-medium">{dashboardStats.appointments.label}</div>
               </div>
               <div className="hidden sm:block">
                 <ProgressCircle percentage={31} color="#ffffff" />
               </div>
             </div>
-            <div className="mt-2 text-xs sm:text-sm text-blue-50">{dashboardStats.appointments.percentage}</div>
+            <div className="mt-2 text-xs sm:text-sm text-blue-100 font-medium">{dashboardStats.appointments.percentage}</div>
           </div>
 
-          {/* Carte Consultations - Violet pastel */}
-          <div className="bg-purple-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          {/* Carte Cancelled - Rouge pastel avec meilleur contraste */}
+          <div className="bg-gradient-to-br from-red-400 to-red-500 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-base sm:text-lg font-semibold">Consultations</h3>
-              <Calendar className="h-5 w-5 sm:h-6 sm:w-6" />
+              <h3 className="text-base sm:text-lg font-semibold drop-shadow-sm">Annulés</h3>
+              <X className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-sm" />
             </div>
             <div className="flex items-end justify-between">
               <div>
-                <div className="text-2xl sm:text-4xl font-bold mb-1">{dashboardStats.consultations.count}</div>
-                <div className="text-purple-50 text-xs sm:text-sm">Aujourd'hui</div>
-              </div>
-              <div className="hidden sm:block">
-                <ProgressCircle percentage={64} color="#ffffff" />
-              </div>
-            </div>
-            <div className="mt-2 text-xs sm:text-sm text-purple-50">{dashboardStats.consultations.percentage}</div>
-          </div>
-
-          {/* Carte Cancelled - Rouge pastel */}
-          <div className="bg-red-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-base sm:text-lg font-semibold">Annulés</h3>
-              <X className="h-5 w-5 sm:h-6 sm:w-6" />
-            </div>
-            <div className="flex items-end justify-between">
-              <div>
-                <div className="text-2xl sm:text-4xl font-bold mb-1">0{dashboardStats.cancelled.count}</div>
-                <div className="text-red-50 text-xs sm:text-sm">Aujourd'hui</div>
+                <div className="text-2xl sm:text-4xl font-bold mb-1 drop-shadow-sm">0{dashboardStats.cancelled.count}</div>
+                <div className="text-red-100 text-xs sm:text-sm font-medium">{dashboardStats.cancelled.label}</div>
               </div>
               <div className="hidden sm:block">
                 <ProgressCircle percentage={30} color="#ffffff" />
               </div>
             </div>
-            <div className="mt-2 text-xs sm:text-sm text-red-50">{dashboardStats.cancelled.percentage}</div>
+            <div className="mt-2 text-xs sm:text-sm text-red-100 font-medium">{dashboardStats.cancelled.percentage}</div>
           </div>
 
-          {/* Carte Urgent Resolve - Vert pastel */}
-          <div className="bg-green-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          {/* Carte Clients Inactifs - Orange pastel avec meilleur contraste */}
+          <div className="bg-gradient-to-br from-orange-400 to-orange-500 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-base sm:text-lg font-semibold">Urgents</h3>
-              <Heart className="h-5 w-5 sm:h-6 sm:w-6" />
+              <h3 className="text-base sm:text-lg font-semibold drop-shadow-sm">Clients Inactifs</h3>
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-sm" />
             </div>
             <div className="flex items-end justify-between">
               <div>
-                <div className="text-2xl sm:text-4xl font-bold mb-1">0{dashboardStats.urgentResolve.count}</div>
-                <div className="text-green-50 text-xs sm:text-sm">Aujourd'hui</div>
+                <div className="text-2xl sm:text-4xl font-bold mb-1 drop-shadow-sm">{dashboardStats.inactiveClients.count}</div>
+                <div className="text-orange-100 text-xs sm:text-sm font-medium">{dashboardStats.inactiveClients.label}</div>
               </div>
               <div className="hidden sm:block">
-                <ProgressCircle percentage={31} color="#ffffff" />
+                <ProgressCircle percentage={8} color="#ffffff" />
               </div>
             </div>
-            <div className="mt-2 text-xs sm:text-sm text-green-50">{dashboardStats.urgentResolve.percentage}</div>
+            <div className="mt-2 text-xs sm:text-sm text-orange-100 font-medium">{dashboardStats.inactiveClients.percentage}</div>
           </div>
         </motion.div>
 
@@ -374,38 +481,50 @@ export default function ClientsModern() {
           </div>
         </motion.div>
 
-        {/* Section Todays avec liste des rendez-vous */}
+        {/* Section Clients avec barre de recherche et tableau */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden"
         >
-          {/* En-tête de la section */}
+          {/* En-tête de la section avec barre de recherche */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-800">Aujourd'hui</h2>
-              <span className="text-xs sm:text-sm text-gray-500">150 Rendez-vous</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-800">Clients</h2>
+                <span className="text-xs sm:text-sm text-gray-500">{filteredClients.length} clients</span>
+              </div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <input
+                  type="text"
+                  placeholder="Rechercher un client..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
             </div>
           </div>
 
           {/* En-têtes des colonnes - masqué sur mobile */}
           <div className="hidden sm:block px-6 py-3 bg-gray-50 border-b border-gray-200">
             <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700">
-              <div className="col-span-3">Nom</div>
-              <div className="col-span-2">Statut</div>
-              <div className="col-span-2">Date</div>
-              <div className="col-span-2">Heure</div>
-              <div className="col-span-1">Situation</div>
+              <div className="col-span-3">Nom / Prénom</div>
+              <div className="col-span-2">Dernière Prestation</div>
+              <div className="col-span-2">Dernière Visite</div>
+              <div className="col-span-2">Première Visite</div>
+              <div className="col-span-1">Visites</div>
               <div className="col-span-2">Actions</div>
             </div>
           </div>
 
-          {/* Liste des rendez-vous */}
+          {/* Liste des clients */}
           <div className="divide-y divide-gray-100">
-            {todayAppointments.map((appointment, index) => (
+            {currentClients.map((client, index) => (
               <motion.div 
-                key={appointment.id}
+                key={client.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05 * index }}
@@ -416,34 +535,37 @@ export default function ClientsModern() {
                   {/* Nom avec avatar */}
                   <div className="col-span-3 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-lg">
-                      {appointment.avatar}
+                      {client.avatar}
                     </div>
-                    <span className="font-medium text-gray-900">{appointment.name}</span>
+                    <span className="font-medium text-gray-900">{client.firstName} {client.lastName}</span>
                   </div>
 
-                  {/* Status */}
+                  {/* Dernière prestation */}
                   <div className="col-span-2">
-                    <span className="text-blue-600 text-sm">{appointment.status}</span>
+                    <span className="text-blue-600 text-sm">{client.lastService}</span>
                   </div>
 
-                  {/* Date */}
+                  {/* Dernière visite */}
                   <div className="col-span-2">
-                    <span className="text-gray-600 text-sm">{appointment.date}</span>
+                    <span className="text-gray-600 text-sm">{client.lastVisit}</span>
                   </div>
 
-                  {/* Time */}
+                  {/* Première visite */}
                   <div className="col-span-2">
-                    <span className="text-gray-900 font-medium text-sm">{appointment.time}</span>
+                    <span className="text-gray-600 text-sm">{client.firstVisit}</span>
                   </div>
 
-                  {/* Situation */}
+                  {/* Nombre de visites */}
                   <div className="col-span-1 flex justify-center">
-                    <span className="text-lg">{appointment.situation}</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">{client.totalVisits}</span>
                   </div>
 
                   {/* Actions */}
                   <div className="col-span-2">
-                    <button className="bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors">
+                    <button 
+                      onClick={() => setSelectedClient(client)}
+                      className="bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors"
+                    >
                       VOIR DÉTAILS
                     </button>
                   </div>
@@ -454,23 +576,25 @@ export default function ClientsModern() {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3 flex-1">
                       <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm">
-                        {appointment.avatar}
+                        {client.avatar}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 text-sm truncate">{appointment.name}</h3>
+                        <h3 className="font-medium text-gray-900 text-sm truncate">{client.firstName} {client.lastName}</h3>
                         <div className="flex items-center gap-4 mt-1">
-                          <span className="text-blue-600 text-xs">{appointment.status}</span>
-                          <span className="text-gray-600 text-xs">{appointment.date}</span>
+                          <span className="text-blue-600 text-xs">{client.lastService}</span>
+                          <span className="text-gray-600 text-xs">{client.lastVisit}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 ml-2">
-                      <span className="text-gray-900 font-medium text-xs">{appointment.time}</span>
-                      <span className="text-sm">{appointment.situation}</span>
+                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">{client.totalVisits}</span>
                     </div>
                   </div>
                   <div className="mt-3">
-                    <button className="w-full bg-gray-800 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors">
+                    <button 
+                      onClick={() => setSelectedClient(client)}
+                      className="w-full bg-gray-800 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors"
+                    >
                       VOIR DÉTAILS
                     </button>
                   </div>
@@ -481,14 +605,146 @@ export default function ClientsModern() {
 
           {/* Footer avec pagination */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-200">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm text-gray-600">
-              <span>Affichage de 7 données sur 150 enregistrements</span>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-gray-600">
+              <span>Affichage de {startIndex + 1} à {Math.min(startIndex + clientsPerPage, filteredClients.length)} sur {filteredClients.length} clients</span>
               <div className="flex items-center gap-2">
-                <span>1 2 3 4 5 6 7 ... 25 50</span>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Précédent
+                </button>
+                <div className="flex gap-1">
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`px-3 py-1 rounded-md ${
+                        currentPage === i + 1 
+                          ? 'bg-blue-500 text-white' 
+                          : 'bg-gray-200 hover:bg-gray-300'
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Suivant
+                </button>
               </div>
             </div>
           </div>
         </motion.div>
+
+        {/* Popup détails client */}
+        {selectedClient && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={() => setSelectedClient(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header du popup */}
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl">
+                      {selectedClient.avatar}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {selectedClient.firstName} {selectedClient.lastName}
+                      </h3>
+                      <p className="text-sm text-gray-600">Client depuis le {selectedClient.firstVisit}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedClient(null)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <X className="h-5 w-5 text-gray-500" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Contenu du popup */}
+              <div className="p-6 space-y-6">
+                {/* Informations de contact */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">Contact</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">{selectedClient.phone}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">{selectedClient.email}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Historique */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">Historique</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <div className="text-sm text-blue-600 font-medium">Total visites</div>
+                      <div className="text-2xl font-bold text-blue-900">{selectedClient.totalVisits}</div>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <div className="text-sm text-green-600 font-medium">Total dépensé</div>
+                      <div className="text-2xl font-bold text-green-900">{selectedClient.totalSpent}€</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dernière prestation */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">Dernière prestation</h4>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="text-sm font-medium text-gray-900">{selectedClient.lastService}</div>
+                    <div className="text-sm text-gray-600">Le {selectedClient.lastVisit}</div>
+                  </div>
+                </div>
+
+                {/* Notes */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">Notes</h4>
+                  <div className="bg-yellow-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-700">{selectedClient.notes}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer du popup */}
+              <div className="p-6 border-t border-gray-200">
+                <div className="flex gap-3">
+                  <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    Nouveau RDV
+                  </button>
+                  <button className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                    Modifier
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
         </div>
       </div>
     </div>
