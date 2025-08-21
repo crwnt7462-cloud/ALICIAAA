@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
-import avyentoLogo from "@assets/avyento. (1)_1755286272417.png";
+import avyentoLogo from "@assets/Logo avyento._1755812542143.png";
 
 export default function ProfessionalPlans() {
   const [, setLocation] = useLocation();
@@ -49,7 +49,9 @@ export default function ProfessionalPlans() {
                 <img 
                   src={avyentoLogo} 
                   alt="Avyento Logo" 
-                  className="h-8 w-auto sm:h-10"
+                  className="w-auto cursor-pointer"
+                  style={{ height: '115px' }}
+                  onClick={() => setLocation('/')}
                 />
               </div>
               
