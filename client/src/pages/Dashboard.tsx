@@ -190,6 +190,7 @@ export default function Dashboard() {
                 />
               </div>
               
+              {/* Bouton Ma Page - Mobile et Desktop */}
               <Button 
                 onClick={async () => {
                   try {
@@ -211,10 +212,11 @@ export default function Dashboard() {
                 }}
                 variant="outline"
                 size="sm"
-                className="hidden lg:flex items-center space-x-2"
+                className="flex items-center space-x-1 md:space-x-2 px-2 md:px-4 py-2 bg-white/90 backdrop-blur-16 border border-violet-200/30 text-violet-600 hover:bg-violet-50/70 rounded-xl shadow-sm transition-all"
+                title="Ma Page Salon"
               >
                 <Globe className="w-4 h-4" />
-                <span>Ma Page</span>
+                <span className="hidden sm:inline">Ma Page</span>
               </Button>
               
               <Button 
