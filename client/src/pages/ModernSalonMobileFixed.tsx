@@ -65,7 +65,8 @@ export default function ModernSalonMobileFixed() {
             <img 
               src={logoAvyento} 
               alt="Avyento" 
-              className="h-10 lg:h-14 w-auto object-contain filter brightness-0 invert drop-shadow-lg"
+              className="h-10 lg:h-14 w-auto object-contain filter brightness-0 invert drop-shadow-lg cursor-pointer"
+              onClick={() => setLocation('/')}
             />
           </div>
 

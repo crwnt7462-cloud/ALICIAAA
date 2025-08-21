@@ -129,7 +129,7 @@ export default function FuturisticProLogin() {
           <Card className="w-full max-w-md bg-white shadow-lg border border-gray-200">
             <CardHeader className="space-y-2 text-center pb-6">
               <div className="flex flex-col items-center justify-center mb-2">
-                <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto mb-2" />
+                <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto mb-2 cursor-pointer" onClick={() => setLocation('/')} />
                 <h2 className="text-2xl font-light text-gray-900">Espace Pro</h2>
               </div>
               <div className="flex justify-center">

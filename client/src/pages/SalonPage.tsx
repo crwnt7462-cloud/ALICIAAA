@@ -582,8 +582,9 @@ export default function SalonPage() {
               <img 
                 src="/avyento-logo.png" 
                 alt="Avyento"
-                className="w-auto"
+                className="w-auto cursor-pointer"
                 style={{ height: '115px' }}
+                onClick={() => navigate('/')}
               />
             </div>
             

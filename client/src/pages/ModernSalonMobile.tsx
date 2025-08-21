@@ -102,7 +102,7 @@ export default function ModernSalonMobile({ }: SalonMobileProps) {
               <ArrowLeft className="h-5 w-5" />
             </button>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation('/')}>
               <img 
                 src={logoAvyento} 
                 alt="Avyento" 

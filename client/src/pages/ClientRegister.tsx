@@ -154,8 +154,9 @@ export default function ClientRegister() {
                   <img 
                     src={avyentoLogo} 
                     alt="Avyento" 
-                    className="mx-auto"
+                    className="mx-auto cursor-pointer"
                     style={{ height: '120px' }}
+                    onClick={() => setLocation('/')}
                   />
                 </div>
                 <h1 className="text-3xl font-bold mb-3 text-gray-900">
