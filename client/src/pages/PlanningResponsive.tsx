@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-// import { Sidebar } from "@/components/Sidebar";
+import { Sidebar } from "@/components/Sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Types simplifiés pour éviter les erreurs
@@ -453,7 +453,7 @@ export default function PlanningResponsive() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative">
       {/* Sidebar Desktop uniquement */}
-      <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full bg-slate-50/80 backdrop-blur-16 border-r border-slate-400/20"></div>
+      <Sidebar />
       
       {/* Contenu principal */}
       <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto pb-20' : 'lg:ml-20 lg:max-w-none lg:w-full lg:pb-0'}`}>
