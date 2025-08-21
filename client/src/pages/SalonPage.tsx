@@ -19,21 +19,105 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function SalonPage() {
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
 
-  // Couleur primaire du salon
-  const primaryColor = '#8b5cf6';
-
-  // Données du salon - MODE AFFICHAGE UNIQUEMENT
-  const salonData = {
-    name: "Salon Avyento",
-    verified: true,
-    rating: 4.8,
-    reviewCount: 127,
-    priceRange: "€€€",
-    address: "75001 Paris, France",
-    backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80"
+  // Déterminer quel salon afficher selon l'URL
+  const getSalonData = () => {
+    if (location === '/salon') {
+      // Page salon officielle (template de base)
+      return {
+        name: "Salon Avyento",
+        verified: true,
+        rating: 4.8,
+        reviewCount: 127,
+        priceRange: "€€€",
+        address: "75001 Paris, France",
+        backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#8b5cf6'
+      };
+    } else if (location === '/salon-excellence-paris' || location.includes('excellence-paris')) {
+      return {
+        name: "Salon Excellence Paris",
+        verified: true,
+        rating: 4.8,
+        reviewCount: 203,
+        priceRange: "€€€",
+        address: "15 Rue de la Paix, 75002 Paris",
+        backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#7c3aed'
+      };
+    } else if (location === '/barbier-gentleman-marais' || location.includes('barbier-gentleman')) {
+      return {
+        name: "Barbier Gentleman Marais",
+        verified: true,
+        rating: 4.7,
+        reviewCount: 156,
+        priceRange: "€€",
+        address: "42 Rue des Rosiers, 75004 Paris",
+        backgroundImage: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#059669'
+      };
+    } else if (location === '/salon-moderne-republique' || location.includes('moderne-republique')) {
+      return {
+        name: "Salon Moderne République",
+        verified: true,
+        rating: 4.6,
+        reviewCount: 189,
+        priceRange: "€€€",
+        address: "25 Avenue de la République, 75003 Paris",
+        backgroundImage: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#d97706'
+      };
+    } else if (location === '/institut-beaute-saint-germain' || location.includes('institut-beaute')) {
+      return {
+        name: "Institut Beauté Saint-Germain",
+        verified: true,
+        rating: 4.9,
+        reviewCount: 134,
+        priceRange: "€€€€",
+        address: "8 Boulevard Saint-Germain, 75005 Paris",
+        backgroundImage: "https://images.unsplash.com/photo-1544717301-9cdcb1f5940f?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#ec4899'
+      };
+    } else if (location === '/beauty-lounge-montparnasse' || location.includes('beauty-lounge')) {
+      return {
+        name: "Beauty Lounge Montparnasse",
+        verified: true,
+        rating: 4.5,
+        reviewCount: 98,
+        priceRange: "€€",
+        address: "14 Boulevard du Montparnasse, 75006 Paris",
+        backgroundImage: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#8b5cf6'
+      };
+    } else if (location === '/beauty-lash-studio' || location.includes('beauty-lash')) {
+      return {
+        name: "Beauty Lash Studio",
+        verified: true,
+        rating: 4.8,
+        reviewCount: 76,
+        priceRange: "€€",
+        address: "9 Rue de la Pompe, 75016 Paris",
+        backgroundImage: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#f59e0b'
+      };
+    }
+    
+    // Défaut pour tout autre salon dynamique
+    return {
+      name: "Salon Avyento",
+      verified: true,
+      rating: 4.8,
+      reviewCount: 127,
+      priceRange: "€€€",
+      address: "75001 Paris, France",
+      backgroundImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
+      primaryColor: '#8b5cf6'
+    };
   };
+
+  const salonData = getSalonData();
+  const primaryColor = salonData.primaryColor;
 
   // Onglets de navigation
   const tabs = [
@@ -44,68 +128,321 @@ export default function SalonPage() {
     { id: 'avis', label: 'Avis', active: activeTab === 'avis' }
   ];
 
-  // Services avec photos et avis
-  const serviceCategories = [
-    {
-      id: 'coiffure',
-      name: 'Coiffure',
-      description: 'Coupes, colorations et soins capillaires',
-      services: [
+  // Services spécifiques selon le salon
+  const getServiceCategories = () => {
+    if (location === '/salon') {
+      return [
         {
-          name: 'Coupe + Brushing',
-          price: 45,
-          duration: 60,
-          description: 'Coupe personnalisée avec brushing professionnel',
-          photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
-          rating: 4.8,
-          reviews: 23
+          id: 'coiffure',
+          name: 'Coiffure',
+          description: 'Coupes, colorations et soins capillaires',
+          services: [
+            {
+              name: 'Coupe + Brushing',
+              price: 65,
+              duration: 60,
+              description: 'Coupe personnalisée avec brushing professionnel',
+              photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
+              rating: 4.8,
+              reviews: 23
+            },
+            {
+              name: 'Coloration',
+              price: 85,
+              duration: 120,
+              description: 'Coloration complète avec soin',
+              photo: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=200&h=200&fit=crop&q=80',
+              rating: 4.9,
+              reviews: 18
+            },
+            {
+              name: 'Balayage',
+              price: 120,
+              duration: 180,
+              description: 'Technique balayage à la main',
+              photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=200&fit=crop&q=80',
+              rating: 4.7,
+              reviews: 31
+            }
+          ]
         },
         {
-          name: 'Coloration complète',
-          price: 85,
-          duration: 120,
-          description: 'Coloration permanente avec soin protecteur',
-          photo: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=200&h=200&fit=crop&q=80',
-          rating: 4.9,
-          reviews: 18
-        },
-        {
-          name: 'Mèches + Balayage',
-          price: 95,
-          duration: 150,
-          description: 'Technique de balayage pour un effet naturel',
-          photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=200&fit=crop&q=80',
-          rating: 4.7,
-          reviews: 31
+          id: 'soins',
+          name: 'Soins',
+          description: 'Soins capillaires et traitements',
+          services: [
+            {
+              name: 'Soin restructurant',
+              price: 45,
+              duration: 45,
+              description: 'Soin profond pour cheveux abîmés',
+              photo: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&q=80',
+              rating: 4.6,
+              reviews: 14
+            },
+            {
+              name: 'Massage du cuir chevelu',
+              price: 35,
+              duration: 30,
+              description: 'Massage relaxant et stimulant',
+              photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=200&h=200&fit=crop&q=80',
+              rating: 4.8,
+              reviews: 42
+            }
+          ]
         }
-      ]
-    },
-    {
-      id: 'esthetique',
-      name: 'Esthétique',
-      description: 'Soins du visage et épilation',
-      services: [
+      ];
+    } else if (location === '/salon-excellence-paris' || location.includes('excellence-paris')) {
+      return [
         {
-          name: 'Soin visage purifiant',
-          price: 65,
-          duration: 75,
-          description: 'Nettoyage en profondeur et hydratation',
-          photo: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&q=80',
-          rating: 4.6,
-          reviews: 14
+          id: 'coiffure-femme',
+          name: 'Coiffure Femme',
+          description: 'Services haut de gamme pour femmes',
+          services: [
+            {
+              name: 'Coupe + Brushing',
+              price: 75,
+              duration: 60,
+              description: 'Coupe sur-mesure avec brushing premium',
+              photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
+              rating: 4.8,
+              reviews: 45
+            },
+            {
+              name: 'Coloration Premium',
+              price: 95,
+              duration: 140,
+              description: 'Coloration haut de gamme avec produits professionnels',
+              photo: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=200&h=200&fit=crop&q=80',
+              rating: 4.9,
+              reviews: 32
+            },
+            {
+              name: 'Mèches',
+              price: 110,
+              duration: 160,
+              description: 'Technique de mèches professionnelle',
+              photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=200&fit=crop&q=80',
+              rating: 4.7,
+              reviews: 28
+            }
+          ]
         },
         {
-          name: 'Épilation sourcils',
-          price: 25,
-          duration: 30,
-          description: 'Mise en forme professionnelle des sourcils',
-          photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=200&h=200&fit=crop&q=80',
-          rating: 4.8,
-          reviews: 42
+          id: 'coiffure-homme',
+          name: 'Coiffure Homme',
+          description: 'Services spécialisés pour hommes',
+          services: [
+            {
+              name: 'Coupe Homme',
+              price: 45,
+              duration: 45,
+              description: 'Coupe moderne et tendance',
+              photo: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=200&h=200&fit=crop&q=80',
+              rating: 4.6,
+              reviews: 38
+            },
+            {
+              name: 'Barbe',
+              price: 25,
+              duration: 30,
+              description: 'Taille et soin de barbe professionnel',
+              photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=200&fit=crop&q=80',
+              rating: 4.7,
+              reviews: 22
+            }
+          ]
         }
-      ]
+      ];
+    } else if (location === '/barbier-gentleman-marais' || location.includes('barbier-gentleman')) {
+      return [
+        {
+          id: 'barbier',
+          name: 'Services Barbier',
+          description: 'Art traditionnel de la barberie',
+          services: [
+            {
+              name: 'Coupe Classique',
+              price: 35,
+              duration: 45,
+              description: 'Coupe traditionnelle aux ciseaux',
+              photo: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=200&h=200&fit=crop&q=80',
+              rating: 4.8,
+              reviews: 67
+            },
+            {
+              name: 'Rasage Traditionnel',
+              price: 30,
+              duration: 40,
+              description: 'Rasage au rasoir avec serviette chaude',
+              photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=200&fit=crop&q=80',
+              rating: 4.9,
+              reviews: 89
+            },
+            {
+              name: 'Coupe + Barbe',
+              price: 55,
+              duration: 75,
+              description: 'Service complet coupe et barbe',
+              photo: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=200&h=200&fit=crop&q=80',
+              rating: 4.8,
+              reviews: 45
+            }
+          ]
+        }
+      ];
+    } else if (location === '/salon-moderne-republique' || location.includes('moderne-republique')) {
+      return [
+        {
+          id: 'coiffure-moderne',
+          name: 'Coiffure Moderne',
+          description: 'Coupes et styles contemporains',
+          services: [
+            {
+              name: 'Coupe Tendance',
+              price: 60,
+              duration: 50,
+              description: 'Coupe dans l\'air du temps',
+              photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
+              rating: 4.7,
+              reviews: 34
+            },
+            {
+              name: 'Color Bar',
+              price: 80,
+              duration: 120,
+              description: 'Coloration créative et moderne',
+              photo: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=200&h=200&fit=crop&q=80',
+              rating: 4.6,
+              reviews: 28
+            }
+          ]
+        }
+      ];
+    } else if (location === '/institut-beaute-saint-germain' || location.includes('institut-beaute')) {
+      return [
+        {
+          id: 'soins-visage',
+          name: 'Soins du Visage',
+          description: 'Soins esthétiques premium',
+          services: [
+            {
+              name: 'Soin Anti-Age',
+              price: 85,
+              duration: 75,
+              description: 'Soin premium anti-vieillissement',
+              photo: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&q=80',
+              rating: 4.9,
+              reviews: 56
+            },
+            {
+              name: 'Soin Hydratant',
+              price: 65,
+              duration: 60,
+              description: 'Hydratation profonde de la peau',
+              photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=200&h=200&fit=crop&q=80',
+              rating: 4.8,
+              reviews: 43
+            }
+          ]
+        },
+        {
+          id: 'massages',
+          name: 'Massages',
+          description: 'Massages relaxants et thérapeutiques',
+          services: [
+            {
+              name: 'Massage Relaxant',
+              price: 70,
+              duration: 60,
+              description: 'Massage détente corps entier',
+              photo: 'https://images.unsplash.com/photo-1544717301-9cdcb1f5940f?w=200&h=200&fit=crop&q=80',
+              rating: 4.9,
+              reviews: 78
+            }
+          ]
+        }
+      ];
+    } else if (location === '/beauty-lounge-montparnasse' || location.includes('beauty-lounge')) {
+      return [
+        {
+          id: 'esthetique',
+          name: 'Esthétique',
+          description: 'Soins beauté et bien-être',
+          services: [
+            {
+              name: 'Soin Visage Complet',
+              price: 55,
+              duration: 70,
+              description: 'Soin nettoyant et hydratant',
+              photo: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&q=80',
+              rating: 4.6,
+              reviews: 23
+            },
+            {
+              name: 'Épilation',
+              price: 40,
+              duration: 45,
+              description: 'Épilation professionnelle',
+              photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=200&h=200&fit=crop&q=80',
+              rating: 4.5,
+              reviews: 31
+            }
+          ]
+        }
+      ];
+    } else if (location === '/beauty-lash-studio' || location.includes('beauty-lash')) {
+      return [
+        {
+          id: 'cils',
+          name: 'Extensions de Cils',
+          description: 'Spécialiste des extensions de cils',
+          services: [
+            {
+              name: 'Extension Cils Volume',
+              price: 80,
+              duration: 120,
+              description: 'Pose d\'extensions volume russe',
+              photo: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=200&h=200&fit=crop&q=80',
+              rating: 4.8,
+              reviews: 45
+            },
+            {
+              name: 'Rehaussement Cils',
+              price: 45,
+              duration: 60,
+              description: 'Lift et teinture des cils naturels',
+              photo: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=200&h=200&fit=crop&q=80',
+              rating: 4.7,
+              reviews: 32
+            }
+          ]
+        }
+      ];
     }
-  ];
+    
+    // Défaut - Services Avyento
+    return [
+      {
+        id: 'coiffure',
+        name: 'Coiffure',
+        description: 'Coupes, colorations et soins capillaires',
+        services: [
+          {
+            name: 'Coupe + Brushing',
+            price: 65,
+            duration: 60,
+            description: 'Coupe personnalisée avec brushing professionnel',
+            photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
+            rating: 4.8,
+            reviews: 23
+          }
+        ]
+      }
+    ];
+  };
+
+  const serviceCategories = getServiceCategories();
 
   // Fonction pour formater la durée intelligemment
   const formatDuration = (minutes: number) => {
