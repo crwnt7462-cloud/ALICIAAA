@@ -5,7 +5,6 @@ import {
   Users, 
   Settings, 
   BarChart3, 
-  Package,
   User
 } from 'lucide-react';
 import avyentoProLogo from '@assets/avyento-pro-logo.png';
@@ -59,37 +58,53 @@ export function ProHeader({ currentPage = 'services' }: ProHeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center h-16 md:h-20">
-          {/* Logo centré */}
-          <div 
-            onClick={() => setLocation('/')}
-            className="flex items-center cursor-pointer group"
-          >
-            <img 
-              src={avyentoProLogo} 
-              alt="Avyento Pro" 
-              className="h-[115px] w-auto"
-              style={{ height: '115px' }}
-            />
+        <div className="flex items-center h-16 md:h-20">
+          {/* Layout mobile : logo centré */}
+          <div className="flex md:hidden w-full justify-center">
+            <div 
+              onClick={() => setLocation('/')}
+              className="flex items-center cursor-pointer group"
+            >
+              <img 
+                src={avyentoProLogo} 
+                alt="Avyento Pro" 
+                className="h-[115px] w-auto"
+                style={{ height: '115px' }}
+              />
+            </div>
           </div>
 
-          {/* Navigation menu - uniquement sur desktop */}
-          <div className="hidden md:flex absolute right-4 lg:right-8 items-center">
+          {/* Layout desktop : logo à gauche + menu à droite */}
+          <div className="hidden md:flex w-full items-center justify-between">
+            {/* Logo à gauche */}
+            <div 
+              onClick={() => setLocation('/')}
+              className="flex items-center cursor-pointer group"
+            >
+              <img 
+                src={avyentoProLogo} 
+                alt="Avyento Pro" 
+                className="h-[115px] w-auto"
+                style={{ height: '115px' }}
+              />
+            </div>
+
+            {/* Navigation menu à droite */}
             <nav className="flex items-center space-x-6 lg:space-x-8">
               {menuItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setLocation(item.path)}
                   className={`
-                    flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-2 rounded-md text-xs lg:text-sm font-medium transition-all duration-200
+                    flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
                     ${item.active 
                       ? 'text-purple-600 bg-purple-50 border-b-2 border-purple-600' 
                       : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50'
                     }
                   `}
                 >
-                  <item.icon className="h-3 w-3 lg:h-4 lg:w-4" />
-                  <span className="hidden lg:inline">{item.label}</span>
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
                 </button>
               ))}
             </nav>
