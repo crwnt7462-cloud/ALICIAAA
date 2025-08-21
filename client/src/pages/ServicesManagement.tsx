@@ -10,6 +10,9 @@ import { Plus, Scissors, Edit, Save, X, Clock, Euro } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { apiRequest } from '@/lib/queryClient';
+import { Sidebar } from '@/components/Sidebar';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Service {
   id: number;
@@ -35,6 +38,7 @@ export default function ServicesManagement() {
   const queryClient = useQueryClient();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const isMobile = useIsMobile();
   
   // États séparés pour l'édition
   const [editingServiceHours, setEditingServiceHours] = useState(1);
@@ -178,25 +182,32 @@ export default function ServicesManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Gestion des services</h1>
-            <p className="text-gray-600 mt-2">Créez et gérez vos services personnalisés</p>
-          </div>
-          <Button 
-            onClick={() => setShowAddForm(true)}
-            className="bg-violet-600 hover:bg-violet-700 text-white"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Nouveau service
-          </Button>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative">
+      {/* Navigation */}
+      <Sidebar />
+      <MobileBottomNav />
+      
+      {/* Contenu principal avec marge pour sidebar */}
+      <div className="lg:ml-20 pb-20 lg:pb-8">
+        <div className="min-h-screen bg-transparent py-4 sm:py-8">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gestion des services</h1>
+                <p className="text-gray-600 mt-2 text-sm sm:text-base">Créez et gérez vos services personnalisés</p>
+              </div>
+              <Button 
+                onClick={() => setShowAddForm(true)}
+                className="bg-violet-600 hover:bg-violet-700 text-white w-full sm:w-auto"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Nouveau service
+              </Button>
+            </div>
 
-        {/* Formulaire d'ajout */}
-        {showAddForm && (
-          <Card className="mb-6">
+            {/* Formulaire d'ajout */}
+            {showAddForm && (
+              <Card className="mb-4 sm:mb-6">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 Nouveau service
@@ -223,7 +234,7 @@ export default function ServicesManagement() {
                     <Euro className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
                       type="number"
-                      placeholder="Ex: 45"
+                      placeholder="Prix"
                       value={newService.price || ''}
                       onChange={(e) => setNewService(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
                       className="pl-10"
@@ -335,36 +346,36 @@ export default function ServicesManagement() {
                   Annuler
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Liste des services */}
-        <div className="grid gap-4">
-          {isLoadingServices ? (
-            <div className="text-center py-8">
-              <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full mx-auto mb-2"></div>
-              <p>Chargement des services...</p>
-            </div>
-          ) : services.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-8">
-                <Scissors className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun service</h3>
-                <p className="text-gray-600 mb-4">Commencez par créer vos premiers services</p>
-                <Button 
-                  onClick={() => setShowAddForm(true)}
-                  className="bg-violet-600 hover:bg-violet-700 text-white"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Créer le premier service
-                </Button>
               </CardContent>
             </Card>
-          ) : (
-            services.map((service) => (
-              <Card key={service.id}>
-                <CardContent className="p-6">
+            )}
+
+            {/* Liste des services */}
+            <div className="grid gap-3 sm:gap-4">
+              {isLoadingServices ? (
+                <div className="text-center py-6 sm:py-8">
+                  <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <p className="text-sm sm:text-base">Chargement des services...</p>
+                </div>
+              ) : services.length === 0 ? (
+                <Card>
+                  <CardContent className="text-center py-6 sm:py-8">
+                    <Scissors className="h-10 sm:h-12 w-10 sm:w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Aucun service</h3>
+                    <p className="text-gray-600 mb-4 text-sm sm:text-base">Commencez par créer vos premiers services</p>
+                    <Button 
+                      onClick={() => setShowAddForm(true)}
+                      className="bg-violet-600 hover:bg-violet-700 text-white w-full sm:w-auto"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Créer le premier service
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                services.map((service) => (
+                  <Card key={service.id}>
+                    <CardContent className="p-4 sm:p-6">
                   {editingService?.id === service.id ? (
                     // Mode édition
                     <div className="space-y-4">
@@ -455,60 +466,63 @@ export default function ServicesManagement() {
                       </div>
                     </div>
                   ) : (
-                    // Mode affichage
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                          {service.name}
-                        </h3>
-                        
-                        <div className="flex items-center gap-4 mb-3">
-                          <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
-                            <Euro className="h-3 w-3 mr-1" />
-                            {service.price}€
-                          </Badge>
-                          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {service.duration} min
-                          </Badge>
+                      // Mode affichage
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+                            {service.name}
+                          </h3>
+                          
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-3">
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                              <Euro className="h-3 w-3 mr-1" />
+                              {service.price}€
+                            </Badge>
+                            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {service.duration} min
+                            </Badge>
+                          </div>
+                          
+                          {service.description && (
+                            <p className="text-gray-600 text-sm">
+                              {service.description}
+                            </p>
+                          )}
                         </div>
                         
-                        {service.description && (
-                          <p className="text-gray-600 text-sm">
-                            {service.description}
-                          </p>
-                        )}
+                        <div className="flex gap-2 sm:ml-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setEditingService(service);
+                              // Convertir la durée en heures et minutes
+                              const hours = Math.floor(service.duration / 60);
+                              const minutes = service.duration % 60;
+                              setEditingServiceHours(hours);
+                              setEditingServiceMinutes(minutes);
+                            }}
+                            className="w-full sm:w-auto"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                      
-                      <div className="flex gap-2 ml-4">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setEditingService(service);
-                            // Convertir la durée en heures et minutes
-                            const hours = Math.floor(service.duration / 60);
-                            const minutes = service.duration % 60;
-                            setEditingServiceHours(hours);
-                            setEditingServiceMinutes(minutes);
-                          }}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
+                    )}
+                  </CardContent>
+                </Card>
+                ))
+              )}
+            </div>
 
-        <div className="mt-8 p-4 bg-violet-50 rounded-lg">
-          <h4 className="font-medium text-violet-900 mb-2">💡 Étape suivante</h4>
-          <p className="text-violet-800 text-sm">
-            Une fois vos services créés, allez dans "Gestion de l'équipe" pour assigner chaque professionnel aux services qu'il/elle maîtrise.
-          </p>
+            <div className="mt-6 sm:mt-8 p-4 bg-violet-50 rounded-lg">
+              <h4 className="font-medium text-violet-900 mb-2">💡 Étape suivante</h4>
+              <p className="text-violet-800 text-sm">
+                Une fois vos services créés, allez dans "Gestion de l'équipe" pour assigner chaque professionnel aux services qu'il/elle maîtrise.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
