@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Scissors, Edit, Trash2, Save, X, Clock, Euro } from 'lucide-react';
+import { Plus, Scissors, Edit, Save, X, Clock, Euro } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { apiRequest } from '@/lib/queryClient';
 
 interface Service {
@@ -15,6 +17,8 @@ interface Service {
   price: number;
   duration: number;
   description?: string;
+  requiresDeposit: boolean;
+  depositPercentage: number;
 }
 
 interface NewService {
@@ -22,6 +26,8 @@ interface NewService {
   price: number;
   duration: number;
   description: string;
+  requiresDeposit: boolean;
+  depositPercentage: number;
 }
 
 export default function ServicesManagement() {
@@ -36,7 +42,9 @@ export default function ServicesManagement() {
     name: '',
     price: 0,
     duration: 60,
-    description: ''
+    description: '',
+    requiresDeposit: false,
+    depositPercentage: 30
   });
 
   // Récupération des services
@@ -53,14 +61,14 @@ export default function ServicesManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonId}/services`] });
-      setNewService({ name: '', price: 0, duration: 60, description: '' });
+      setNewService({ name: '', price: 0, duration: 60, description: '', requiresDeposit: false, depositPercentage: 30 });
       setShowAddForm(false);
       toast({
         title: "Service ajouté",
         description: "Le service a été ajouté avec succès"
       });
     },
-    onError: (error: any) => {
+    onError: () => {
       toast({
         title: "Erreur",
         description: "Impossible d'ajouter le service",
@@ -171,6 +179,46 @@ export default function ServicesManagement() {
                 onChange={(e) => setNewService(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
               />
+
+              {/* Configuration Acompte */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="requiresDeposit"
+                    checked={newService.requiresDeposit}
+                    onCheckedChange={(checked) => setNewService(prev => ({ ...prev, requiresDeposit: !!checked }))}
+                  />
+                  <label htmlFor="requiresDeposit" className="text-sm font-medium">
+                    Demander un acompte à la réservation
+                  </label>
+                </div>
+                
+                {newService.requiresDeposit && (
+                  <div className="ml-6">
+                    <label className="text-sm text-gray-600 mb-2 block">
+                      Pourcentage d'acompte
+                    </label>
+                    <Select 
+                      value={newService.depositPercentage.toString()} 
+                      onValueChange={(value) => setNewService(prev => ({ ...prev, depositPercentage: parseInt(value) }))}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="20">20% - Léger acompte</SelectItem>
+                        <SelectItem value="30">30% - Standard</SelectItem>
+                        <SelectItem value="40">40% - Sécurisé</SelectItem>
+                        <SelectItem value="50">50% - Moitié du prix</SelectItem>
+                        <SelectItem value="100">100% - Paiement intégral</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Acompte: <span className="font-medium">{(newService.price * (newService.depositPercentage / 100)).toFixed(2)}€</span> pour ce service
+                    </p>
+                  </div>
+                )}
+              </div>
 
               <div className="flex gap-2">
                 <Button 

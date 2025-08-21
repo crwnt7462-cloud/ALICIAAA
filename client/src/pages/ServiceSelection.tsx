@@ -1,77 +1,47 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Clock, Star, ChevronRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, Clock, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Service {
-  id: string;
+  id: number;
   name: string;
-  description: string;
+  description?: string;
   price: number;
-  duration: string;
-  category: string;
+  duration: number;
+  category?: string;
+  requiresDeposit: boolean;
+  depositPercentage: number;
 }
 
 export default function ServiceSelection() {
   const [, setLocation] = useLocation();
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedService, setSelectedService] = useState<number | null>(null);
 
-  // Services organisés par catégorie comme dans l'interface Avyento
-  const serviceCategories = [
-    {
-      name: "ÉPILATION LASER",
-      expanded: true,
-      description: "FORFAITS 6 SÉANCES (AUTRES FORFAITS DISPONIBLE SUR DEMANDE)",
-      services: [
-        {
-          id: "aisselles",
-          name: "Aisselles",
-          description: "",
-          price: 380,
-          duration: "30min"
-        },
-        {
-          id: "maillot-classique", 
-          name: "Maillot classique",
-          description: "",
-          price: 300,
-          duration: "30min"
-        },
-        {
-          id: "maillot-echancre",
-          name: "Maillot échancré", 
-          description: "",
-          price: 400,
-          duration: "30min"
-        },
-        {
-          id: "maillot-bresilien",
-          name: "Maillot brésilien",
-          description: "",
-          price: 450,
-          duration: "30min"
-        },
-        {
-          id: "maillot-integral",
-          name: "Maillot intégral",
-          description: "",
-          price: 500,
-          duration: "45min"
-        }
-      ]
-    }
-  ];
+  // Récupération dynamique des services depuis l'API
+  const salonId = "salon-cacacaxaaxax-1754092428868-vr7b3j"; // TODO: récupérer dynamiquement depuis les paramètres
+  
+  const { data: servicesData, isLoading } = useQuery({
+    queryKey: [`/api/salon/${salonId}/services`]
+  });
 
-  const handleServiceSelect = (serviceId: string) => {
+  const services: Service[] = (servicesData as any)?.services || [];
+
+  const handleServiceSelect = (serviceId: number) => {
     setSelectedService(serviceId);
   };
 
   const handleContinue = () => {
     if (selectedService) {
-      // Stocker le service sélectionné dans le localStorage
-      localStorage.setItem('selectedService', selectedService);
-      // Rediriger vers la sélection du professionnel
-      setLocation('/professional-selection');
+      // Trouver le service complet avec toutes ses données (y compris depositPercentage)
+      const fullService = services.find(s => s.id === selectedService);
+      if (fullService) {
+        // Stocker toutes les données du service dans localStorage
+        localStorage.setItem('selectedService', JSON.stringify(fullService));
+        // Rediriger vers la sélection du professionnel
+        setLocation('/professional-selection');
+      }
     }
   };
 
@@ -94,21 +64,26 @@ export default function ServiceSelection() {
         </div>
       </div>
 
-      {/* Services par catégorie */}
+      {/* Services réels de l'API */}
       <div className="max-w-md mx-auto">
-        {serviceCategories.map((category) => (
-          <div key={category.name} className="bg-white mb-1">
-            {/* En-tête de catégorie */}
+        {isLoading ? (
+          <div className="bg-white p-8 text-center">
+            <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement des services...</p>
+          </div>
+        ) : services.length === 0 ? (
+          <div className="bg-white p-8 text-center">
+            <p className="text-gray-600">Aucun service disponible pour le moment</p>
+          </div>
+        ) : (
+          <div className="bg-white mb-1">
             <div className="px-4 py-3 border-b border-gray-100">
-              <h3 className="font-semibold text-gray-900 text-sm">{category.name}</h3>
-              {category.description && (
-                <p className="text-xs text-gray-500 mt-1">{category.description}</p>
-              )}
+              <h3 className="font-semibold text-gray-900 text-sm">SERVICES DISPONIBLES</h3>
+              <p className="text-xs text-gray-500 mt-1">{services.length} service{services.length > 1 ? 's' : ''} proposé{services.length > 1 ? 's' : ''}</p>
             </div>
 
-            {/* Services de la catégorie */}
             <div className="divide-y divide-gray-100">
-              {category.services.map((service) => (
+              {services.map((service) => (
                 <div 
                   key={service.id}
                   className={`p-4 cursor-pointer transition-colors ${
@@ -123,11 +98,16 @@ export default function ServiceSelection() {
                         <p className="text-sm text-gray-500 mt-1">{service.description}</p>
                       )}
                       <div className="flex items-center gap-4 mt-2">
-                        <span className="font-semibold text-gray-900">{service.price} €</span>
+                        <span className="font-semibold text-gray-900">{service.price}€</span>
                         <div className="flex items-center gap-1 text-sm text-gray-500">
                           <Clock className="w-3 h-3" />
-                          {service.duration}
+                          {service.duration} min
                         </div>
+                        {service.requiresDeposit && (
+                          <div className="text-xs text-violet-600 font-medium">
+                            Acompte {service.depositPercentage}%
+                          </div>
+                        )}
                       </div>
                     </div>
                     <Button
@@ -146,7 +126,7 @@ export default function ServiceSelection() {
               ))}
             </div>
           </div>
-        ))}
+        )}
 
         {/* Informations additionnelles */}
         <div className="bg-white mt-6">

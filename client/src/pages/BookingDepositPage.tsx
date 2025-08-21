@@ -51,16 +51,19 @@ export default function BookingDepositPage() {
         salonName: bookingData.salon.name
       });
 
-      if (response.url) {
-        // Sauvegarder les données de réservation avant redirection
-        localStorage.setItem('bookingInProgress', JSON.stringify({
-          ...bookingData,
-          sessionId: response.sessionId,
-          depositAmount
-        }));
-        
-        // Rediriger vers Stripe Checkout
-        window.location.href = response.url;
+      if (response.ok && response.json) {
+        const sessionData = await response.json();
+        if (sessionData.url) {
+          // Sauvegarder les données de réservation avant redirection
+          localStorage.setItem('bookingInProgress', JSON.stringify({
+            ...bookingData,
+            sessionId: sessionData.sessionId,
+            depositAmount
+          }));
+          
+          // Rediriger vers Stripe Checkout
+          window.location.href = sessionData.url;
+        }
       }
     } catch (error: any) {
       console.error('Erreur création paiement:', error);
