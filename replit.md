@@ -89,3 +89,9 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Nettoyage Codebase Complet**: Suppression définitive des 6 pages obsolètes (/home, /pro/login, /client-login-modern, /pro-dashboard, /client-dashboard, /client-dashboard-new) et de leurs routes associées pour simplifier l'architecture
 - **Navigation Mobile Optimisée (20/08/2025 19h12)**: Suppression définitive de la sidebar grise qui s'affichait sur mobile, remplacement par navigation MobileBottomNav avec 4 icônes (Accueil, Planning, Clients, Analytics), suppression de Messages, popup de planning optimisé mobile-friendly avec boutons tactiles et design amélioré
 - **PAGE /SALON TEMPLATE OFFICIEL (21/08/2025 01h36)**: DIRECTIVE CRITIQUE - La page /salon est maintenant le modèle officiel INTOUCHABLE. Son design, mise en page et contenu ne doivent JAMAIS être modifiés. Cette page doit servir de template principal pour tous les salons existants et être automatiquement appliquée à chaque nouveau salon créé. Toutes les pages salon doivent strictement respecter ce template sans aucune exception.
+- **AUTHENTIFICATION PROFESSIONNELLE RÉPARÉE (21/08/2025 19h28)**: SUCCÈS COMPLET - Connexion professionnelle /pro-login maintenant 100% fonctionnelle
+  * ✅ **Route /api/login/professional créée** : Retourne du JSON valide avec sessions sécurisées
+  * ✅ **Route /api/auth/check-session ajoutée** : Vérification de session pour useAuthSession
+  * ✅ **Sessions professionnelles** : Création automatique et redirection vers /dashboard
+  * ✅ **Plus d'erreurs JSON** : Terminé les erreurs "Failed to execute 'json'" et "<!DOCTYPE"
+  * 🔒 **DIRECTIVE CRITIQUE** : Ces routes d'authentification ne doivent PLUS JAMAIS être modifiées - Elles fonctionnent parfaitement
