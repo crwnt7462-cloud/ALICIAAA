@@ -17,6 +17,10 @@ interface Professional {
 export default function ProfessionalSelection() {
   const [, setLocation] = useLocation();
   const [selectedProfessional, setSelectedProfessional] = useState<string | null>(null);
+  
+  // Récupérer le service sélectionné depuis localStorage
+  const selectedServiceData = localStorage.getItem('selectedService');
+  const selectedService = selectedServiceData ? JSON.parse(selectedServiceData) : null;
 
   // Données des professionnels du salon Bonhomme
   const professionals: Professional[] = [
@@ -60,9 +64,9 @@ export default function ProfessionalSelection() {
 
   const handleContinue = () => {
     if (selectedProfessional) {
-      // Stocker la sélection et passer à la sélection de service
+      // Stocker la sélection et passer à la sélection date/heure
       localStorage.setItem('selectedProfessional', selectedProfessional);
-      setLocation('/service-selection');
+      setLocation('/booking-datetime');
     }
   };
 
@@ -74,31 +78,48 @@ export default function ProfessionalSelection() {
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/service-selection')}
+              onClick={() => setLocation('/salon')}
               className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">Bonhomme - Paris Archives</h1>
+            <h1 className="text-lg font-semibold text-gray-900">avec Justine</h1>
             <div className="w-10" />
           </div>
         </div>
       </div>
 
-      <div className="max-w-md mx-auto p-4">
-        {/* Étape */}
-        <div className="mb-6">
-          <div className="text-sm text-violet-600 font-medium mb-1">1. Choix du professionnel</div>
-          <h2 className="text-xl font-bold text-gray-900">
-            Choisissez votre coiffeur
-          </h2>
-          <p className="text-gray-600 text-sm mt-1">
-            Sélectionnez le professionnel avec qui vous souhaitez prendre rendez-vous
-          </p>
-        </div>
+      <div className="max-w-md mx-auto">
+        {/* Affichage du service sélectionné */}
+        {selectedService && (
+          <div className="bg-white m-4 p-4 rounded-xl border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">{selectedService.name}</h3>
+                <p className="text-sm text-gray-600">{selectedService.description}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="font-bold text-gray-900">{selectedService.price}€</span>
+                  <span className="text-sm text-gray-500">{selectedService.duration}min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
-        {/* Liste des professionnels */}
-        <div className="space-y-3 mb-6">
+        <div className="p-4">
+          {/* Étape */}
+          <div className="mb-6">
+            <div className="text-sm text-violet-600 font-medium mb-1">1. Choix du professionnel</div>
+            <h2 className="text-xl font-bold text-gray-900">
+              Choisissez votre coiffeur
+            </h2>
+            <p className="text-gray-600 text-sm mt-1">
+              Sélectionnez le professionnel avec qui vous souhaitez prendre rendez-vous
+            </p>
+          </div>
+
+          {/* Liste des professionnels */}
+          <div className="space-y-3 mb-6">
           {professionals.map((pro) => (
             <Card 
               key={pro.id}
@@ -195,16 +216,17 @@ export default function ProfessionalSelection() {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </div>
 
-        {/* Bouton Continuer */}
-        <Button
+          {/* Bouton Continuer */}
+          <Button
           onClick={handleContinue}
           disabled={!selectedProfessional}
           className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold disabled:bg-gray-300"
-        >
-          Continuer
-        </Button>
+          >
+            Continuer
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -700,7 +700,17 @@ export default function SalonPage() {
                                 size="sm" 
                                 style={getButtonStyle('outline')}
                                 className="bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
-                                onClick={() => navigate('/professional-selection')}
+                                onClick={() => {
+                                  // Stocker le service sélectionné
+                                  localStorage.setItem('selectedService', JSON.stringify({
+                                    name: service.name,
+                                    price: service.price,
+                                    duration: service.duration,
+                                    description: service.description
+                                  }));
+                                  // Rediriger vers sélection du professionnel
+                                  navigate('/professional-selection');
+                                }}
                               >
                                 Réserver
                               </Button>
@@ -765,7 +775,11 @@ export default function SalonPage() {
                           size="sm" 
                           variant="outline"
                           style={getButtonStyle('outline')}
-                          onClick={() => navigate('/professional-selection')}
+                          onClick={() => {
+                            // Pré-sélectionner ce professionnel et rediriger vers services
+                            localStorage.setItem('selectedProfessional', member.id);
+                            navigate('/service-selection');
+                          }}
                         >
                           Réserver avec {member.name.split(' ')[0]}
                         </Button>
