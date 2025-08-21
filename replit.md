@@ -60,6 +60,15 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
+- **MOBILE RESPONSIVENESS SALON CREATION (21/08/2025 01h08)**:
+  * Page /salon-creation entièrement optimisée pour mobile avec design adaptatif
+  * En-tête responsive : boutons compacts sur mobile avec texte masqué sur petits écrans
+  * Header salon adapté : hauteur réduite mobile (h-24 vs h-32), images et boutons redimensionnés
+  * Section informations salon : texte tronqué, layout flexible avec gap réduit mobile
+  * Contenu onglets : padding adaptatif (p-3 mobile, p-6 desktop) et espacement responsive
+  * Barre actions flottante : taille et position ajustées pour mobile (bottom-3 vs bottom-4)
+  * Modal couleurs responsive : largeur 95% mobile, grid adaptatif, textes et boutons redimensionnés
+  * Tous les éléments maintiennent la cohérence design glassmorphism Avyento sur mobile
 - **SYSTÈME DE TEMPLATE SALON UNIFIÉ (21/08/2025 00h54)**:
   * Design actuel de la page salon enregistré comme template unique pour toutes les pages /salon/
   * Architecture modulaire avec AvyentoSalonTemplate.ts (configuration), SalonPageTemplate.tsx (composant), SalonPage.tsx (page)
