@@ -2548,9 +2548,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
 
       let notifications = [];
-      if (storage.getNotifications) {
-        notifications = await storage.getNotifications(userId);
-      }
+      // Les notifications ne sont pas encore implémentées dans storage
+      notifications = [];
       
       res.json(notifications);
     } catch (error: any) {
@@ -2573,11 +2572,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
 
       let notification;
-      if (storage.createNotification) {
-        notification = await storage.createNotification(notificationData);
-      } else {
-        notification = { ...notificationData, id: Date.now(), createdAt: new Date() };
-      }
+      // Les notifications ne sont pas encore implémentées dans storage
+      notification = { ...notificationData, id: Date.now(), createdAt: new Date() };
       
       res.json(notification);
     } catch (error: any) {
@@ -2886,9 +2882,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         user: {
           id: user.id,
           email: user.email,
-          firstName: user.first_name || user.firstName,
-          lastName: user.last_name || user.lastName,
-          businessName: user.business_name || user.businessName,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          businessName: user.businessName,
           role: 'professional'
         },
         token: `business-token-${user.id}`,
@@ -3971,7 +3967,6 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         phone,
         address,
         businessType,
-        services,
         description,
         salonId: createdSalon.id,
         subscriptionPlan,
