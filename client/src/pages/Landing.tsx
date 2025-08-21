@@ -56,9 +56,81 @@ export default function Landing() {
 
   return (
     <>
-      {/* Menu de navigation desktop */}
-      <div className="hidden lg:block">
-        <Header />
+      {/* Menu de navigation desktop - Affiché directement */}
+      <div className="hidden lg:block bg-white/95 backdrop-blur-lg border-b border-gray-200/50 px-6 py-4 shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center space-x-3">
+            <div 
+              className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center cursor-pointer"
+              onClick={() => setLocation('/')}
+            >
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-xl font-bold text-gray-900">Avyento Pro</h1>
+          </div>
+
+          {/* Navigation Menu */}
+          <div className="flex items-center space-x-8">
+            <button
+              onClick={() => setLocation('/dashboard')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            >
+              <Calendar className="w-4 h-4" />
+              <span className="font-medium">Tableau de bord</span>
+            </button>
+            
+            <button
+              onClick={() => setLocation('/planning-responsive')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            >
+              <Calendar className="w-4 h-4" />
+              <span className="font-medium">Planning</span>
+            </button>
+            
+            <button
+              onClick={() => setLocation('/clients-modern')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            >
+              <Users className="w-4 h-4" />
+              <span className="font-medium">Clients</span>
+            </button>
+            
+            <button
+              onClick={() => setLocation('/client-analytics')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            >
+              <TrendingUp className="w-4 h-4" />
+              <span className="font-medium">Analytics</span>
+            </button>
+            
+            <button
+              onClick={() => setLocation('/ai-pro-complete')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span className="font-medium">IA Assistant</span>
+            </button>
+            
+            <button
+              onClick={() => setLocation('/business-features')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+            >
+              <MapPin className="w-4 h-4" />
+              <span className="font-medium">Paramètres</span>
+            </button>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setLocation('/pro-login')}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+            >
+              Connexion Pro
+            </button>
+          </div>
+        </div>
       </div>
       
       <motion.div 
