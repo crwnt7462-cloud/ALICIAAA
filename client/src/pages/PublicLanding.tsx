@@ -389,46 +389,34 @@ export default function PublicLanding() {
 
   const menuItems = [
     { 
-      id: 'client-login', 
-      label: 'Se connecter', 
-      icon: <User className="w-5 h-5" />,
-      action: () => setLocation("/client-login-modern")
+      id: 'services', 
+      label: 'Services', 
+      icon: <Scissors className="w-5 h-5" />,
+      action: () => setLocation("/search-results")
     },
     { 
-      id: 'login', 
-      label: 'Espace Pro', 
-      icon: <LogIn className="w-5 h-5" />,
-      action: () => setLocation("/pro-login")
-    },
-    { 
-      id: 'pro', 
-      label: 'Je suis un professionnel de beauté', 
+      id: 'professionnels', 
+      label: 'Professionnels', 
       icon: <UserCheck className="w-5 h-5" />,
       action: () => setLocation("/professional-plans")
     },
     { 
-      id: 'coiffeur', 
-      label: 'Coiffeur', 
-      icon: <Scissors className="w-5 h-5" />,
-      action: () => handleSearch()
+      id: 'support', 
+      label: 'Support', 
+      icon: <HelpCircle className="w-5 h-5" />,
+      action: () => setLocation("/centre-aide")
     },
     { 
-      id: 'barbier', 
-      label: 'Barbier', 
+      id: 'contact', 
+      label: 'Contact', 
+      icon: <User className="w-5 h-5" />,
+      action: () => setLocation("/contact")
+    },
+    { 
+      id: 'devenir-partenaire', 
+      label: 'Devenir partenaire', 
       icon: <Users className="w-5 h-5" />,
-      action: () => handleSearch()
-    },
-    { 
-      id: 'manucure', 
-      label: 'Manucure', 
-      icon: <Palette className="w-5 h-5" />,
-      action: () => handleSearch()
-    },
-    { 
-      id: 'institut', 
-      label: 'Institut de beauté', 
-      icon: <Sparkles className="w-5 h-5" />,
-      action: () => handleSearch()
+      action: () => setLocation("/register")
     }
   ];
 
@@ -441,21 +429,7 @@ export default function PublicLanding() {
   };
 
   const handleMenuItemClick = (item: typeof menuItems[0]) => {
-    if (item.id === 'coiffeur') {
-      setSearchQuery('coiffure');
-      setLocation(`/search?q=coiffure`);
-    } else if (item.id === 'barbier') {
-      setSearchQuery('barbier');
-      setLocation(`/search?q=barbier`);
-    } else if (item.id === 'manucure') {
-      setSearchQuery('ongle');
-      setLocation(`/search?q=ongle`);
-    } else if (item.id === 'institut') {
-      setSearchQuery('esthetique');
-      setLocation(`/search?q=esthetique`);
-    } else {
-      item.action();
-    }
+    item.action();
     closeMenu();
   };
 
@@ -587,12 +561,12 @@ export default function PublicLanding() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center" style={{ gap: '2px' }}>
-              {/* Bouton hamburger animé avec Framer Motion */}
+            <div className="flex items-center" style={{ gap: '8px' }}>
+              {/* Bouton hamburger animé avec Framer Motion - visible sur toutes tailles */}
               <motion.button
                 id="hamburger-button"
                 onClick={toggleMenu}
-                className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200 lg:hidden"
+                className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200"
                 aria-label="Menu"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -630,60 +604,18 @@ export default function PublicLanding() {
               </div>
             </div>
             
-            {/* Menu de navigation desktop */}
-            <nav className="hidden lg:flex items-center space-x-8">
-              <button 
-                onClick={() => setLocation('/search-results')}
-                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
-              >
-                Services
-              </button>
-              <button 
-                onClick={() => setLocation('/professional-plans')}
-                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
-              >
-                Professionnels
-              </button>
-              <button 
-                onClick={() => setLocation('/centre-aide')}
-                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
-              >
-                Support
-              </button>
-              <button 
-                onClick={() => setLocation('/contact')}
-                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
-              >
-                Contact
-              </button>
-              <button 
-                onClick={() => setLocation('/register')}
-                className="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-200"
-              >
-                Devenir partenaire
-              </button>
-            </nav>
-            
             <div className="flex items-center gap-3 md:gap-5">
               <button 
                 className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
                 onClick={() => setLocation("/client-login-modern")}
               >
-                <span className="hidden md:inline">Se connecter</span>
-                <span className="md:hidden">Connexion</span>
+                Se connecter
               </button>
               <button 
                 className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
                 onClick={() => setLocation("/pro-login")}
               >
-                <span className="hidden md:inline">Espace Pro</span>
-                <span className="md:hidden">Pro</span>
-              </button>
-              <button 
-                className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
-                onClick={() => setLocation("/search-results")}
-              >
-                Réserver
+                Espace Pro
               </button>
             </div>
           </div>
