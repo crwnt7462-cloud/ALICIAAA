@@ -191,6 +191,20 @@ export default function Dashboard() {
               </div>
               
               <Button 
+                onClick={() => {
+                  // Redirection vers la template officielle /salon 
+                  // qui affiche maintenant dynamiquement les données du salon connecté
+                  setLocation('/salon');
+                }}
+                variant="outline"
+                size="sm"
+                className="hidden lg:flex items-center space-x-2"
+              >
+                <Globe className="w-4 h-4" />
+                <span>Ma Page</span>
+              </Button>
+              
+              <Button 
                 onClick={async () => {
                   try {
                     const response = await fetch('/api/salon/my-salon');
@@ -213,8 +227,8 @@ export default function Dashboard() {
                 size="sm"
                 className="hidden lg:flex items-center space-x-2"
               >
-                <Globe className="w-4 h-4" />
-                <span>Ma Page</span>
+                <SettingsIcon className="w-4 h-4" />
+                <span>Modifier</span>
               </Button>
               
               <Button 

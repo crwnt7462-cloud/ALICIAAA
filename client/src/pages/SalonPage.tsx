@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   Star, 
   MapPin, 
@@ -20,11 +22,34 @@ export default function SalonPage() {
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [location, navigate] = useLocation();
+  const { user, isAuthenticated } = useAuth();
+
+  // Charger les données du salon du professionnel connecté si on est sur /salon
+  const { data: userSalon } = useQuery({
+    queryKey: ['/api/salon/my-salon'],
+    enabled: location === '/salon' && isAuthenticated,
+    retry: false,
+    staleTime: 5000
+  });
 
   // Déterminer quel salon afficher selon l'URL
   const getSalonData = () => {
     if (location === '/salon') {
-      // Page salon officielle (template de base)
+      // Si utilisateur connecté et a un salon, utiliser ses données
+      if (isAuthenticated && userSalon) {
+        return {
+          name: userSalon.name || "Mon Salon",
+          verified: true,
+          rating: userSalon.rating || 4.8,
+          reviewCount: userSalon.reviewCount || 0,
+          priceRange: "€€€",
+          address: userSalon.address || "Paris, France",
+          backgroundImage: userSalon.coverImageUrl || "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
+          primaryColor: userSalon.customColors?.primary || '#8b5cf6'
+        };
+      }
+      
+      // Fallback : template de base pour visiteurs non connectés
       return {
         name: "Salon Avyento",
         verified: true,
@@ -131,6 +156,25 @@ export default function SalonPage() {
   // Services spécifiques selon le salon
   const getServiceCategories = () => {
     if (location === '/salon') {
+      // Si utilisateur connecté avec des services, utiliser ses données
+      if (isAuthenticated && userSalon?.serviceCategories?.length > 0) {
+        return userSalon.serviceCategories.map(category => ({
+          id: category.name?.toLowerCase().replace(/\s+/g, '-') || 'services',
+          name: category.name || 'Services',
+          description: category.description || 'Nos services professionnels',
+          services: category.services?.map(service => ({
+            name: service.name || 'Service',
+            price: service.price || 50,
+            duration: service.duration || '60 min',
+            description: service.description || 'Service professionnel',
+            photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
+            rating: 4.8,
+            reviews: Math.floor(Math.random() * 50) + 10
+          })) || []
+        }));
+      }
+
+      // Services par défaut pour template ou utilisateur sans services configurés
       return [
         {
           id: 'coiffure',
