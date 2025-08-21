@@ -26,16 +26,8 @@ export function useAuthSession() {
   // Mutation pour se connecter (professionnel)
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const response = await apiRequest('POST', '/api/login/professional', credentials);
-      if (!response.ok) {
-        throw new Error('Erreur de connexion');
-      }
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        return response.json();
-      } else {
-        return { success: true };
-      }
+      const response = await apiRequest('POST', '/api/pro/login', credentials);
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/check-session'] });
@@ -57,15 +49,7 @@ export function useAuthSession() {
   const registerMutation = useMutation({
     mutationFn: async (userData: any) => {
       const response = await apiRequest('POST', '/api/register/professional', userData);
-      if (!response.ok) {
-        throw new Error('Erreur d\'inscription');
-      }
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        return response.json();
-      } else {
-        return { success: true };
-      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/check-session'] });
