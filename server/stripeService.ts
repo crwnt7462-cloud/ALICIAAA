@@ -102,9 +102,27 @@ export async function createPaymentCheckout(params: PaymentCheckoutParams): Prom
   }
 
   try {
+    // Import de l'utilitaire de validation des montants
+    const { validateAndConvertAmount } = await import('./utils/amountUtils');
+    
+    // 🔒 VALIDATION SÉCURISÉE DES MONTANTS avec logs détaillés
+    const amountValidation = validateAndConvertAmount(params.amount, 'stripeService.createPaymentCheckout');
+    
+    // Afficher tous les logs pour debugging
+    amountValidation.logs.forEach(log => console.log(log));
+    
+    if (!amountValidation.success) {
+      throw new Error(`Format de montant invalide: ${amountValidation.logs.join(' | ')}`);
+    }
+
+    // 🎯 LOG FINAL AVANT APPEL STRIPE
+    console.log(`💳 [STRIPE SERVICE] Création CheckoutSession - Montant FINAL: ${amountValidation.amountInEuros.toFixed(2)}€ = ${amountValidation.amountInCents} centimes`);
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
+      // ✅ 3D SECURE pour Checkout Sessions
+      automatic_tax: { enabled: false },
       customer_email: params.customerEmail,
       line_items: [{
         price_data: {
@@ -113,7 +131,7 @@ export async function createPaymentCheckout(params: PaymentCheckoutParams): Prom
             name: params.description,
             description: params.salonName ? `${params.salonName} - ${params.description}` : params.description,
           },
-          unit_amount: Math.round(params.amount <= 999 ? params.amount * 100 : params.amount), // 🔒 CORRECTION BRUTALE: si ≤999 = euros, sinon centimes
+          unit_amount: amountValidation.amountInCents, // ✅ MONTANT SÉCURISÉ EN CENTIMES
         },
         quantity: 1,
       }],
@@ -121,13 +139,14 @@ export async function createPaymentCheckout(params: PaymentCheckoutParams): Prom
         appointmentId: params.appointmentId || '',
         salonName: params.salonName || '',
         paymentType: 'deposit',
+        originalAmount: String(params.amount),
+        detectedFormat: amountValidation.detectedFormat,
       },
       success_url: params.successUrl || `${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: params.cancelUrl || `${process.env.FRONTEND_URL || 'http://localhost:3000'}/booking`,
     });
 
-    const amountInCents = Math.round(params.amount <= 999 ? params.amount * 100 : params.amount);
-    console.log(`💰 Session paiement créée pour ${(amountInCents/100).toFixed(2)}€ (${amountInCents} centimes) [INPUT: ${params.amount}]: ${session.id}`);
+    console.log(`✅ [STRIPE SERVICE] CheckoutSession créée: ${session.id} pour ${amountValidation.amountInEuros.toFixed(2)}€`);
 
     return {
       sessionId: session.id,

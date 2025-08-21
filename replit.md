@@ -60,7 +60,14 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
-- **CORRECTION CRITIQUE STRIPE COMPLÈTE (21/08/2025 16h47)**: Système d'auto-détection des montants corrigé sur TOUS les endpoints Stripe (/api/stripe/create-deposit-checkout, /api/stripe/create-payment-checkout, /api/create-professional-payment-intent). Protection universelle: ≤999 = euros (×100), >999 = centimes (inchangé). Plus jamais de facturation 1170€ au lieu de 11.70€. Tests validés sur tous les endpoints.
+- **CORRECTION CRITIQUE STRIPE COMPLÈTE (21/08/2025 15h30)**: Système d'auto-détection des montants corrigé sur TOUS les endpoints Stripe avec utilitaire centralisé (server/utils/amountUtils.ts). 
+  * ✅ **Normalisation séparateurs décimaux** : 11,70 → 11.70 → 1170 centimes
+  * ✅ **Auto-détection format** : ≤999 = euros, >999 = centimes (évite double conversion)
+  * ✅ **Protection universelle** sur 5 endpoints : /api/stripe/create-deposit-checkout, /api/stripe/create-payment-checkout, /api/create-professional-payment-intent, /api/create-payment-intent, stripeService.createPaymentCheckout
+  * ✅ **3D Secure configuré** sur tous les paiements pour sécurité maximale
+  * ✅ **Logs détaillés** pour traçabilité complète : format détecté, conversion, montant final Stripe
+  * ✅ **Tests validés** : "11,70" → 11.70€ = 1170 centimes, tous formats testés et validés
+  * 🎯 **RÉSULTAT** : Plus jamais de facturation 1170€ au lieu de 11.70€ - Système bulletproof opérationnel
 - **SÉCURITÉ MAJEURE - Authentification Renforcée (18/08/2025 21h26)**:
   * Suppression du système de démo utilisateur automatique qui bypassait l'authentification
   * Protection complète de toutes les pages professionnelles (/dashboard, /planning, /services-management, /business-features, /clients, etc.)

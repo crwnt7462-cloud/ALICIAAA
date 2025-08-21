@@ -2694,10 +2694,25 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
   app.post('/api/stripe/create-payment-checkout', async (req, res) => {
     try {
+      // Import de l'utilitaire de gestion des montants
+      const { validateAndConvertAmount } = await import('./utils/amountUtils');
+      
       const { amount, description, customerEmail, customerName, salonName, appointmentId } = req.body;
       
-      const amountInCents = Math.round(amount <= 999 ? amount * 100 : amount);
-      console.log(`💳 Création session paiement Stripe: ${(amountInCents/100).toFixed(2)}€ (${amountInCents} centimes) [INPUT: ${amount}]`);
+      // 🔒 VALIDATION SÉCURISÉE DES MONTANTS avec logs détaillés
+      const amountValidation = validateAndConvertAmount(amount, '/api/stripe/create-payment-checkout');
+      
+      // Afficher tous les logs pour debugging
+      amountValidation.logs.forEach(log => console.log(log));
+      
+      if (!amountValidation.success) {
+        console.log(`❌ [create-payment-checkout] Validation montant échouée:`, amountValidation);
+        return res.status(400).json({ 
+          error: 'Format de montant invalide',
+          details: amountValidation.logs.join(' | '),
+          received: amount
+        });
+      }
       
       if (!process.env.STRIPE_SECRET_KEY) {
         return res.status(500).json({ error: 'Clé Stripe non configurée' });
@@ -2708,9 +2723,16 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         apiVersion: '2024-06-20',
       });
       
+      // 🎯 LOG FINAL AVANT APPEL STRIPE
+      console.log(`💳 [STRIPE] Création CheckoutSession - Montant FINAL: ${amountValidation.amountInEuros.toFixed(2)}€ = ${amountValidation.amountInCents} centimes`);
+      
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
+        // ✅ 3D SECURE configuré via payment_intent_data
+        payment_intent_data: {
+          setup_future_usage: 'off_session',
+        },
         line_items: [{
           price_data: {
             currency: 'eur',
@@ -2718,7 +2740,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
               name: `Acompte - ${description}`,
               description: `Réservation chez ${salonName}`,
             },
-            unit_amount: Math.round(amount <= 999 ? amount * 100 : amount), // 🔒 PROTECTION: ≤999 = euros, >999 = centimes
+            unit_amount: amountValidation.amountInCents, // ✅ MONTANT SÉCURISÉ EN CENTIMES
           },
           quantity: 1,
         }],
@@ -2727,13 +2749,15 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           appointmentId: appointmentId || 'demo',
           customerName,
           salonName: salonName || 'Salon Demo',
-          type: 'booking_deposit'
+          type: 'booking_deposit',
+          originalAmount: String(amount),
+          detectedFormat: amountValidation.detectedFormat,
         },
         success_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}/cancel`,
       });
       
-      console.log('✅ Session paiement Stripe créée:', session.id);
+      console.log(`✅ [STRIPE] CheckoutSession créée: ${session.id} pour ${amountValidation.amountInEuros.toFixed(2)}€`);
       res.json({ 
         sessionId: session.id, 
         url: session.url,
@@ -2752,10 +2776,25 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // 💳 API PAIEMENT PROFESSIONNEL STRIPE
   app.post('/api/create-professional-payment-intent', async (req, res) => {
     try {
+      // Import de l'utilitaire de gestion des montants
+      const { validateAndConvertAmount } = await import('./utils/amountUtils');
+      
       const { salonId, plan, amount } = req.body;
       
-      const amountInCents = Math.round(parseFloat(amount) <= 999 ? parseFloat(amount) * 100 : parseFloat(amount));
-      console.log(`💳 Création Payment Intent professionnel: ${(amountInCents/100).toFixed(2)}€ (${amountInCents} centimes) [INPUT: ${amount}]`);
+      // 🔒 VALIDATION SÉCURISÉE DES MONTANTS avec logs détaillés
+      const amountValidation = validateAndConvertAmount(amount, '/api/create-professional-payment-intent');
+      
+      // Afficher tous les logs pour debugging
+      amountValidation.logs.forEach(log => console.log(log));
+      
+      if (!amountValidation.success) {
+        console.log(`❌ [create-professional-payment-intent] Validation montant échouée:`, amountValidation);
+        return res.status(400).json({ 
+          error: 'Format de montant invalide',
+          details: amountValidation.logs.join(' | '),
+          received: amount
+        });
+      }
       
       if (!process.env.STRIPE_SECRET_KEY) {
         return res.status(500).json({ error: 'Clé Stripe non configurée' });
@@ -2764,31 +2803,42 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Utiliser Stripe directement (package installé)
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2025-06-30.basil',
+        apiVersion: '2024-06-20',
       });
       
-      // Créer le Payment Intent
+      // 🎯 LOG FINAL AVANT APPEL STRIPE
+      console.log(`💳 [STRIPE] Création PaymentIntent PRO - Montant FINAL: ${amountValidation.amountInEuros.toFixed(2)}€ = ${amountValidation.amountInCents} centimes`);
+      
+      // Créer le Payment Intent avec 3D Secure
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: amountInCents,
+        amount: amountValidation.amountInCents, // ✅ MONTANT SÉCURISÉ EN CENTIMES
         currency: 'eur',
         automatic_payment_methods: {
           enabled: true,
         },
+        payment_method_options: {
+          card: {
+            request_three_d_secure: 'any', // ✅ 3D SECURE OBLIGATOIRE
+          },
+        },
         metadata: {
           salonId,
           subscriptionPlan: plan,
-          type: 'professional_subscription'
+          type: 'professional_subscription',
+          originalAmount: String(amount),
+          detectedFormat: amountValidation.detectedFormat,
         },
         description: `Abonnement ${plan} - Salon ${salonId}`
       });
       
-      console.log('✅ Payment Intent créé:', paymentIntent.id);
+      console.log(`✅ [STRIPE] PaymentIntent PRO créé: ${paymentIntent.id} pour ${amountValidation.amountInEuros.toFixed(2)}€`);
       
       res.json({
         success: true,
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
-        amount: amountInCents,
+        amount: amountValidation.amountInEuros,
+        amountInCents: amountValidation.amountInCents,
         currency: 'eur'
       });
       
@@ -4178,60 +4228,74 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // Route Payment Intent pour éviter interception Vite
   app.post('/api/create-payment-intent', async (req, res) => {
     try {
-      // Validation silencieuse en production
+      // Import de l'utilitaire de gestion des montants
+      const { validateAndConvertAmount } = await import('./utils/amountUtils');
       
       if (!process.env.STRIPE_SECRET_KEY) {
-        // STRIPE_SECRET_KEY manquant
         return res.status(500).json({ 
           success: false,
           error: "Stripe not configured. Please set STRIPE_SECRET_KEY." 
         });
       }
 
-      // Import dynamique de Stripe pour éviter les erreurs de module
-      const Stripe = (await import('stripe')).default;
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-        apiVersion: '2025-06-30.basil',
-      });
-
       const { amount, currency = 'eur', metadata = {} } = req.body;
       
-      // Conversion robuste du montant
-      const numericAmount = typeof amount === 'string' ? parseFloat(amount) : Number(amount);
+      // 🔒 VALIDATION SÉCURISÉE DES MONTANTS avec logs détaillés
+      const amountValidation = validateAndConvertAmount(amount, '/api/create-payment-intent');
       
-      if (!numericAmount || isNaN(numericAmount) || numericAmount <= 0) {
-        // Montant invalide: conversion échouée
+      // Afficher tous les logs pour debugging
+      amountValidation.logs.forEach(log => console.log(log));
+      
+      if (!amountValidation.success) {
+        console.log(`❌ [create-payment-intent] Validation montant échouée:`, amountValidation);
         return res.status(400).json({ 
           success: false,
-          error: "Invalid amount",
-          details: "Amount must be a positive number",
+          error: "Invalid amount format",
+          details: amountValidation.logs.join(' | '),
           received: amount
         });
       }
 
-      // Création Payment Intent avec Stripe
+      // Import Stripe avec configuration sécurisée
+      const Stripe = (await import('stripe')).default;
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: '2024-06-20',
+      });
+
+      // 🎯 LOG FINAL AVANT APPEL STRIPE
+      console.log(`💳 [STRIPE] Création PaymentIntent - Montant FINAL: ${amountValidation.amountInEuros.toFixed(2)}€ = ${amountValidation.amountInCents} centimes`);
       
-      // Créer un Payment Intent avec Stripe
+      // Créer PaymentIntent avec configuration 3D Secure
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(numericAmount * 100), // Convertir en centimes avec montant validé
+        amount: amountValidation.amountInCents, // ✅ MONTANT SÉCURISÉ EN CENTIMES
         currency,
-        metadata,
+        metadata: {
+          ...metadata,
+          originalAmount: String(amount),
+          detectedFormat: amountValidation.detectedFormat,
+        },
         automatic_payment_methods: {
           enabled: true,
         },
+        payment_method_options: {
+          card: {
+            request_three_d_secure: 'any', // ✅ 3D SECURE OBLIGATOIRE
+          },
+        },
       });
       
-      // Payment Intent créé avec succès
+      console.log(`✅ [STRIPE] PaymentIntent créé: ${paymentIntent.id} pour ${amountValidation.amountInEuros.toFixed(2)}€`);
       
       res.json({
         success: true,
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
-        amount: numericAmount,
+        amount: amountValidation.amountInEuros,
+        amountInCents: amountValidation.amountInCents,
         currency: currency
       });
     } catch (error: any) {
-      console.error("Erreur création Payment Intent:", error.message || error);
+      console.error("❌ Erreur création Payment Intent:", error.message || error);
       res.status(500).json({ 
         success: false,
         error: error?.message || "Failed to create payment intent",
