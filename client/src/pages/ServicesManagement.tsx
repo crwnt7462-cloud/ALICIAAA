@@ -60,7 +60,56 @@ export default function ServicesManagement() {
     queryKey: [`/api/salon/${salonId}/services`]
   });
 
-  const services: Service[] = (servicesData as any)?.services || [];
+  // Services simulés si aucune donnée n'est disponible
+  const simulatedServices: Service[] = [
+    {
+      id: 1,
+      name: "Coupe + Brushing",
+      price: 45,
+      duration: 90,
+      description: "Coupe personnalisée selon votre style et brushing professionnel",
+      requiresDeposit: true,
+      depositPercentage: 30
+    },
+    {
+      id: 2,
+      name: "Coloration complète",
+      price: 85,
+      duration: 180,
+      description: "Coloration complète avec soins restructurants inclus",
+      requiresDeposit: true,
+      depositPercentage: 50
+    },
+    {
+      id: 3,
+      name: "Mèches + Balayage",
+      price: 120,
+      duration: 210,
+      description: "Technique moderne de mèches avec balayage naturel",
+      requiresDeposit: true,
+      depositPercentage: 40
+    },
+    {
+      id: 4,
+      name: "Soin Keratine",
+      price: 65,
+      duration: 120,
+      description: "Traitement intensif à la kératine pour cheveux abîmés",
+      requiresDeposit: false,
+      depositPercentage: 30
+    },
+    {
+      id: 5,
+      name: "Coupe Homme",
+      price: 25,
+      duration: 45,
+      description: "Coupe moderne avec finition à la tondeuse",
+      requiresDeposit: false,
+      depositPercentage: 30
+    }
+  ];
+
+  const services: Service[] = (servicesData as any)?.services || simulatedServices;
 
   // Mutation pour créer un service
   const createServiceMutation = useMutation({
@@ -167,16 +216,20 @@ export default function ServicesManagement() {
                 onChange={(e) => setNewService(prev => ({ ...prev, name: e.target.value }))}
               />
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="relative">
-                  <Euro className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    type="number"
-                    placeholder="Prix"
-                    value={newService.price || ''}
-                    onChange={(e) => setNewService(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-                    className="pl-10"
-                  />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Prix du service</label>
+                  <div className="relative">
+                    <Euro className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      type="number"
+                      placeholder="Ex: 45"
+                      value={newService.price || ''}
+                      onChange={(e) => setNewService(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                      className="pl-10"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500">Prix en euros (ex: 45€)</p>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">Durée du service</label>
@@ -320,15 +373,19 @@ export default function ServicesManagement() {
                         onChange={(e) => setEditingService(prev => prev ? { ...prev, name: e.target.value } : null)}
                       />
                       
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="relative">
-                          <Euro className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                          <Input
-                            type="number"
-                            value={editingService.price || ''}
-                            onChange={(e) => setEditingService(prev => prev ? { ...prev, price: parseFloat(e.target.value) || 0 } : null)}
-                            className="pl-10"
-                          />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-gray-700">Prix du service</label>
+                          <div className="relative">
+                            <Euro className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <Input
+                              type="number"
+                              value={editingService.price || ''}
+                              onChange={(e) => setEditingService(prev => prev ? { ...prev, price: parseFloat(e.target.value) || 0 } : null)}
+                              className="pl-10"
+                            />
+                          </div>
+                          <p className="text-xs text-gray-500">Prix en euros</p>
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-gray-700">Durée du service</label>
