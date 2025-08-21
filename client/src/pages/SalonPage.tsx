@@ -612,8 +612,9 @@ export default function SalonPage() {
         </div>
         
         {/* Contenu superposé au style skincare */}
-        <div className="relative h-full flex flex-col justify-center items-start px-4 sm:px-6 md:px-12 lg:px-16">
-          <div className="max-w-md sm:max-w-lg space-y-4 sm:space-y-6">
+        <div className="relative h-full flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16">
+          {/* Desktop: disposition normale à gauche */}
+          <div className="hidden sm:flex max-w-md sm:max-w-lg space-y-4 sm:space-y-6 flex-col items-start">
             <div className="space-y-2">
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 {salonData.name}
@@ -675,6 +676,68 @@ export default function SalonPage() {
                   <span className="text-xs font-medium text-green-200">Vérifié</span>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Mobile: disposition en bas à droite */}
+          <div className="sm:hidden absolute bottom-4 right-4 max-w-[calc(100%-2rem)]">
+            <div className="space-y-2 text-right">
+              <h1 className="text-xl font-bold text-white leading-tight">
+                {salonData.name}
+              </h1>
+              <p className="text-white/90 text-xs font-light">
+                {salonData.address}
+              </p>
+              
+              {/* Boutons glassmorphism violets - version mobile compacte */}
+              <div className="flex flex-wrap gap-1 justify-end">
+                {/* Réseaux sociaux - seulement si les liens existent */}
+                {salonData.instagram && (
+                  <a 
+                    href={salonData.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-2 py-1.5 rounded-full font-medium text-xs hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1"
+                  >
+                    <Instagram className="w-3 h-3" />
+                  </a>
+                )}
+                {salonData.facebook && (
+                  <a 
+                    href={salonData.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-2 py-1.5 rounded-full font-medium text-xs hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1"
+                  >
+                    <Facebook className="w-3 h-3" />
+                  </a>
+                )}
+                {salonData.tiktok && (
+                  <a 
+                    href={salonData.tiktok}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-2 py-1.5 rounded-full font-medium text-xs hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1"
+                  >
+                    <span className="w-3 h-3 font-bold">♪</span>
+                  </a>
+                )}
+              </div>
+              
+              {/* Info badges - version mobile compacte */}
+              <div className="flex items-center gap-2 justify-end pt-1">
+                <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full border border-white/20">
+                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  <span className="text-xs font-medium text-white">{salonData.rating}</span>
+                  <span className="text-xs text-white/80">({salonData.reviewCount})</span>
+                </div>
+                {salonData.verified && (
+                  <div className="flex items-center gap-1 bg-green-500/20 backdrop-blur-sm px-2 py-1 rounded-full border border-green-400/30">
+                    <CheckCircle className="w-3 h-3 text-green-400" />
+                    <span className="text-xs font-medium text-green-200">Vérifié</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
