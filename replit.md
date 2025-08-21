@@ -60,6 +60,11 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
+- **RÉCUPÉRATION MOT DE PASSE CORRIGÉE (21/08/2025 18h45)**: Page /forgot-password maintenant accessible depuis /pro-login
+  * ✅ **Route /forgot-password ajoutée** : Import ForgotPassword et route dans App.tsx
+  * ✅ **Navigation fonctionnelle** : Lien "Mot de passe oublié ?" redirige correctement
+  * ✅ **API backend opérationnelle** : Route /api/auth/forgot-password déjà fonctionnelle
+  * 🎯 **RÉSULTAT** : Flux complet /pro-login → "Mot de passe oublié ?" → /forgot-password opérationnel
 - **AUTHENTIFICATION PERSISTANTE RÉUSSIE (21/08/2025 18h30)**: Problème de déconnexions automatiques RÉSOLU définitivement
   * ✅ **Sessions ultra-longues** : 30 jours au lieu de 7 jours pour éviter expiration
   * ✅ **Cache optimisé** : 1 heure au lieu de 5 minutes, retry 3 fois sur échecs réseau
