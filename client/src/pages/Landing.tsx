@@ -388,7 +388,7 @@ export default function Landing() {
 
         {/* Footer */}
         <div className="text-center text-xs text-gray-500 pb-4">
-          <p>© 2025 Avyento. Plateforme de gestion professionnelle.</p>
+          <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
         </div>
       </div>
     </motion.div>
