@@ -3,15 +3,76 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ArrowLeft, Building2, Mail, Lock, Zap, BarChart3, Shield } from 'lucide-react';
+import { useAuthSession } from '@/hooks/useAuthSession';
+import { useToast } from '@/hooks/use-toast';
 import avyentoLogo from "@assets/3_1753714421825.png";
 
 export default function FuturisticProLogin() {
   const [, setLocation] = useLocation();
   const [isLogin, setIsLogin] = useState(true);
+  const { toast } = useToast();
+  const { login, register, isLoggingIn, isRegistering, loginError, registerError } = useAuthSession();
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    businessName: ''
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLocation('/pro-dashboard');
+    
+    if (isLogin) {
+      // Connexion
+      login({ email: formData.email, password: formData.password }, {
+        onSuccess: () => {
+          toast({
+            title: "Connexion réussie",
+            description: "Bienvenue dans votre espace professionnel",
+          });
+          setLocation('/pro-dashboard');
+        },
+        onError: (error: any) => {
+          toast({
+            title: "Erreur de connexion",
+            description: error?.message || "Vérifiez vos identifiants",
+            variant: "destructive",
+          });
+        }
+      });
+    } else {
+      // Inscription
+      if (formData.password !== formData.confirmPassword) {
+        toast({
+          title: "Erreur",
+          description: "Les mots de passe ne correspondent pas",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      register({
+        email: formData.email,
+        password: formData.password,
+        businessName: formData.businessName
+      }, {
+        onSuccess: () => {
+          toast({
+            title: "Inscription réussie",
+            description: "Votre compte professionnel a été créé",
+          });
+          setLocation('/pro-dashboard');
+        },
+        onError: (error: any) => {
+          toast({
+            title: "Erreur d'inscription",
+            description: error?.message || "Une erreur est survenue",
+            variant: "destructive",
+          });
+        }
+      });
+    }
   };
 
   const features = [
@@ -98,6 +159,8 @@ export default function FuturisticProLogin() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Nom du salon</label>
                     <input
                       type="text"
+                      value={formData.businessName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, businessName: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
                       placeholder="Excellence Beauty Paris"
                     />
@@ -108,6 +171,8 @@ export default function FuturisticProLogin() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                   <input
                     type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
                     placeholder="votre@salon.com"
                   />
@@ -117,6 +182,8 @@ export default function FuturisticProLogin() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
                   <input
                     type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
                     placeholder="Votre mot de passe"
                   />
@@ -127,6 +194,8 @@ export default function FuturisticProLogin() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
                     <input
                       type="password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
                       placeholder="Confirmez votre mot de passe"
                     />
@@ -144,9 +213,10 @@ export default function FuturisticProLogin() {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg rounded-full"
+                  disabled={isLoggingIn || isRegistering}
+                  className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isLogin ? "Se connecter" : "Créer mon espace pro"}
+                  {(isLoggingIn || isRegistering) ? "Connexion en cours..." : (isLogin ? "Se connecter" : "Créer mon espace pro")}
                 </Button>
               </form>
 
