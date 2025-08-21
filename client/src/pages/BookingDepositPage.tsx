@@ -35,6 +35,13 @@ export default function BookingDepositPage() {
       const depositPercentage = bookingData.service.depositPercentage || 30;
       const depositAmount = parseFloat((bookingData.service.price * (depositPercentage / 100)).toFixed(2));
       
+      console.log('🔍 DEBUG ACOMPTE:', {
+        servicePrice: bookingData.service.price,
+        depositPercentage,
+        calculatedDeposit: depositAmount,
+        willSendToStripe: depositAmount
+      });
+      
       const response = await apiRequest('POST', '/api/stripe/create-deposit-checkout', {
         amount: depositAmount,
         description: bookingData.service.name,
