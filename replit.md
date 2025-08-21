@@ -80,3 +80,10 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Objectif Mensuel Éditable**: Ajout d'un système d'édition pour l'objectif mensuel en euros avec basculement intuitif mode affichage/édition
 - **Nettoyage Codebase Complet**: Suppression définitive des 6 pages obsolètes (/home, /pro/login, /client-login-modern, /pro-dashboard, /client-dashboard, /client-dashboard-new) et de leurs routes associées pour simplifier l'architecture
 - **Navigation Mobile Optimisée (20/08/2025 19h12)**: Suppression définitive de la sidebar grise qui s'affichait sur mobile, remplacement par navigation MobileBottomNav avec 4 icônes (Accueil, Planning, Clients, Analytics), suppression de Messages, popup de planning optimisé mobile-friendly avec boutons tactiles et design amélioré
+- **TRANSFORMATION TEMPLATE UNIFIÉ COMPLÈTE (21/08/2025 02h25)**: 
+  * Mise en place du système de template unifié avec design violet glassmorphism responsive
+  * SalonPageTemplateFixed.tsx complètement transformé avec bg-gradient-to-br from-violet-50 to-purple-50
+  * TOUS les salons (SalonExcellenceParis, BarbierGentlemanMarais, BeautyLoungeMontparnasse, etc.) utilisent maintenant automatiquement le même design
+  * Layout responsive desktop/mobile avec max-w-4xl, header sticky, navigation MobileBottomNav intégrée
+  * Cards glassmorphism bg-white/70 backdrop-blur-12, onglets navigation cohérents
+  * Design 100% cohérent avec /avyento-booking sur toutes les pages salon

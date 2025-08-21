@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { 
   MapPin, 
   Phone, 
@@ -20,7 +21,10 @@ import {
   ChevronRight,
   Heart,
   Share2,
-  MapIcon
+  ArrowLeft,
+  CheckCircle,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 
 interface SalonPageTemplateProps {
@@ -37,8 +41,8 @@ interface SalonPageTemplateProps {
   };
 }
 
-export default function SalonPageTemplateFixed({ salonSlug, salonData, customColors }: SalonPageTemplateProps) {
-  const [location] = useLocation();
+export default function SalonPageTemplateFixed({ salonData, customColors }: SalonPageTemplateProps) {
+  const [, navigate] = useLocation();
   const { toast } = useToast();
   
   const [activeTab, setActiveTab] = useState('services');
@@ -47,6 +51,7 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
   const [selectedTime, setSelectedTime] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -63,16 +68,24 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
     address: salonData?.address || "123 Boulevard Haussmann, 75008 Paris",
     phone: salonData?.phone || "01 42 65 78 90",
     email: salonData?.email || "contact@avyento.fr",
-    images: salonData?.photos || ["/api/placeholder/400/300"],
+    images: salonData?.photos || [
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=500&h=800&fit=crop&q=80"
+    ],
     rating: salonData?.rating || 4.8,
     reviewCount: salonData?.reviewCount || 247,
-    services: salonData?.serviceCategories?.flatMap(cat => 
-      cat.services.map(service => ({
+    verified: true,
+    priceRange: "€€€",
+    services: salonData?.serviceCategories?.flatMap((cat: any) => 
+      cat.services.map((service: any) => ({
         id: service.id,
         name: service.name,
         duration: `${Math.floor(service.duration / 60)}h${service.duration % 60 > 0 ? `${service.duration % 60}min` : ''}`,
         price: service.price,
-        description: service.description || ''
+        description: service.description || '',
+        photo: service.photo || "https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80",
+        rating: service.rating || 4.8,
+        reviews: service.reviews || 23
       }))
     ) || [
       {
@@ -80,11 +93,42 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
         name: "Coupe & Brushing",
         duration: "1h",
         price: 65,
-        description: "Coupe personnalisée selon votre morphologie"
+        description: "Coupe personnalisée selon votre morphologie",
+        photo: "https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80",
+        rating: 4.8,
+        reviews: 23
+      }
+    ],
+    serviceCategories: salonData?.serviceCategories || [
+      {
+        id: 'coiffure',
+        name: 'Coiffure',
+        description: 'Coupes, colorations et soins capillaires',
+        services: [
+          {
+            id: 1,
+            name: 'Coupe + Brushing',
+            price: 45,
+            duration: 60,
+            description: 'Coupe personnalisée avec brushing professionnel',
+            photo: 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=200&h=200&fit=crop&q=80',
+            rating: 4.8,
+            reviews: 23
+          }
+        ]
       }
     ],
     staff: [
-      { id: 1, name: "Sarah", specialties: ["Coupe", "Coloration"] }
+      { 
+        id: 1, 
+        name: "Sarah Martinez", 
+        role: 'Coiffeuse Senior',
+        specialties: ["Colorations", "Coupes tendances", "Soins capillaires"],
+        rating: 4.9,
+        reviewsCount: 127,
+        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=150&h=150&fit=crop&crop=face',
+        bio: 'Passionnée par les nouvelles tendances, Sarah vous accompagne dans votre transformation capillaire.'
+      }
     ],
     schedule: {
       lundi: "9h-19h",
@@ -94,7 +138,51 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
       vendredi: "9h-20h",
       samedi: "9h-18h",
       dimanche: "Fermé"
+    },
+    reviews: [
+      {
+        id: 1,
+        name: 'Marie L.',
+        rating: 5,
+        date: 'Il y a 2 jours',
+        comment: 'Service exceptionnel ! Sarah a réalisé exactement la coupe que je souhaitais.',
+        service: 'Coupe + Brushing',
+        verified: true
+      }
+    ]
+  };
+
+  // Couleurs par défaut si non spécifiées
+  const colors = customColors || {
+    primary: '#8B5CF6',
+    accent: '#F59E0B',
+    buttonText: '#FFFFFF',
+    buttonClass: 'glass-button-purple',
+    priceColor: '#7c3aed',
+    neonFrame: '#a855f7',
+    intensity: 70
+  };
+
+  // Onglets de navigation
+  const tabs = [
+    { id: 'services', label: 'Services', active: activeTab === 'services' },
+    { id: 'equipe', label: 'Équipe', active: activeTab === 'equipe' },
+    { id: 'galerie', label: 'Galerie', active: activeTab === 'galerie' },
+    { id: 'infos', label: 'Infos', active: activeTab === 'infos' },
+    { id: 'avis', label: 'Avis', active: activeTab === 'avis' }
+  ];
+
+  // Fonction pour formater la durée intelligemment
+  const formatDuration = (minutes: number) => {
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      if (remainingMinutes === 0) {
+        return `${hours}h`;
+      }
+      return `${hours}h${remainingMinutes.toString().padStart(2, '0')}`;
     }
+    return `${minutes}min`;
   };
 
   const handleBooking = () => {
@@ -113,164 +201,177 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
     });
   };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === activeSalonData.images.length - 1 ? 0 : prev + 1
-    );
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? activeSalonData.images.length - 1 : prev - 1
-    );
-  };
-
-  // Couleurs par défaut si non spécifiées
-  const colors = customColors || {
-    primary: '#8B5CF6',
-    accent: '#F59E0B',
-    buttonText: '#FFFFFF',
-    buttonClass: 'glass-button-purple',
-    priceColor: '#7c3aed',
-    neonFrame: '#a855f7',
-    intensity: 70
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50">
-      {/* En-tête avec image - TAILLE RÉDUITE */}
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={activeSalonData.images[currentImageIndex]}
-          alt={activeSalonData.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/20" />
-        
-        {activeSalonData.images.length > 1 && (
-          <>
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50">
+      {/* Header salon responsive avec effet glass */}
+      <div className="bg-white/90 backdrop-blur-16 border-b border-violet-200/50 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8 py-4">
+          <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30"
-              onClick={prevImage}
+              onClick={() => window.history.back()}
+              className="h-10 w-10 rounded-full bg-violet-100/50 hover:bg-violet-200/70"
             >
-              <ChevronLeft className="h-5 w-5 text-white" />
+              <ArrowLeft className="h-4 w-4 text-violet-700" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30"
-              onClick={nextImage}
-            >
-              <ChevronRight className="h-5 w-5 text-white" />
-            </Button>
-          </>
-        )}
-
-        {/* Actions flottantes */}
-        <div className="absolute top-4 right-4 flex space-x-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="bg-white/20 backdrop-blur-sm hover:bg-white/30"
-            onClick={() => setIsLiked(!isLiked)}
-          >
-            <Heart className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-white'}`} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="bg-white/20 backdrop-blur-sm hover:bg-white/30"
-          >
-            <Share2 className="h-5 w-5 text-white" />
-          </Button>
-        </div>
-
-        {/* Informations salon - VERSION COMPACTE */}
-        <div className="absolute bottom-2 left-4 right-4">
-          <div className="bg-white/90 backdrop-blur-md rounded-lg p-3">
-            <h1 className="text-xl font-bold text-gray-900 mb-1">{activeSalonData.name}</h1>
-            <div className="flex items-center space-x-3 text-xs text-gray-600">
-              <div className="flex items-center">
-                <Star className="h-3 w-3 text-yellow-400 mr-1" />
-                <span className="font-medium">{activeSalonData.rating}</span>
-                <span className="ml-1">({activeSalonData.reviewCount})</span>
-              </div>
-              <div className="flex items-center">
-                <MapPin className="h-3 w-3 mr-1" />
-                <span className="truncate">{activeSalonData.address}</span>
+            <div className="flex-1">
+              <h1 className="font-semibold text-gray-900">{activeSalonData.name}</h1>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <MapPin className="h-3 w-3 text-violet-600" />
+                <span>{activeSalonData.address}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation par onglets */}
-      <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b z-10">
-        <div className="container mx-auto px-4">
-          <div className="flex space-x-6 overflow-x-auto">
-            {[
-              { id: 'services', label: 'Services' },
-              { id: 'equipe', label: 'Équipe' },
-              { id: 'avis', label: 'Avis' },
-              { id: 'infos', label: 'Infos' }
-            ].map((tab) => (
+      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6 pb-20 lg:pb-6">
+        {/* En-tête salon avec infos */}
+        <div className="mb-6 lg:mb-8">
+          <div className="flex items-center gap-2 mb-2 lg:mb-4">
+            <h2 className="text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-900">{activeSalonData.name}</h2>
+            {activeSalonData.verified && (
+              <CheckCircle className="h-5 w-5 lg:h-6 lg:w-6 text-violet-600" />
+            )}
+          </div>
+          <div className="flex items-center gap-4 mb-4 lg:mb-6">
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 lg:h-5 lg:w-5 fill-current text-amber-400" />
+              <span className="font-medium text-gray-900">{activeSalonData.rating}</span>
+              <span className="text-sm text-gray-600">({activeSalonData.reviewCount} avis)</span>
+            </div>
+            <Badge variant="secondary" className="bg-violet-100/70 text-violet-700 border-violet-200/50">
+              {activeSalonData.priceRange}
+            </Badge>
+          </div>
+          
+          {/* Bouton de réservation principal */}
+          <Button 
+            onClick={() => navigate('/avyento-booking')}
+            className="w-full lg:w-auto bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white font-semibold text-base lg:text-lg px-6 lg:px-8 h-12 lg:h-14 shadow-md hover:shadow-lg transition-all duration-200"
+          >
+            Réserver maintenant
+          </Button>
+        </div>
+
+        {/* Onglets de navigation */}
+        <div className="mb-6 lg:mb-8">
+          <div className="flex space-x-1 bg-slate-50/90 backdrop-blur-8 p-1 rounded-lg border border-violet-200/30">
+            {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-2 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? `border-[${colors.primary}] text-[${colors.primary}]`
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                className={`flex-1 px-3 lg:px-4 py-2 lg:py-3 text-sm lg:text-base font-medium rounded-md transition-all duration-200 ${
+                  tab.active
+                    ? 'bg-white/80 text-violet-700 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/40'
                 }`}
-                style={{
-                  borderColor: activeTab === tab.id ? colors.primary : 'transparent',
-                  color: activeTab === tab.id ? colors.primary : undefined
-                }}
               >
                 {tab.label}
               </button>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Contenu principal */}
-      <div className="container mx-auto px-4 py-6 max-w-md lg:max-w-none lg:w-full">
+        {/* Contenu des onglets */}
         {activeTab === 'services' && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold mb-4">Nos Services</h2>
-            {activeSalonData.services.map((service: any) => (
-              <Card 
-                key={service.id} 
-                className={`cursor-pointer transition-all hover:shadow-lg bg-slate-50/80 backdrop-blur-16 border-slate-400/20 ${
-                  selectedService?.id === service.id ? 'ring-2 ring-purple-500' : ''
-                }`}
-                onClick={() => setSelectedService(service)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">{service.name}</h3>
-                      <p className="text-gray-600 text-sm mb-2">{service.description}</p>
-                      <div className="flex items-center space-x-3 text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-1" />
-                          <span>{service.duration}</span>
-                        </div>
+          <div className="space-y-4 lg:space-y-6">
+            {activeSalonData.serviceCategories.map((category: any) => (
+              <div key={category.id}>
+                <div 
+                  className="bg-white/70 backdrop-blur-12 border border-violet-200/50 rounded-xl shadow-sm mb-4 cursor-pointer transition-all duration-200 hover:shadow-md"
+                  onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
+                >
+                  <div className="p-4 lg:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg lg:text-xl font-semibold text-gray-900">{category.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{category.description}</p>
                       </div>
-                    </div>
-                    <div className="text-right ml-4">
-                      <div 
-                        className="text-xl font-bold"
-                        style={{ color: colors.priceColor }}
-                      >
-                        {service.price}€
-                      </div>
-                      {selectedService?.id === service.id && (
-                        <Check className="h-5 w-5 text-green-500 mt-1 ml-auto" />
+                      {expandedCategory === category.id ? (
+                        <ChevronUp className="h-5 w-5 text-violet-600" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-violet-600" />
                       )}
+                    </div>
+                  </div>
+                </div>
+
+                {expandedCategory === category.id && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-6">
+                    {category.services.map((service: any, index: number) => (
+                      <Card 
+                        key={index}
+                        className="bg-white/70 backdrop-blur-12 border border-violet-200/50 hover:border-violet-300/70 hover:bg-white/80 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-lg"
+                        onClick={() => navigate('/avyento-booking')}
+                      >
+                        <CardContent className="p-4 lg:p-6">
+                          <div className="flex items-center gap-3 mb-3">
+                            <img 
+                              src={service.photo} 
+                              alt={service.name}
+                              className="w-12 h-12 lg:w-16 lg:h-16 rounded-lg object-cover"
+                            />
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-900 text-base lg:text-lg">{service.name}</h4>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Star className="h-3 w-3 fill-current text-amber-400" />
+                                <span className="text-sm text-gray-600">{service.rating} ({service.reviews})</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-gray-600 mb-3">{service.description}</p>
+                          
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                              <Clock className="h-3 w-3 text-violet-600" />
+                              <span>{formatDuration(service.duration)}</span>
+                            </div>
+                            <div className="text-xl font-bold text-violet-700">
+                              {service.price}€
+                            </div>
+                          </div>
+                          
+                          <Button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate('/avyento-booking');
+                            }}
+                            className="w-full mt-4 bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white font-medium shadow-sm hover:shadow-md transition-all duration-200"
+                          >
+                            Réserver
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'equipe' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            {activeSalonData.staff.map((member: any) => (
+              <Card key={member.id} className="bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+                <CardContent className="p-4 lg:p-6">
+                  <div className="flex items-start gap-4">
+                    <img 
+                      src={member.avatar} 
+                      alt={member.name}
+                      className="w-16 h-16 lg:w-20 lg:h-20 rounded-full object-cover"
+                    />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 text-lg">{member.name}</h4>
+                      <p className="text-violet-600 font-medium">{member.role}</p>
+                      <div className="flex items-center gap-1 mt-2">
+                        <Star className="h-4 w-4 fill-current text-amber-400" />
+                        <span className="text-sm text-gray-600">{member.rating} ({member.reviewsCount} avis)</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-2">{member.bio}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -279,237 +380,74 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
           </div>
         )}
 
-        {activeTab === 'equipe' && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold mb-4">Notre Équipe</h2>
-            <div className="grid gap-4">
-              {activeSalonData.staff.map((member: any) => (
-                <Card key={member.id} className="bg-slate-50/80 backdrop-blur-16 border-slate-400/20">
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                        <User className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{member.name}</h3>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {member.specialties.map((specialty: string, index: number) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
-                              {specialty}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
         {activeTab === 'avis' && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Avis Clients</h2>
-              <div className="flex items-center space-x-2">
-                <Star className="h-5 w-5 text-yellow-400" />
-                <span className="font-semibold">{activeSalonData.rating}</span>
-                <span className="text-gray-600">({activeSalonData.reviewCount} avis)</span>
-              </div>
-            </div>
-            
-            <Card className="bg-slate-50/80 backdrop-blur-16 border-slate-400/20">
-              <CardContent className="p-4">
-                <p className="text-center text-gray-600 py-8">
-                  Les avis clients seront affichés ici prochainement.
-                </p>
-              </CardContent>
-            </Card>
+            {activeSalonData.reviews.map((review: any) => (
+              <Card key={review.id} className="bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+                <CardContent className="p-4 lg:p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium text-gray-900">{review.name}</span>
+                        {review.verified && (
+                          <CheckCircle className="h-4 w-4 text-violet-600" />
+                        )}
+                        <span className="text-sm text-gray-500">{review.date}</span>
+                      </div>
+                      <div className="flex items-center gap-1 mb-2">
+                        {[...Array(review.rating)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-current text-amber-400" />
+                        ))}
+                      </div>
+                      <p className="text-gray-600 mb-2">{review.comment}</p>
+                      <p className="text-sm text-violet-600">Service: {review.service}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
 
         {activeTab === 'infos' && (
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold mb-4">Informations</h2>
-            
-            <Card className="bg-slate-50/80 backdrop-blur-16 border-slate-400/20">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="h-5 w-5 mr-2" />
-                  Horaires
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {Object.entries(activeSalonData.schedule).map(([day, hours]) => (
-                    <div key={day} className="flex justify-between">
-                      <span className="capitalize font-medium">{day}</span>
-                      <span>{hours}</span>
-                    </div>
-                  ))}
+          <Card className="bg-white/70 backdrop-blur-12 border border-violet-200/50 shadow-sm">
+            <CardContent className="p-4 lg:p-6">
+              <h3 className="font-semibold text-gray-900 text-lg mb-4">Informations pratiques</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-violet-600" />
+                  <span className="text-gray-600">{activeSalonData.address}</span>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-violet-600" />
+                  <span className="text-gray-600">Lun-Sam: 9h-19h, Dim: 10h-18h</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-violet-600" />
+                  <span className="text-gray-600">{activeSalonData.phone}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-            <Card className="bg-slate-50/80 backdrop-blur-16 border-slate-400/20">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MapPin className="h-5 w-5 mr-2" />
-                  Contact & Localisation
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <MapIcon className="h-4 w-4 text-gray-500" />
-                  <span>{activeSalonData.address}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-4 w-4 text-gray-500" />
-                  <span>{activeSalonData.phone}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4 text-gray-500" />
-                  <span>{activeSalonData.email}</span>
-                </div>
-              </CardContent>
-            </Card>
+        {activeTab === 'galerie' && (
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {activeSalonData.images.map((image: string, i: number) => (
+              <div key={i} className="aspect-square bg-white/70 backdrop-blur-12 border border-violet-200/50 rounded-lg overflow-hidden shadow-sm">
+                <img 
+                  src={image}
+                  alt={`Photo ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
           </div>
         )}
       </div>
-
-      {/* Formulaire de réservation fixe en bas */}
-      {selectedService && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4 z-50">
-          <Card className="bg-slate-50/80 backdrop-blur-16 border-slate-400/20">
-            <CardHeader>
-              <CardTitle className="text-lg">Réserver - {selectedService.name}</CardTitle>
-              <CardDescription>
-                {selectedService.duration} • {selectedService.price}€
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={(e) => { e.preventDefault(); handleBooking(); }} className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label htmlFor="firstName">Prénom *</Label>
-                    <Input
-                      id="firstName"
-                      value={formData.firstName}
-                      onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName">Nom *</Label>
-                    <Input
-                      id="lastName"
-                      value={formData.lastName}
-                      onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="phone">Téléphone</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label htmlFor="date">Date *</Label>
-                    <Input
-                      id="date"
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="time">Heure *</Label>
-                    <Select value={selectedTime} onValueChange={setSelectedTime}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choisir" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="09:00">09h00</SelectItem>
-                        <SelectItem value="10:00">10h00</SelectItem>
-                        <SelectItem value="11:00">11h00</SelectItem>
-                        <SelectItem value="14:00">14h00</SelectItem>
-                        <SelectItem value="15:00">15h00</SelectItem>
-                        <SelectItem value="16:00">16h00</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="notes">Notes (optionnel)</Label>
-                  <Textarea
-                    id="notes"
-                    value={formData.notes}
-                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                    placeholder="Demandes particulières..."
-                  />
-                </div>
-
-                <Button 
-                  type="submit" 
-                  className="w-full text-lg py-3 bg-slate-50/80 backdrop-blur-16 border-slate-400/20 hover:bg-slate-100/90"
-                  style={{
-                    backgroundColor: colors.primary,
-                    color: colors.buttonText
-                  }}
-                >
-                  {selectedService && activeSalonData?.requireDeposit ? (
-                    <div className="flex items-center justify-center">
-                      <Check className="w-5 h-5 mr-2" />
-                      Réserver maintenant
-                      {selectedService && activeSalonData?.requireDeposit && ` (${formData.depositAmount}€)`}
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center">
-                      <Check className="w-5 h-5 mr-2" />
-                      Réserver maintenant
-                      {selectedService && activeSalonData?.requireDeposit && ` (${formData.depositAmount}€)`}
-                    </div>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Footer */}
-      <div className="text-center mt-8 text-sm text-gray-600">
-        <div className="flex items-center justify-center space-x-4">
-          <span>✅ Paiement sécurisé</span>
-          <span>✅ Confirmation immédiate</span>
-          <span>✅ Annulation gratuite 24h</span>
-        </div>
-        <p className="mt-4">
-          Propulsé par Avyento - Solution de réservation pour professionnels de la beauté
-        </p>
-      </div>
+      
+      {/* Navigation mobile */}
+      <MobileBottomNav />
     </div>
   );
 }
