@@ -113,7 +113,7 @@ export async function createPaymentCheckout(params: PaymentCheckoutParams): Prom
             name: params.description,
             description: params.salonName ? `${params.salonName} - ${params.description}` : params.description,
           },
-          unit_amount: Math.round(params.amount * 100), // Convertir en centimes
+          unit_amount: Math.round(params.amount >= 100 ? params.amount : params.amount * 100), // 🔧 Auto-détection: si ≥100 = centimes, sinon euros
         },
         quantity: 1,
       }],
@@ -126,7 +126,8 @@ export async function createPaymentCheckout(params: PaymentCheckoutParams): Prom
       cancel_url: params.cancelUrl || `${process.env.FRONTEND_URL || 'http://localhost:3000'}/booking`,
     });
 
-    console.log(`💰 Session paiement créée pour ${params.amount}€: ${session.id}`);
+    const amountInCents = Math.round(params.amount >= 100 ? params.amount : params.amount * 100);
+    console.log(`💰 Session paiement créée pour ${(amountInCents/100).toFixed(2)}€ (${amountInCents} centimes): ${session.id}`);
 
     return {
       sessionId: session.id,

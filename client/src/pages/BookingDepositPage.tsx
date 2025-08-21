@@ -33,7 +33,7 @@ export default function BookingDepositPage() {
     try {
       // Utiliser le pourcentage d'acompte défini par le professionnel
       const depositPercentage = bookingData.service.depositPercentage || 30;
-      const depositAmount = Math.round(bookingData.service.price * (depositPercentage / 100));
+      const depositAmount = parseFloat((bookingData.service.price * (depositPercentage / 100)).toFixed(2));
       
       const response = await apiRequest('POST', '/api/stripe/create-deposit-checkout', {
         amount: depositAmount,
