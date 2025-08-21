@@ -85,7 +85,7 @@ import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
 
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
-import AvyentoStyleBooking from "@/pages/PlanityStyleBooking";
+import PlanityStyleBookingRenamed from "@/pages/PlanityStyleBooking";
 import PlanityStyleBookingFixed from "@/pages/PlanityStyleBookingFixed";
 import ProfessionalSelection from "@/pages/ProfessionalSelection";
 import BookingDateTime from "@/pages/BookingDateTime";

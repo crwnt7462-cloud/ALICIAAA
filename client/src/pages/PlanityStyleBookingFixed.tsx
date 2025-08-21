@@ -222,7 +222,7 @@ export default function PlanityStyleBookingFixed() {
       const data = await response.json();
       
       if (data.success) {
-        localStorage.setItem('clientToken', data.client.token);
+        localStorage.setItem('clientToken', data.token);
         toast({
           title: "Compte créé avec succès !",
           description: "Redirection vers le paiement..."
@@ -232,7 +232,7 @@ export default function PlanityStyleBookingFixed() {
       } else {
         toast({
           title: "Erreur d'inscription",
-          description: data.error || "Impossible de créer le compte",
+          description: data.message || data.error || "Impossible de créer le compte",
           variant: "destructive"
         });
       }
