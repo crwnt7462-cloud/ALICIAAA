@@ -4369,33 +4369,17 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         });
       }
 
-      // Valider le plan d'abonnement - SUPPORT MULTIPLE FORMATS AVEC CONVERSION
+      // Valider le plan d'abonnement - SUPPORT MULTIPLE FORMATS
       const validPlans = ['basic-pro', 'advanced-pro', 'premium-pro'];
-      const rawPlan = userData.subscriptionPlan || userData.planType || userData.plan || 'basic-pro';
-      
-      // Mapping des anciens noms vers les nouveaux noms de plans
-      const planMapping: {[key: string]: string} = {
-        'premium': 'premium-pro',
-        'professionnel': 'advanced-pro', 
-        'essentiel': 'basic-pro',
-        'basic': 'basic-pro',
-        'advanced': 'advanced-pro',
-        'enterprise': 'premium-pro',
-        // Conserver les nouveaux noms tels quels
-        'basic-pro': 'basic-pro',
-        'advanced-pro': 'advanced-pro',
-        'premium-pro': 'premium-pro'
-      };
-      
-      const selectedPlan = planMapping[rawPlan] || 'basic-pro';
+      const selectedPlan = userData.subscriptionPlan || userData.planType || userData.plan || 'basic-pro';
       
       console.log('🔍 DEBUG PLAN - Données reçues:', JSON.stringify(userData, null, 2));
-      console.log('🎯 Plan brut reçu:', rawPlan, '→ Plan converti:', selectedPlan);
+      console.log('🎯 Plan sélectionné:', selectedPlan, 'Type:', typeof selectedPlan);
       
       if (!validPlans.includes(selectedPlan)) {
-        console.log('❌ Plan invalide après conversion:', selectedPlan, 'Plans valides:', validPlans);
+        console.log('❌ Plan invalide reçu:', selectedPlan, 'Plans valides:', validPlans);
         return res.status(400).json({ 
-          error: `Plan d'abonnement invalide: "${rawPlan}". Plans acceptés: ${Object.keys(planMapping).join(', ')}` 
+          error: `Plan d'abonnement invalide: "${selectedPlan}". Plans acceptés: ${validPlans.join(', ')}` 
         });
       }
       
