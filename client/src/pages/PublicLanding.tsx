@@ -405,31 +405,31 @@ export default function PublicLanding() {
       id: 'pro', 
       label: 'Je suis un professionnel de beauté', 
       icon: <UserCheck className="w-5 h-5" />,
-      action: () => setLocation("/professional-plans")
+      action: () => setLocation("/pro-login")
     },
     { 
       id: 'coiffeur', 
       label: 'Coiffeur', 
       icon: <Scissors className="w-5 h-5" />,
-      action: () => handleSearch()
+      action: () => setLocation("/search-results?q=coiffure")
     },
     { 
       id: 'barbier', 
       label: 'Barbier', 
       icon: <Users className="w-5 h-5" />,
-      action: () => handleSearch()
+      action: () => setLocation("/search-results?q=barbier")
     },
     { 
       id: 'manucure', 
       label: 'Manucure', 
       icon: <Palette className="w-5 h-5" />,
-      action: () => handleSearch()
+      action: () => setLocation("/search-results?q=manucure")
     },
     { 
       id: 'institut', 
       label: 'Institut de beauté', 
       icon: <Sparkles className="w-5 h-5" />,
-      action: () => handleSearch()
+      action: () => setLocation("/search-results?q=esthetique")
     }
   ];
 
@@ -442,21 +442,7 @@ export default function PublicLanding() {
   };
 
   const handleMenuItemClick = (item: typeof menuItems[0]) => {
-    if (item.id === 'coiffeur') {
-      setSearchQuery('coiffure');
-      setLocation(`/search?q=coiffure`);
-    } else if (item.id === 'barbier') {
-      setSearchQuery('barbier');
-      setLocation(`/search?q=barbier`);
-    } else if (item.id === 'manucure') {
-      setSearchQuery('ongle');
-      setLocation(`/search?q=ongle`);
-    } else if (item.id === 'institut') {
-      setSearchQuery('esthetique');
-      setLocation(`/search?q=esthetique`);
-    } else {
-      item.action();
-    }
+    item.action();
     closeMenu();
   };
 
@@ -627,7 +613,7 @@ export default function PublicLanding() {
               </motion.button>
 
               <div>
-                <img src={logoAvyento} alt="Avyento" className="h-12 w-auto" />
+                <img src={logoImage} alt="Logo" className="h-12 w-auto" />
               </div>
             </div>
             
