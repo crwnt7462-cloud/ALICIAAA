@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { getGenericGlassButton } from "@/lib/salonColors";
 import { useState } from "react";
+import { Header } from "@/components/Header";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
@@ -54,12 +55,18 @@ export default function Landing() {
   ];
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
-    >
+    <>
+      {/* Menu de navigation desktop */}
+      <div className="hidden lg:block">
+        <Header />
+      </div>
+      
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
+      >
       <div className="max-w-md mx-auto lg:max-w-6xl space-y-8 lg:space-y-16">
         {/* Hero Section */}
         <motion.div 
@@ -365,24 +372,35 @@ export default function Landing() {
         {/* CTA Buttons with Glassmorphism */}
         <div className="space-y-4">
           
-          {/* Bouton secondaire */}
+          {/* Bouton principal - Espace Pro */}
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
-            onClick={() => setLocation('/dashboard')}
+            onClick={() => setLocation('/pro-login')}
           >
-            Accéder au tableau de bord
+            Espace Professionnel
             <ArrowRight className="w-4 h-4 ml-2" />
           </motion.button>
           
+          {/* Bouton secondaire - Client */}
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
-            onClick={() => setLocation('/client-login-modern')}
+            onClick={() => setLocation('/client-login')}
           >
-            Espace client
+            Espace Client
+          </motion.button>
+          
+          {/* Bouton dashboard (pour utilisateurs connectés) */}
+          <motion.button 
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className={`w-full ${getGenericGlassButton(2)} rounded-xl py-3 font-medium text-sm opacity-75`}
+            onClick={() => setLocation('/dashboard')}
+          >
+            Tableau de bord (connecté)
           </motion.button>
         </div>
 
@@ -392,5 +410,6 @@ export default function Landing() {
         </div>
       </div>
     </motion.div>
+    </>
   );
 }
