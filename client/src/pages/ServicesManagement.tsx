@@ -36,7 +36,7 @@ export default function ServicesManagement() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   
-  const salonId = "salon-cacacaxaaxax-1754092428868-vr7b3j"; // TODO: récupérer dynamiquement
+  const salonId = "demo-user"; // TODO: récupérer dynamiquement
   
   const [newService, setNewService] = useState<NewService>({
     name: '',

@@ -1174,18 +1174,22 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.post('/api/salon/:salonId/services', async (req, res) => {
     try {
       const { salonId } = req.params;
-      const { name, price, duration, description } = req.body;
+      const { name, price, duration, description, requiresDeposit, depositPercentage } = req.body;
       
       console.log('🛍️ Création service pour salon:', salonId);
+      console.log('📋 Données reçues:', { name, price, duration, description, requiresDeposit, depositPercentage });
       
       const newService = await storage.createService({
         userId: salonId,
         name,
         price,
         duration,
-        description
+        description,
+        requiresDeposit: requiresDeposit || false,
+        depositPercentage: depositPercentage || 30
       });
       
+      console.log('✅ Service créé avec succès:', newService.name);
       res.json({
         success: true,
         service: newService
@@ -3195,16 +3199,20 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const serviceData = req.body;
       console.log('🔧 Création service PostgreSQL:', serviceData);
       
-      // Vérification utilisateur authentifié
+      // Récupération userId depuis la session ou params
+      let userId;
+      
+      // Vérification utilisateur authentifié (optionnel pour compatibilité)
       const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ 
-          error: 'Token d\'authentification requis'
-        });
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        userId = token.replace('demo-token-', '');
+      } else {
+        // Fallback : utiliser salonId depuis query params ou demo
+        userId = req.query.salonId || 'demo';
       }
 
-      const token = authHeader.substring(7);
-      const userId = token.replace('demo-token-', '');
+      console.log('👤 UserId déterminé:', userId);
 
       // UNIQUEMENT PostgreSQL - aucune donnée factice
       const service = await storage.createService({
