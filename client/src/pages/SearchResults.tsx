@@ -6,7 +6,8 @@ import {
   Search, MapPin, Star, Clock, ArrowLeft, 
   Sparkles, ChevronRight, Heart, LogIn,
   SlidersHorizontal, TrendingUp, Award, Scissors, Palette,
-  Gem, Waves, Brush, Zap, ShieldCheck, Crown, Flame, Orbit
+  Gem, Waves, Brush, Zap, ShieldCheck, Crown, Flame, Orbit,
+  Instagram, Facebook, CheckCircle
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -421,76 +422,71 @@ export default function SearchResults() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Card 
-                    className="ios-card overflow-hidden cursor-pointer group"
+                    className="ios-card overflow-hidden cursor-pointer group relative h-80"
                     onClick={() => handleSalonClick(salon)}
                   >
-                    <CardContent className="p-0">
-                      <div className="relative">
+                    <CardContent className="p-0 h-full relative">
+                      {/* Image de fond */}
+                      <div className="absolute inset-0">
                         <img 
                           src={salon.image} 
                           alt={salon.name}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
+                        {/* Overlay sombre pour améliorer la lisibilité */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                      </div>
 
-                        <div className="absolute bottom-3 left-3">
-                          <div className="inline-flex items-center gap-1 bg-emerald-500 text-white px-2 py-1 rounded-md text-xs font-medium shadow-sm">
+                      {/* Contenu superposé */}
+                      <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                        {/* Badge de disponibilité en haut à droite */}
+                        <div className="flex justify-end">
+                          <div className="inline-flex items-center gap-1 bg-emerald-500/90 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-lg">
                             <Clock className="h-3 w-3" />
                             {salon.nextSlot}
                           </div>
                         </div>
-                      </div>
 
-                      <div className="p-5 space-y-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 
-                              className="font-bold text-gray-900 text-base group-hover:transition-colors"
-                              style={{
-                                color: salon.customColors?.primary || '#1f2937'
-                              }}
-                            >
+                        {/* Informations en bas avec effet glassmorphism */}
+                        <div className="space-y-4">
+                          {/* Nom et adresse */}
+                          <div>
+                            <h3 className="text-2xl font-bold text-white mb-1 drop-shadow-lg">
                               {salon.name}
                             </h3>
-                            <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                              <MapPin className="h-4 w-4" />
-                              {salon.location} • {salon.distance}
+                            <p className="text-white/90 text-sm drop-shadow-sm">
+                              {salon.location}
+                            </p>
+                          </div>
+
+                          {/* Boutons réseaux sociaux glassmorphism */}
+                          <div className="flex gap-2">
+                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-xs font-medium flex items-center gap-2">
+                              <Instagram className="h-4 w-4" />
+                              Instagram
+                            </div>
+                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-xs font-medium flex items-center gap-2">
+                              <Facebook className="h-4 w-4" />
+                              Facebook
+                            </div>
+                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-xs font-medium flex items-center gap-2">
+                              TikTok
                             </div>
                           </div>
-                          <ChevronRight 
-                            className="h-5 w-5 text-gray-400 group-hover:text-violet-500 transition-colors" 
-                          />
-                        </div>
 
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                            <span className="text-base font-semibold text-gray-900">{salon.rating}</span>
-                            <span className="text-sm text-gray-600">({salon.reviews} avis)</span>
+                          {/* Note et badge vérifié */}
+                          <div className="flex gap-3">
+                            <div className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white text-sm font-medium flex items-center gap-2">
+                              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                              {salon.rating} ({salon.reviewsCount})
+                            </div>
+                            {salon.verified && (
+                              <div className="px-4 py-2 bg-emerald-500/80 backdrop-blur-sm border border-emerald-400/50 rounded-full text-white text-sm font-medium flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4" />
+                                Vérifié
+                              </div>
+                            )}
                           </div>
-                          <span 
-                            className="text-base font-bold"
-                            style={{
-                              color: salon.customColors?.priceColor || '#8b5cf6'
-                            }}
-                          >
-                            {salon.priceRange}
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          {salon.services.slice(0, 3).map((service: string, idx: number) => (
-                            <Badge 
-                              key={idx} 
-                              className="glass-button text-xs font-medium"
-                              style={{
-                                backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}15` : '#f3f4f6',
-                                color: salon.customColors?.primary || '#6b7280',
-                                borderColor: salon.customColors?.primary ? `${salon.customColors.primary}30` : '#e5e7eb'
-                              }}
-                            >
-                              {service}
-                            </Badge>
-                          ))}
                         </div>
                       </div>
                     </CardContent>
