@@ -169,48 +169,51 @@ export default function SalonPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header salon avec image de fond */}
-      <div className="relative">
+      {/* Header salon moderne avec effet glass */}
+      <div className="relative overflow-hidden">
         <div 
-          className="h-32 bg-cover bg-center relative"
+          className="h-40 bg-cover bg-center relative"
           style={{ backgroundImage: `url(${salonData.backgroundImage})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 to-purple-900/20"></div>
         </div>
         
-        {/* Informations salon */}
-        <div className="bg-white px-4 pb-4">
-          <div className="flex items-start gap-4 -mt-8 relative z-10">
-            <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center">
-              <span className="text-2xl font-bold text-violet-600">
-                {salonData.name.charAt(0)}
-              </span>
-            </div>
-            
-            <div className="flex-1 mt-8">
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">{salonData.name}</h1>
-                <p className="text-sm text-gray-600 flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
-                  {salonData.address}
-                </p>
+        {/* Card informations salon avec glassmorphism */}
+        <div className="relative -mt-20 mx-4">
+          <div className="bg-white/95 backdrop-blur-20 rounded-3xl border border-white/30 shadow-2xl p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl shadow-xl flex items-center justify-center">
+                <span className="text-3xl font-bold text-white">
+                  {salonData.name.charAt(0)}
+                </span>
               </div>
-
-              <div className="flex items-center gap-4 mt-2">
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium">{salonData.rating}</span>
-                  <span className="text-xs text-gray-500">({salonData.reviewCount} avis)</span>
+              
+              <div className="flex-1">
+                <div className="mb-3">
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{salonData.name}</h1>
+                  <p className="text-sm text-gray-600 flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-gray-400" />
+                    {salonData.address}
+                  </p>
                 </div>
-                {salonData.verified && (
-                  <Badge variant="secondary" className="bg-green-50 text-green-700">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Vérifié
-                  </Badge>
-                )}
-                <Badge variant="outline" className="text-xs">
-                  {salonData.priceRange}
-                </Badge>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-1.5 bg-yellow-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-yellow-200/50">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold text-gray-900">{salonData.rating}</span>
+                    <span className="text-xs text-gray-600">({salonData.reviewCount} avis)</span>
+                  </div>
+                  {salonData.verified && (
+                    <div className="flex items-center gap-1.5 bg-green-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-green-200/50">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span className="text-xs font-medium text-green-700">Vérifié</span>
+                    </div>
+                  )}
+                  <div className="bg-slate-50/80 backdrop-blur-8 px-3 py-1.5 rounded-full border border-slate-200/50">
+                    <span className="text-xs font-medium text-gray-700">{salonData.priceRange}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -218,7 +221,7 @@ export default function SalonPage() {
       </div>
 
       {/* Navigation par onglets */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-white/80 backdrop-blur-16 border-b border-gray-200/50 mt-6">
         <div className="flex overflow-x-auto px-4">
           {tabs.map((tab) => (
             <button
@@ -294,26 +297,24 @@ export default function SalonPage() {
                             </div>
                             <p className="text-sm text-gray-600 mb-3">{service.description}</p>
                             
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="flex items-center gap-1.5">
-                                <Clock className="w-3.5 h-3.5 text-gray-400" />
-                                <span className="text-sm text-gray-600 font-medium">{formatDuration(service.duration)}</span>
-                              </div>
-                              {service.rating && (
+                            <div className="flex items-center justify-between mt-2">
+                              <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-1.5">
-                                  <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                                  <span className="text-sm text-gray-700 font-medium">{service.rating}</span>
-                                  <span className="text-sm text-gray-500">({service.reviews} avis)</span>
+                                  <Clock className="w-3.5 h-3.5 text-gray-400" />
+                                  <span className="text-sm text-gray-600 font-medium">{formatDuration(service.duration)}</span>
                                 </div>
-                              )}
-                            </div>
-                            
-                            {/* Bouton Réserver centré en bas avec effet glass */}
-                            <div className="flex justify-center">
+                                {service.rating && (
+                                  <div className="flex items-center gap-1.5">
+                                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                                    <span className="text-sm text-gray-700 font-medium">{service.rating}</span>
+                                    <span className="text-sm text-gray-500">({service.reviews} avis)</span>
+                                  </div>
+                                )}
+                              </div>
                               <Button 
                                 size="sm" 
                                 style={getButtonStyle('outline')}
-                                className="px-8 py-2 bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
+                                className="bg-white/70 backdrop-blur-8 border border-slate-300/40 hover:bg-white/90 rounded-xl font-medium shadow-sm"
                               >
                                 Réserver
                               </Button>
@@ -390,27 +391,7 @@ export default function SalonPage() {
           </div>
         )}
 
-        {activeTab === 'galerie' && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-2">Galerie photos</h3>
-              <p className="text-gray-600 text-sm mb-4">Découvrez nos réalisations</p>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <img 
-                  src="https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=400&h=300&fit=crop&q=80"
-                  alt="Réalisation 1"
-                  className="w-full h-32 object-cover rounded-lg"
-                />
-                <img 
-                  src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&h=300&fit=crop&q=80"
-                  alt="Réalisation 2"
-                  className="w-full h-32 object-cover rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        )}
+
 
         {activeTab === 'infos' && (
           <div className="space-y-4">
