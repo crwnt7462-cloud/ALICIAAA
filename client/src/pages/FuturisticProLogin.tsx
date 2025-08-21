@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ArrowLeft, Building2, Mail, Lock, Zap, BarChart3, Shield } from 'lucide-react';
+import { ArrowLeft, Zap, BarChart3, Shield } from 'lucide-react';
 import { useAuthSession } from '@/hooks/useAuthSession';
 import { useToast } from '@/hooks/use-toast';
 import avyentoLogo from "@assets/3_1753714421825.png";
