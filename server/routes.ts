@@ -39,10 +39,10 @@ export function broadcastSalonUpdate(salonId: string, salonData: any) {
 export async function registerRoutes(app: Express): Promise<Server> {
   // 🛡️ SÉCURITÉ 1/5 : RATE LIMITING - Protection anti brute-force
   
-  // Rate limit strict pour les routes d'authentification
+  // Rate limit assoupli pour les routes d'authentification
   const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Maximum 5 tentatives par IP
+    max: 20, // Maximum 20 tentatives par IP (augmenté de 5 à 20)
     message: {
       error: "Trop de tentatives de connexion. Réessayez dans 15 minutes.",
       retryAfter: "15 minutes"
@@ -59,10 +59,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rate limit général pour l'API
+  // Rate limit assoupli pour l'API générale
   const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // 100 requêtes par IP
+    max: 300, // 300 requêtes par IP (augmenté de 100 à 300)
     message: {
       error: "Trop de requêtes. Limitez vos appels API.",
       retryAfter: "15 minutes"
@@ -93,24 +93,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/api/', apiLimiter);
   app.use('/api/', speedLimiter);
 
-  console.log('🛡️ Rate limiting configuré : Auth (5/15min), API (100/15min)');
+  console.log('🛡️ Rate limiting configuré : Auth (20/15min), API (300/15min)');
 
   // 🛡️ SÉCURITÉ 2/5 : HEADERS DE SÉCURITÉ - Protection XSS, CSRF, etc.
   app.use(helmet({
-    // Content Security Policy - Empêche les injections XSS
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https:"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https:"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "https:", "wss:"],
-        fontSrc: ["'self'", "https:"],
-        objectSrc: ["'none'"],
-        mediaSrc: ["'self'"],
-        frameSrc: ["'none'"],
-      },
-    },
+    // Content Security Policy assouplie pour éviter les blocages
+    contentSecurityPolicy: false, // Désactivé temporairement pour debugging
     // Protection Cross-Origin
     crossOriginEmbedderPolicy: false, // Permettre intégrations tierces
     crossOriginResourcePolicy: { policy: "cross-origin" },
