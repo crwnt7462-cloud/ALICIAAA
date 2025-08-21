@@ -86,14 +86,14 @@ export default function Dashboard() {
         {/* Sidebar Desktop uniquement */}
         <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full bg-slate-50/80 backdrop-blur-16 border-r border-slate-400/20"></div>
         
-        <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 lg:pb-0">
+        <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 md:pb-16 lg:pb-0">
           <MobileBottomNav userType="pro" />
-          <div className="p-4 md:p-6 lg:p-8">
-            <div className="animate-pulse space-y-4 md:space-y-6">
-              <div className="h-8 md:h-12 bg-gray-200 rounded-lg w-1/2 md:w-1/3"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="p-4 sm:p-5 md:p-6 lg:p-8">
+            <div className="animate-pulse space-y-4 sm:space-y-5 md:space-y-6">
+              <div className="h-8 sm:h-10 md:h-12 bg-gray-200 rounded-lg w-3/4 sm:w-1/2 md:w-1/3"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                 {Array.from({length: 3}).map((_, i) => (
-                  <div key={i} className="h-24 md:h-32 bg-gray-200 rounded-2xl"></div>
+                  <div key={i} className="h-24 sm:h-28 md:h-32 bg-gray-200 rounded-2xl"></div>
                 ))}
               </div>
             </div>
@@ -170,23 +170,23 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content - Style exact de l'image */}
-      <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 lg:pb-0">
+      <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 md:pb-16 lg:pb-0">
         <MobileBottomNav userType="pro" />
-        <div className="p-4 md:p-6 lg:p-8">
+        <div className="p-4 sm:p-5 md:p-6 lg:p-8">
           {/* Header - Responsive */}
-          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6 lg:mb-8">
+          <div className="flex flex-col space-y-4 sm:space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6 md:mb-7 lg:mb-8">
             <div>
-              <p className="text-gray-500 text-sm mb-1">Avyento</p>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Tableau de Bord</h1>
+              <p className="text-gray-500 text-sm sm:text-base mb-1">Avyento</p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Tableau de Bord</h1>
             </div>
             
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <div className="relative flex-1 md:flex-none">
+            <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
+              <div className="relative flex-1 sm:flex-none md:flex-none">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Rechercher..."
-                  className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full md:w-64"
+                  className="pl-10 pr-4 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full sm:w-56 md:w-64 lg:w-72"
                 />
               </div>
               
@@ -198,10 +198,11 @@ export default function Dashboard() {
                 }}
                 variant="outline"
                 size="sm"
-                className="hidden lg:flex items-center space-x-2"
+                className="hidden md:flex items-center space-x-2"
               >
                 <Globe className="w-4 h-4" />
-                <span>Ma Page</span>
+                <span className="hidden lg:inline">Ma Page</span>
+                <span className="lg:hidden">Page</span>
               </Button>
               
               <Button 
@@ -238,7 +239,8 @@ export default function Dashboard() {
                 className="hidden md:flex items-center space-x-2"
               >
                 <SettingsIcon className="w-4 h-4" />
-                <span>Paramètres</span>
+                <span className="hidden lg:inline">Paramètres</span>
+                <span className="lg:hidden">Config</span>
               </Button>
 
               <Button 
@@ -252,23 +254,23 @@ export default function Dashboard() {
                 <span className="hidden md:inline">Déconnexion</span>
               </Button>
               
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">AV</span>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <span className="text-white font-semibold text-sm sm:text-base">AV</span>
               </div>
             </div>
           </div>
 
           {/* Content Grid - Responsive */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 md:gap-6">
             {/* Graphique des revenus - Section principale gauche */}
             <div className="lg:col-span-8">
-              <Card className="bg-white rounded-3xl shadow-sm border-0">
-                <CardContent className="p-6">
-                  <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6">
+              <Card className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border-0">
+                <CardContent className="p-4 sm:p-5 md:p-6">
+                  <div className="flex flex-col space-y-4 sm:space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-4 sm:mb-5 md:mb-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Chiffre d'affaires</h3>
-                      <div className="flex items-center space-x-2 mt-2 overflow-x-auto">
-                        <div className="flex items-center space-x-1 md:space-x-2">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900">Chiffre d'affaires</h3>
+                      <div className="flex items-center space-x-2 mt-2 overflow-x-auto pb-2 sm:pb-0">
+                        <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2">
                           <button 
                             onClick={() => setSelectedPeriod("Day")}
                             className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap transition-colors ${selectedPeriod === "Day" ? 'text-purple-600 bg-purple-50 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
@@ -304,9 +306,9 @@ export default function Dashboard() {
                   </div>
                   
                   {/* Montant principal - Données dynamiques */}
-                  <div className="mb-6">
-                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{revenueData.value}€</div>
-                    <div className="text-sm text-gray-500">
+                  <div className="mb-4 sm:mb-5 md:mb-6">
+                    <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{revenueData.value}€</div>
+                    <div className="text-xs sm:text-sm text-gray-500">
                       {selectedPeriod === "Day" && "Aujourd'hui"}
                       {selectedPeriod === "Week" && "Cette semaine"}
                       {selectedPeriod === "Month" && "Ce mois"}
@@ -315,8 +317,8 @@ export default function Dashboard() {
                   </div>
                   
                   {/* Graphique simulé - Courbe comme dans l'image */}
-                  <div className="relative h-32 mb-4">
-                    <svg className="w-full h-full" viewBox="0 0 400 120">
+                  <div className="relative h-28 sm:h-32 mb-4">
+                    <svg className="w-full h-full" viewBox="0 0 400 120" className="touch-manipulation">
                       <defs>
                         <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                           <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.3"/>
@@ -345,7 +347,7 @@ export default function Dashboard() {
                   </div>
                   
                   {/* Labels dynamiques selon la période */}
-                  <div className="flex justify-between text-xs text-gray-500">
+                  <div className="flex justify-between text-xs sm:text-sm text-gray-500">
                     {getLabels(selectedPeriod).map((label, index) => (
                       <span key={index}>{label}</span>
                     ))}
@@ -356,21 +358,21 @@ export default function Dashboard() {
 
             {/* Services Populaires - Section droite */}
             <div className="lg:col-span-4">
-              <Card className="bg-white rounded-3xl shadow-sm border-0">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Services Populaires</h3>
+              <Card className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border-0">
+                <CardContent className="p-4 sm:p-5 md:p-6">
+                  <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">Services Populaires</h3>
                   </div>
                   
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {popularServicesData.map((service, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                        <div className="flex-1">
-                          <div className="font-medium text-gray-900">{service.name}</div>
-                          <div className="text-sm text-gray-500">{service.count} réservations</div>
+                      <div key={index} className="flex items-center justify-between p-3 sm:p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 text-sm sm:text-base truncate">{service.name}</div>
+                          <div className="text-xs sm:text-sm text-gray-500">{service.count} réservations</div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-sm font-semibold text-gray-900">{service.revenue}€</div>
+                        <div className="text-right ml-3">
+                          <div className="text-sm sm:text-base font-semibold text-gray-900">{service.revenue}€</div>
                           <div className="text-xs text-green-600">{service.growth}</div>
                         </div>
                       </div>
@@ -382,40 +384,41 @@ export default function Dashboard() {
           </div>
 
           {/* Section Planning Aujourd'hui - En bas comme l'image */}
-          <div className="mt-6 lg:mt-8">
-            <Card className="bg-white rounded-3xl shadow-sm border-0">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6">
+          <div className="mt-6 md:mt-7 lg:mt-8">
+            <Card className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border-0">
+              <CardContent className="p-4 sm:p-5 md:p-6">
+                <div className="flex flex-col space-y-4 sm:space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-4 sm:mb-5 md:mb-6">
                   <div className="flex items-center space-x-3">
-                    <Clock className="w-6 h-6 text-purple-600" />
+                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Planning Aujourd'hui</h3>
-                      <p className="text-sm text-gray-500">Objectif: 100% rempli</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900">Planning Aujourd'hui</h3>
+                      <p className="text-xs sm:text-sm text-gray-500">Objectif: 100% rempli</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center justify-between md:justify-start md:space-x-4">
-                    <div className="text-xl md:text-2xl font-bold text-gray-900">{todaySchedule.length} RDV</div>
-                    <Button variant="outline" size="sm" className="hidden md:flex">
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{todaySchedule.length} RDV</div>
+                    <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => setLocation('/planning')}>
                       <Calendar className="w-4 h-4 mr-2" />
-                      Voir Planning
+                      <span className="hidden lg:inline">Voir Planning</span>
+                      <span className="lg:hidden">Planning</span>
                     </Button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                   {todaySchedule.map((appointment, index) => (
-                    <div key={index} className="bg-gray-50 rounded-2xl p-3 md:p-4 hover:bg-gray-100 transition-colors">
+                    <div key={index} className="bg-gray-50 rounded-2xl p-3 sm:p-3.5 md:p-4 hover:bg-gray-100 transition-colors cursor-pointer touch-manipulation">
                       <div className="flex items-start justify-between mb-2">
-                        <div className="font-medium text-gray-900 text-sm md:text-base">{appointment.service}</div>
-                        <div className="text-xs md:text-sm text-purple-600 font-medium">{appointment.time}</div>
+                        <div className="font-medium text-gray-900 text-sm sm:text-base truncate pr-2" title={appointment.service}>{appointment.service}</div>
+                        <div className="text-xs sm:text-sm text-purple-600 font-medium flex-shrink-0">{appointment.time}</div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2 text-xs md:text-sm text-gray-600">
-                          <User className="w-3 md:w-4 h-3 md:h-4" />
-                          <span>{appointment.client}</span>
+                        <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 min-w-0">
+                          <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                          <span className="truncate" title={appointment.client}>{appointment.client}</span>
                         </div>
-                        <div className="text-xs text-gray-500">{appointment.duration}</div>
+                        <div className="text-xs text-gray-500 flex-shrink-0 ml-2">{appointment.duration}</div>
                       </div>
                     </div>
                   ))}
