@@ -114,8 +114,7 @@ export default function AvyentoStyleBooking() {
                 {services.map((service) => (
                   <Card 
                     key={service.id}
-                    className="bg-white/70 backdrop-blur-12 border border-violet-200/50 hover:border-violet-300/70 hover:bg-white/80 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-lg"
-                    onClick={() => handleServiceSelect(service)}
+                    className="bg-white/70 backdrop-blur-12 border border-violet-200/50 hover:border-violet-300/70 hover:bg-white/80 transition-all duration-200 shadow-sm hover:shadow-lg"
                   >
                     <CardContent className="p-4 lg:p-6">
                       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -141,6 +140,10 @@ export default function AvyentoStyleBooking() {
                           <Button 
                             size="sm"
                             className="bg-violet-600/90 backdrop-blur-8 hover:bg-violet-700 text-white px-4 lg:px-6 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleServiceSelect(service);
+                            }}
                           >
                             Choisir
                           </Button>
