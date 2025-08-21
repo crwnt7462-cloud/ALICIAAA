@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Grid3X3, List, Heart, X, Calendar, Users, Star, TrendingUp
 } from 'lucide-react';
+import { ProHeader } from '@/components/ProHeader';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 // Interface pour les rendez-vous du jour
 interface TodayAppointment {
@@ -158,39 +160,33 @@ export default function ClientsModern() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-3 sm:p-6">
-      {/* Header avec bouton retour */}
-      <motion.button
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => window.history.back()}
-        className="absolute left-2 sm:left-4 top-2 sm:top-4 z-20 p-2 sm:p-3 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 shadow-md hover:bg-white/90 transition-all"
-      >
-        <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700" />
-      </motion.button>
+    <div className="min-h-screen bg-gray-50 relative">
+      <ProHeader currentPage="clients" />
+      <MobileBottomNav userType="pro" />
 
-      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8">
-        {/* En-tête principale */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="pt-12 sm:pt-16"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-1 sm:mb-2">Overview</h1>
-              <p className="text-sm sm:text-base text-gray-600">Md Rayhan Islam • Central Clinic Dhaka • Today's</p>
-            </div>
+      <div className="pt-20 md:pt-24 pb-20 md:pb-8">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8 p-3 sm:p-6">
+          {/* En-tête principale */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="pt-4 sm:pt-8"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-1 sm:mb-2">Fichier Client</h1>
+                <p className="text-sm sm:text-base text-gray-600">Salon Avyento Pro</p>
+              </div>
             <div className="flex items-center gap-2 sm:gap-4">
               <button 
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-blue-300 text-white' : 'bg-gray-200'}`}
               >
                 <List className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
               <button 
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-blue-300 text-white' : 'bg-gray-200'}`}
               >
                 <Grid3X3 className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
@@ -205,26 +201,26 @@ export default function ClientsModern() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
         >
-          {/* Carte Appointments - Bleue */}
-          <div className="bg-blue-500 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          {/* Carte Appointments - Bleu pastel */}
+          <div className="bg-blue-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-base sm:text-lg font-semibold">Appointments</h3>
+              <h3 className="text-base sm:text-lg font-semibold">Rendez-vous</h3>
               <Calendar className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             <div className="flex items-end justify-between">
               <div>
                 <div className="text-2xl sm:text-4xl font-bold mb-1">{dashboardStats.appointments.count}</div>
-                <div className="text-blue-100 text-xs sm:text-sm">{dashboardStats.appointments.label}</div>
+                <div className="text-blue-50 text-xs sm:text-sm">Aujourd'hui</div>
               </div>
               <div className="hidden sm:block">
                 <ProgressCircle percentage={31} color="#ffffff" />
               </div>
             </div>
-            <div className="mt-2 text-xs sm:text-sm text-blue-100">{dashboardStats.appointments.percentage}</div>
+            <div className="mt-2 text-xs sm:text-sm text-blue-50">{dashboardStats.appointments.percentage}</div>
           </div>
 
-          {/* Carte Consultations - Violette */}
-          <div className="bg-purple-500 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          {/* Carte Consultations - Violet pastel */}
+          <div className="bg-purple-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
               <h3 className="text-base sm:text-lg font-semibold">Consultations</h3>
               <Calendar className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -232,49 +228,49 @@ export default function ClientsModern() {
             <div className="flex items-end justify-between">
               <div>
                 <div className="text-2xl sm:text-4xl font-bold mb-1">{dashboardStats.consultations.count}</div>
-                <div className="text-purple-100 text-xs sm:text-sm">{dashboardStats.consultations.label}</div>
+                <div className="text-purple-50 text-xs sm:text-sm">Aujourd'hui</div>
               </div>
               <div className="hidden sm:block">
                 <ProgressCircle percentage={64} color="#ffffff" />
               </div>
             </div>
-            <div className="mt-2 text-xs sm:text-sm text-purple-100">{dashboardStats.consultations.percentage}</div>
+            <div className="mt-2 text-xs sm:text-sm text-purple-50">{dashboardStats.consultations.percentage}</div>
           </div>
 
-          {/* Carte Cancelled - Rouge */}
-          <div className="bg-red-500 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          {/* Carte Cancelled - Rouge pastel */}
+          <div className="bg-red-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-base sm:text-lg font-semibold">Cancelled</h3>
+              <h3 className="text-base sm:text-lg font-semibold">Annulés</h3>
               <X className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             <div className="flex items-end justify-between">
               <div>
                 <div className="text-2xl sm:text-4xl font-bold mb-1">0{dashboardStats.cancelled.count}</div>
-                <div className="text-red-100 text-xs sm:text-sm">{dashboardStats.cancelled.label}</div>
+                <div className="text-red-50 text-xs sm:text-sm">Aujourd'hui</div>
               </div>
               <div className="hidden sm:block">
                 <ProgressCircle percentage={30} color="#ffffff" />
               </div>
             </div>
-            <div className="mt-2 text-xs sm:text-sm text-red-100">{dashboardStats.cancelled.percentage}</div>
+            <div className="mt-2 text-xs sm:text-sm text-red-50">{dashboardStats.cancelled.percentage}</div>
           </div>
 
-          {/* Carte Urgent Resolve - Verte */}
-          <div className="bg-green-500 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          {/* Carte Urgent Resolve - Vert pastel */}
+          <div className="bg-green-300 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-base sm:text-lg font-semibold">Urgent Resolve</h3>
+              <h3 className="text-base sm:text-lg font-semibold">Urgents</h3>
               <Heart className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             <div className="flex items-end justify-between">
               <div>
                 <div className="text-2xl sm:text-4xl font-bold mb-1">0{dashboardStats.urgentResolve.count}</div>
-                <div className="text-green-100 text-xs sm:text-sm">{dashboardStats.urgentResolve.label}</div>
+                <div className="text-green-50 text-xs sm:text-sm">Aujourd'hui</div>
               </div>
               <div className="hidden sm:block">
                 <ProgressCircle percentage={31} color="#ffffff" />
               </div>
             </div>
-            <div className="mt-2 text-xs sm:text-sm text-green-100">{dashboardStats.urgentResolve.percentage}</div>
+            <div className="mt-2 text-xs sm:text-sm text-green-50">{dashboardStats.urgentResolve.percentage}</div>
           </div>
         </motion.div>
 
@@ -388,18 +384,18 @@ export default function ClientsModern() {
           {/* En-tête de la section */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-800">Todays</h2>
-              <span className="text-xs sm:text-sm text-gray-500">150 Appointments</span>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800">Aujourd'hui</h2>
+              <span className="text-xs sm:text-sm text-gray-500">150 Rendez-vous</span>
             </div>
           </div>
 
           {/* En-têtes des colonnes - masqué sur mobile */}
           <div className="hidden sm:block px-6 py-3 bg-gray-50 border-b border-gray-200">
             <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700">
-              <div className="col-span-3">Name</div>
-              <div className="col-span-2">Status</div>
+              <div className="col-span-3">Nom</div>
+              <div className="col-span-2">Statut</div>
               <div className="col-span-2">Date</div>
-              <div className="col-span-2">Time</div>
+              <div className="col-span-2">Heure</div>
               <div className="col-span-1">Situation</div>
               <div className="col-span-2">Actions</div>
             </div>
@@ -448,7 +444,7 @@ export default function ClientsModern() {
                   {/* Actions */}
                   <div className="col-span-2">
                     <button className="bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors">
-                      VIEW DETAILS
+                      VOIR DÉTAILS
                     </button>
                   </div>
                 </div>
@@ -475,7 +471,7 @@ export default function ClientsModern() {
                   </div>
                   <div className="mt-3">
                     <button className="w-full bg-gray-800 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors">
-                      VIEW DETAILS
+                      VOIR DÉTAILS
                     </button>
                   </div>
                 </div>
@@ -486,13 +482,14 @@ export default function ClientsModern() {
           {/* Footer avec pagination */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-200">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm text-gray-600">
-              <span>Displaying 7 Record Data of 150 records</span>
+              <span>Affichage de 7 données sur 150 enregistrements</span>
               <div className="flex items-center gap-2">
                 <span>1 2 3 4 5 6 7 ... 25 50</span>
               </div>
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
     </div>
   );
