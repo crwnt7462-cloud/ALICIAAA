@@ -10,9 +10,8 @@ import { Plus, Scissors, Edit, Save, X, Clock, Euro } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { apiRequest } from '@/lib/queryClient';
-import { Sidebar } from '@/components/Sidebar';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { ProHeader } from '@/components/ProHeader';
 
 interface Service {
   id: number;
@@ -38,7 +37,6 @@ export default function ServicesManagement() {
   const queryClient = useQueryClient();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
-  const isMobile = useIsMobile();
   
   // États séparés pour l'édition
   const [editingServiceHours, setEditingServiceHours] = useState(1);
@@ -184,11 +182,11 @@ export default function ServicesManagement() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative">
       {/* Navigation */}
-      <Sidebar />
+      <ProHeader currentPage="services" />
       <MobileBottomNav />
       
-      {/* Contenu principal avec marge pour sidebar */}
-      <div className="lg:ml-20 pb-20 lg:pb-8">
+      {/* Contenu principal avec marge pour header fixe */}
+      <div className="pt-16 md:pt-20 pb-20 md:pb-8">
         <div className="min-h-screen bg-transparent py-4 sm:py-8">
           <div className="max-w-4xl mx-auto px-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
