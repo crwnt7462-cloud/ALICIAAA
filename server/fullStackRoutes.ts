@@ -4369,21 +4369,33 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         });
       }
 
-      // Valider le plan d'abonnement - SUPPORT MULTIPLE FORMATS
+      // Valider le plan d'abonnement - SUPPORT MULTIPLE FORMATS + MAPPING LEGACY
       const validPlans = ['basic-pro', 'advanced-pro', 'premium-pro'];
-      const selectedPlan = userData.subscriptionPlan || userData.planType || userData.plan || 'basic-pro';
+      const rawPlan = userData.subscriptionPlan || userData.planType || userData.plan || 'basic-pro';
+      
+      // 🔄 MAPPING LEGACY : Support des anciens noms de plans
+      const planMapping: { [key: string]: string } = {
+        'professionnel': 'advanced-pro',
+        'basic': 'basic-pro', 
+        'premium': 'premium-pro',
+        'enterprise': 'premium-pro',
+        'pro': 'advanced-pro'
+      };
+      
+      // Mapper le plan ou utiliser la valeur directe si déjà valide
+      const selectedPlan = planMapping[rawPlan] || rawPlan;
       
       console.log('🔍 DEBUG PLAN - Données reçues:', JSON.stringify(userData, null, 2));
-      console.log('🎯 Plan sélectionné:', selectedPlan, 'Type:', typeof selectedPlan);
+      console.log('🎯 Plan brut reçu:', rawPlan, '→ Plan mappé:', selectedPlan, 'Type:', typeof selectedPlan);
       
       if (!validPlans.includes(selectedPlan)) {
-        console.log('❌ Plan invalide reçu:', selectedPlan, 'Plans valides:', validPlans);
+        console.log('❌ Plan invalide même après mapping:', selectedPlan, 'Plans valides:', validPlans);
         return res.status(400).json({ 
-          error: `Plan d'abonnement invalide: "${selectedPlan}". Plans acceptés: ${validPlans.join(', ')}` 
+          error: `Plan d'abonnement invalide: "${rawPlan}" → "${selectedPlan}". Plans acceptés: ${validPlans.join(', ')}` 
         });
       }
       
-      console.log('✅ Plan validé:', selectedPlan);
+      console.log('✅ Plan validé après mapping:', rawPlan, '→', selectedPlan);
 
       // Préparer les données utilisateur avec abonnement
       const userDataWithSubscription = {
