@@ -118,6 +118,13 @@ export function useAuthSession() {
     register: registerMutation.mutate,
     clientRegister: clientRegisterMutation.mutate,
     logout: logoutMutation.mutate,
+    
+    // Objets mutations complets
+    loginMutation,
+    registerMutation,
+    clientLoginMutation,
+    clientRegisterMutation,
+    logoutMutation,
 
     // États des mutations
     isLoggingIn: loginMutation.isPending || clientLoginMutation.isPending,
