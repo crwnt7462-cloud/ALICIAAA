@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User,
 import { motion } from "framer-motion";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ProHeader } from "@/components/ProHeader";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Types simplifiés pour éviter les erreurs
 

@@ -8,6 +8,8 @@ import {
   MessageCircle, BarChart3, Package, Globe, Crown, Star
 } from "lucide-react";
 import { getGenericGlassButton } from "@/lib/salonColors";
+import { ProHeader } from "@/components/ProHeader";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export default function BusinessFeaturesModern() {
   const { toast } = useToast();
@@ -97,22 +99,13 @@ export default function BusinessFeaturesModern() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Barre de notifications temps réel */}
-      <RealtimeNotificationBar />
+      {/* Header horizontal avec logo et navigation */}
+      <ProHeader currentPage="analytics" />
+      <MobileBottomNav userType="pro" />
 
-      {/* Header - même style que page recherche */}
-      <div className="relative">
-        
-        {/* Bouton retour */}
-        <button
-          onClick={() => window.history.back()}
-          className="absolute left-4 top-4 z-10 p-2"
-        >
-          <ArrowLeft className="h-5 w-5 text-gray-700" />
-        </button>
-
-        {/* Container principal */}
-        <div className="px-6 pt-16 pb-6">
+      {/* Contenu principal avec marge pour header fixe */}
+      <div className="pt-20 md:pt-24 pb-20 md:pb-8">
+        <div className="px-6 pb-6">
           <div className="max-w-sm mx-auto">
             
             {/* Logo salon - même style que "Design" */}

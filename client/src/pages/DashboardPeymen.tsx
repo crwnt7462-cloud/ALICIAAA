@@ -18,6 +18,8 @@ import {
   CreditCard,
   Briefcase
 } from "lucide-react";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { ProHeader } from "@/components/ProHeader";
 
 export default function DashboardPeymen() {
   const [, setLocation] = useLocation();
@@ -48,15 +50,19 @@ export default function DashboardPeymen() {
 
   if (statsLoading || revenueLoading || appointmentsLoading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <div className="w-60 bg-white shadow-lg"></div>
-        <div className="flex-1 p-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-12 bg-gray-200 rounded-lg w-1/3"></div>
-            <div className="grid grid-cols-3 gap-6">
-              {Array.from({length: 3}).map((_, i) => (
-                <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
-              ))}
+      <div className="min-h-screen bg-gray-50 relative">
+        <ProHeader currentPage="dashboard" />
+        <MobileBottomNav userType="pro" />
+        
+        <div className="pt-20 md:pt-24 pb-20 md:pb-8">
+          <div className="p-8">
+            <div className="animate-pulse space-y-6">
+              <div className="h-12 bg-gray-200 rounded-lg w-1/3"></div>
+              <div className="grid grid-cols-3 gap-6">
+                {Array.from({length: 3}).map((_, i) => (
+                  <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -65,119 +71,12 @@ export default function DashboardPeymen() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar - Style Peymen exact */}
-      <div className="hidden lg:flex lg:w-60 bg-white shadow-lg border-r border-gray-200">
-        <div className="flex flex-col w-full">
-          {/* Logo section - Style Peymen */}
-          <div className="px-6 py-8">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-violet-600 rounded-2xl flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-lg">A</span>
-              </div>
-              <span className="text-xl font-bold text-gray-800">Avyento</span>
-            </div>
-          </div>
-          
-          {/* Navigation - Style Peymen avec icônes dans des carrés */}
-          <nav className="flex-1 px-4 space-y-1">
-            <div className="flex items-center space-x-4 px-4 py-4 bg-blue-50 rounded-2xl text-blue-600 font-medium">
-              <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-4 h-4" />
-              </div>
-              <span>Dashboard</span>
-            </div>
-            
-            <button 
-              onClick={() => setLocation('/profile')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <User className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Profile</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/planning')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Calendar className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Planning</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/staff-management')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <User className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Équipe</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/settings')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Settings className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Settings</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/messages')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <MessageSquare className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Messages</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/analytics')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Analytics</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/support')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <HelpCircle className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Support</span>
-            </button>
-          </nav>
-          
-          {/* CTA Card - Style Peymen */}
-          <div className="p-4">
-            <div className="bg-gradient-to-br from-blue-500 to-violet-600 rounded-3xl p-6 text-white">
-              <h4 className="font-bold text-center mb-2">Obtenez un Compte Premium</h4>
-              <p className="text-blue-100 text-sm text-center mb-4">Débloquez toutes les fonctionnalités</p>
-              <Button 
-                className="w-full bg-white/20 hover:bg-white/30 text-white border-0 rounded-2xl font-medium py-3"
-                onClick={() => setLocation('/premium')}
-              >
-                Obtenir maintenant
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gray-50 relative">
+      <ProHeader currentPage="dashboard" />
+      <MobileBottomNav userType="pro" />
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full p-8">
+      <div className="pt-20 md:pt-24 pb-20 md:pb-8">
+        <div className="p-8">
           {/* Header - Style Peymen */}
           <div className="flex items-center justify-between mb-8">
             <div>

@@ -20,6 +20,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { ProHeader } from "@/components/ProHeader";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -83,11 +84,12 @@ export default function Dashboard() {
   if (statsLoading) {
     return (
       <div className="min-h-screen bg-gray-50 relative">
-        {/* Sidebar Desktop uniquement */}
-        <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full bg-slate-50/80 backdrop-blur-16 border-r border-slate-400/20"></div>
+        {/* Header horizontal avec logo et navigation */}
+        <ProHeader currentPage="dashboard" />
+        <MobileBottomNav userType="pro" />
         
-        <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 md:pb-16 lg:pb-0">
-          <MobileBottomNav userType="pro" />
+        {/* Contenu principal avec marge pour header fixe */}
+        <div className="pt-20 md:pt-24 pb-20 md:pb-8">
           <div className="p-4 sm:p-5 md:p-6 lg:p-8">
             <div className="animate-pulse space-y-4 sm:space-y-5 md:space-y-6">
               <div className="h-8 sm:h-10 md:h-12 bg-gray-200 rounded-lg w-3/4 sm:w-1/2 md:w-1/3"></div>
@@ -105,73 +107,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
-      {/* Sidebar Desktop uniquement */}
-      <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full flex-col items-center py-6 z-30 bg-slate-50/80 backdrop-blur-16 border-r border-slate-400/20">
-        {/* Logo */}
-        <div className="w-12 h-12 bg-white/80 backdrop-blur-16 rounded-2xl flex items-center justify-center mb-8 border border-slate-200">
-          <Sparkles className="w-6 h-6 text-gray-700" />
-        </div>
-        
-        {/* Navigation Icons */}
-        <div className="space-y-4">
-          <div className="w-12 h-12 bg-white/80 backdrop-blur-16 border border-slate-200 shadow-sm rounded-2xl flex items-center justify-center">
-            <Home className="w-6 h-6 text-gray-700" />
-          </div>
-          
-          <div 
-            onClick={() => setLocation('/planning')}
-            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-          >
-            <Calendar className="w-6 h-6 text-gray-600" />
-          </div>
-          
-          <div 
-            onClick={() => setLocation('/clients-modern')}
-            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-          >
-            <Users className="w-6 h-6 text-gray-600" />
-          </div>
-          
-          <div 
-            onClick={() => setLocation('/services-management')}
-            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-          >
-            <SettingsIcon className="w-6 h-6 text-gray-600" />
-          </div>
-          
-          <div 
-            onClick={() => setLocation('/messaging-hub')}
-            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-          >
-            <MessageSquare className="w-6 h-6 text-gray-600" />
-          </div>
-          
-          <div 
-            onClick={() => setLocation('/client-analytics')}
-            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-          >
-            <BarChart3 className="w-6 h-6 text-gray-600" />
-          </div>
-          
-          <div 
-            onClick={() => setLocation('/inventory')}
-            className="w-12 h-12 bg-transparent hover:bg-white/60 hover:backdrop-blur-16 hover:border hover:border-slate-200 rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-          >
-            <Activity className="w-6 h-6 text-gray-600" />
-          </div>
-        </div>
-        
-        {/* User Avatar */}
-        <div className="mt-auto">
-          <div className="w-12 h-12 bg-white/80 backdrop-blur-16 border border-slate-200 rounded-2xl flex items-center justify-center">
-            <User className="w-6 h-6 text-gray-700" />
-          </div>
-        </div>
-      </div>
+      {/* Header horizontal avec logo et navigation */}
+      <ProHeader currentPage="dashboard" />
+      <MobileBottomNav userType="pro" />
 
-      {/* Main Content - Style exact de l'image */}
-      <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 md:pb-16 lg:pb-0">
-        <MobileBottomNav userType="pro" />
+      {/* Contenu principal avec marge pour header fixe */}
+      <div className="pt-20 md:pt-24 pb-20 md:pb-8">
         <div className="p-4 sm:p-5 md:p-6 lg:p-8">
           {/* Header - Responsive */}
           <div className="flex flex-col space-y-4 sm:space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6 md:mb-7 lg:mb-8">
