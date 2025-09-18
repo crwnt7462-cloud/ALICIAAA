@@ -2,14 +2,18 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '../hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import avyentoLogo from "@assets/3_1753714421825.png";
+import session from 'express-session';
 
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function ProLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { refreshAuth } = useAuth(); // 👈
+  const { refresh } = useAuth(); // 👈 on récupère refresh()
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -56,9 +60,9 @@ export default function ProLogin() {
               title: "Connexion réussie",
               description: `Bienvenue ${data.user.firstName} !`,
             });
-            
-            // Redirection immédiate vers les Pro Tools
-            window.location.href = '/business-features';
+            // 🔄 Hydrate le contexte d'auth depuis le serveur (cookie) puis redirige
+            try { await refreshAuth(); } catch {}
+            setLocation('/dashboard');
           } else {
             throw new Error('Format de réponse invalide');
           }
@@ -71,8 +75,9 @@ export default function ProLogin() {
           });
         }
       } else {
-        toast({
-          title: "Erreur de connexion",
+              // 🔄 Hydrate le contexte d'auth depuis le serveur (cookie) puis redirige
+              try { await refresh(); } catch {}
+              setLocation('/dashboard');
           description: `Erreur ${response.status}: Identifiants incorrects`,
           variant: "destructive"
         });
@@ -136,7 +141,7 @@ export default function ProLogin() {
               disabled={isLoading}
               className="w-full h-14 glass-button text-base font-semibold rounded-2xl"
             >
-              {isLoading ? "Connexion..." : "Sign up"}
+              {isLoading ? "Connexion..." : "Se connecter"}
             </Button>
           </form>
 

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, Edit, Trash2, Clock, Euro, Users, Star, Phone, Mail, Calendar } from "lucide-react";
 import { useForm } from "react-hook-form";
+import type { StaffMember } from "../../../shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
@@ -51,11 +52,16 @@ export default function Staff() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: staff = [], isLoading } = useQuery({
+  const { data: staff = [], isLoading } = useQuery<StaffMember[]>({
     queryKey: ["/api/staff"],
   });
 
-  const { data: staffStats = {} } = useQuery({
+  type StaffStats = {
+    totalRevenue?: number;
+    totalAppointments?: number;
+    averageRating?: number;
+  };
+  const { data: staffStats = {} } = useQuery<StaffStats>({
     queryKey: ["/api/staff/stats"],
   });
 

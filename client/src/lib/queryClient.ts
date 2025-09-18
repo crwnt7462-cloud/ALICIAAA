@@ -27,9 +27,61 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  // --- MODE MOCK pour dev local sans backend ---
+  // --- MODE MOCK uniquement pour la connexion ---
+  if (url === "/api/login" && method === "POST") {
+    const d = typeof data === "object" && data !== null ? data as any : {};
+    if (d.email === "pro@demo.com" && d.password === "demo123") {
+      return new Response(JSON.stringify({
+        success: true,
+        user: {
+          id: "pro-mock-1",
+          email: d.email,
+          firstName: "Pro",
+          lastName: "Démo",
+          businessName: "Salon Démo",
+          role: "pro"
+        },
+        token: "mock-token-pro-1"
+      }), { status: 200, headers: { "Content-Type": "application/json" } });
+    } else {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Identifiants incorrects"
+      }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
+  }
+  if (url === "/api/client/login" && method === "POST") {
+    const d = typeof data === "object" && data !== null ? data as any : {};
+    if (d.email === "client@demo.com" && d.password === "demo123") {
+      return new Response(JSON.stringify({
+        success: true,
+        client: {
+          id: "client-mock-1",
+          email: d.email,
+          firstName: "Client",
+          lastName: "Démo",
+          token: "mock-token-client-1",
+          role: "client"
+        }
+      }), { status: 200, headers: { "Content-Type": "application/json" } });
+    } else {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Identifiants incorrects"
+      }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
+  }
+  // --- FIN MODE MOCK ---
+
+  const token = localStorage.getItem("proToken");
+  const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });

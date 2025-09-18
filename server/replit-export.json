@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "user1",
+      "email": "test@example.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "profileImageUrl": "",
+      "businessName": "Test Beauty",
+      "siret": "123456789",
+      "phone": "0600000000",
+      "address": "1 rue de la beauté",
+      "city": "Paris",
+      "isProfessional": true,
+      "isVerified": false,
+      "subscriptionPlan": "basic-pro",
+      "subscriptionStatus": "inactive",
+      "trialEndDate": null,
+      "mentionHandle": "testuser",
+      "createdAt": "2025-09-04T10:00:00.000Z",
+      "updatedAt": "2025-09-04T10:00:00.000Z"
+    }
+  ],
+  "salons": [],
+  "services": [],
+  "clients": [],
+  "appointments": [],
+  "forumLikes": [],
+  "aiSettings": [],
+  "autoPromotions": [],
+  "smartPlanningLogs": []
+}

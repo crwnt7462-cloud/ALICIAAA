@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Check, ArrowLeft, CreditCard, Shield, Clock, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import logoImage from "@assets/3_1753714421825.png";
+import logoImage from "@/assets/avyento-logo.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/api";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Subscribe() {
@@ -196,32 +196,40 @@ export default function Subscribe() {
       // Vérifier si c'est gratuit avec FREE149
       if (promoCode === 'FREE149' && selectedPlan === 'premium' && finalPrice === 0) {
         // Créer directement l'abonnement gratuit sans passer par Stripe
-        const freeResponse = await apiRequest("POST", "/api/create-free-subscription", {
-          planType: 'premium-pro',
-          customerEmail: formData.email,
-          customerName: `${formData.firstName} ${formData.lastName}`,
-          promoCode: promoCode,
-          duration: 1 // 1 mois gratuit
+        type FreeSubscribeRes = { ok: true; planId: string } | { ok: false; error: string };
+        const freeRes = await apiRequest<FreeSubscribeRes>("/api/subscribe/free", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            planType: 'premium-pro',
+            customerEmail: formData.email,
+            customerName: `${formData.firstName} ${formData.lastName}`,
+            promoCode: promoCode,
+            duration: 1
+          })
         });
-
-        if (freeResponse.ok) {
-          toast({
-            title: "Abonnement activé !",
-            description: "🎉 Votre Premium Pro gratuit est maintenant actif !",
-          });
-          setLocation('/dashboard');
-          return;
-        }
+        if (!freeRes.ok) throw new Error(freeRes.error);
+        toast({
+          title: "Abonnement activé !",
+          description: "🎉 Votre Premium Pro gratuit est maintenant actif !",
+        });
+        setLocation('/dashboard');
+        return;
       }
 
       // Sinon, utiliser Stripe pour le paiement
-      const response = await apiRequest('POST', '/api/stripe/create-subscription-checkout', {
-        planType: selectedPlan,
-        customerEmail: formData.email,
-        customerName: `${formData.firstName} ${formData.lastName}`,
-        amount: finalPrice, // Prix avec réduction
-        promoCode: promoCode,
-        discount: discount
+      type CreateSessionRes = { sessionId: string; url: string };
+      const response = await apiRequest<CreateSessionRes>('/api/stripe/create-subscription-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planType: selectedPlan,
+          customerEmail: formData.email,
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          amount: finalPrice, // Prix avec réduction
+          promoCode: promoCode,
+          discount: discount
+        })
       });
 
       if (response.url) {

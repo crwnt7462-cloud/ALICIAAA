@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, ArrowLeft, Eye, EyeOff, User, Smartphone, Shield, AlertTriangle } from "lucide-react";
-import avyentoLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@/assets/avyento-logo.png";
 
 // Types pour le système de limitation
 interface LoginAttempt {

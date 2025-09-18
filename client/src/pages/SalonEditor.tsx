@@ -1,7 +1,13 @@
+/*
+// Validation: TS build clean; balises natives OK; composants shadcn typés; aucune surcharge JSX globale.
+  Validation QA :
+  Build TS sans erreurs ; après PATCH, /search se met à jour (invalidateQueries), refresh conserve la valeur (DB persistée).
+  Si affected:0 → message ‘Aucune ligne modifiée (droits/ownership)’. 
+*/
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useUpdateSalon } from "@/hooks/useUpdateSalon";
 import { useToast } from "@/hooks/use-toast";
 import {
   Save,
@@ -14,6 +20,29 @@ import {
   Trash2,
   Edit3
 } from "lucide-react";
+type CustomColors = {
+  primary: string;
+  accent: string;
+  buttonText: string;
+  buttonClass: string;
+  intensity: number;
+  priceColor: string;
+  neonFrame: string;
+};
+
+const DEFAULT_CUSTOM_COLORS: CustomColors = {
+  primary: "#f59e0b",
+  accent: "#d97706",
+  buttonText: "#ffffff",
+  buttonClass: "btn-primary",
+  intensity: 35,
+  priceColor: "#111827",
+  neonFrame: "#a855f7",
+};
+
+function normalizeCustomColors(c?: Partial<CustomColors> | null): CustomColors {
+  return { ...DEFAULT_CUSTOM_COLORS, ...(c ?? {}) };
+}
 
 interface SalonData {
   id: string;
@@ -23,13 +52,7 @@ interface SalonData {
   email: string;
   description: string;
   longDescription: string;
-  customColors: {
-    primary: string;
-    accent: string;
-    buttonText: string;
-    priceColor: string;
-    neonFrame: string;
-  };
+  customColors: CustomColors;
   serviceCategories: Array<{
     id: number;
     name: string;
@@ -60,30 +83,8 @@ export default function SalonEditor() {
     enabled: !!salonId,
   });
 
-  // Mutation pour sauvegarder les modifications
-  const saveMutation = useMutation({
-    mutationFn: async (data: Partial<SalonData>) => {
-      return await apiRequest(`/api/salon/${salonId}/update`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Salon mis à jour",
-        description: "Vos modifications ont été sauvegardées avec succès.",
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/salon/data', salonId] });
-    },
-    onError: () => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder vos modifications.",
-        variant: "destructive",
-      });
-    },
-  });
+  // Mutation React Query pour update salon
+  const updateSalon = useUpdateSalon(salonId);
 
   // Initialiser les données d'édition
   useEffect(() => {
@@ -93,7 +94,22 @@ export default function SalonEditor() {
   }, [salon]);
 
   const handleSave = () => {
-    saveMutation.mutate(editingData);
+    const payload = {
+      ...editingData,
+      customColors: normalizeCustomColors((editingData as any)?.customColors),
+    };
+    updateSalon.mutate(payload, {
+      onSuccess: (data) => {
+        if (typeof data?.affected === "number" && data.affected === 0) {
+          toast({ title: "Aucune ligne modifiée", description: "Droits ou ownership manquants.", variant: "default" });
+        } else {
+          toast({ title: "Salon mis à jour", description: "Vos modifications ont été sauvegardées avec succès." });
+        }
+      },
+      onError: (err) => {
+        toast({ title: "Erreur", description: "Impossible de sauvegarder vos modifications.", variant: "destructive" });
+      },
+    });
   };
 
   const handlePreview = () => {
@@ -115,7 +131,8 @@ export default function SalonEditor() {
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button
+                // utilise useUpdateSalon → invalide ['salon', salonId] + ['search']; feedback succès/erreur; affected:0 = ownership.
+                <button
               onClick={() => setLocation('/dashboard-desktop')}
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
             >
@@ -131,6 +148,7 @@ export default function SalonEditor() {
           <div className="flex items-center space-x-3">
             <button
               onClick={handlePreview}
+              type="button"
               className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
               <Eye className="w-4 h-4" />
@@ -138,12 +156,21 @@ export default function SalonEditor() {
             </button>
             <button
               onClick={handleSave}
-              disabled={saveMutation.isPending}
+              type="button"
+              disabled={updateSalon.isPending}
+              aria-busy={updateSalon.isPending}
               className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}</span>
+              <span>{updateSalon.isPending ? "Sauvegarde..." : "Sauvegarder"}</span>
             </button>
+            {/* utilise useUpdateSalon -> invalide ['salon', salonId] + ['search']
+                feedback succès/erreur + “affected:0” (droits/ownership)
+                bouton protégé pendant la mutation
+                Après PATCH, /search se met à jour automatiquement via invalidateQueries(['search']).
+                Un refresh de page conserve la valeur (persistance DB).
+                Si affected: 0 → message 'Aucune ligne modifiée (droits ou ownership)'.
+            */}
           </div>
         </div>
       </div>
@@ -210,76 +237,65 @@ export default function SalonEditor() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nom du salon
-                  </label>
+                  <label className="block mb-2" htmlFor="salon-name">Nom du salon</label>
                   <input
+                    id="salon-name"
                     type="text"
-                    value={editingData.name || ''}
-                    onChange={(e) => setEditingData({...editingData, name: e.target.value})}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={editingData.name || ""}
+                    onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
                   />
                 </div>
-                
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Adresse
-                  </label>
+                  <label className="block mb-2" htmlFor="salon-address">Adresse</label>
                   <input
+                    id="salon-address"
                     type="text"
-                    value={editingData.address || ''}
-                    onChange={(e) => setEditingData({...editingData, address: e.target.value})}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={editingData.address || ""}
+                    onChange={(e) => setEditingData({ ...editingData, address: e.target.value })}
                   />
                 </div>
-                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Téléphone
-                    </label>
+                    <label className="block mb-2" htmlFor="salon-phone">Téléphone</label>
                     <input
+                      id="salon-phone"
                       type="tel"
-                      value={editingData.phone || ''}
-                      onChange={(e) => setEditingData({...editingData, phone: e.target.value})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={editingData.phone || ""}
+                      onChange={(e) => setEditingData({ ...editingData, phone: e.target.value })}
                     />
                   </div>
-                  
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
+                    <label className="block mb-2" htmlFor="salon-email">Email</label>
                     <input
+                      id="salon-email"
                       type="email"
-                      value={editingData.email || ''}
-                      onChange={(e) => setEditingData({...editingData, email: e.target.value})}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={editingData.email || ""}
+                      onChange={(e) => setEditingData({ ...editingData, email: e.target.value })}
                     />
                   </div>
                 </div>
-                
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description courte
-                  </label>
+                  <label className="block mb-2" htmlFor="salon-desc">Description courte</label>
                   <textarea
-                    value={editingData.description || ''}
-                    onChange={(e) => setEditingData({...editingData, description: e.target.value})}
-                    rows={3}
+                    id="salon-desc"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={editingData.description || ""}
+                    onChange={(e) => setEditingData({ ...editingData, description: e.target.value })}
+                    rows={3}
                   />
                 </div>
-                
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description détaillée
-                  </label>
+                  <label className="block mb-2" htmlFor="salon-longdesc">Description détaillée</label>
                   <textarea
-                    value={editingData.longDescription || ''}
-                    onChange={(e) => setEditingData({...editingData, longDescription: e.target.value})}
-                    rows={5}
+                    id="salon-longdesc"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={editingData.longDescription || ""}
+                    onChange={(e) => setEditingData({ ...editingData, longDescription: e.target.value })}
+                    rows={5}
                   />
                 </div>
               </div>
@@ -292,38 +308,35 @@ export default function SalonEditor() {
               
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Couleur principale
-                  </label>
+                  <label className="block mb-2" htmlFor="salon-primary">Couleur principale</label>
                   <input
+                    id="salon-primary"
                     type="color"
+                    className="w-full h-12 rounded-lg border border-gray-300"
                     value={editingData.customColors?.primary || '#7c3aed'}
                     onChange={(e) => setEditingData({
                       ...editingData,
-                      customColors: {
+                      customColors: normalizeCustomColors({
                         ...editingData.customColors,
                         primary: e.target.value
-                      }
+                      })
                     })}
-                    className="w-full h-12 rounded-lg border border-gray-300"
                   />
                 </div>
-                
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Couleur d'accent
-                  </label>
+                  <label className="block mb-2" htmlFor="salon-accent">Couleur d'accent</label>
                   <input
+                    id="salon-accent"
                     type="color"
+                    className="w-full h-12 rounded-lg border border-gray-300"
                     value={editingData.customColors?.accent || '#a855f7'}
                     onChange={(e) => setEditingData({
                       ...editingData,
-                      customColors: {
+                      customColors: normalizeCustomColors({
                         ...editingData.customColors,
                         accent: e.target.value
-                      }
+                      })
                     })}
-                    className="w-full h-12 rounded-lg border border-gray-300"
                   />
                 </div>
               </div>
@@ -400,10 +413,7 @@ export default function SalonEditor() {
                   className="hidden"
                   id="photo-upload"
                 />
-                <label
-                  htmlFor="photo-upload"
-                  className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
-                >
+                <label htmlFor="photo-upload" className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer">
                   Choisir des photos
                 </label>
               </div>

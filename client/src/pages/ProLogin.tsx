@@ -7,7 +7,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Mail, Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
-import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
+import avyentoProLogo from "@/assets/avyento-logo.png";
+
+const API_URL = "http://localhost:3010/api/login";
 
 export default function ProLogin() {
   const [, setLocation] = useLocation();
@@ -22,28 +24,48 @@ export default function ProLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
+    const email = String(formData.email ?? "").trim().toLowerCase();
+    const password = String(formData.password ?? "");
     try {
-      const response = await apiRequest("POST", "/api/login/professional", formData);
-      const data = await response.json();
+      console.log('Tentative login frontend:', { url: "/api/login", method: "POST", email, password });
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include'
+      });
 
-      if (response.ok) {
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Login pro response:', data);
+
+      if (data.ok && data.user) {
+        localStorage.setItem('proData', JSON.stringify(data.user));
         toast({
           title: "Connexion réussie !",
           description: "Bienvenue dans votre espace professionnel"
         });
-        // Délai court pour s'assurer que la session est créée côté serveur
-        setTimeout(() => {
-          // Force redirection vers dashboard
-          window.location.replace("/dashboard");
-        }, 100);
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 100);
       } else {
-        throw new Error(data.error || "Erreur de connexion");
+        toast({
+          title: "Erreur de connexion",
+          description: data.error || "Identifiants incorrects",
+          variant: "destructive"
+        });
       }
     } catch (error: any) {
+      console.error('Erreur de connexion frontend:', error);
       toast({
         title: "Erreur de connexion",
-        description: error.message || "Email ou mot de passe incorrect",
+        description: error instanceof Error ? error.message : "Erreur serveur",
         variant: "destructive"
       });
     } finally {

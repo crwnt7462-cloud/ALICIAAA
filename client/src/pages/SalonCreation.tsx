@@ -305,7 +305,9 @@ export default function SalonCreation() {
       const index = prev.findIndex(cat => cat.id === categoryId);
       if (index > 0) {
         const newOrder = [...prev];
-        [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
+        if (newOrder[index] && newOrder[index - 1]) {
+          [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
+        }
         return newOrder;
       }
       return prev;
@@ -317,7 +319,9 @@ export default function SalonCreation() {
       const index = prev.findIndex(cat => cat.id === categoryId);
       if (index < prev.length - 1) {
         const newOrder = [...prev];
-        [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+        if (newOrder[index] && newOrder[index + 1]) {
+          [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+        }
         return newOrder;
       }
       return prev;
@@ -338,8 +342,8 @@ export default function SalonCreation() {
     setTeamMembers(prev => 
       prev.map(member => 
         member.id === memberId 
-          ? { ...member, avatar: randomPhoto }
-          : member
+          ? { ...member, avatar: randomPhoto ?? '' }
+          : { ...member, avatar: member.avatar ?? '' }
       )
     );
     

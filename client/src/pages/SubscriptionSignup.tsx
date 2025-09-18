@@ -1,3 +1,8 @@
+// Mapping UI → backend pour les plans
+const planMap: Record<'basic' | 'premium', 'basic-pro' | 'premium-pro'> = {
+  basic: 'basic-pro',
+  premium: 'premium-pro',
+};
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
@@ -153,30 +158,27 @@ export default function SubscriptionSignup({ selectedPlan = "basic-pro" }: Subsc
           <h1 className="text-2xl font-bold text-gray-900">
             Souscription Plan Professionnel
           </h1>
-          <p className="text-gray-600 mt-2">
-            Complétez vos informations d'entreprise pour finaliser votre souscription
-          </p>
-        </div>
-
-        {/* Plan sélectionné */}
-        <Card className={`mb-6 border-${currentPlan.color}-200 bg-gradient-to-r from-${currentPlan.color}-50 to-${currentPlan.color}-100`}>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 bg-${currentPlan.color}-600 rounded-full flex items-center justify-center`}>
-                  {currentPlan.icon}
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{currentPlan.name}</h3>
-                  <p className="text-2xl font-bold text-gray-900">{currentPlan.price}<span className="text-sm font-normal">/mois</span></p>
-                </div>
+          <div>
+            <Label htmlFor="planType">Plan sélectionné</Label>
+            <Select
+              value={form.watch("planType")}
+              onValueChange={(value: 'basic' | 'premium') => form.setValue('planType', planMap[value])}
+            >
+              {/* ...SelectItems ici... */}
+            </Select>
+            <div className="flex items-center gap-3 mt-4">
+              <div className={`w-12 h-12 bg-${currentPlan.color}-600 rounded-full flex items-center justify-center`}>
+                {currentPlan.icon}
               </div>
-              <Badge className={`bg-${currentPlan.color}-600 text-white`}>
-                {form.watch("planType") === "premium" ? "Premium" : "Basic"}
-              </Badge>
+              <div>
+                <h3 className="font-semibold text-gray-900">{currentPlan.name}</h3>
+                <p className="text-2xl font-bold text-gray-900">{currentPlan.price}<span className="text-sm font-normal">/mois</span></p>
+              </div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <Badge className={`bg-${currentPlan.color}-600 text-white mt-2`}>
+              {(form.watch("planType") ?? "basic-pro").includes("premium-pro") ? "Premium" : "Basic"}
+            </Badge>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
               {currentPlan.features.map((feature, index) => (
                 <div key={index} className="flex items-center gap-2 text-sm">
                   <CheckCircle className="w-4 h-4 text-green-600" />
@@ -184,8 +186,8 @@ export default function SubscriptionSignup({ selectedPlan = "basic-pro" }: Subsc
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Formulaire d'informations d'entreprise */}
         <Card>
@@ -202,7 +204,7 @@ export default function SubscriptionSignup({ selectedPlan = "basic-pro" }: Subsc
                 <Label htmlFor="planType">Plan sélectionné</Label>
                 <Select
                   value={form.watch("planType")}
-                  onValueChange={(value: "basic" | "premium") => form.setValue("planType", value)}
+                   onValueChange={(value: 'basic' | 'premium') => form.setValue('planType', planMap[value])}
                 >
                   <SelectTrigger>
                     <SelectValue />

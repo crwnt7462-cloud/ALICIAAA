@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM"],
+    "types": ["react", "react-dom", "vite/client"],
+    "skipLibCheck": true
+  },
+  "include": ["client/src/**/*.ts", "client/src/**/*.tsx"],
+  "exclude": ["server", "node_modules", "dist"]
+}

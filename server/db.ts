@@ -1,26 +1,19 @@
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from "@shared/schema";
+import 'dotenv/config';
+import { createClient } from '@supabase/supabase-js';
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+const url = process.env.SUPABASE_URL;
+const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!url) {
+  throw new Error('SUPABASE_URL manquant dans .env');
+}
+if (!key) {
+  throw new Error('SUPABASE_SERVICE_ROLE_KEY manquant. Utilise la *Service Role key* (pas l’anon key), dans Project Settings > API.');
 }
 
-// Configuration robuste de la base de données
-const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 5,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 8000,
+export const supabase = createClient(url, key, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
 });
-
-// Gestionnaire d'erreurs global pour éviter les crashes
-pool.on('error', (err) => {
-  console.error('🔥 Erreur de connexion PostgreSQL:', err.message);
-});
-
-export const db = drizzle(pool, { schema });
-export { pool };

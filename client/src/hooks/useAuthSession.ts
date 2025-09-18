@@ -27,7 +27,7 @@ export function useAuthSession() {
   // Mutation pour se connecter (professionnel)
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const response = await apiRequest('POST', '/api/login/professional', credentials);
+  const response = await apiRequest('POST', '/api/login', credentials);
       return response.json();
     },
     onSuccess: () => {
@@ -49,7 +49,7 @@ export function useAuthSession() {
   // Mutation pour s'inscrire (professionnel)
   const registerMutation = useMutation({
     mutationFn: async (userData: any) => {
-      const response = await apiRequest('POST', '/api/register/professional', userData);
+  const response = await apiRequest('POST', '/api/register', userData);
       return response.json();
     },
     onSuccess: () => {
@@ -76,8 +76,7 @@ export function useAuthSession() {
     },
     onSuccess: () => {
       queryClient.clear(); // Vider tout le cache
-      // Rediriger vers la page d'accueil après déconnexion
-      window.location.href = '/';
+      // Ne pas rediriger automatiquement
     }
   });
 

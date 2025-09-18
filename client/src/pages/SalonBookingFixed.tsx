@@ -236,11 +236,14 @@ function SalonBookingFixed() {
     // Vérifier d'abord s'il y a des données de pré-réservation
     if (preBooking && typeof preBooking === 'object' && preBooking.serviceId) {
       console.log('✅ Service trouvé dans pré-réservation:', preBooking.serviceName);
-      const serviceData = {
+      const serviceData: Service = {
         id: preBooking.serviceId,
         name: preBooking.serviceName,
         price: preBooking.servicePrice,
-        duration: preBooking.serviceDuration
+        duration: preBooking.serviceDuration,
+        salonId: String(realSalonData?.id ?? salonSlug ?? ''),
+        depositAmount: preBooking.depositAmount ?? Math.round(preBooking.servicePrice * 0.3),
+        description: preBooking.serviceDescription ?? '',
       };
       setSelectedService(serviceData);
       
@@ -263,7 +266,11 @@ function SalonBookingFixed() {
       try {
         const serviceData = JSON.parse(savedService);
         console.log('💰 Service sélectionné au rendu:', serviceData);
-        setSelectedService(serviceData);
+        setSelectedService(prev => ({
+          ...(prev ?? {}),
+          ...serviceData,
+          salonId: salon?.id ?? ""
+        }) as Service);
         // Aller directement à l'étape de sélection du professionnel
         setCurrentStep(2);
       } catch (error) {
@@ -361,7 +368,7 @@ function SalonBookingFixed() {
           <p className="text-gray-400 mb-4">Le salon {salonSlug} n'existe pas dans nos données.</p>
           <button 
             onClick={() => {
-              navigate('/search', 'salon-not-found', { salonSlug });
+              navigate('/search', 'salon-not-found', { salonSlug: salonSlug ?? '' });
             }}
             className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
           >
@@ -654,7 +661,7 @@ function SalonBookingFixed() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">Acompte à payer:</span>
-                      <span className="text-white">{service?.depositAmount || Math.round((service?.price || 0) * 0.3)}€</span>
+                      <span className="text-white">{service?.depositAmount ?? Math.round((service?.price ?? 0) * 0.3)}€</span>
                     </div>
                   </div>
                 </div>
@@ -808,7 +815,7 @@ function SalonBookingFixed() {
                 
                 // Créer le Payment Intent
                 try {
-                  const amount = service?.depositAmount || Math.round((service?.price || 0) * 0.3);
+                  const amount = service?.depositAmount ?? Math.round((service?.price ?? 0) * 0.3);
                   const { clientSecret } = await createPaymentIntent({
                     amount,
                     currency: 'eur',
@@ -854,8 +861,8 @@ function SalonBookingFixed() {
               salonName: salon?.name || "Salon",
               serviceName: service?.name || "",
               servicePrice: service?.price || 0,
-              selectedDate: selectedDate,
-              selectedTime: selectedSlot?.time || "",
+              date: selectedDate,
+              time: selectedSlot?.time || "",
               clientName: `${formData.firstName} ${formData.lastName}`,
               professionalName: selectedProfessional?.name || "À assigner"
             }}

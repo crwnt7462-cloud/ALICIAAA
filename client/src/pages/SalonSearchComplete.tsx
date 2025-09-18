@@ -19,37 +19,33 @@ import {
 } from "lucide-react";
 import avyentoLogo from "@assets/3_1753714421825.png";
 
-// Fonction pour obtenir la classe de couleur spécifique à chaque salon
-const getSalonButtonClass = (salonId: string) => {
-  const salonColors = {
-    'salon-excellence-paris': 'glass-button-pink',
-    'salon-moderne-republique': 'glass-button-indigo', 
-    'barbier-gentleman-marais': 'glass-button-amber',
-    'institut-beaute-saint-germain': 'glass-button-rose',
-    'nail-art-opera': 'glass-button-rose',
-    'spa-wellness-bastille': 'glass-button-emerald',
-    'beauty-lounge-montparnasse': 'glass-button-indigo',
-    'salon-demo': 'glass-button-amber', // ✅ AJOUT DU SALON MODIFIABLE
-    'current': 'glass-button-amber' // ✅ FALLBACK POUR L'ID COURANT
-  };
-  return salonColors[salonId] || 'glass-button-neutral';
+
+const salonColors: Record<string, string> = {
+  'salon-excellence-paris': 'glass-button-pink',
+  'salon-moderne-republique': 'glass-button-indigo',
+  'barbier-gentleman-marais': 'glass-button-amber',
+  'institut-beaute-saint-germain': 'glass-button-rose',
+  'nail-art-opera': 'glass-button-rose',
+  'spa-wellness-bastille': 'glass-button-emerald',
+  'beauty-lounge-montparnasse': 'glass-button-indigo',
+  'salon-demo': 'glass-button-amber',
+  'current': 'glass-button-amber',
 };
 
-// Fonction pour obtenir la classe de carte glassmorphism spécifique à chaque salon
-const getSalonGlassCard = (salonId: string) => {
-  const salonCardColors = {
-    'salon-excellence-paris': 'glass-card-pink',
-    'salon-moderne-republique': 'glass-card-indigo', 
-    'barbier-gentleman-marais': 'glass-card-amber',
-    'institut-beaute-saint-germain': 'glass-card-rose',
-    'nail-art-opera': 'glass-card-rose',
-    'spa-wellness-bastille': 'glass-card-emerald',
-    'beauty-lounge-montparnasse': 'glass-card-indigo',
-    'salon-demo': 'glass-card-amber', // ✅ AJOUT DU SALON MODIFIABLE
-    'current': 'glass-card-amber' // ✅ FALLBACK POUR L'ID COURANT
-  };
-  return salonCardColors[salonId] || 'glass-card-neutral';
+const salonCardColors: Record<string, string> = {
+  'salon-excellence-paris': 'glass-card-pink',
+  'salon-moderne-republique': 'glass-card-indigo',
+  'barbier-gentleman-marais': 'glass-card-amber',
+  'institut-beaute-saint-germain': 'glass-card-rose',
+  'nail-art-opera': 'glass-card-rose',
+  'spa-wellness-bastille': 'glass-card-emerald',
+  'beauty-lounge-montparnasse': 'glass-card-indigo',
+  'salon-demo': 'glass-card-amber',
+  'current': 'glass-card-amber',
 };
+
+const getSalonColor = (id?: string) => id ? salonColors[id] ?? 'glass-button-neutral' : 'glass-button-neutral';
+const getSalonCard = (id?: string) => id ? salonCardColors[id] ?? 'glass-card-neutral' : 'glass-card-neutral';
 
 export default function SalonSearchComplete() {
   const [, setLocation] = useLocation();
@@ -111,7 +107,11 @@ export default function SalonSearchComplete() {
             
             {/* Logo Avyento - plus gros et plus proche */}
             <div className="text-center mb-6">
-              <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto mx-auto" />
+              <img
+                src={avyentoLogo}
+                alt="Avyento"
+                className="h-28 w-auto mx-auto cursor-pointer"
+                onClick={() => setLocation('/')} />
             </div>
 
             {/* Titre - moins d'espace */}
@@ -282,7 +282,7 @@ export default function SalonSearchComplete() {
                   transition: { duration: 0.2 }
                 }}
                 whileTap={{ scale: 0.98 }}
-                className={`${getSalonGlassCard(salon.id)} rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300`}
+                className={`${getSalonCard(salon.id)} rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300`}
                 onClick={() => {
                   console.log('🔗 CLIC SALON DEBUG:');
                   console.log('  - ID salon:', salon.id);
@@ -322,7 +322,7 @@ export default function SalonSearchComplete() {
                   <motion.button 
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`absolute top-3 right-3 ${getSalonButtonClass(salon.id)} w-8 h-8 rounded-full flex items-center justify-center`}
+                    className={`absolute top-3 right-3 ${getSalonColor(salon.id)} w-8 h-8 rounded-full flex items-center justify-center`}
                   >
                     <Heart className="h-4 w-4 text-black" />
                   </motion.button>
@@ -377,7 +377,7 @@ export default function SalonSearchComplete() {
                     <motion.button 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`${getSalonButtonClass(salon.id)} px-4 py-2 rounded-xl text-sm font-medium`}
+                      className={`${getSalonColor(salon.id)} px-4 py-2 rounded-xl text-sm font-medium`}
                       onClick={(e) => {
                         e.stopPropagation();
                         console.log('🔗 BOUTON RÉSERVER - Redirection vers page salon:', `/salon/${salon.id}`);

@@ -3,7 +3,7 @@ import { RetryPanel } from '../components/RetryPanel';
 import { useSalonLoader } from '../hooks/useSalonLoader';
 
 // Import du composant SalonBooking existant
-import SalonBookingOriginal from './SalonBooking';
+import SalonBookingOriginal from './SalonBookingFixed';
 
 export default function SalonBookingSafe() {
   const { loading, error, salon, services, retry } = useSalonLoader();

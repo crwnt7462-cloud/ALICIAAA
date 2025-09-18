@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
@@ -23,13 +23,26 @@ export default function SalonPage() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [location, navigate] = useLocation();
   const { isAuthenticated } = useAuth();
-
+  
   // Charger les données du salon du professionnel connecté si on est sur /salon
   const { data: userSalon } = useQuery({
     queryKey: ['/api/salon/my-salon'],
     enabled: location === '/salon' && isAuthenticated,
     retry: false,
     staleTime: 5000
+  });
+  // Activer le mode édition par défaut si aucun salon n'existe
+  const isSalonCreated = isAuthenticated && userSalon && (userSalon as any).name;
+  const [isEditing, setIsEditing] = useState(!isSalonCreated);
+  const [salonData, setSalonData] = useState({
+    nom: "Salon Excellence",
+    adresse: "Paris 8ème",
+    telephone: "01 23 45 67 89",
+    description: "Le meilleur salon de Paris !",
+    horaires: "Lun-Ven: 9h-19h, Sam: 9h-17h",
+    facebook: "https://facebook.com/salon.avyento",
+    instagram: "https://instagram.com/salon.avyento",
+    tiktok: "https://tiktok.com/@salon.avyento"
   });
 
   // Déterminer quel salon afficher selon l'URL
@@ -145,8 +158,8 @@ export default function SalonPage() {
     };
   };
 
-  const salonData = getSalonData();
-  const primaryColor = salonData.primaryColor;
+  const salonDataFetched = getSalonData();
+  const primaryColor = salonDataFetched.primaryColor;
 
   // Onglets de navigation
   const tabs = [
@@ -571,8 +584,222 @@ export default function SalonPage() {
     };
   };
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    setSalonData({ ...salonData, [e.target.name]: e.target.value });
+  }
+
+  // Restauration des données locales au montage
+  useEffect(() => {
+    const savedSalonData = localStorage.getItem('salonData');
+    const savedServiceCategories = localStorage.getItem('serviceCategoriesState');
+    const savedTeamMembers = localStorage.getItem('teamMembersState');
+    const savedCoverImage = localStorage.getItem('coverImage');
+    if (savedSalonData) setSalonData(JSON.parse(savedSalonData));
+    if (savedServiceCategories) setServiceCategoriesState(JSON.parse(savedServiceCategories));
+    if (savedTeamMembers) setTeamMembersState(JSON.parse(savedTeamMembers));
+    if (savedCoverImage) setCoverImage(savedCoverImage);
+  }, []);
+
+  // Charger les données du salon depuis l'API au montage et après modification
+  useEffect(() => {
+    async function fetchSalon() {
+      const res = await fetch('/api/salon/my-salon');
+      if (res.ok) {
+        const data = await res.json();
+        setSalonData({
+          nom: data.name || '',
+          adresse: data.address || '',
+          telephone: data.telephone || '',
+          description: data.description || '',
+          horaires: data.horaires || '',
+          facebook: data.facebook || '',
+          instagram: data.instagram || '',
+          tiktok: data.tiktok || ''
+        });
+        setServiceCategoriesState(data.serviceCategories || []);
+        setTeamMembersState(data.teamMembers || []);
+        setCoverImage(data.coverImageUrl || '');
+      }
+    }
+    fetchSalon();
+  }, []);
+
+  async function handleSave() {
+    setIsEditing(false);
+    try {
+      await fetch('/api/salon/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          salonData,
+          serviceCategories: serviceCategoriesState,
+          teamMembers: teamMembersState,
+          coverImage,
+        })
+      });
+      // Recharger les données du salon après modification
+      const res = await fetch('/api/salon/my-salon');
+      if (res.ok) {
+        const data = await res.json();
+        setSalonData({
+          nom: data.name || '',
+          adresse: data.address || '',
+          telephone: data.telephone || '',
+          description: data.description || '',
+          horaires: data.horaires || '',
+          facebook: data.facebook || '',
+          instagram: data.instagram || '',
+          tiktok: data.tiktok || ''
+        });
+        setServiceCategoriesState(data.serviceCategories || []);
+        setTeamMembersState(data.teamMembers || []);
+        setCoverImage(data.coverImageUrl || '');
+      }
+      alert("Modifications enregistrées !");
+    } catch (e) {
+      alert("Erreur lors de l'enregistrement");
+    }
+  }
+
+  // Ajout de la gestion des catégories et services modifiables
+  const [serviceCategoriesState, setServiceCategoriesState] = useState(serviceCategories);
+
+  function handleServiceChange(categoryIdx: number, serviceIdx: number, field: string, value: string) {
+    const updated = [...serviceCategoriesState];
+    updated[categoryIdx].services[serviceIdx][field] = value;
+    setServiceCategoriesState(updated);
+  }
+
+  function handleCategoryChange(categoryIdx: number, field: string, value: string) {
+    const updated = [...serviceCategoriesState];
+    updated[categoryIdx][field] = value;
+    setServiceCategoriesState(updated);
+  }
+
+  function handleDeleteCategory(categoryIdx: number) {
+    const updated = [...serviceCategoriesState];
+    updated.splice(categoryIdx, 1);
+    setServiceCategoriesState(updated);
+  }
+
+  function handleAddCategory() {
+    setServiceCategoriesState([
+      ...serviceCategoriesState,
+      {
+        id: `cat-${Date.now()}`,
+        name: '',
+        description: '',
+        services: []
+      }
+    ]);
+  }
+
+  function handleAddService(categoryIdx: number) {
+    const updated = [...serviceCategoriesState];
+    updated[categoryIdx].services.push({
+      name: '',
+      price: '',
+      duration: '',
+      description: '',
+      photo: ''
+    });
+    setServiceCategoriesState(updated);
+  }
+
+  function handleServicePhotoUpload(categoryIdx: number, serviceIdx: number, file: File) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const updated = [...serviceCategoriesState];
+      updated[categoryIdx].services[serviceIdx].photo = e.target?.result as string;
+      setServiceCategoriesState(updated);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Ajout de la gestion de l'équipe modifiable
+  type TeamMember = {
+    id: number;
+    name: string;
+    role: string;
+    specialties: string[];
+    rating: number;
+    reviewsCount: number;
+    avatar: string;
+    availableToday: boolean;
+    nextSlot: string;
+    experience: string;
+    bio: string;
+    [key: string]: any; // index signature pour accès dynamique
+  };
+  const [teamMembersState, setTeamMembersState] = useState<TeamMember[]>(teamMembers);
+
+  function handleTeamMemberChange(idx: number, field: string, value: any) {
+    const updated = [...teamMembersState];
+    if (field === 'specialties') {
+      updated[idx].specialties = value;
+    } else {
+      updated[idx][field] = value;
+    }
+    setTeamMembersState(updated);
+  }
+
+  function handleDeleteTeamMember(idx: number) {
+    const updated = [...teamMembersState];
+    updated.splice(idx, 1);
+    setTeamMembersState(updated);
+  }
+
+  function handleAddTeamMember() {
+    setTeamMembersState([
+      ...teamMembersState,
+      {
+        id: Date.now(),
+        name: '',
+        role: '',
+        specialties: [],
+        rating: 0,
+        reviewsCount: 0,
+        avatar: '',
+        availableToday: false,
+        nextSlot: '',
+        experience: '',
+        bio: ''
+      }
+    ]);
+  }
+
+  // Ajout de la gestion de la photo de couverture modifiable
+  const [coverImage, setCoverImage] = useState(salonDataFetched.backgroundImage);
+  function handleCoverImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setCoverImage(ev.target?.result as string);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  }
+
+  // Ajout du bouton Modifier/Enregistrer en haut à droite
   return (
     <div className="min-h-screen bg-gray-50">
+      <div style={{ position: "absolute", top: 24, right: 32, zIndex: 100 }}>
+        {!isEditing ? (
+          <button
+            className="bg-purple-600 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-purple-700 transition"
+            onClick={() => setIsEditing(true)}
+          >
+            Modifier
+          </button>
+        ) : (
+          <button
+            className="bg-green-600 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-green-700 transition"
+            onClick={handleSave}
+          >
+            Enregistrer
+          </button>
+        )}
+      </div>
       {/* Barre de navigation Avyento */}
       <div className="bg-white/95 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -587,16 +814,6 @@ export default function SalonPage() {
                 onClick={() => navigate('/')}
               />
             </div>
-            
-            {/* Bouton Connexion */}
-            <div>
-              <button 
-                className="bg-purple-600/20 backdrop-blur-md text-purple-900 border border-purple-300/50 px-6 py-2 rounded-full font-medium text-sm hover:bg-purple-600/30 transition-all duration-300 shadow-lg"
-                onClick={() => navigate('/client-register')}
-              >
-                Se connecter
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -605,22 +822,46 @@ export default function SalonPage() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
-            backgroundImage: `url(${salonData.backgroundImage || '/salon-skincare-cover.png'})`,
+            backgroundImage: `url(${coverImage || '/salon-skincare-cover.png'})`,
             backgroundPosition: 'center center'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
         </div>
+        {isEditing && (
+          <div className="absolute top-4 left-4 z-20 bg-white/80 rounded-xl p-3 shadow">
+            <label className="block text-sm font-medium mb-2">Changer la photo de couverture</label>
+            <input type="file" accept="image/*" onChange={handleCoverImageUpload} />
+          </div>
+        )}
         
         {/* Contenu superposé au style skincare */}
         <div className="relative h-full flex flex-col justify-end items-start px-4 sm:px-6 md:px-12 lg:px-16 pb-6 sm:pb-8">
           <div className="max-w-md sm:max-w-lg space-y-3 sm:space-y-4">
             <div className="space-y-2">
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
-                {salonData.name}
+                {isEditing ? (
+                  <input
+                    name="nom"
+                    value={salonData.nom}
+                    onChange={handleChange}
+                    className="bg-white/80 px-2 py-1 rounded text-lg font-bold"
+                  />
+                ) : (
+                  salonData.nom
+                )}
               </h1>
               <p className="text-white/90 text-xs sm:text-sm md:text-base font-light">
-                {salonData.address}
+                {isEditing ? (
+                  <input
+                    name="adresse"
+                    value={salonData.adresse}
+                    onChange={handleChange}
+                    className="bg-white/80 px-2 py-1 rounded text-sm"
+                  />
+                ) : (
+                  salonData.adresse
+                )}
               </p>
             </div>
             
@@ -628,9 +869,9 @@ export default function SalonPage() {
             <div className="flex flex-wrap gap-2 sm:gap-3">
               
               {/* Réseaux sociaux - seulement si les liens existent */}
-              {salonData.instagram && (
+              {salonDataFetched.instagram && (
                 <a 
-                  href={salonData.instagram}
+                  href={salonDataFetched.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-xs sm:text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1 sm:gap-2"
@@ -639,9 +880,9 @@ export default function SalonPage() {
                   <span className="hidden sm:inline">Instagram</span>
                 </a>
               )}
-              {salonData.facebook && (
+              {salonDataFetched.facebook && (
                 <a 
-                  href={salonData.facebook}
+                  href={salonDataFetched.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-xs sm:text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1 sm:gap-2"
@@ -650,9 +891,9 @@ export default function SalonPage() {
                   <span className="hidden sm:inline">Facebook</span>
                 </a>
               )}
-              {salonData.tiktok && (
+              {salonDataFetched.tiktok && (
                 <a 
-                  href={salonData.tiktok}
+                  href={salonDataFetched.tiktok}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-xs sm:text-sm hover:bg-white/30 transition-all duration-300 shadow-lg flex items-center gap-1 sm:gap-2"
@@ -667,10 +908,10 @@ export default function SalonPage() {
             <div className="flex items-center gap-2 sm:gap-3 pt-1">
               <div className="flex items-center gap-1 sm:gap-1.5 bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/20">
                 <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-xs sm:text-sm font-medium text-white">{salonData.rating}</span>
-                <span className="text-xs text-white/80">({salonData.reviewCount})</span>
+                <span className="text-xs sm:text-sm font-medium text-white">{salonDataFetched.rating}</span>
+                <span className="text-xs text-white/80">({salonDataFetched.reviewCount})</span>
               </div>
-              {salonData.verified && (
+              {salonDataFetched.verified && (
                 <div className="flex items-center gap-1 sm:gap-1.5 bg-green-500/20 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-green-400/30">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
                   <span className="text-xs font-medium text-green-200">Vérifié</span>
@@ -707,446 +948,422 @@ export default function SalonPage() {
       <div className="max-w-full lg:max-w-7xl mx-auto p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4">
         {activeTab === 'services' && (
           <div className="space-y-4">
-            {serviceCategories.map((category: any) => (
-              <div 
-                key={category.id}
-                className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm overflow-hidden"
+            {isEditing && (
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold mb-4"
+                onClick={handleAddCategory}
               >
+                + Ajouter une catégorie
+              </button>
+            )}
+            {serviceCategoriesState.map((category: any, categoryIdx: number) => (
+              <div key={category.id} className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm overflow-hidden">
                 <div className="p-4">
-                  <button
-                    onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
-                    className="w-full flex items-center justify-between text-left group hover:bg-gray-50/50 rounded-xl p-3 -m-3 transition-all duration-200"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 text-lg">{category.name}</h3>
-                      <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-gray-100/80 backdrop-blur-sm border border-gray-200/50 group-hover:bg-gray-200/80 transition-all duration-200">
-                        {expandedCategory === category.id ? (
-                          <ChevronUp className="w-4 h-4 text-gray-600" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-600" />
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                </div>
-
-                {expandedCategory === category.id && (
-                  <div className="px-4 pb-4 space-y-3">
-                    <div className="h-px bg-gradient-to-r from-transparent via-gray-300/40 to-transparent"></div>
-                    {category.services.map((service: any, index: any) => (
-                      <div 
-                        key={index} 
-                        className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/40 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+                  {isEditing ? (
+                    <div className="flex items-center gap-2 mb-2">
+                      <input
+                        value={category.name}
+                        onChange={e => handleCategoryChange(categoryIdx, 'name', e.target.value)}
+                        className="bg-gray-100 px-2 py-1 rounded text-lg font-bold"
+                        placeholder="Nom de la catégorie"
+                      />
+                      <button
+                        className="bg-red-500 text-white px-2 py-1 rounded-full"
+                        onClick={() => handleDeleteCategory(categoryIdx)}
                       >
-                        <div className="flex">
-                          {/* Image plus grande et moderne */}
-                          <div className="relative w-32 h-32 flex-shrink-0">
+                        Supprimer
+                      </button>
+                    </div>
+                  ) : (
+                    <h3 className="font-semibold text-gray-900 text-lg">{category.name}</h3>
+                  )}
+                  {isEditing ? (
+                    <textarea
+                      value={category.description}
+                      onChange={e => handleCategoryChange(categoryIdx, 'description', e.target.value)}
+                      className="bg-gray-100 px-2 py-1 rounded w-full mb-2"
+                      placeholder="Description de la catégorie"
+                    />
+                  ) : (
+                    <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
+                  )}
+                  {isEditing && (
+                    <button
+                      className="bg-green-600 text-white px-3 py-1 rounded-full mb-2"
+                      onClick={() => handleAddService(categoryIdx)}
+                    >
+                      + Ajouter un service
+                    </button>
+                  )}
+                </div>
+                <div className="px-4 pb-4 space-y-3">
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-300/40 to-transparent"></div>
+                  {category.services.map((service: any, serviceIdx: number) => (
+                    <div key={serviceIdx} className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/40 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+                      <div className="flex">
+                        <div className="relative w-32 h-32 flex-shrink-0">
+                          {isEditing ? (
+                            <div>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={e => {
+                                  if (e.target.files && e.target.files[0]) {
+                                    handleServicePhotoUpload(categoryIdx, serviceIdx, e.target.files[0]);
+                                  }
+                                }}
+                                className="mb-2"
+                              />
+                              <input
+                                value={service.photo}
+                                onChange={e => handleServiceChange(categoryIdx, serviceIdx, 'photo', e.target.value)}
+                                className="bg-gray-100 px-2 py-1 rounded w-full mb-2"
+                                placeholder="URL de la photo"
+                              />
+                              {service.photo && (
+                                <img
+                                  src={service.photo}
+                                  alt="Aperçu"
+                                  className="w-full h-full object-cover rounded"
+                                />
+                              )}
+                            </div>
+                          ) : (
                             <img
                               src={service.photo}
                               alt={service.name}
                               className="w-full h-full object-cover"
-                              onError={(e) => {
+                              onError={e => {
                                 e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=300&fit=crop&q=80';
                               }}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                            <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-                              {formatDuration(service.duration)}
-                            </div>
-                          </div>
-
-                          {/* Contenu */}
-                          <div className="flex-1 p-4 flex flex-col justify-between">
-                            <div>
-                              <div className="flex items-start justify-between mb-2">
+                          )}
+                        </div>
+                        <div className="flex-1 p-4 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-start justify-between mb-2">
+                              {isEditing ? (
+                                <input
+                                  value={service.name}
+                                  onChange={e => handleServiceChange(categoryIdx, serviceIdx, 'name', e.target.value)}
+                                  className="bg-gray-100 px-2 py-1 rounded text-lg font-bold mb-1"
+                                  placeholder="Nom du service"
+                                />
+                              ) : (
                                 <h4 className="font-semibold text-gray-900 text-lg group-hover:text-purple-700 transition-colors">{service.name}</h4>
-                                <div className="text-right">
+                              )}
+                              <div className="text-right">
+                                {isEditing ? (
+                                  <input
+                                    value={service.price}
+                                    onChange={e => handleServiceChange(categoryIdx, serviceIdx, 'price', e.target.value)}
+                                    className="bg-gray-100 px-2 py-1 rounded text-sm"
+                                    placeholder="Prix (€)"
+                                  />
+                                ) : (
                                   <span className="font-bold text-purple-600 text-xl">{service.price}€</span>
-                                </div>
-                              </div>
-                              <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-3">{service.description}</p>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                {service.rating && (
-                                  <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
-                                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                    <span className="text-xs font-medium text-gray-700">{service.rating}</span>
-                                    <span className="text-xs text-gray-500">({service.reviews})</span>
-                                  </div>
                                 )}
                               </div>
-                              
-                              <Button 
-                                size="sm" 
-                                className="rounded-full px-4 py-2 text-xs font-medium"
-                                style={getButtonStyle()}
-                                onClick={() => {
-                                  localStorage.setItem('selectedService', JSON.stringify({
-                                    name: service.name,
-                                    price: service.price,
-                                    duration: service.duration,
-                                    description: service.description
-                                  }));
-                                  navigate('/professional-selection');
-                                }}
-                              >
-                                Réserver
-                              </Button>
+                            </div>
+                            {isEditing ? (
+                              <textarea
+                                value={service.description}
+                                onChange={e => handleServiceChange(categoryIdx, serviceIdx, 'description', e.target.value)}
+                                className="bg-gray-100 px-2 py-1 rounded w-full mb-2"
+                                placeholder="Description du service"
+                              />
+                            ) : (
+                              <p className="text-sm text-gray-600 mb-2">{service.description}</p>
+                            )}
+                            <div className="flex flex-wrap gap-2">
+                              <span className="text-xs rounded-full" style={{ paddingLeft: '0.5rem', paddingRight: '0.5rem', paddingTop: '0.125rem', paddingBottom: '0.125rem', backgroundColor: 'rgb(229 231 235)' }}>
+                                {service.duration} min
+                              </span>
+                              {service.reviews > 0 && (
+                                <span className="text-xs rounded-full" style={{ paddingLeft: '0.5rem', paddingRight: '0.5rem', paddingTop: '0.125rem', paddingBottom: '0.125rem', backgroundColor: 'rgb(229 231 235)' }}>
+                                  {service.reviews} avis
+                                </span>
+                              )}
                             </div>
                           </div>
+                          {!isEditing && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <button
+                                className="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow hover:bg-purple-700 transition"
+                                onClick={() => { /* Réserver le service */ }}
+                              >
+                                Réserver
+                              </button>
+                              <button
+                                className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-3 py-1 rounded-full text-xs font-medium hover:bg-white/30 transition-all duration-300"
+                                onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
+                              >
+                                {expandedCategory === category.id ? 'Masquer les détails' : 'Voir les détails'}
+                                {expandedCategory === category.id ? (
+                                  <ChevronUp className="w-4 h-4 ml-1" />
+                                ) : (
+                                  <ChevronDown className="w-4 h-4 ml-1" />
+                                )}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-            
-            {/* Carte de localisation */}
-            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm overflow-hidden mt-6">
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 text-lg mb-3 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-purple-600" />
-                  Notre localisation
-                </h3>
-                <div className="bg-gray-100 rounded-xl h-48 flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-sm text-gray-600">{salonData.address}</p>
-                    <p className="text-xs text-gray-500 mt-1">Carte interactive disponible prochainement</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'galerie' && (
-          <div className="space-y-4">
-            {/* Galeries de photos */}
-            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-6">
-              <h3 className="font-semibold text-gray-900 text-lg mb-4">Nos galeries photos</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Galerie Coiffure */}
-                <div className="bg-white/95 backdrop-blur-md border border-gray-200/40 rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-300">
-                  <div className="relative h-32">
-                    <img
-                      src="https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=400&h=300&fit=crop&q=80"
-                      alt="Galerie Coiffure"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-                      12 photos
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Coiffure & Styling</h4>
-                    <p className="text-sm text-gray-600 line-clamp-2">Découvrez nos dernières créations en coiffure, coupes tendances et colorations.</p>
-                  </div>
-                </div>
-
-                {/* Galerie Soins */}
-                <div className="bg-white/95 backdrop-blur-md border border-gray-200/40 rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-300">
-                  <div className="relative h-32">
-                    <img
-                      src="https://images.unsplash.com/photo-1544717301-9cdcb1f5940f?w=400&h=300&fit=crop&q=80"
-                      alt="Galerie Soins"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-                      8 photos
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Soins & Bien-être</h4>
-                    <p className="text-sm text-gray-600 line-clamp-2">Moments de détente et soins personnalisés pour sublimer votre beauté naturelle.</p>
-                  </div>
-                </div>
-
-                {/* Galerie Salon */}
-                <div className="bg-white/95 backdrop-blur-md border border-gray-200/40 rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-300">
-                  <div className="relative h-32">
-                    <img
-                      src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80"
-                      alt="Galerie Salon"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1562004760-acb5501b6c56?w=400&h=300&fit=crop&q=80';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-                      15 photos
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Atmosphère du Salon</h4>
-                    <p className="text-sm text-gray-600 line-clamp-2">Plongez dans l'univers raffiné et moderne de notre institut de beauté.</p>
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'equipe' && (
-          <div className="space-y-3">
-            {teamMembers.map((member) => (
-              <div 
-                key={member.id}
-                className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4"
-              >
-                <div className="flex items-start gap-4">
-                  <img
-                    src={member.avatar}
-                    alt={member.name}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-200/50"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=150&h=150&fit=crop&crop=face';
-                    }}
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold text-gray-900 text-lg">{member.name}</h3>
-                        <p className="text-sm text-gray-600">{member.role}</p>
-                        <p className="text-xs text-gray-500">{member.experience}</p>
-                      </div>
-                      {member.availableToday && (
-                        <div className="bg-green-100/80 backdrop-blur-sm text-green-700 text-xs px-3 py-1.5 rounded-full border border-green-200/50 flex items-center gap-1.5">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          Disponible
+                      {!isEditing && expandedCategory === category.id && (
+                        <div className="p-4 pt-0">
+                          <h5 className="font-semibold text-gray-900 mb-2">Détails du service</h5>
+                          <p className="text-sm text-gray-600 mb-2">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <div className="w-full sm:w-1/2">
+                              <h6 className="font-medium text-gray-900 mb-1">Inclus dans ce service :</h6>
+                              <ul className="list-disc list-inside text-sm text-gray-600">
+                                <li>Consultation personnalisée</li>
+                                <li>Produits de haute qualité</li>
+                                <li>Suivi post-service</li>
+                              </ul>
+                            </div>
+                            <div className="w-full sm:w-1/2">
+                              <h6 className="font-medium text-gray-900 mb-1">Préparez-vous avant le rendez-vous :</h6>
+                              <ul className="list-disc list-inside text-sm text-gray-600">
+                                <li>Arriver 10 minutes en avance</li>
+                                <li>Informer sur d'éventuelles allergies</li>
+                                <li>Éviter de venir à jeun</li>
+                              </ul>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
-
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{member.bio}</p>
-
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {member.specialties.map((specialty, idx) => (
-                        <span 
-                          key={idx} 
-                          className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-2 py-1 rounded-full border border-purple-200/50"
-                        >
-                          {specialty}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">{member.rating}</span>
-                        <span className="text-xs text-gray-500">({member.reviewsCount})</span>
-                      </div>
-                      
-                      <Button 
-                        size="sm" 
-                        className="rounded-full px-4 py-2 text-xs font-medium"
-                        style={getButtonStyle()}
-                        onClick={() => {
-                          localStorage.setItem('selectedProfessional', member.id.toString());
-                          navigate('/service-selection');
-                        }}
-                      >
-                        Réserver avec {member.name.split(' ')[0]}
-                      </Button>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
         )}
-
-
-
+        {activeTab === 'equipe' && (
+          <div className="space-y-4">
+            {isEditing && (
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold mb-4"
+                onClick={handleAddTeamMember}
+              >
+                + Ajouter un membre de l'équipe
+              </button>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {teamMembersState.map((member, idx) => (
+                <div key={member.id} className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm overflow-hidden">
+                  <div className="p-4">
+                    {isEditing ? (
+                      <div className="flex items-center gap-2 mb-2">
+                        <input
+                          value={member.name}
+                          onChange={e => handleTeamMemberChange(idx, 'name', e.target.value)}
+                          className="bg-gray-100 px-2 py-1 rounded text-lg font-bold"
+                          placeholder="Nom du membre"
+                        />
+                        <button
+                          className="bg-red-500 text-white px-2 py-1 rounded-full"
+                          onClick={() => handleDeleteTeamMember(idx)}
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    ) : (
+                      <h3 className="font-semibold text-gray-900 text-lg">{member.name}</h3>
+                    )}
+                    {isEditing ? (
+                      <textarea
+                        value={member.bio}
+                        onChange={e => handleTeamMemberChange(idx, 'bio', e.target.value)}
+                        className="bg-gray-100 px-2 py-1 rounded w-full mb-2"
+                        placeholder="Biographie"
+                      />
+                    ) : (
+                      <p className="text-sm text-gray-600 mt-0.5">{member.bio}</p>
+                    )}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={member.specialties.join(', ')}
+                          onChange={e => handleTeamMemberChange(idx, 'specialties', e.target.value.split(',').map(s => s.trim()))}
+                          className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-2 py-1 rounded-full border border-purple-200/50 w-full"
+                          placeholder="Spécialités (séparées par des virgules)"
+                        />
+                      ) : (
+                        member.specialties.map((specialty, sidx) => (
+                          <span key={sidx} className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-2 py-1 rounded-full border border-purple-200/50">
+                            {specialty}
+                          </span>
+                        ))
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-1.5 bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/20">
+                        <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-900">{member.telephone || 'Non renseigné'}</span>
+                      </div>
+                      <div className="flex items-center gap-1 sm:gap-1.5 bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/20">
+                        <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-900">{member.availableToday ? 'Disponible aujourd\'hui' : 'Non disponible'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  {!isEditing && (
+                    <div className="p-4 pt-0">
+                      <h5 className="font-semibold text-gray-900 mb-2">Services proposés</h5>
+                      <ul className="list-disc list-inside text-sm text-gray-600">
+                        {member.specialties.map((specialty, sidx) => (
+                          <li key={sidx}>{specialty}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {activeTab === 'galerie' && (
+          <div className="space-y-4">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Galerie</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {/* Images de la galerie - exemples statiques */}
+              {Array.from({ length: 8 }).map((_, idx) => (
+                <div key={idx} className="bg-gray-200 rounded-lg overflow-hidden shadow-md">
+                  <img
+                    src={`https://images.unsplash.com/photo-${idx + 1516975080664}-ed2fc6a32937?w=400&h=400&fit=crop&q=80`}
+                    alt={`Galerie ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {activeTab === 'infos' && (
           <div className="space-y-4">
-            {/* Description du salon - optionnelle */}
-            {salonData.description && (
-              <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-6">
-                <h3 className="font-semibold text-gray-900 text-lg mb-4">À propos de nous</h3>
-                <p className="text-gray-700 leading-relaxed">{salonData.description}</p>
-              </div>
-            )}
-
-            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-6">
-              <h3 className="font-semibold text-gray-900 text-lg mb-4">Informations pratiques</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50/80 backdrop-blur-sm rounded-xl border border-gray-200/30">
-                    <Phone className="w-5 h-5 text-gray-500" />
-                    <span className="text-sm font-medium">01 23 45 67 89</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50/80 backdrop-blur-sm rounded-xl border border-gray-200/30">
-                    <Clock className="w-5 h-5 text-gray-500" />
-                    <span className="text-sm font-medium">Lun-Ven: 9h-19h, Sam: 9h-17h</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50/80 backdrop-blur-sm rounded-xl border border-gray-200/30">
-                    <MapPin className="w-5 h-5 text-gray-500" />
-                    <span className="text-sm font-medium">{salonData.address}</span>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  {salonData.facebook && (
-                    <div className="flex items-center gap-3 p-3 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/30">
-                      <Facebook className="w-5 h-5 text-blue-600" />
-                      <span className="text-sm font-medium">@salon-avyento</span>
-                    </div>
-                  )}
-                  {salonData.instagram && (
-                    <div className="flex items-center gap-3 p-3 bg-pink-50/80 backdrop-blur-sm rounded-xl border border-pink-200/30">
-                      <Instagram className="w-5 h-5 text-pink-600" />
-                      <span className="text-sm font-medium">@salon.avyento</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'avis' && (
-          <div className="space-y-3">
-            {reviews.map((review) => (
-              <div 
-                key={review.id}
-                className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center border border-gray-200/50">
-                    <User className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <span className="font-semibold text-gray-900">{review.name}</span>
-                        <div className="flex gap-0.5">
-                          {[...Array(5)].map((_, i) => (
-                            <Star 
-                              key={i} 
-                              className={`w-3 h-3 ${
-                                i < review.rating 
-                                  ? 'fill-yellow-400 text-yellow-400' 
-                                  : 'text-gray-300'
-                              }`} 
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <span className="text-xs text-gray-500">{review.date}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-3">{review.comment}</p>
-                    {review.service && (
-                      <div className="bg-purple-100/80 backdrop-blur-sm text-purple-800 text-xs px-3 py-1 rounded-full inline-block border border-purple-200/50 mb-3">
-                        {review.service}
-                      </div>
-                    )}
-                    
-                    {/* Réponse du salon */}
-                    {review.salonResponse && (
-                      <div className="mt-3 ml-4 p-3 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/50">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
-                            <span className="text-xs font-bold text-white">S</span>
-                          </div>
-                          <span className="text-xs font-semibold text-gray-900">{salonData.name}</span>
-                          <span className="text-xs text-gray-500">{review.salonResponse.date}</span>
-                        </div>
-                        <p className="text-sm text-gray-700">{review.salonResponse.message}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-      </div>
-
-      {/* Footer complet identique à ClientRegister.tsx */}
-      <footer className="bg-gray-900 text-white py-8 w-full mt-12">
-        <div className="mx-auto px-6 lg:px-12 xl:px-20">
-          <div className="grid md:grid-cols-5 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Avyento</h3>
-              <p className="text-gray-400 text-sm">
-                La solution intelligente qui anticipe, planifie et maximise vos résultats.
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Informations</h2>
+            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
+              <h3 className="font-semibold text-gray-900 text-lg mb-2">Horaires d'ouverture</h3>
+              <p className="text-sm text-gray-600">
+                {salonData.horaires.split(',').map((line, idx) => (
+                  <span key={idx} className="block">
+                    {line}
+                  </span>
+                ))}
               </p>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Services</h4>
-              <div className="space-y-2 text-sm text-gray-400">
-                <div className="cursor-pointer hover:text-white transition-colors">Coiffure</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Esthétique</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Manucure</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Massage</div>
-              </div>
+            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
+              <h3 className="font-semibold text-gray-900 text-lg mb-2">Contact</h3>
+              <p className="text-sm text-gray-600">
+                Téléphone : <span className="font-medium text-gray-900">{salonData.telephone}</span>
+              </p>
+              <p className="text-sm text-gray-600">
+                Email : <span className="font-medium text-gray-900">contact@avyento.fr</span>
+              </p>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Partenaires</h4>
-              <div className="space-y-2 text-sm text-gray-400">
-                <div className="cursor-pointer hover:text-white transition-colors">Devenir partenaire</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Tarifs professionnels</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Formation & Support</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Témoignages</div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <div className="space-y-2 text-sm text-gray-400">
-                <div className="cursor-pointer hover:text-white transition-colors">Centre d'aide</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Contact</div>
-                <div className="cursor-pointer hover:text-white transition-colors">CGU</div>
-                <div className="cursor-pointer hover:text-white transition-colors">Confidentialité</div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Suivez-nous</h4>
-              <div className="flex space-x-3">
-                <a href="https://twitter.com/useavyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84"></path>
-                  </svg>
-                </a>
-                <a href="https://instagram.com/useavyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd"></path>
-                  </svg>
-                </a>
-                <a href="https://tiktok.com/@useavyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
-                  <span className="w-4 h-4 font-bold text-current">♪</span>
-                </a>
-              </div>
+            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
+              <h3 className="font-semibold text-gray-900 text-lg mb-2">Adresse</h3>
+              <p className="text-sm text-gray-600">
+                {salonData.adresse}
+              </p>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400 text-sm">
-            <p>© 2024 Avyento. Tous droits réservés.</p>
+        )}
+        {activeTab === 'avis' && (
+          <div className="space-y-4">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Avis</h2>
+            <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
+              <h3 className="font-semibold text-gray-900 text-lg mb-2">Laissez un avis</h3>
+              <form className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Votre nom</label>
+                  <input
+                    type="text"
+                    className="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                    placeholder="Votre nom"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Votre avis</label>
+                  <textarea
+                    className="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                    rows={4}
+                    placeholder="Votre avis sur nos services"
+                  ></textarea>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="bg-purple-600 text-white rounded-md px-4 py-2 font-semibold shadow hover:bg-purple-700 transition-all duration-300 flex-1"
+                  >
+                    Envoyer
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-white/20 backdrop-blur-md text-white border border-white/30 rounded-md px-4 py-2 font-medium hover:bg-white/30 transition-all duration-300 flex-1"
+                    onClick={() => setActiveTab('services')}
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div key={review.id} className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={`https://images.unsplash.com/photo-${review.id + 1516975080664}-ed2fc6a32937?w=40&h=40&fit=crop&q=80`}
+                        alt={review.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">{review.name}</p>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-xs font-medium text-gray-900">{review.rating}</span>
+                          <span className="text-xs text-gray-500">({review.date})</span>
+                        </div>
+                      </div>
+                    </div>
+                    {review.verified && (
+                      <div className="flex items-center gap-1 sm:gap-1.5 bg-green-500/20 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-green-400/30">
+                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
+                        <span className="text-xs font-medium text-green-200">Vérifié</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-700 mb-2">{review.comment}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {review.photos.map((photo, pidx) => (
+                      <img
+                        key={pidx}
+                        src={photo}
+                        alt={`Photo ${pidx + 1}`}
+                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-md object-cover"
+                      />
+                    ))}
+                  </div>
+                  {review.salonResponse && (
+                    <div className="mt-4 pt-2 border-t border-gray-200">
+                      <p className="text-xs text-gray-500 mb-1">{review.salonResponse.date}</p>
+                      <div className="bg-gray-100 rounded-md p-3">
+                        <p className="text-sm text-gray-800">{review.salonResponse.message}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </footer>
+        )}
+      </div>
     </div>
   );
 }

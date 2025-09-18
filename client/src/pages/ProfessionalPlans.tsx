@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
-import avyentoLogo from "@assets/Logo avyento._1755812542143.png";
+import avyentoLogo from "@/assets/avyento-logo.png";
 
 export default function ProfessionalPlans() {
   const [, setLocation] = useLocation();

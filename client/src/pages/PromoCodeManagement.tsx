@@ -1,17 +1,18 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import PromoCodeManager from '@/components/PromoCodeManager';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Users, Euro, Target } from 'lucide-react';
 
+
+import type { PromoCode } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/api";
+type SimpleService = { id: number; name: string };
 export default function PromoCodeManagement() {
-  const { data: promoCodes = [], isLoading } = useQuery({
-    queryKey: ['/api/promo-codes'],
+  const { data: promoCodes = [], isLoading } = useQuery<PromoCode[]>({
+    queryKey: ["promo-codes"],
+    queryFn: () => apiRequest<PromoCode[]>("/api/promo-codes"),
   });
 
-  const { data: services = [] } = useQuery({
-    queryKey: ['/api/services'],
+  const { data: services = [] } = useQuery<SimpleService[]>({
+    queryKey: ["services-min"],
+    queryFn: () => apiRequest<SimpleService[]>("/api/services?fields=id,name"),
   });
 
   // Calculate statistics

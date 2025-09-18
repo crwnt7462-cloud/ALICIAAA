@@ -2,7 +2,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { XCircle, ArrowLeft, CreditCard, RefreshCw } from "lucide-react";
-import logoImage from "@assets/3_1753714421825.png";
+import logoImage from "@/assets/avyento-logo.png";
 
 export default function StripeCancel() {
   const [, setLocation] = useLocation();

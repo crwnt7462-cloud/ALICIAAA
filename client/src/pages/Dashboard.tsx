@@ -25,30 +25,58 @@ import { ProHeader } from "@/components/ProHeader";
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [selectedPeriod, setSelectedPeriod] = useState("Week");
-  
-  // Données simulées pour le chiffre d'affaires
-  const generateRevenueData = (period: string) => {
-    const baseData = {
-      Day: { value: 285, data: [0, 0, 0, 0, 0, 285, 0] }, // Seulement aujourd'hui
-      Week: { value: 2850, data: [420, 380, 510, 290, 340, 450, 460] }, // Lun-Dim
-      Month: { value: 12400, data: [2850, 2920, 2780, 3100, 2650, 2890, 3200] }, // 4 semaines
-      Year: { value: 148800, data: [12400, 11800, 13200, 12900, 14100, 13600, 12700] } // 12 mois (7 derniers)
-    };
-    return baseData[period as keyof typeof baseData] || baseData.Week;
+
+  // Types pour les données API
+  type RevenueData = {
+    value: number;
+    data: number[];
   };
-  
-  const revenueData = generateRevenueData(selectedPeriod);
-  
-  // Services populaires simulés
-  const popularServicesData = [
+  type Stats = {
+    revenue: Record<string, RevenueData>;
+  };
+  type PopularService = {
+    name: string;
+    count: number;
+    revenue: number;
+    growth: string;
+  };
+  type Appointment = {
+    time: string;
+    client: string;
+    service: string;
+    duration: string;
+  };
+
+  // Hooks useQuery déclarés AVANT usage
+  const { data: stats, isLoading: statsLoading } = useQuery<Stats>({
+    queryKey: ["/api/dashboard/stats"],
+  });
+
+  const { data: todayAppointments } = useQuery<Appointment[]>({
+    queryKey: ["/api/dashboard/today-appointments"],
+  });
+
+  const { data: popularServices } = useQuery<PopularService[]>({
+    queryKey: ["/api/dashboard/popular-services"],
+  });
+
+  // Données API (avec fallback sur données simulées si non chargées)
+  // Chiffre d'affaires
+  const revenueData: RevenueData = stats?.revenue?.[selectedPeriod] || {
+    value: 0,
+    data: [0, 0, 0, 0, 0, 0, 0]
+  };
+
+  // Services populaires
+  const popularServicesData: PopularService[] = popularServices || [
     { name: "Coupe + Brushing", count: 24, revenue: 1200, growth: "+12%" },
     { name: "Coloration", count: 18, revenue: 1440, growth: "+8%" },
     { name: "Balayage", count: 12, revenue: 1080, growth: "+15%" },
     { name: "Soin Capillaire", count: 15, revenue: 675, growth: "+5%" }
   ];
 
-  // Planning du jour simulé
-  const todaySchedule = [
+  // Planning du jour
+  const todaySchedule: Appointment[] = todayAppointments || [
     { time: "09:00", client: "Marie Dubois", service: "Coupe + Brushing", duration: "1h30" },
     { time: "10:30", client: "Sophie Martin", service: "Coloration", duration: "2h30" },
     { time: "14:00", client: "Julie Petit", service: "Balayage", duration: "3h00" },
@@ -66,20 +94,6 @@ export default function Dashboard() {
     };
     return labels[period as keyof typeof labels] || labels.Week;
   };
-
-  const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
-  });
-
-  const { data: todayAppointments } = useQuery({
-    queryKey: ["/api/dashboard/today-appointments"],
-  });
-
-  const { data: popularServices } = useQuery({
-    queryKey: ["/api/dashboard/popular-services"],
-  });
-
-  // Supprimé car non utilisé dans l'interface
 
   if (statsLoading) {
     return (
@@ -258,7 +272,7 @@ export default function Dashboard() {
                   
                   {/* Graphique simulé - Courbe comme dans l'image */}
                   <div className="relative h-28 sm:h-32 mb-4">
-                    <svg className="w-full h-full" viewBox="0 0 400 120" className="touch-manipulation">
+                    <svg className="w-full h-full touch-manipulation" viewBox="0 0 400 120">
                       <defs>
                         <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                           <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.3"/>

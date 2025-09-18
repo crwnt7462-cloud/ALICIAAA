@@ -74,13 +74,17 @@ export default function SalonPhotosManager({ userId }: Props) {
         userId,
       };
 
-      const response = await apiRequest("/api/salon-photos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(photoData),
-      });
-
-      setPhotos([...photos, response]);
+      const res = await apiRequest("POST", "/api/salon-photos", photoData);
+      const photo = await res.json();
+      if (photo && photo.id && photo.photoUrl) {
+        setPhotos([...photos, photo]);
+      } else {
+        toast({
+          title: "Erreur",
+          description: "La photo ajoutée n'est pas valide.",
+          variant: "destructive",
+        });
+      }
       setNewPhoto({
         photoUrl: "",
         photoType: "gallery",
@@ -105,9 +109,7 @@ export default function SalonPhotosManager({ userId }: Props) {
 
   const handleDeletePhoto = async (photoId: number) => {
     try {
-      await apiRequest(`/api/salon-photos/${photoId}`, {
-        method: "DELETE",
-      });
+  await apiRequest("DELETE", `/api/salon-photos/${photoId}`);
 
       setPhotos(photos.filter(photo => photo.id !== photoId));
 

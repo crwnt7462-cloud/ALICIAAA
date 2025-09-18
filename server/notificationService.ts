@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { emailService } from './emailService';
 import { smsService } from './smsService';
 

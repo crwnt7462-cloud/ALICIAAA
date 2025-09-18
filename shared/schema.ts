@@ -1,3 +1,4 @@
+import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -395,7 +396,11 @@ export const clientPhotos = pgTable("client_photos", {
 });
 
 // Appointments
-export const appointments = pgTable("appointments", {
+export const INSERT INTO appointments (price, date, service_id)
+VALUES
+  (50.00, NOW() - INTERVAL '1 day', 1),
+  (75.00, NOW(), 1),
+  (100.00, NOW() + INTERVAL '1 day', 1);appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
   clientId: integer("client_id").references(() => clients.id),
@@ -639,20 +644,16 @@ export const promotions = pgTable("promotions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const notifications = pgTable("notifications", {
+// Notification logs
+export const notificationLogs = pgTable("notification_logs", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),
   clientId: integer("client_id").references(() => clients.id),
-  type: text("type").notNull(),
-  title: text("title").notNull(),
-  message: text("message").notNull(),
-  isRead: boolean("is_read").default(false),
-  scheduledFor: timestamp("scheduled_for"),
-  sentAt: timestamp("sent_at"),
-  createdAt: timestamp("created_at").defaultNow(),
+  type: text("type").notNull(), // sms, email, push
+  content: text("content").notNull(),
+  status: text("status").default("sent"), // sent, delivered, failed
+  sentAt: timestamp("sent_at").defaultNow(),
 });
-
-// Suppression des tables de messagerie selon les spécifications
 
 // SMS and notification logs
 export const smsNotifications = pgTable("sms_notifications", {
@@ -947,6 +948,8 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 export const servicesRelations = relations(services, ({ one, many }) => ({
   user: one(users, {
     fields: [services.userId],
+    references: [users.id],
+  }),
     references: [users.id],
   }),
   appointments: many(appointments),
@@ -1461,3 +1464,41 @@ export const insertUserSubscriptionSchema = createInsertSchema(userSubscriptions
 
 export type InsertSubscriptionPlanType = z.infer<typeof insertSubscriptionPlanSchema>;
 export type InsertUserSubscriptionType = z.infer<typeof insertUserSubscriptionSchema>;
+
+// --- NEW: salon_templates ---
+export const salonTemplates = pgTable("salon_templates", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  slug: varchar("slug", { length: 128 }).notNull().unique(), // ex: 'default-modern'
+  name: varchar("name", { length: 128 }).notNull(),
+  pageJson: jsonb("page_json").notNull(), // JSON décrivant la page par défaut
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export type SalonTemplate = InferSelectModel<typeof salonTemplates>;
+export type InsertSalonTemplate = InferInsertModel<typeof salonTemplates>;
+
+// --- NEW: salon_pages ---
+export const salonPages = pgTable(
+  "salon_pages",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    salonId: varchar("salon_id", { length: 64 })
+      .notNull()
+      // @ts-ignore - Assure-toi que `salons` est dans ce fichier et exporté
+      .references(() => salons.id, { onDelete: "cascade" }),
+    templateId: varchar("template_id", { length: 64 })
+      .notNull()
+      .references(() => salonTemplates.id, { onDelete: "restrict" }),
+    pageJson: jsonb("page_json").notNull(), // Copie modifiable du template
+    isPublished: boolean("is_published").default(false),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+  },
+  (t) => ({
+    idxSalon: index("idx_salon_pages_salon").on(t.salonId)
+  })
+);
+
+export type SalonPage = InferSelectModel<typeof salonPages>;
+export type InsertSalonPage = InferInsertModel<typeof salonPages>;

@@ -1,5 +1,7 @@
-import { db } from "./db";
-import { businessRegistrations, services, staffMembers } from "@shared/schema";
+import { supabase } from "./db";
+import { v4 as uuidv4 } from "uuid";
+import { businessRegistrations, services, staffMembers, salonTemplates } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 // Script pour ajouter des données de test des salons demandés
 export async function seedTestSalons() {
@@ -7,7 +9,7 @@ export async function seedTestSalons() {
 
   try {
     // Vérifier si les données existent déjà
-    const existingSalons = await db.select().from(businessRegistrations);
+    const { data: existingSalons } = await supabase.from('businessRegistrations').select('*');
     
     if (existingSalons.length > 0) {
       console.log('✅ Données de salons déjà présentes dans la base');
@@ -104,7 +106,7 @@ export async function seedTestSalons() {
 
     // Insérer les salons de test
     for (const salon of testSalons) {
-      await db.insert(businessRegistrations).values(salon);
+  await supabase.from('businessRegistrations').insert([salon]);
       console.log(`✅ Salon ajouté: ${salon.businessName} (${salon.slug})`);
     }
 
@@ -120,14 +122,14 @@ export async function seedTestServices() {
   console.log('🛠️ Ajout des services de test...');
 
   try {
-    const salons = await db.select().from(businessRegistrations);
+  const { data: salons } = await supabase.from('businessRegistrations').select('*');
     
     if (salons.length === 0) {
       console.log('⚠️ Aucun salon trouvé, ajout des salons d\'abord...');
       await seedTestSalons();
     }
 
-    const existingServices = await db.select().from(services);
+  const { data: existingServices } = await supabase.from('services').select('*');
     
     if (existingServices.length > 0) {
       console.log('✅ Services déjà présents dans la base');
@@ -182,7 +184,7 @@ export async function seedTestServices() {
     const allServices = [...barbierServices, ...coiffureServices];
     
     for (const service of allServices) {
-      await db.insert(services).values(service);
+  await supabase.from('services').insert([service]);
       console.log(`✅ Service ajouté: ${service.name} pour ${service.userId}`);
     }
 
@@ -199,4 +201,36 @@ export async function initializeTestData() {
   await seedTestSalons();
   await seedTestServices();
   console.log('✅ Initialisation terminée !');
+}
+
+// Helper pour le seed du template par défaut
+export async function seedDefaultSalonTemplate() {
+  const slug = "default-modern";
+  const { data: already } = await supabase.from('salon').select('*');
+  // Sécurise: si Supabase retourne null, utilise un tableau vide
+  const safeAlready = already ?? [];
+  // Si besoin, filtrer ici sur le slug
+  const filtered = safeAlready.filter(tpl => tpl.slug === slug);
+  if (filtered.length > 0) return; // déjà seedé
+
+  if (safeAlready.length > 0) return; // déjà seedé
+
+  await supabase.from('salon').insert([
+    {
+      id: uuidv4(), // UUID valide pour Supabase
+      slug,
+      name: "Default Modern",
+      pageJson: {
+        theme: { primary: "#f59e0b", accent: "#d97706", intensity: 35 },
+        sections: [
+          { type: "hero", title: "Bienvenue", subtitle: "Votre beauté, notre passion" },
+          { type: "services", layout: "grid" },
+          { type: "team", layout: "cards" },
+          { type: "reviews" }
+        ]
+      }
+    }
+  ]);
+
+  console.log("✅ Seed: salon_templates -> default-modern");
 }

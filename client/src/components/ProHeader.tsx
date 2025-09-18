@@ -7,7 +7,7 @@ import {
   BarChart3, 
   User
 } from 'lucide-react';
-import avyentoProLogo from '@assets/avyento-pro-logo.png';
+import avyentoProLogo from '@/assets/avyento-logo.png';
 
 interface ProHeaderProps {
   currentPage?: string;

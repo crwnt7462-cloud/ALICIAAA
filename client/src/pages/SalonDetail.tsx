@@ -1,6 +1,28 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+interface SalonData {
+  id: string;
+  name: string;
+  rating: number;
+  reviews: number;
+  address: string;
+  phone: string;
+  verified: boolean;
+  certifications: string[];
+  awards: string[];
+  longDescription: string;
+  coverImageUrl: string;
+  photos: any[];
+  customColors: {
+    primary: string;
+    accent: string;
+    buttonText: string;
+    buttonClass: string;
+    intensity: number;
+  };
+  serviceCategories: any[];
+}
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -69,13 +91,7 @@ export default function SalonDetail() {
   const salonId = location.split('/salon/')[1];
   
   // Récupérer les données réelles du salon depuis l'API
-  const { data: salonData, isLoading } = useQuery({
-    queryKey: [`/api/salon/${salonId}`],
-    enabled: !!salonId,
-  });
-
-  // Données par défaut si pas de données du serveur
-  const salon: SalonData = salonData || {
+  const defaultSalon: SalonData = {
     id: salonId || 'default-salon',
     name: 'Salon Excellence',
     rating: 4.8,
@@ -97,6 +113,13 @@ export default function SalonDetail() {
     },
     serviceCategories: []
   };
+
+  const { data: salonData, isLoading } = useQuery<SalonData | undefined>({
+    queryKey: [`/api/salon/${salonId}`],
+    enabled: !!salonId,
+  });
+
+  const salon: SalonData = salonData ?? defaultSalon;
 
   const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>(
     salon.serviceCategories || [

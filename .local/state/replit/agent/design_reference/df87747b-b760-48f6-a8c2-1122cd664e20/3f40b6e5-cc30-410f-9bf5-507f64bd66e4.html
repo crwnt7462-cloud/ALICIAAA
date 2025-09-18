@@ -1,0 +1,663 @@
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyPro - Plateforme Professionnelle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B5CF6',
+                        secondary: '#06B6D4',
+                        dark: {
+                            50: '#F8FAFC',
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            },
+            darkMode: 'class'
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-gray-50 dark:bg-dark-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- @COMPONENT: App Container -->
+    <div id="app" class="h-full max-w-md mx-auto bg-white dark:bg-dark-800 shadow-xl">
+        
+        <!-- @COMPONENT: AuthScreen -->
+        <div id="authScreen" class="h-full flex flex-col">
+            <!-- Header with Logo -->
+            <div class="pt-16 pb-8 px-6 text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-cut text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">BeautyPro</h1>
+                <p class="text-gray-600 dark:text-gray-300">Plateforme tout-en-un pour professionnels</p>
+            </div>
+
+            <!-- Auth Form -->
+            <div class="flex-1 px-6">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                        <input type="email" 
+                               class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                               placeholder="votre.email@exemple.com"
+                               data-mock="true">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mot de passe</label>
+                        <input type="password" 
+                               class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                               placeholder="••••••••"
+                               data-mock="true">
+                    </div>
+
+                    <button onclick="login()" 
+                            class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                            data-event="click:handleLogin">
+                        Se connecter
+                    </button>
+
+                    <div class="text-center">
+                        <a href="#" class="text-primary text-sm hover:underline">Mot de passe oublié ?</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GDPR Notice -->
+            <div class="px-6 py-4 bg-gray-50 dark:bg-dark-700 rounded-t-3xl">
+                <p class="text-xs text-gray-600 dark:text-gray-400 text-center">
+                    En vous connectant, vous acceptez nos conditions d'utilisation et notre politique de confidentialité RGPD.
+                </p>
+            </div>
+        </div>
+
+        <!-- @COMPONENT: MainApp -->
+        <div id="mainApp" class="h-full hidden flex flex-col">
+            
+            <!-- @COMPONENT: Header -->
+            <header class="bg-white dark:bg-dark-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cut text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-semibold text-lg" data-bind="user.businessName">Salon Élégance</h1>
+                            <p class="text-xs text-gray-600 dark:text-gray-400" data-bind="user.name">Marie Dubois</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors">
+                            <i class="fas fa-moon dark:hidden text-gray-600"></i>
+                            <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+                        </button>
+                        <div class="relative">
+                            <button class="p-2 rounded-lg bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors">
+                                <i class="fas fa-bell text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- @COMPONENT: Content Area -->
+            <main class="flex-1 overflow-y-auto">
+                
+                <!-- @COMPONENT: HomeScreen -->
+                <div id="homeScreen" class="p-4 space-y-6">
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 p-4 rounded-2xl border border-primary/20">
+                            <div class="flex items-center justify-between mb-2">
+                                <i class="fas fa-calendar-check text-primary text-xl"></i>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">Aujourd'hui</span>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white" data-bind="todayAppointments">8</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Rendez-vous</p>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-secondary/10 to-secondary/5 dark:from-secondary/20 dark:to-secondary/10 p-4 rounded-2xl border border-secondary/20">
+                            <div class="flex items-center justify-between mb-2">
+                                <i class="fas fa-euro-sign text-secondary text-xl"></i>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">Semaine</span>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white" data-bind="weekRevenue">1,250€</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Chiffre d'affaires</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Assistant Card -->
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-4 rounded-2xl text-white">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-robot text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Assistant IA</h3>
+                                <p class="text-sm opacity-90">Optimisation intelligente</p>
+                            </div>
+                        </div>
+                        <p class="text-sm opacity-90 mb-3">3 créneaux libres détectés cet après-midi. Voulez-vous envoyer des notifications aux clients en liste d'attente ?</p>
+                        <button class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                data-event="click:handleAIAction">
+                            Envoyer les notifications
+                        </button>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-white dark:bg-dark-700 rounded-2xl p-4 border border-gray-200 dark:border-gray-600">
+                        <h3 class="font-semibold mb-4 flex items-center">
+                            <i class="fas fa-clock text-gray-400 mr-2"></i>
+                            Activité récente
+                        </h3>
+                        
+                        <!-- @MAP: recentActivities.map(activity => ( -->
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-dark-800 rounded-xl" data-mock="true">
+                                <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check text-green-600 dark:text-green-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium">Nouveau RDV confirmé</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">Sophie Martin - Coupe & couleur</p>
+                                </div>
+                                <span class="text-xs text-gray-400">Il y a 5min</span>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-dark-800 rounded-xl" data-mock="true">
+                                <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-euro-sign text-blue-600 dark:text-blue-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium">Paiement reçu</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">Emma Leroy - 85€</p>
+                                </div>
+                                <span class="text-xs text-gray-400">Il y a 15min</span>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+
+                <!-- @COMPONENT: PlanningScreen -->
+                <div id="planningScreen" class="hidden p-4 space-y-4">
+                    <!-- Calendar Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold">Planning</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Mercredi 15 Novembre 2024</p>
+                        </div>
+                        <button class="bg-primary text-white px-4 py-2 rounded-xl font-medium"
+                                data-event="click:addAppointment">
+                            <i class="fas fa-plus mr-2"></i>Nouveau RDV
+                        </button>
+                    </div>
+
+                    <!-- Time Slots -->
+                    <div class="space-y-2">
+                        <!-- @MAP: timeSlots.map(slot => ( -->
+                        <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-dark-700" data-mock="true">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400 w-16">09:00</div>
+                                    <div class="flex-1">
+                                        <div class="bg-primary/10 border border-primary/20 rounded-lg p-3">
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="font-medium text-primary">Marie Dupont</p>
+                                                    <p class="text-sm text-gray-600 dark:text-gray-300">Coupe + Brushing</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">1h30 - 65€</p>
+                                                </div>
+                                                <div class="flex space-x-2">
+                                                    <button class="p-2 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors">
+                                                        <i class="fas fa-phone text-sm"></i>
+                                                    </button>
+                                                    <button class="p-2 bg-secondary/20 text-secondary rounded-lg hover:bg-secondary/30 transition-colors">
+                                                        <i class="fas fa-message text-sm"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-dark-700" data-mock="true">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-sm font-medium text-gray-500 dark:text-gray-400 w-16">11:00</div>
+                                <div class="flex-1 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-3 text-center">
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Créneau libre</p>
+                                    <button class="text-primary text-sm hover:underline mt-1">Programmer un RDV</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+
+                <!-- @COMPONENT: ClientsScreen -->
+                <div id="clientsScreen" class="hidden p-4 space-y-4">
+                    <!-- Search and Filter -->
+                    <div class="flex space-x-3 mb-6">
+                        <div class="flex-1 relative">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            <input type="text" 
+                                   placeholder="Rechercher un client..."
+                                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-dark-700"
+                                   data-mock="true">
+                        </div>
+                        <button class="px-4 py-3 bg-gray-100 dark:bg-dark-700 rounded-xl border border-gray-200 dark:border-gray-600">
+                            <i class="fas fa-filter text-gray-600 dark:text-gray-300"></i>
+                        </button>
+                    </div>
+
+                    <!-- Client List -->
+                    <div class="space-y-3">
+                        <!-- @MAP: clients.map(client => ( -->
+                        <div class="bg-white dark:bg-dark-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600" data-mock="true">
+                            <div class="flex items-center space-x-4">
+                                <!-- A professional headshot of a young woman with styled hair -->
+                                <img src="https://pixabay.com/get/gaf42c0c9ecdca2d6bb006ca48ded5951cb87066a30f10746e1f945ec895ef837083bcd9abb0e03e0aebe2fe3c11f335231a9b1d2f2f34d33e402ad1e12070a84_1280.jpg" 
+                                     alt="Photo client" 
+                                     class="w-12 h-12 rounded-full object-cover">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-semibold">Sophie Martin</h3>
+                                        <div class="flex items-center space-x-1">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">Dernière visite: 8 Nov 2024</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Coupe + Couleur • 12 visites • 850€ total</p>
+                                </div>
+                                <div class="flex flex-col space-y-2">
+                                    <button class="px-3 py-1 bg-primary text-white rounded-lg text-sm font-medium"
+                                            data-event="click:bookAppointment">
+                                        RDV
+                                    </button>
+                                    <button class="px-3 py-1 bg-gray-100 dark:bg-dark-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm"
+                                            data-event="click:contactClient">
+                                        <i class="fas fa-message"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-dark-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600" data-mock="true">
+                            <div class="flex items-center space-x-4">
+                                <!-- A professional headshot of a mature woman with elegant hairstyle -->
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" 
+                                     alt="Photo client" 
+                                     class="w-12 h-12 rounded-full object-cover">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-semibold">Emma Leroy</h3>
+                                        <div class="flex items-center space-x-1">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">Dernière visite: 15 Nov 2024</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Balayage • 8 visites • 680€ total</p>
+                                </div>
+                                <div class="flex flex-col space-y-2">
+                                    <button class="px-3 py-1 bg-primary text-white rounded-lg text-sm font-medium">RDV</button>
+                                    <button class="px-3 py-1 bg-gray-100 dark:bg-dark-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm">
+                                        <i class="fas fa-message"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+
+                    <!-- Add New Client Button -->
+                    <button class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl font-semibold mt-6"
+                            data-event="click:addNewClient">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Ajouter un nouveau client
+                    </button>
+                </div>
+
+                <!-- @COMPONENT: BookingScreen -->
+                <div id="bookingScreen" class="hidden p-4 space-y-6">
+                    <h2 class="text-xl font-bold">Réservations en ligne</h2>
+                    
+                    <!-- Booking Widget Preview -->
+                    <div class="bg-white dark:bg-dark-700 rounded-2xl p-6 border border-gray-200 dark:border-gray-600">
+                        <h3 class="font-semibold mb-4 flex items-center">
+                            <i class="fas fa-globe text-primary mr-2"></i>
+                            Widget de réservation
+                        </h3>
+                        
+                        <!-- Service Selection -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Service</label>
+                                <select class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-dark-800"
+                                        data-mock="true">
+                                    <option>Coupe femme (45min - 45€)</option>
+                                    <option>Coupe + couleur (2h - 85€)</option>
+                                    <option>Balayage (3h - 120€)</option>
+                                    <option>Brushing (30min - 25€)</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Date souhaitée</label>
+                                <input type="date" 
+                                       class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-dark-800"
+                                       data-mock="true">
+                            </div>
+                            
+                            <!-- Available Time Slots -->
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Créneaux disponibles</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="py-2 px-3 text-sm border border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary hover:text-primary transition-colors"
+                                            data-mock="true">09:00</button>
+                                    <button class="py-2 px-3 text-sm border border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary hover:text-primary transition-colors"
+                                            data-mock="true">10:30</button>
+                                    <button class="py-2 px-3 text-sm bg-primary text-white rounded-lg"
+                                            data-mock="true">14:00</button>
+                                    <button class="py-2 px-3 text-sm border border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary hover:text-primary transition-colors"
+                                            data-mock="true">15:30</button>
+                                    <button class="py-2 px-3 text-sm border border-gray-200 dark:border-gray-600 rounded-lg opacity-50 cursor-not-allowed"
+                                            disabled data-mock="true">16:00</button>
+                                    <button class="py-2 px-3 text-sm border border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary hover:text-primary transition-colors"
+                                            data-mock="true">17:00</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Voice Booking -->
+                        <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-microphone text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-blue-900 dark:text-blue-100">Réservation vocale</h4>
+                                    <p class="text-sm text-blue-700 dark:text-blue-300">Dites "Je voudrais réserver un RDV"</p>
+                                </div>
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+                                        data-event="click:startVoiceBooking">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Waiting List -->
+                    <div class="bg-white dark:bg-dark-700 rounded-2xl p-4 border border-gray-200 dark:border-gray-600">
+                        <h3 class="font-semibold mb-4 flex items-center">
+                            <i class="fas fa-clock text-orange-500 mr-2"></i>
+                            Liste d'attente intelligente
+                            <span class="ml-2 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 text-xs px-2 py-1 rounded-full">4</span>
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <!-- @MAP: waitingList.map(client => ( -->
+                            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-dark-800 rounded-xl" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center">
+                                        <span class="text-orange-600 dark:text-orange-400 text-sm font-medium">1</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Claire Moreau</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Coupe + couleur • Flexible sur les horaires</p>
+                                    </div>
+                                </div>
+                                <button class="bg-primary text-white px-3 py-1 rounded-lg text-sm"
+                                        data-event="click:notifyWaitingClient">
+                                    Notifier
+                                </button>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- @COMPONENT: ForumScreen -->
+                <div id="forumScreen" class="hidden p-4 space-y-4">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold">Forum Pro</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Communauté vérifiée de professionnels</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">247 en ligne</span>
+                        </div>
+                    </div>
+
+                    <!-- Forum Categories -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <button class="p-4 bg-white dark:bg-dark-700 rounded-xl border border-gray-200 dark:border-gray-600 text-left hover:border-primary transition-colors">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <i class="fas fa-comments text-primary"></i>
+                                <span class="font-medium">Discussions</span>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">245 sujets actifs</p>
+                        </button>
+                        
+                        <button class="p-4 bg-white dark:bg-dark-700 rounded-xl border border-gray-200 dark:border-gray-600 text-left hover:border-primary transition-colors">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <i class="fas fa-bullhorn text-secondary"></i>
+                                <span class="font-medium">Annonces</span>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">12 nouvelles</p>
+                        </button>
+                    </div>
+
+                    <!-- Recent Discussions -->
+                    <div class="space-y-3">
+                        <h3 class="font-semibold text-lg">Discussions récentes</h3>
+                        
+                        <!-- @MAP: forumPosts.map(post => ( -->
+                        <div class="bg-white dark:bg-dark-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600" data-mock="true">
+                            <div class="flex items-start space-x-3">
+                                <!-- A professional photo of a hair stylist in a salon -->
+                                <img src="https://images.unsplash.com/photo-1559599101-f09722fb4948?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40" 
+                                     alt="Photo du professionnel" 
+                                     class="w-10 h-10 rounded-full object-cover">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-1">
+                                        <span class="font-medium">Sarah Coiffure</span>
+                                        <div class="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-check text-white text-xs"></i>
+                                        </div>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">il y a 2h</span>
+                                    </div>
+                                    <h4 class="font-medium mb-2">Conseils pour fidéliser la clientèle pendant l'hiver ?</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                        Salut la communauté ! J'aimerais avoir vos retours d'expérience sur les stratégies qui fonctionnent bien en hiver...
+                                    </p>
+                                    <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                                        <button class="flex items-center space-x-1 hover:text-primary transition-colors">
+                                            <i class="fas fa-heart"></i>
+                                            <span>24</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-primary transition-colors">
+                                            <i class="fas fa-comment"></i>
+                                            <span>12 réponses</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-primary transition-colors">
+                                            <i class="fas fa-share"></i>
+                                            <span>Partager</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-4 text-white" data-mock="true">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-microphone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">AMA en direct</h4>
+                                    <p class="text-sm opacity-90">Avec Jean-Marc Maniatis</p>
+                                </div>
+                            </div>
+                            <p class="text-sm opacity-90 mb-3">
+                                Session Q&A en direct demain à 20h sur les dernières tendances colorimétrie 2024
+                            </p>
+                            <button class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                Me rappeler
+                            </button>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+
+                    <!-- New Post Button -->
+                    <button class="fixed bottom-20 right-4 w-14 h-14 bg-gradient-to-r from-primary to-secondary text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-10"
+                            data-event="click:createNewPost">
+                        <i class="fas fa-plus text-xl"></i>
+                    </button>
+                </div>
+            </main>
+
+            <!-- @COMPONENT: BottomNavigation -->
+            <nav class="bg-white dark:bg-dark-800 border-t border-gray-200 dark:border-gray-700 px-4 py-2">
+                <div class="flex justify-around">
+                    <button onclick="showScreen('home')" 
+                            class="flex flex-col items-center py-2 px-3 text-primary"
+                            data-screen="home">
+                        <i class="fas fa-home text-xl mb-1"></i>
+                        <span class="text-xs font-medium">Accueil</span>
+                    </button>
+                    
+                    <button onclick="showScreen('planning')" 
+                            class="flex flex-col items-center py-2 px-3 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+                            data-screen="planning">
+                        <i class="fas fa-calendar text-xl mb-1"></i>
+                        <span class="text-xs">Planning</span>
+                    </button>
+                    
+                    <button onclick="showScreen('clients')" 
+                            class="flex flex-col items-center py-2 px-3 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+                            data-screen="clients">
+                        <i class="fas fa-users text-xl mb-1"></i>
+                        <span class="text-xs">Clients</span>
+                    </button>
+                    
+                    <button onclick="showScreen('booking')" 
+                            class="flex flex-col items-center py-2 px-3 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+                            data-screen="booking">
+                        <i class="fas fa-calendar-plus text-xl mb-1"></i>
+                        <span class="text-xs">Réservations</span>
+                    </button>
+                    
+                    <button onclick="showScreen('forum')" 
+                            class="flex flex-col items-center py-2 px-3 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+                            data-screen="forum">
+                        <i class="fas fa-comments text-xl mb-1"></i>
+                        <span class="text-xs">Forum</span>
+                        <div class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                    </button>
+                </div>
+            </nav>
+        </div>
+        <!-- @END_COMPONENT: MainApp -->
+    </div>
+    <!-- @END_COMPONENT: App Container -->
+
+    <script>
+        (function() {
+            // @STATE: isLoggedIn:boolean = false
+            // @STATE: isDarkMode:boolean = false
+            // @STATE: currentScreen:string = 'home'
+            
+            // Check for saved dark mode preference
+            const isDarkMode = localStorage.getItem('darkMode') === 'true' || 
+                              (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Login function
+            window.login = function() {
+                // TODO: Implement Supabase authentication
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+            };
+
+            // Dark mode toggle
+            window.toggleDarkMode = function() {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('darkMode', isDark);
+            };
+
+            // Screen navigation
+            window.showScreen = function(screenName) {
+                // Hide all screens
+                const screens = ['homeScreen', 'planningScreen', 'clientsScreen', 'bookingScreen', 'forumScreen'];
+                screens.forEach(screen => {
+                    document.getElementById(screen).classList.add('hidden');
+                });
+                
+                // Show selected screen
+                document.getElementById(screenName + 'Screen').classList.remove('hidden');
+                
+                // Update navigation states
+                const navButtons = document.querySelectorAll('nav button');
+                navButtons.forEach(button => {
+                    button.classList.remove('text-primary');
+                    button.classList.add('text-gray-500', 'dark:text-gray-400');
+                });
+                
+                const activeButton = document.querySelector(`[data-screen="${screenName}"]`);
+                if (activeButton) {
+                    activeButton.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    activeButton.classList.add('text-primary');
+                }
+            };
+
+            // TODO: Implement business logic for:
+            // - Supabase authentication and data management
+            // - Real-time appointment updates
+            // - Push notifications with Expo
+            // - Payment processing with Stripe
+            // - AI assistant integration with OpenAI
+            // - Voice booking with Web Speech API
+            // - Forum real-time messaging
+            // - Client management and search
+            // - Calendar synchronization
+            // - GDPR compliance features
+
+            // Simulate some real-time updates
+            setInterval(() => {
+                // TODO: Replace with real Supabase real-time subscriptions
+                // This would handle live appointment updates, new bookings, etc.
+            }, 30000);
+
+        })();
+    </script>
+</body>
+</html>

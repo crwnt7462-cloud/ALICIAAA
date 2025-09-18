@@ -4,7 +4,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import avyentoLogo from '@assets/Avyento transparent_1755518589119.png';
+import avyentoLogo from '@/assets/avyento-logo.png';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 interface Message {

@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, UserPlus, Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
-import avyentoLogo from "@assets/Logo avyento._1755363678253.png";
+import avyentoLogo from "@/assets/avyento-logo.png";
 
 export default function ClientRegister() {
   const [, setLocation] = useLocation();

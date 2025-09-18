@@ -1,25 +1,11 @@
 import { Button } from "@/components/ui/button";
+import type { BookingPreview } from "@/types";
 
-// Interface pour le composant BookingConfirmationModal
 interface BookingConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  bookingData: {
-    serviceName: string;
-    servicePrice: number;
-    date: string;
-    time: string;
-    professionalName: string;
-    salonName: string;
-    salonLocation: string;
-    salonPolicies: {
-      cancellation: string;
-      lateness: string;
-      deposit: string;
-      modification: string;
-    };
-  };
+  bookingData: BookingPreview;
 }
 
 // Composant BookingConfirmationModal

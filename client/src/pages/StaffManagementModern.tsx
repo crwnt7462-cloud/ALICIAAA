@@ -1,3 +1,5 @@
+type StaffMember = { id: string | number; isActive?: boolean; availableToday?: boolean; [k: string]: any };
+type StaffStats = { totalRevenue?: number; totalAppointments?: number; averageRating?: number };
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { 

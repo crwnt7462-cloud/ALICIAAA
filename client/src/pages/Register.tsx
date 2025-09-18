@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Mail, Lock, User, Building, Phone, MapPin, ArrowLeft, Check, Star, Crown, Gift } from "lucide-react";
-import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
+import avyentoProLogo from "@/assets/avyento-logo.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function Register() {
@@ -14,16 +14,16 @@ export default function Register() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    firstName: "",
-    lastName: "",
-    businessName: "",
-    siret: "",
-    phone: "",
-    address: "",
-    city: ""
+  email: "",
+  password: "",
+  confirmPassword: "",
+  firstName: "",
+  lastName: "",
+  salonName: "",
+  siret: "",
+  phone: "",
+  address: "",
+  city: ""
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string>("essentiel");
@@ -172,7 +172,7 @@ export default function Register() {
       const { confirmPassword, ...registerData } = formData;
       
       // Inscription avec plan d'abonnement sélectionné
-      const response = await apiRequest("POST", "/api/register/professional", {
+  const response = await apiRequest("POST", "/api/register", {
         ...registerData,
         subscriptionPlan: selectedPlan
       });
@@ -288,14 +288,14 @@ export default function Register() {
 
                   {/* Nom du salon */}
                   <div className="space-y-1">
-                    <Label htmlFor="businessName" className="text-xs font-medium text-gray-900 text-left block">Nom du salon *</Label>
+                    <Label htmlFor="salonName" className="text-xs font-medium text-gray-900 text-left block">Nom du salon *</Label>
                     <div className="relative">
                       <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
-                        id="businessName"
+                        id="salonName"
                         placeholder="Salon Beautiful"
-                        value={formData.businessName}
-                        onChange={(e) => updateField("businessName", e.target.value)}
+                        value={formData.salonName}
+                        onChange={(e) => updateField("salonName", e.target.value)}
                         className="pl-10 glass-input"
                         required
                       />

@@ -25,7 +25,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/api";
+import type { BusinessSettings } from "@/types";
 
 export default function ShareBooking() {
   const [businessName, setBusinessName] = useState("Mon Salon de Beauté");
@@ -46,8 +47,9 @@ export default function ShareBooking() {
   });
 
   // Fetch business settings
-  const { data: businessSettings } = useQuery({
-    queryKey: ['/api/business-settings'],
+  const { data: businessSettings = {} as BusinessSettings } = useQuery<BusinessSettings>({
+    queryKey: ["business-settings"],
+    queryFn: () => apiRequest<BusinessSettings>("/api/business-settings"),
   });
 
   // Update customization when settings are loaded

@@ -7,6 +7,7 @@ interface ClientData {
   firstName: string;
   lastName: string;
   token: string;
+  phone?: string; // <— nouveau champ optionnel
 }
 
 export function useClientAuth() {

@@ -262,7 +262,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
     // Inscription directe sans vérification email
     const registerAccount = async () => {
       try {
-        const response = await fetch('/api/register/professional', {
+  const response = await fetch('/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(completeUserData),

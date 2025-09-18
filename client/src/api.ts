@@ -42,41 +42,25 @@ const ProfessionalSchema = z.object({
   email: z.string().optional(),
   phone: z.string().optional(),
   image: z.string().optional(),
-  specialties: z.union([z.string(), z.array(z.string())]).optional(),
-  color: z.string().optional(),
-  rating: z.number().optional(),
-  experience: z.number().optional(),
-  nextSlot: z.string().optional(),
-  bio: z.string().optional(),
-  is_active: z.boolean().optional(),
-  work_schedule: z.any().optional(),
-  createdAt: z.string().optional(),
-  updatedAt: z.string().optional(),
 });
 
 const ServiceSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   salonId: z.string(),
   name: z.string(),
-  description: z.string().optional(),
   price: z.number(),
-  duration: z.number(),
+  duration: z.number().optional(),
+  description: z.string().optional(),
   depositAmount: z.number().optional(),
-  category: z.string().optional(),
-  isActive: z.boolean().optional(),
-  createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
 
 const AppointmentSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   salonId: z.string(),
-  professionalId: z.string(),
-  serviceId: z.string(),
-  clientId: z.string().optional(),
-  clientEmail: z.string().email(),
-  clientPhone: z.string().optional(),
-  clientName: z.string().optional(),
+  serviceId: z.number(),
+  professionalId: z.number(),
+  clientId: z.string(),
   startTime: z.string(),
   endTime: z.string(),
   status: z.enum(['pending', 'confirmed', 'cancelled', 'completed']),
@@ -102,40 +86,27 @@ export class ApiRequestError extends Error {
 
 // Fonction utilitaire pour les requêtes HTTP
 async function apiRequest<T>(
-  url: string, 
-  options: RequestInit = {}
+  path: string,
+  init: RequestInit = {}
 ): Promise<T> {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
+  const finalUrl = path.startsWith('/api') ? path : `/api${path}`;
+  const fetchOptions: RequestInit = {
+    method: typeof init.method === 'string' ? init.method : 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(init.headers || {}),
+    },
+    body: init.body ?? null,
+  };
+  const res = await fetch(finalUrl, fetchOptions);
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      let errorMessage = `Request failed: ${response.status}`;
-      
-      try {
-        const errorJson = JSON.parse(errorData);
-        errorMessage = errorJson.message || errorMessage;
-      } catch {
-        // Ignore parsing error, use default message
-      }
-      
-      throw new ApiRequestError(response.status, errorMessage);
-    }
+  let data: any = null;
+  try { data = await res.json(); } catch {}
 
-    const data = await response.json();
-    return data as T;
-  } catch (error) {
-    if (error instanceof ApiRequestError) {
-      throw error;
-    }
-    throw new ApiRequestError(500, `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  if (!res.ok) {
+    throw new Error((data?.error || data?.message) ?? res.statusText ?? 'Request failed');
   }
+  return data as T;
 }
 
 // Fonctions API typées
@@ -279,10 +250,11 @@ export async function createPaymentIntent(params: {
   };
 }
 
-// Export des schémas pour utilisation dans d'autres parties de l'app
+// Export des schémas et utilitaires pour utilisation dans d'autres parties de l'app
 export {
   SalonSchema,
   ProfessionalSchema,
   ServiceSchema,
   AppointmentSchema,
+  apiRequest,
 };

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import avyentoLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@/assets/avyento-logo.png";
 
 
 export default function ClientLogin() {
@@ -56,13 +56,8 @@ export default function ClientLogin() {
           description: `Bienvenue ${data.client.firstName} !`,
         });
         
-        // Vérifier s'il y a une réservation en cours
-        const hasBookingInProgress = sessionStorage.getItem('currentBooking');
-        if (hasBookingInProgress) {
-          window.location.href = '/salon-booking';
-        } else {
-          window.location.href = '/client-dashboard';
-        }
+  // Rediriger vers le dashboard client après connexion
+  window.location.href = '/client-dashboard';
       } else {
         toast({
           title: "Erreur de connexion",
@@ -83,11 +78,16 @@ export default function ClientLogin() {
   };
 
   return (
+
     <div className="min-h-screen bg-white flex flex-col">
-      {/* Logo centré en haut */}
+      {/* Logo centré en haut, cliquable */}
       <div className="pt-8 pb-2 text-center">
         <div className="flex items-center justify-center gap-2">
-          <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto" />
+          <img
+            src={avyentoLogo}
+            alt="Avyento"
+            className="h-28 w-auto cursor-pointer"
+            onClick={() => setLocation('/')} />
         </div>
       </div>
 

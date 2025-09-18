@@ -94,13 +94,13 @@ function Router() {
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {isAuthenticated && <Header />}
-      
       <main className="flex-1 overflow-auto">
         <Switch>
-          {isLoading || !isAuthenticated ? (
+          {isLoading ? (
             <Route path="/" component={Landing} />
-          ) : (
+          ) : isAuthenticated ? (
             <>
+              <Route path="/client-dashboard" component={ClientDashboard} />
               <Route path="/" component={Dashboard} />
               <Route path="/dashboard" component={Dashboard} />
               <Route path="/planning" component={Planning} />
@@ -108,11 +108,12 @@ function Router() {
               <Route path="/services" component={Services} />
               <Route path="/staff" component={Staff} />
             </>
+          ) : (
+            <Route path="/" component={Landing} />
           )}
           <Route component={NotFound} />
         </Switch>
       </main>
-
       {isAuthenticated && <BottomNavigation />}
     </div>
   );

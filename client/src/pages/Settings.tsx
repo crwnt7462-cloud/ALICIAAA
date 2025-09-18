@@ -26,17 +26,17 @@ import {
 } from "lucide-react";
 
 export default function Settings() {
-  const { clientSession } = useClientAuth();
+  const { clientData } = useClientAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("profile");
 
   // États pour les paramètres
   const [profileData, setProfileData] = useState({
-    firstName: clientSession?.firstName || "",
-    lastName: clientSession?.lastName || "",
-    email: clientSession?.email || "",
-    phone: clientSession?.phone || "",
+    firstName: clientData?.firstName || "",
+    lastName: clientData?.lastName || "",
+    email: clientData?.email || "",
+  phone: clientData?.phone ?? "",
     dateOfBirth: "",
     address: "",
     preferences: ""
@@ -71,7 +71,7 @@ export default function Settings() {
     });
   };
 
-  if (!clientSession) {
+  if (!clientData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

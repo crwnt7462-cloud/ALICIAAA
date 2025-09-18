@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Clock, Euro } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
+type SalonData = { id: string; name: string; /* autres champs */ };
 
 interface Professional {
   id: string;
@@ -49,8 +50,8 @@ export default function SalonBookingFlow() {
   });
 
   // Récupérer automatiquement le salon du professionnel connecté (MÊME API QUE L'ÉDITEUR)
-  const { data: salonData, isLoading: salonLoading } = useQuery({
-    queryKey: ['/api/salon/current'], // MÊME API que SalonPageEditor pour synchronisation parfaite
+  const { data: salonData, isLoading: salonLoading } = useQuery<SalonData | undefined>({
+    queryKey: ['/api/salon/current'],
     retry: 1,
     refetchOnWindowFocus: false
   });

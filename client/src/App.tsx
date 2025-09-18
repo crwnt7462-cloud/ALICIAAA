@@ -1,4 +1,8 @@
+// Fallback si aucune route ne correspond
+// ...imports...
+  // Fallback si aucune route ne correspond
 import { Switch, Route, useLocation } from "wouter";
+import NotFoundPage from "@/pages/not-found";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -180,12 +184,11 @@ import AuthTest from "@/pages/AuthTest";
 import StripePayment from "@/pages/StripePayment";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-
+import AppwriteTest from "./components/AppwriteTest";
 
 function Router() {
   const [location, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
-  
   // Pages qui nécessitent une authentification (pages professionnelles + pages clients personnelles)  
   const protectedPages = [
     '/dashboard',
@@ -197,6 +200,7 @@ function Router() {
     '/services',
     '/inventory',
     '/ai',
+    '/inventory',
     '/ai-chat',
     '/ai-assistant-fixed',
     '/ai-pro-complete',
@@ -227,22 +231,20 @@ function Router() {
     '/client-parametres',
     '/client-rdv',
     '/avyento-account',
-    '/notifications'
+    '/notifications',
   ];
-  
   // VÉRIFICATION IMMÉDIATE - AVANT TOUT RENDU
   const isProtectedPage = protectedPages.some(page => location.startsWith(page));
-  
-  // REDIRECTION INSTANTANÉE - SEULEMENT si pas en cours de chargement ET vraiment pas authentifié
-  if (isProtectedPage && !isLoading && !isAuthenticated) {
-    // Redirection synchrone immédiate pour éviter tout flash
-    if (typeof window !== 'undefined') {
-      console.log(`🔒 ACCÈS REFUSÉ ${location} - Redirection immédiate`);
-      window.location.replace('/'); // replace() évite l'historique
-    }
-    return null; // Empêche absolument tout rendu
-  }
-  
+
+  // Redirection synchrone immédiate pour éviter tout flash
+  // Redirection désactivée temporairement pour debug
+  // if (isProtectedPage && !isLoading && !isAuthenticated) {
+  //   if (typeof window !== 'undefined') { // éviter tout flash
+  //     console.log(`🔒 ACCÈS REFUSÉ ${location} — Redirection immédiate`);
+  //     window.location.replace('/'); // replace() évite l'historique
+  //   }
+  //   return null; // Empêche absolument tout rendu
+  // }
   // Si on est en cours de chargement sur une page protégée, afficher un loader
   if (isProtectedPage && isLoading) {
     return (
@@ -251,7 +253,6 @@ function Router() {
       </div>
     );
   }
-  
   // Pages qui ne doivent pas avoir la barre violette en bas + toutes les pages pro
   const hideBottomNavPages = [
     '/salon-page-editor',
@@ -261,33 +262,32 @@ function Router() {
     '/planning-responsive',
     '/planning',
     '/salon-booking-editor',
-    '/direct-messaging',
-    '/client-register',
-    '/pro-pages',
-    '/salon-settings',
-    '/business-features',
-    '/staff-management',
-    '/services-management',
-    '/messaging-system',
-    '/analytics-dashboard',
-    '/stock-alerts',
-    '/booking-pages',
-    '/promo-codes',
-    '/client-reliability',
-    '/ai-pro',
-    '/ai-pro-complete',
-    '/pro-messaging-search',
-    '/client-management',
-    '/admin-dashboard',
-    '/dashboard-old',
-    '/pro-messaging',
-    '/services',
-    '/staff',
+  '/direct-messaging',
+  '/client-register',
+  '/pro-pages',
+  '/salon-settings',
+  '/business-features',
+  '/staff-management',
+  '/services-management',
+  '/messaging-system',
+  '/analytics-dashboard',
+  '/stock-alerts',
+  '/booking-pages',
+  '/promo-codes',
+  '/client-reliability',
+  '/ai-pro',
+  '/ai-pro-complete',
+  '/pro-messaging-search',
+  '/client-management',
+  '/admin-dashboard',
+  '/dashboard-old',
+  '/pro-messaging',
+  '/services',
+  '/staff',
     '/inventory',
     '/professional-settings-demo',
     '/avyento-style-booking-fixed'
   ];
-  
   // Page de paiement Stripe
   if (location === '/stripe-payment') {
     return (
@@ -296,7 +296,6 @@ function Router() {
       </div>
     );
   }
-  
   if (location.startsWith('/booking/') && location !== '/booking') {
     return (
       <div className="h-full">
@@ -304,7 +303,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de succès de réservation
   if (location === '/booking-success') {
     return (
@@ -313,7 +311,6 @@ function Router() {
       </div>
     );
   }
-
   // Pages Stripe
   if (location === '/stripe-success' || location.startsWith('/stripe-success?')) {
     return (
@@ -322,7 +319,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/stripe-cancel' || location.startsWith('/stripe-cancel?')) {
     return (
       <div className="h-full">
@@ -330,7 +326,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de réservation principale
   if (location === '/booking') {
     return (
@@ -339,7 +334,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de test des comptes d'abonnement
   if (location === '/test-subscription-accounts') {
     return (
@@ -348,7 +342,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de recherche de messagerie
   if (location === '/messaging-search') {
     return (
@@ -359,7 +352,6 @@ function Router() {
   }
 
 
-
   // Messagerie professionnelle
   if (location === '/pro-messaging') {
     return (
@@ -368,7 +360,6 @@ function Router() {
       </div>
     );
   }
-
   // Messagerie professionnelle simplifiée
   if (location === '/pro-messaging-simple') {
     return (
@@ -377,7 +368,6 @@ function Router() {
       </div>
     );
   }
-
   // Paramètres du salon
   if (location === '/salon-settings') {
     return (
@@ -386,7 +376,6 @@ function Router() {
       </div>
     );
   }
-
   // Politiques du salon
   if (location === '/salon-policies') {
     return (
@@ -395,7 +384,6 @@ function Router() {
       </div>
     );
   }
-
   // Centre de notifications
   if (location === '/notifications') {
     return (
@@ -404,7 +392,6 @@ function Router() {
       </div>
     );
   }
-
   // Gestion clientèle professionnelle
   if (location === '/client-management') {
     return (
@@ -413,7 +400,6 @@ function Router() {
       </div>
     );
   }
-
   // Analytics client avec IA
   if (location === '/client-analytics') {
     return (
@@ -422,9 +408,8 @@ function Router() {
       </div>
     );
   }
-
   // Messages IA pour clients
-
+  // Messages IA pour clients
 
 
 
@@ -436,24 +421,19 @@ function Router() {
       </div>
     );
   }
-
   // Pages client spécifiques
   if (location === '/client-login') {
     return <div className="h-full"><FuturisticClientLogin /></div>;
   }
-  
   if (location === '/client-login-modern') {
     return <div className="h-full"><ClientLoginModern /></div>;
   }
-  
   if (location === '/client-dashboard') {
     return <div className="h-full"><ClientDashboard /></div>;
   }
-  
   if (location === '/client-register') {
     return <div className="h-full"><ClientRegister /></div>;
   }
-
   // Page de connexion professionnelle
   if (location === '/pro-login') {
     return (
@@ -462,7 +442,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de récupération de mot de passe
   if (location === '/forgot-password') {
     return (
@@ -471,27 +450,22 @@ function Router() {
       </div>
     );
   }
-
   // Redirection de subscription-payment vers register
   if (location === '/subscription-payment') {
-    setLocation('/register');
-    return null;
+  setLocation('/register');
+  return null;
   }
   
-
   
   if (location === '/client-accueil') {
     return <div className="h-full"><ClientAccueil /></div>;
   }
-  
   if (location === '/client-rdv') {
-    return <div className="h-full"><ClientRdv /></div>;
+  return <div className="h-full"><ClientRdv /></div>;
   }
-  
   if (location === '/client-parametres') {
-    return <div className="h-full"><ClientParametres /></div>;
+  return <div className="h-full"><ClientParametres /></div>;
   }
-
   // Page d'accueil publique (sans header/nav mobile)
   if (location === '/') {
     return (
@@ -500,7 +474,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de test d'authentification
   if (location === '/auth-test') {
     return (
@@ -509,7 +482,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de paiement Stripe
   if (location === '/stripe-checkout') {
     return (
@@ -518,7 +490,6 @@ function Router() {
       </div>
     );
   }
-
   // Pages de support publiques
   if (location === '/centre-aide') {
     return (
@@ -527,7 +498,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/contact') {
     return (
       <div className="h-full">
@@ -535,7 +505,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/cgu') {
     return (
       <div className="h-full">
@@ -543,7 +512,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/confidentialite') {
     return (
       <div className="h-full">
@@ -551,7 +519,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de résultats de recherche
   if (location.startsWith('/search')) {
     return (
@@ -560,13 +527,12 @@ function Router() {
       </div>
     );
   }
-
   // SUPPRIMÉ : Toutes les routes prédéfinies - seule la route dynamique reste
-  
+  // SUPPRIMÉ : Toutes les routes prédéfinies - seule la route dynamique reste
   // SUPPRIMÉ : Routes prédéfinies remplacées par le système dynamique
-  
+  // SUPPRIMÉ : Routes prédéfinies remplacées par le système dynamique
   // TOUTES LES ROUTES SALON SPÉCIFIQUES SUPPRIMÉES - UTILISATION DU SYSTÈME DYNAMIQUE UNIQUEMENT
-
+  // TOUTES LES ROUTES SALON SPÉCIFIQUES SUPPRIMÉES - UTILISATION DU SYSTÈME DYNAMIQUE UNIQUEMENT
   // Page de message plein écran
   if (location.startsWith('/message/')) {
     return (
@@ -577,7 +543,6 @@ function Router() {
   }
 
 
-
   // Page de réservation salon avec slug obligatoire
   if (location.startsWith('/salon-booking/')) {
     return (
@@ -586,7 +551,6 @@ function Router() {
       </div>
     );
   }
-
   // ✅ ROUTE SPÉCIFIQUE POUR BARBIER GENTLEMAN MARAIS - GARDE LA MISE EN PAGE ORIGINALE
   if (location === '/salon/barbier-gentleman-marais') {
     return (
@@ -595,7 +559,6 @@ function Router() {
       </div>
     );
   }
-
   // ✅ ROUTES SPÉCIFIQUES POUR LES SALONS DÉMO - UTILISENT LE TEMPLATE STANDARDISÉ
   if (location === '/salon/institut-beaute-saint-germain') {
     return (
@@ -604,7 +567,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/salon/salon-moderne-republique') {
     return (
       <div className="h-full">
@@ -612,7 +574,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/salon/beauty-lounge-montparnasse') {
     return (
       <div className="h-full">
@@ -620,7 +581,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/salon/salon-excellence-paris') {
     return (
       <div className="h-full">
@@ -628,7 +588,6 @@ function Router() {
       </div>
     );
   }
-
   if (location === '/salon/beauty-lash-studio') {
     return (
       <div className="h-full">
@@ -636,17 +595,14 @@ function Router() {
       </div>
     );
   }
-
   // ✅ ROUTE DYNAMIQUE POUR TOUS LES AUTRES NOUVEAUX SALONS - UTILISE LE TEMPLATE OFFICIEL
   if (location.startsWith('/salon/') && location !== '/salon') {
-    // RÈGLE ABSOLUE: Tous les salons dynamiques utilisent le template officiel /salon
     return (
       <div className="h-full">
         <SalonPage />
       </div>
     );
   }
-
   // Routes spécifiques pour chaque salon - détection automatique
   if (location.includes('/excellence-hair-paris/') || location.includes('/salon-moderne-republique/') || location.includes('/gentleman-barbier/')) {
     return (
@@ -655,7 +611,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de connexion pour réservation
   if (location === '/client-login-booking') {
     return (
@@ -664,7 +619,6 @@ function Router() {
       </div>
     );
   }
-
 
 
   // Pro Pages Manager
@@ -677,7 +631,6 @@ function Router() {
   }
 
 
-
   // Page IA simplifiée (ancienne)
   if (location === '/ai-chat') {
     return (
@@ -686,7 +639,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de connexion client
   if (location === '/client/login') {
     return (
@@ -695,7 +647,6 @@ function Router() {
       </div>
     );
   }
-
   // Page d'inscription client
   if (location === '/client-register') {
     return (
@@ -704,7 +655,6 @@ function Router() {
       </div>
     );
   }
-
   // Page tableau de bord client
   if (location === '/client/dashboard') {
     return (
@@ -713,7 +663,6 @@ function Router() {
       </div>
     );
   }
-
   // Page messages client
   if (location === '/client/messages') {
     return (
@@ -722,7 +671,6 @@ function Router() {
       </div>
     );
   }
-
   // Page messagerie client
   if (location === '/client/messages') {
     return (
@@ -731,7 +679,6 @@ function Router() {
       </div>
     );
   }
-
   // Page paramètres client
   if (location === '/settings') {
     return (
@@ -740,9 +687,8 @@ function Router() {
       </div>
     );
   }
-
   // PAGE SUPPRIMÉE - Redondance avec la route dynamique principale - ROUTE SALON SUPPRIMÉE POUR ÉVITER CONFLIT
-
+  // PAGE SUPPRIMÉE - Redondance avec la route dynamique principale - ROUTE SALON SUPPRIMÉE POUR ÉVITER CONFLIT
   // Tests système
   if (location === '/system-test') {
     return (
@@ -751,7 +697,6 @@ function Router() {
       </div>
     );
   }
-
   // Gestion des codes promotionnels
   if (location === '/promo-codes') {
     return (
@@ -760,7 +705,6 @@ function Router() {
       </div>
     );
   }
-
   // Tableau de bord de fiabilité client
   if (location === '/client-reliability') {
     return (
@@ -771,7 +715,6 @@ function Router() {
   }
 
 
-
   // Page d'inscription
   if (location === '/register') {
     return (
@@ -780,7 +723,6 @@ function Router() {
       </div>
     );
   }
-
   // Page des plans professionnels
   if (location === '/professional-plans') {
     return (
@@ -789,7 +731,6 @@ function Router() {
       </div>
     );
   }
-
   // Inscription d'entreprise
   if (location.startsWith('/business-registration')) {
     return (
@@ -798,7 +739,6 @@ function Router() {
       </div>
     );
   }
-
   // Succès d'inscription d'entreprise
   if (location === '/business-success') {
     return (
@@ -807,7 +747,6 @@ function Router() {
       </div>
     );
   }
-
   // Page d'inscription/abonnement
   if (location.startsWith('/subscribe')) {
     return (
@@ -816,7 +755,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de souscription avec informations d'entreprise
   if (location.startsWith('/subscription/signup')) {
     const planType = location.split('/')[3] as "basic-pro" | "advanced-pro" | "premium-pro" | undefined;
@@ -826,7 +764,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de souscription multi-étapes
   if (location.startsWith('/multi-step-subscription')) {
     const planType = location.split('/')[2] as "basic-pro" | "advanced-pro" | "premium-pro" | undefined;
@@ -836,9 +773,8 @@ function Router() {
       </div>
     );
   }
-
   // Page de paiement Stripe (supprimé - incompatible)
-
+  // Page de paiement Stripe (supprimé - incompatible)
   // Page de paiement de souscription
   if (location.startsWith('/subscription/payment/')) {
     const subscriptionId = location.split('/')[3];
@@ -848,7 +784,6 @@ function Router() {
       </div>
     );
   }
-
   // Page des plans de souscription
   if (location === '/subscription/plans' || location === '/subscription-plans') {
     return (
@@ -857,7 +792,6 @@ function Router() {
       </div>
     );
   }
-
   // Page d'essai gratuit
   if (location === '/free-trial') {
     return (
@@ -866,31 +800,27 @@ function Router() {
       </div>
     );
   }
-
   // Page de messagerie avancée PROTÉGÉE avec mentions @
   if (location === '/messaging') {
-    if (!isAuthenticated) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="max-w-md w-full mx-4">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Messagerie Professionnelle</h2>
-              <p className="text-gray-600 mb-6">Accédez à vos conversations avec vos clients. Connexion requise.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Se connecter
-              </a>
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
             </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Messagerie Professionnelle</h2>
+            <p className="text-gray-600 mb-6">Accédez à vos conversations avec vos clients. Connexion requise.</p>
+            <a href="/api/login" className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
+              Se connecter
+            </a>
           </div>
         </div>
-      );
+      </div>
+    );
     }
     return (
       <div className="h-full">
@@ -898,10 +828,9 @@ function Router() {
       </div>
     );
   }
-
   // Page de test des mentions @ PROTÉGÉE
   if (location === '/mention-test') {
-    if (!isAuthenticated) {
+  if (!isAuthenticated) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="max-w-md w-full mx-4">
@@ -913,10 +842,7 @@ function Router() {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Test Mentions</h2>
               <p className="text-gray-600 mb-6">Cette fonctionnalité est réservée aux professionnels connectés.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
+              <a href="/api/login" className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
                 Se connecter
               </a>
             </div>
@@ -930,25 +856,21 @@ function Router() {
       </div>
     );
   }
-
   // PageBuilder PROTÉGÉ - plein écran (sans navigation)
   if (location === '/page-builder') {
-    if (!isAuthenticated) {
+  if (!isAuthenticated) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="max-w-md w-full mx-4">
             <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 002 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Créateur de Pages</h2>
               <p className="text-gray-600 mb-6">Créez des pages personnalisées pour votre salon. Connexion professionnelle requise.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
+              <a href="/api/login" className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
                 Se connecter
               </a>
             </div>
@@ -962,39 +884,6 @@ function Router() {
       </div>
     );
   }
-
-  // Page de réservation salon PROTÉGÉE
-  if (location === '/salon-booking-flow') {
-    if (!isAuthenticated) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="max-w-md w-full mx-4">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l6 6M6 13l6-6" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Réservation Salon</h2>
-              <p className="text-gray-600 mb-6">Connectez-vous pour accéder au système de réservation.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Se connecter
-              </a>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="h-full">
-        <SalonBookingFlow />
-      </div>
-    );
-  }
-
   // Page de réservation style Planity PROTÉGÉE
   if (location === '/planity-booking') {
     if (!isAuthenticated) {
@@ -1009,8 +898,8 @@ function Router() {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Réservation Planity</h2>
               <p className="text-gray-600 mb-6">Connectez-vous pour accéder au système de réservation Planity.</p>
-              <a 
-                href="/api/login" 
+              <a
+                href="/api/login"
                 className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
               >
                 Se connecter
@@ -1026,7 +915,37 @@ function Router() {
       </div>
     );
   }
-
+  // Page de réservation style Planity PROTÉGÉE
+  if (location === '/planity-booking') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l6 6M6 13l6-6" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Réservation Planity</h2>
+              <p className="text-gray-600 mb-6">Connectez-vous pour accéder au système de réservation Planity.</p>
+              <a
+                href="/api/login"
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="h-full">
+        <PlanityStyleBookingFixed />
+      </div>
+    );
+  }
   // Page de sélection des services (nouvelle étape de réservation)
   if (location === '/service-selection') {
     return (
@@ -1035,7 +954,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de sélection des professionnels (accessible sans authentification)
   if (location === '/professional-selection') {
     return (
@@ -1044,7 +962,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de choix date/heure (accessible sans authentification)
   if (location === '/booking-datetime') {
     return (
@@ -1053,7 +970,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de succès de réservation
   if (location === '/booking-success') {
     return (
@@ -1062,34 +978,34 @@ function Router() {
       </div>
     );
   }
-
   // Page salon mobile moderne - Route spéciale "/salon" - SEULE ROUTE ACTIVE
+  // Page salon mobile moderne - Route spéciale "/salon" - SEULE ROUTE ACTIVE
+  // Page salon mobile moderne - Route spéciale "/salon"
   if (location === '/salon') {
-    return (
-      <div className="h-full">
-        <SalonPage />
-      </div>
-    );
+    return (
+      <div className="h-full">
+        <SalonPage />
+      </div>
+    );
   }
 
-  // Page création de salon - Template modifiable identique à /salon
+  // Page création de salon - Template identique à /salon
   if (location === '/salon-creation') {
-    return (
-      <div className="h-full">
-        <SalonCreation />
-      </div>
-    );
+    return (
+      <div className="h-full">
+        <SalonCreation />
+      </div>
+    );
   }
 
-  // Pages de salon dynamiques (/salon/[slug]) - APRÈS /salon
+  // Pages de salon dynamiques (/salon/:slug) - APRÈS /salon
   if (location.startsWith('/salon/')) {
-    return (
-      <div className="h-full">
-        <SalonDynamicPage />
-      </div>
-    );
+    return (
+      <div className="h-full">
+        <SalonDynamicPage />
+      </div>
+    );
   }
-
   // Pages de salon personnalisées (salon-xxx-xxxx) - MAIS PAS salon-page-editor
   if (location.startsWith('/salon-') && !location.startsWith('/salon-page-editor') && !location.startsWith('/salon-booking') && !location.startsWith('/salon-settings')) {
     const pageUrl = location.substring(1); // Remove leading slash
@@ -1099,7 +1015,6 @@ function Router() {
       </div>
     );
   }
-
   // Page de réservation client en plein écran (sans navigation)
   if (location === '/booking' || location === '/quick-booking') {
     return (
@@ -1108,7 +1023,6 @@ function Router() {
       </div>
     );
   }
-
 
 
   // Messagerie directe en plein écran
@@ -1123,7 +1037,6 @@ function Router() {
 
 
 
-
   if (location === '/client-register') {
     return (
       <div className="h-full">
@@ -1131,7 +1044,6 @@ function Router() {
       </div>
     );
   }
-
   // Page IA en plein écran SANS menu navigation (comme dans l'image)
   if (location === '/ai') {
     return (
@@ -1140,13 +1052,12 @@ function Router() {
       </div>
     );
   }
-
   // VÉRIFICATION D'AUTHENTIFICATION POUR TOUTES LES PAGES SUIVANTES
   // Si l'utilisateur n'est pas authentifié ET qu'il essaie d'accéder à une page protégée,
+  // alors rediriger vers la page de connexion qu'il essaie d'accéder à une page protégée,
   // alors rediriger vers la page de connexion
-  
   // Note: /planning est maintenant géré dans la section "Pages professionnelles avec sidebar persistant"
-
+  // Note: /planning est maintenant géré dans la section "Pages professionnelles avec sidebar persistant"
   // Page Dashboard - PROTÉGÉE - Plein écran sans contraintes avec glassmorphism
   if (location === '/dashboard') {
     // Redirection vers login professionnel si pas authentifié
@@ -1162,7 +1073,6 @@ function Router() {
   }
 
 
-
   // Pages professionnelles PROTÉGÉES avec sidebar persistant
   const proPages = ['/planning', '/clients', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics', '/business-features', '/ai'];
   if (proPages.includes(location)) {
@@ -1173,8 +1083,8 @@ function Router() {
     }
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
-        {/* SIDEBAR GRISE SUPPRIMÉE - Navigation mobile uniquement */}
-        <div className="w-full pb-20">{/* Espace pour navigation mobile en bas */}
+        {/* Navigation mobile uniquement */}
+        <div className="w-full pb-20">
           {location === '/planning' && <PlanningResponsive />}
           {(location === '/clients' || location === '/clients-modern') && <ClientsModern />}
           {location === '/services-management' && <ServicesManagement />}
@@ -1184,13 +1094,11 @@ function Router() {
           {location === '/business-features' && <BusinessFeaturesWithBottomSheets />}
           {location === '/ai' && <AIAssistantFixed />}
         </div>
-        
         {/* Navigation mobile MobileBottomNav */}
         <MobileBottomNav userType="pro" />
       </div>
     );
   }
-
   // Page Business Features PROTÉGÉE - plein écran desktop avec navigation mobile conservée
   if (location === '/business-features') {
     if (!isAuthenticated) {
@@ -1205,8 +1113,8 @@ function Router() {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Fonctionnalités Professionnelles</h2>
               <p className="text-gray-600 mb-6">Cette section est réservée aux professionnels authentifiés. Connectez-vous pour accéder à vos outils business.</p>
-              <a 
-                href="/api/login" 
+              <a
+                href="/api/login"
                 className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
               >
                 Se connecter
@@ -1230,7 +1138,6 @@ function Router() {
       </div>
     );
   }
-
   // Page Clients PROTÉGÉE - plein écran desktop avec navigation mobile conservée
   if (location === '/clients' || location === '/clients-modern') {
     // Protection déjà gérée par le système unifié ci-dessus
@@ -1248,14 +1155,10 @@ function Router() {
   }
 
 
-
   // COMPOSANT DE PROTECTION - RENDU DIRECT CAR PROTECTION DÉJÀ GÉRÉE
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-    // La protection est déjà gérée par le système unifié ci-dessus
-    // Ce composant sert juste de wrapper maintenant
     return <>{children}</>;
   };
-
   // Application principale avec navigation
   return (
     <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm lg:shadow-none shadow-lg overflow-hidden">
@@ -1290,17 +1193,17 @@ function Router() {
           <Route path="/pro-pages" component={() => <ProtectedRoute><ProPagesManager /></ProtectedRoute>} />
           <Route path="/salon-settings" component={() => <ProtectedRoute><SalonSettingsModern /></ProtectedRoute>} />
           <Route path="/booking-customization" component={() => <ProtectedRoute><BookingCustomization /></ProtectedRoute>} />
-
+          <Route path="/booking-customization" component={() => <ProtectedRoute><BookingCustomization /></ProtectedRoute>} />
           {/* ROUTES PROFESSIONNELLES PROTÉGÉES - SUITE */}
           <Route path="/salon-booking-editor" component={() => <ProtectedRoute><SalonBookingEditor /></ProtectedRoute>} />
           <Route path="/edit-salon" component={() => <ProtectedRoute><EditSalon /></ProtectedRoute>} />
           <Route path="/salon-page-editor" component={() => <ProtectedRoute><SalonPageEditor /></ProtectedRoute>} />
-          
+          <Route path="/salon-page-editor" component={() => <ProtectedRoute><SalonPageEditor /></ProtectedRoute>} />
           {/* ROUTES CLIENTS - SEULES LES PAGES COMPTES PERSONNELS PROTÉGÉES */}
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/avyento-account" component={() => <ProtectedRoute><AvyentoStyleAccount /></ProtectedRoute>} />
           <Route path="/notifications" component={() => <ProtectedRoute><NotificationCenter /></ProtectedRoute>} />
-          
+          <Route path="/notifications" component={() => <ProtectedRoute><NotificationCenter /></ProtectedRoute>} />
           {/* ROUTES DE RÉSERVATION - PUBLIQUES */}
           <Route path="/avyento-booking" component={AvyentoStyleBooking} />
           <Route path="/original-booking" component={ModernBooking} />
@@ -1308,7 +1211,7 @@ function Router() {
           <Route path="/booking-success" component={BookingSuccess} />
           <Route path="/salon-booking" component={SalonBookingFlow} />
           <Route path="/avyento-style-booking-fixed" component={PlanityStyleBookingFixed} />
-
+          <Route path="/avyento-style-booking-fixed" component={PlanityStyleBookingFixed} />
           {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />
           <Route path="/share" component={ShareBooking} />
@@ -1335,35 +1238,22 @@ function Router() {
           <Route path="/stripe-checkout" component={StripeCheckout} />
           <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />
           <Route path="/salon-registration-password" component={SalonRegistrationWithPassword} />
-          
           {/* Pages style Avyento - PUBLIQUES */}
           <Route path="/avyento-client-login" component={AvyentoStyleClientLogin} />
           <Route path="/avyento-professionals" component={AvyentoStyleProfessionalList} />
           <Route path="/avyento-beauty-institute" component={AvyentoStyleBeautyInstitute} />
-          
           {/* CONNEXION PROFESSIONNELLE CLASSIQUE */}
           <Route path="/login-classic" component={LoginClassic} />
-
-          {/* Routes Salon Mobile - Composant supprimé */}
-          
           {/* Routes Salons Template - Nouvelle génération standardisée */}
           <Route path="/salons/salon-excellence-paris" component={SalonExcellenceParis} />
           <Route path="/salons/barbier-gentleman-marais" component={BarbierGentlemanMarais} />
-          {/* Route désactivée temporairement - Composant InstitutBelleEpoque non disponible */}
-          {/* Route désactivée temporairement - Composant ModernHairStudio non disponible */}
-
-          <Route component={() => {
-            // Redirection immédiate pour pages inexistantes
-            console.log(`🔍 Page inexistante ${location} - Redirection vers /`);
-            window.location.replace('/');
-            return null;
-          }} />
+          <Route component={NotFoundPage} />
         </Switch>
       </main>
       {!hideBottomNavPages.includes(location) && <BottomNavigation />}
     </div>
   );
-}
+} // <-- ferme correctement la fonction Router
 
 function App() {
   return (

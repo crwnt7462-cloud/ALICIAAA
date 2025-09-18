@@ -1,6 +1,14 @@
-
 /* Import glassmorphism authentique d'abord */
 @import './styles/glassmorphism.css';
+
+@layer utilities {
+  .text-foreground {
+    color: var(--foreground);
+  }
+  .bg-background {
+    background-color: var(--background);
+  }
+}
 
 @tailwind base;
 @tailwind components;
@@ -18,6 +26,12 @@
 }
 
 /* Force responsive navigation display */
+
+@layer utilities {
+  .border-border {
+    border-color: #e5e7eb;
+  }
+}
 @media (max-width: 767px) {
   .desktop-sidebar-only {
     display: none !important;

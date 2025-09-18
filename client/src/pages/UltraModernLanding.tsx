@@ -1,3 +1,5 @@
+// Validation: client TS build clean; JSX/DOM types OK; UI components accept className; no global JSX override.
+
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";

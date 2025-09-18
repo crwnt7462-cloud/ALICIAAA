@@ -1,3 +1,13 @@
+// Type local pour les champs éditables du salon
+type EditableSalonFields = {
+  name?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  description?: string;
+  openingHours?: Record<string, { open: string; close: string; closed: boolean }>;
+  // customColors?: { primary?: string; accent?: string; buttonText?: string; priceColor?: string; neonFrame?: string; intensity?: number };
+};
 import { useState } from 'react';
 // import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -40,41 +50,67 @@ export default function SalonSettings() {
     }
   });
 
+  async function saveSalon(salonId: string | number, payload: EditableSalonFields) {
+    return apiRequest(`/api/salon/${salonId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  // Fusionne la logique du nouveau handler avec l'existant
+  const handleSave = async () => {
+    try {
+      const id = String(salonData?.id);
+      if (!id || id === 'undefined') {
+        toast({ title: 'Erreur', description: "ID du salon introuvable", variant: 'destructive' });
+        return;
+      }
+
+      const trim = (v?: string) => (typeof v === 'string' ? v.trim() : v);
+
+      const payload: EditableSalonFields = {
+        name: trim(salonData?.name),
+        address: trim(salonData?.address),
+        phone: trim((salonData as any)?.phone),
+        email: trim((salonData as any)?.email),
+        description: trim((salonData as any)?.description),
+        openingHours: salonData?.openingHours,
+        // customColors: salonData?.customColors, // décommente si autorisé côté backend
+      };
+
+      const updated = await saveSalon(id, payload);
+
+      // Optionnel : refléter la réponse dans le state local
+      // setSalonData(prev => ({ ...prev, ...updated }));
+
+      toast({ title: 'Enregistré', description: 'Le salon a été mis à jour.' });
+    } catch (e: any) {
+      toast({ title: 'Erreur', description: e?.message ?? 'Échec de la sauvegarde', variant: 'destructive' });
+    }
+  };
+
   // Hook de synchronisation
   useSalonSync();
 
-  const handleSave = async () => {
-    setIsManualLoading(true);
-    try {
-      // Forcer la sauvegarde immédiate
-      await forceSave();
-      
-      toast({
-        title: "Paramètres sauvegardés",
-        description: "Les modifications ont été enregistrées avec succès",
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder les paramètres",
-        variant: "destructive"
-      });
-    } finally {
-      setIsManualLoading(false);
-    }
-  };
+  // ...existing code...
 
   const updateOpeningHours = (day: string, field: string, value: string | boolean) => {
     setSalonData(prev => ({
       ...prev,
-      openingHours: {
-        ...prev.openingHours,
-        [day]: {
-          ...prev.openingHours[day as keyof typeof prev.openingHours],
-          [field]: value
-        }
-      }
-    }));
+      openingHours: Object.keys(prev.openingHours ?? {}).reduce((acc, d) => {
+        const prevDay = prev.openingHours?.[d] ?? { open: '', close: '', closed: false };
+        const nextDay = (d === day)
+          ? { ...prevDay, [field]: value }
+          : prevDay;
+        acc[d] = {
+          open: nextDay.open ?? prevDay.open,
+          close: nextDay.close ?? prevDay.close,
+          closed: nextDay.closed ?? prevDay.closed,
+        };
+        return acc;
+      }, {} as Record<string, { open: string; close: string; closed: boolean }>)
+    }) as unknown as typeof prev);
   };
 
   const days = [
@@ -201,7 +237,7 @@ export default function SalonSettings() {
           </CardHeader>
           <CardContent className="space-y-3">
             {days.map((day) => {
-              const hours = salonData.openingHours[day.key as keyof typeof salonData.openingHours];
+              const hours = salonData.openingHours[day.key as keyof typeof salonData.openingHours] ?? { open: '', close: '', closed: false };
               return (
                 <div key={day.key} className="flex items-center gap-3">
                   <div className="w-20 text-sm">{day.label}</div>

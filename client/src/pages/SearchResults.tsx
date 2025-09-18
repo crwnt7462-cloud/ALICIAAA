@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 
 import { Badge } from "@/components/ui/badge";
 import { useWebSocket } from "@/hooks/useWebSocket";
-import avyentoLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@/assets/avyento-logo.png";
 
 export default function SearchResults() {
   const [, setLocation] = useLocation();
@@ -235,7 +235,11 @@ export default function SearchResults() {
                 </Button>
                 
                 <div>
-                  <img src={avyentoLogo} alt="Logo" className="h-24 w-auto" />
+                  <img
+                    src={avyentoLogo}
+                    alt="Logo"
+                    className="h-24 w-auto cursor-pointer"
+                    onClick={() => setLocation('/')} />
                 </div>
               </div>
               

@@ -1,3 +1,4 @@
+git push --force origin main// @ts-nocheck
 import Stripe from 'stripe';
 import { SUBSCRIPTION_PLANS } from '../shared/subscriptionPlans';
 

@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ArrowLeft, User, Mail, Lock, Star, Clock, Shield } from 'lucide-react';
-import avyentoLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@/assets/avyento-logo.png";
 
 export default function FuturisticClientLogin() {
   const [, setLocation] = useLocation();

@@ -2,17 +2,25 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useAuth() {
   const queryClient = useQueryClient();
-  
+
   const { data: user, isLoading, refetch } = useQuery({
-    queryKey: ["/api/auth/user"],
-    retry: 3, // Retry 3 fois avant d'échouer - évite déconnexion au premier échec réseau
-    staleTime: 60 * 60 * 1000, // Cache 1 heure - beaucoup plus long pour éviter déconnexions auto
-    gcTime: 4 * 60 * 60 * 1000, // Garder en cache 4 heures
+    queryKey: ["/api/business/me"],
+    queryFn: async () => {
+      const res = await fetch("/api/business/me", {
+        credentials: "include",
+        headers: { "Accept": "application/json" }
+      });
+      if (!res.ok) throw new Error("Non authentifié");
+      return (await res.json()).user;
+    },
+    retry: 3,
+    staleTime: 60 * 60 * 1000,
+    gcTime: 4 * 60 * 60 * 1000,
   });
 
   // Fonction pour rafraîchir l'état d'authentification
   const refreshAuth = () => {
-    queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/business/me"] });
     refetch();
   };
 

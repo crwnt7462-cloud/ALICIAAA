@@ -13,7 +13,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { X, CreditCard, ArrowLeft, Building, CheckCircle2, Star, Sparkles, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import logoImage from "@assets/3_1753714421825.png";
+import logoImage from "@/assets/avyento-logo.png";
 
 // Configuration Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);

@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["react", "vite/client"],
+    "lib": ["ES2021", "DOM"],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/types": ["src/typecheck-stubs/types.d.ts"],
+      "@/lib/apiSafe": ["src/typecheck-stubs/apiSafe.d.ts"],
+      "@/*": ["src/*"]
+    }
+  },
+  "files": [
+    "src/hooks/useUpdateSalon.ts",
+    "src/typecheck-stubs/types.d.ts",
+    "src/typecheck-stubs/apiSafe.d.ts"
+  ]
+}

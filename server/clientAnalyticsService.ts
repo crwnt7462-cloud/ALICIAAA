@@ -175,11 +175,11 @@ Format de réponse:
 MESSAGE: [Votre message personnalisé ici]
 ANALYSE: [Votre analyse détaillée ici]`;
 
-      const aiResponse = await aiService.getChatResponse(aiPrompt);
+  const aiResponse = await aiService.generateChat(aiPrompt);
       
       // Extraction du message et de l'analyse
-      const messagMatch = aiResponse.match(/MESSAGE:\s*(.+?)(?=ANALYSE:|$)/s);
-      const analysisMatch = aiResponse.match(/ANALYSE:\s*(.+)/s);
+  const messagMatch = aiResponse.replace(/\n/g,' ').match(/MESSAGE:\s*(.+?)(?=ANALYSE:|$)/);
+  const analysisMatch = aiResponse.replace(/\n/g,' ').match(/ANALYSE:\s*(.+)/);
       
       personalizedMessage = messagMatch 
         ? messagMatch[1].trim().replace(/^["']|["']$/g, '') 

@@ -301,7 +301,7 @@ export default function StockAlerts() {
                           <Button
                             size="sm"
                             onClick={() => handleQuickRestock(item.id)}
-                            disabled={!quantities[item.id] || quantities[item.id] <= 0}
+                            disabled={!(quantities?.[item.id ?? 0]) || (quantities?.[item.id ?? 0] <= 0)}
                           >
                             <Package className="w-4 h-4 mr-1" />
                             Ajouter

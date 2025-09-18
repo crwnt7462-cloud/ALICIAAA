@@ -1,0 +1,37 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "typecheck:salon": "tsc -p tsconfig.salon.json --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "smoke": "echo \"⚡ smoke: build + typecheck(salon)\" && npm run build && npm run typecheck:salon",
+    "diag:jsx": "bash ../scripts/diagnose-jsx.sh",
+    "diag:runtime": "bash ../scripts/diagnose-runtime.sh",
+    "audit:health": "vite",
+    "typecheck:client": "tsc --noEmit"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.21",
+    "bcryptjs": "^3.0.2",
+    "express-session": "^1.18.2",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.544.0",
+    "postcss": "^8.5.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.8.2",
+    "tailwindcss": "^3.4.3",
+    "wouter": "^3.7.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@vitejs/plugin-react": "^4.3.2",
+    "typescript": "^5.9.2",
+    "vite": "^5.4.14"
+  }
+}

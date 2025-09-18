@@ -25,24 +25,22 @@ export default function ProtectedRoute({
     return '/'; // Redirection vers l'accueil
   };
 
+  // Redirection déclenchée SEULEMENT quand l'auth est "prête" (isLoading === false)
   useEffect(() => {
-    if (!isLoading && requireAuth && !isAuthenticated) {
-      const message = pageType === 'client' 
-        ? "Cette page est réservée aux clients connectés. Retour à l'accueil..."
-        : "Cette page est réservée aux professionnels connectés. Retour à l'accueil...";
-      
-      // Redirection immédiate vers l'accueil sans affichage d'interface
+    if (isLoading) return; // ⏳ on attend la résolution de l'auth
+    if (requireAuth && !isAuthenticated) {
+      // (facultatif) tu peux afficher un toast ici si tu veux, avant de rediriger
       window.location.href = getRedirectUrl();
     }
-  }, [isAuthenticated, isLoading, requireAuth, toast, pageType]);
+  }, [isAuthenticated, isLoading, requireAuth, pageType]);
 
   // Pas d'écran de chargement - redirection immédiate
   // L'authentification se vérifie en arrière-plan
 
-  // Si pas authentifié, pas d'affichage (redirection immédiate via useEffect)
-  if (requireAuth && !isAuthenticated) {
-    return null;
-  }
+  // ⏳ Pendant le chargement, on ne rend rien (et on ne redirige pas)
+  if (isLoading) return null;
+  // 🔐 Une fois prêt: si non auth et route protégée → on laisse l'effet rediriger, on ne rend rien
+  if (requireAuth && !isAuthenticated) return null;
 
   // Si tout va bien, afficher le contenu
   return <>{children}</>;

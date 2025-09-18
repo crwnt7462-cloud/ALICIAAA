@@ -426,7 +426,9 @@ export default function SimpleBooking() {
                     className={`glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl ${
                       selectedDate === date.value ? 'bg-violet-600 text-white border-violet-700' : ''
                     }`}
-                    onClick={() => setSelectedDate(date.value)}
+                    onClick={() => {
+                      if (date.value) setSelectedDate(date.value);
+                    }}
                   >
                     {date.label}
                   </button>
