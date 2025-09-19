@@ -40,3 +40,37 @@ JS
 fi
 
 echo "Réponse complète enregistrée dans ${LOGIN_JSON}"
+
+
+
+// Script Node.js pour obtenir un JWT Supabase pour un utilisateur donné
+// Usage : node get-jwt.js
+// (pense à installer @supabase/supabase-js : npm install @supabase/supabase-js)
+
+const { createClient } = require('@supabase/supabase-js');
+
+// Renseigne ici l'URL de ton projet Supabase et la clé (anon ou service_role)
+const supabaseUrl = 'https://efkekkajoyfgtyqziohy.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVma2Vra2Fqb3lmZ3R5cXppb2h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyNzgyOTQsImV4cCI6MjA3Mjg1NDI5NH0.EP-EH8LWjeE7HXWPZyelLqdA4iCyfjmD7FnTu2fIMSA';
+
+// Identifiants de l'utilisateur à authentifier
+const email = 'correct@gmail.com'; // ou correct@gmail.com
+const password = '667ryan'; // à renseigner
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+(async () => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) {
+    console.error("Erreur d'authentification :", error.message);
+    process.exit(1);
+  }
+  if (!data.session || !data.session.access_token) {
+    console.error('Aucun access_token retourné.');
+    process.exit(1);
+  }
+  console.log(data.session.access_token);
+})();

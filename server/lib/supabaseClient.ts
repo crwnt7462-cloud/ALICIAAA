@@ -1,23 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 
+export const supabase = createClient(
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_ANON_KEY || ''
+);
+
 export function assertSupabaseEnv() {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('[Supabase] Missing SUPABASE_URL or SUPABASE_ANON_KEY in env');
-    }
-    throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY in environment');
+    throw new Error('Supabase environment variables are not set');
   }
 }
 
-export function getSupabaseForJwt(jwt?: string | null) {
-  assertSupabaseEnv();
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      global: {
-        headers: jwt ? { Authorization: `Bearer ${jwt}` } : {}
-      }
-    }
-  );
+export function getSupabaseForJwt(jwt: string | null) {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+    throw new Error('Supabase environment variables are not set');
+  }
+  if (jwt) {
+    return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: `Bearer ${jwt}` } }
+    });
+  }
+  return supabase;
 }

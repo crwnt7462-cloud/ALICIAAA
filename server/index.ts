@@ -31,6 +31,7 @@ import dashboardRouter from './routes/dashboard';
 
 const app = express();
 
+app.use(express.json());
 
 app.use(session({
   secret: 'un_secret_sûr',
@@ -76,7 +77,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use(cors());
-app.use(express.json());
 app.use(morgan("dev"));
 app.use(session({
   secret: 'un_secret_sûr',

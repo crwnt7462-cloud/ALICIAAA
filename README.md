@@ -29,14 +29,12 @@ Une application web moderne et professionnelle pour la gestion complète de salo
 - Suggestions de promotions
 
 ### 📱 Notifications Push
-- Notifications automatiques professionnelles
 - Style Shopify avec emojis discrets
 - Déclenchement sur événements clés
 - Interface de test intégrée
 
 ## 🛠️ Technologies
 
-- **Frontend**: React 18, TypeScript, Tailwind CSS
 - **Backend**: Node.js, Express, WebSocket
 - **Base de données**: PostgreSQL avec Drizzle ORM
 - **IA**: OpenAI GPT-4o intégration
@@ -82,8 +80,6 @@ npm run dev
 
 ## 📊 Métriques de Performance
 
-- Interface optimisée pour mobile
-- Temps de chargement < 2s
 - Score Lighthouse > 90
 - Responsive design parfait
 
