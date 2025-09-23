@@ -22,12 +22,26 @@ export default function SalonPage() {
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [location, navigate] = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth(); // Récupérer l'utilisateur aussi
+  
+  // Détecter si on est sur une URL de salon spécifique (/salon/:id)
+  const salonIdMatch = location.match(/^\/salon\/([a-f0-9-]+)$/);
+  const salonId = salonIdMatch?.[1];
+  const isTemplateView = location === '/salon';
   
   // Charger les données du salon du professionnel connecté si on est sur /salon
   const { data: userSalon } = useQuery({
     queryKey: ['/api/salon/my-salon'],
-    enabled: location === '/salon' && isAuthenticated,
+    enabled: isTemplateView && isAuthenticated,
+    retry: false,
+    staleTime: 5000
+  });
+
+  // Charger les données d'un salon spécifique si on a un ID dans l'URL
+  const { data: specificSalon } = useQuery({
+    queryKey: ['/api/salon', salonId],
+    queryFn: () => fetch(`/api/salon/${salonId}`).then(res => res.json()),
+    enabled: !!salonId,
     retry: false,
     staleTime: 5000
   });
@@ -35,21 +49,31 @@ export default function SalonPage() {
   // ✅ CORRECTION: Activer le mode édition SEULEMENT si:
   // 1. L'utilisateur est sur /salon (sa propre page) ET authentifié
   // 2. OU si l'utilisateur est le propriétaire du salon affiché (pour d'autres URLs)
-  const isOwnSalonPage = location === '/salon' && isAuthenticated;
+  const isOwnSalonPage = isTemplateView && isAuthenticated;
   const isSalonCreated = isAuthenticated && userSalon && (userSalon as any).name;
   
   // Fonction pour déterminer si l'utilisateur peut éditer ce salon
   const canEditSalon = () => {
-    // Seul le propriétaire peut éditer sur /salon
-    if (location === '/salon') {
+    console.log('canEditSalon check:', { 
+      isTemplateView, 
+      isAuthenticated, 
+      specificSalon: !!specificSalon,
+      specificSalonOwnerId: specificSalon?.ownerId,
+      userId: user?.id 
+    });
+    
+    // Mode template : seuls les utilisateurs authentifiés peuvent éditer
+    if (isTemplateView) {
       return isAuthenticated;
     }
-    // Pour les autres pages de salon (salon public), pas d'édition autorisée
-    // TODO: Implémenter vérification d'ownership via API si nécessaire
+    // Salon spécifique : seul le propriétaire peut éditer
+    if (specificSalon && isAuthenticated && user) {
+      return specificSalon.ownerId === user.id;
+    }
     return false;
   };
   
-  const [isEditing, setIsEditing] = useState(canEditSalon() && !isSalonCreated);
+  const [isEditing, setIsEditing] = useState(false); // Commencer en mode lecture
   const [salonData, setSalonData] = useState({
     nom: "Salon Excellence",
     adresse: "Paris 8ème",
@@ -63,7 +87,25 @@ export default function SalonPage() {
 
   // Déterminer quel salon afficher selon l'URL
   const getSalonData = () => {
-    if (location === '/salon') {
+    // Si on affiche un salon spécifique via /salon/:id
+    if (specificSalon) {
+      return {
+        name: specificSalon.name || "Salon",
+        verified: true,
+        rating: 4.8,
+        reviewCount: 127,
+        priceRange: "€€€",
+        address: specificSalon.address || "Paris, France",
+        backgroundImage: specificSalon.coverImageUrl || "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=800&fit=crop&q=80",
+        primaryColor: '#8b5cf6',
+        description: specificSalon.description || "Bienvenue dans notre salon",
+        instagram: specificSalon.instagram || "",
+        facebook: specificSalon.facebook || "",
+        tiktok: specificSalon.tiktok || ""
+      };
+    }
+    
+    if (isTemplateView) {
       // Si utilisateur connecté et a un salon, utiliser ses données
       if (isAuthenticated && userSalon) {
         return {
@@ -643,36 +685,54 @@ export default function SalonPage() {
   async function handleSave() {
     setIsEditing(false);
     try {
-      await fetch('/api/salon/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          salonData,
-          serviceCategories: serviceCategoriesState,
-          teamMembers: teamMembersState,
-          coverImage,
-        })
-      });
-      // Recharger les données du salon après modification
-      const res = await fetch('/api/salon/my-salon');
-      if (res.ok) {
-        const data = await res.json();
-        setSalonData({
-          nom: data.name || '',
-          adresse: data.address || '',
-          telephone: data.telephone || '',
-          description: data.description || '',
-          horaires: data.horaires || '',
-          facebook: data.facebook || '',
-          instagram: data.instagram || '',
-          tiktok: data.tiktok || ''
+      let response;
+      
+      if (isTemplateView) {
+        // Mode template : créer un nouveau salon personnalisé
+        response = await fetch('/api/salon/create-personalized', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            salonData: {...salonData, ...infoData}, // Inclure les infos mises à jour
+            serviceCategories: serviceCategoriesState,
+            teamMembers: teamMembersState,
+            coverImage,
+            galleryImages, // Inclure les images de la galerie
+          })
         });
-        setServiceCategoriesState(data.serviceCategories || []);
-        setTeamMembersState(data.teamMembers || []);
-        setCoverImage(data.coverImageUrl || '');
+      } else if (specificSalon) {
+        // Salon spécifique : mettre à jour le salon existant
+        response = await fetch('/api/salon/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            salonId: specificSalon.id,
+            salonData: {...salonData, ...infoData}, // Inclure les infos mises à jour
+            serviceCategories: serviceCategoriesState,
+            teamMembers: teamMembersState,
+            coverImage,
+            galleryImages, // Inclure les images de la galerie
+          })
+        });
       }
-      alert("Modifications enregistrées !");
+
+      if (response && response.ok) {
+        const result = await response.json();
+        
+        if (isTemplateView && result.salonUrl) {
+          // Rediriger vers la nouvelle URL du salon personnalisé
+          alert(`Salon créé avec succès ! Redirection vers votre salon...`);
+          navigate(result.salonUrl);
+        } else {
+          // Salon mis à jour avec succès
+          alert("Modifications enregistrées !");
+        }
+      } else {
+        const errorData = response ? await response.json() : { error: 'Erreur inconnue' };
+        alert(`Erreur lors de l'enregistrement: ${errorData.error || 'Erreur inconnue'}`);
+      }
     } catch (e) {
+      console.error('Erreur de sauvegarde:', e);
       alert("Erreur lors de l'enregistrement");
     }
   }
@@ -786,6 +846,118 @@ export default function SalonPage() {
 
   // Ajout de la gestion de la photo de couverture modifiable
   const [coverImage, setCoverImage] = useState(salonDataFetched.backgroundImage);
+
+  // États pour la galerie et les infos
+  const [galleryImages, setGalleryImages] = useState<string[]>([
+    `https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=400&fit=crop&q=80`,
+    `https://images.unsplash.com/photo-1516975080765-ed2fc6a32937?w=400&h=400&fit=crop&q=80`,
+    `https://images.unsplash.com/photo-1516975080866-ed2fc6a32937?w=400&h=400&fit=crop&q=80`,
+    `https://images.unsplash.com/photo-1516975080967-ed2fc6a32937?w=400&h=400&fit=crop&q=80`,
+    `https://images.unsplash.com/photo-1516975081068-ed2fc6a32937?w=400&h=400&fit=crop&q=80`,
+    `https://images.unsplash.com/photo-1516975081169-ed2fc6a32937?w=400&h=400&fit=crop&q=80`,
+    `https://images.unsplash.com/photo-1516975081270-ed2fc6a32937?w=400&h=400&fit=crop&q=80`,
+    `https://images.unsplash.com/photo-1516975081371-ed2fc6a32937?w=400&h=400&fit=crop&q=80`
+  ]);
+
+  const [infoData, setInfoData] = useState({
+    horaires: salonData.horaires,
+    telephone: salonData.telephone,
+    email: 'contact@avyento.fr',
+    adresse: salonData.adresse
+  });
+
+  // Fonctions pour gérer la galerie
+  function handleAddGalleryImage(imageUrl: string) {
+    setGalleryImages([...galleryImages, imageUrl]);
+  }
+
+  function handleRemoveGalleryImage(index: number) {
+    const updated = [...galleryImages];
+    updated.splice(index, 1);
+    setGalleryImages(updated);
+  }
+
+  function handleGalleryImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        handleAddGalleryImage(imageUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Fonctions pour gérer les infos
+  function handleInfoChange(field: string, value: string) {
+    setInfoData({...infoData, [field]: value});
+  }
+
+  // ✅ CORRECTION: Charger les données depuis l'API au démarrage
+  useEffect(() => {
+    if (specificSalon) {
+      setSalonData({
+        nom: specificSalon.name || '',
+        adresse: specificSalon.address || '',
+        telephone: specificSalon.telephone || '',
+        description: specificSalon.description || '',
+        horaires: specificSalon.horaires || '',
+        facebook: specificSalon.facebook || '',
+        instagram: specificSalon.instagram || '',
+        tiktok: specificSalon.tiktok || ''
+      });
+      if (specificSalon.serviceCategories && specificSalon.serviceCategories.length > 0) {
+        setServiceCategoriesState(specificSalon.serviceCategories);
+      }
+      if (specificSalon.teamMembers && specificSalon.teamMembers.length > 0) {
+        setTeamMembersState(specificSalon.teamMembers);
+      }
+      if (specificSalon.coverImageUrl) {
+        setCoverImage(specificSalon.coverImageUrl);
+      }
+      if (specificSalon.galleryImages && Array.isArray(specificSalon.galleryImages)) {
+        setGalleryImages(specificSalon.galleryImages);
+      }
+      setInfoData({
+        horaires: specificSalon.horaires || '',
+        telephone: specificSalon.telephone || '',
+        email: specificSalon.email || 'contact@avyento.fr',
+        adresse: specificSalon.address || ''
+      });
+    } else if (isTemplateView && isAuthenticated && userSalon) {
+      const salonApiData = userSalon as any;
+      setSalonData({
+        nom: salonApiData.name || '',
+        adresse: salonApiData.address || '',
+        telephone: salonApiData.telephone || '',
+        description: salonApiData.description || '',
+        horaires: salonApiData.horaires || '',
+        facebook: salonApiData.facebook || '',
+        instagram: salonApiData.instagram || '',
+        tiktok: salonApiData.tiktok || ''
+      });
+      if (salonApiData.serviceCategories && salonApiData.serviceCategories.length > 0) {
+        setServiceCategoriesState(salonApiData.serviceCategories);
+      }
+      if (salonApiData.teamMembers && salonApiData.teamMembers.length > 0) {
+        setTeamMembersState(salonApiData.teamMembers);
+      }
+      if (salonApiData.coverImageUrl) {
+        setCoverImage(salonApiData.coverImageUrl);
+      }
+      if (salonApiData.galleryImages && Array.isArray(salonApiData.galleryImages)) {
+        setGalleryImages(salonApiData.galleryImages);
+      }
+      setInfoData({
+        horaires: salonApiData.horaires || '',
+        telephone: salonApiData.telephone || '',
+        email: salonApiData.email || 'contact@avyento.fr',
+        adresse: salonApiData.address || ''
+      });
+    }
+  }, [specificSalon, isTemplateView, isAuthenticated, userSalon]);
+
   function handleCoverImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
@@ -1247,15 +1419,35 @@ export default function SalonPage() {
         {activeTab === 'galerie' && (
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Galerie</h2>
+            
+            {isEditing && (
+              <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4 mb-4">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Ajouter une image</h3>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleGalleryImageUpload}
+                  className="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                />
+              </div>
+            )}
+            
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* Images de la galerie - exemples statiques */}
-              {Array.from({ length: 8 }).map((_, idx) => (
-                <div key={idx} className="bg-gray-200 rounded-lg overflow-hidden shadow-md">
+              {galleryImages.map((imageUrl, idx) => (
+                <div key={idx} className="relative bg-gray-200 rounded-lg overflow-hidden shadow-md">
                   <img
-                    src={`https://images.unsplash.com/photo-${idx + 1516975080664}-ed2fc6a32937?w=400&h=400&fit=crop&q=80`}
+                    src={imageUrl}
                     alt={`Galerie ${idx + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-40 object-cover"
                   />
+                  {isEditing && (
+                    <button
+                      onClick={() => handleRemoveGalleryImage(idx)}
+                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs transition-colors"
+                    >
+                      ×
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -1264,30 +1456,80 @@ export default function SalonPage() {
         {activeTab === 'infos' && (
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Informations</h2>
+            
             <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
               <h3 className="font-semibold text-gray-900 text-lg mb-2">Horaires d'ouverture</h3>
-              <p className="text-sm text-gray-600">
-                {salonData.horaires.split(',').map((line, idx) => (
-                  <span key={idx} className="block">
-                    {line}
-                  </span>
-                ))}
-              </p>
+              {isEditing ? (
+                <textarea
+                  value={infoData.horaires}
+                  onChange={(e) => handleInfoChange('horaires', e.target.value)}
+                  className="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  rows={4}
+                  placeholder="Entrez les horaires (une ligne par jour)"
+                />
+              ) : (
+                <p className="text-sm text-gray-600">
+                  {infoData.horaires.split(',').map((line, idx) => (
+                    <span key={idx} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </p>
+              )}
             </div>
+            
             <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
               <h3 className="font-semibold text-gray-900 text-lg mb-2">Contact</h3>
-              <p className="text-sm text-gray-600">
-                Téléphone : <span className="font-medium text-gray-900">{salonData.telephone}</span>
-              </p>
-              <p className="text-sm text-gray-600">
-                Email : <span className="font-medium text-gray-900">contact@avyento.fr</span>
-              </p>
+              {isEditing ? (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                    <input
+                      type="text"
+                      value={infoData.telephone}
+                      onChange={(e) => handleInfoChange('telephone', e.target.value)}
+                      className="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                      placeholder="Numéro de téléphone"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      value={infoData.email}
+                      onChange={(e) => handleInfoChange('email', e.target.value)}
+                      className="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                      placeholder="Adresse email"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm text-gray-600">
+                    Téléphone : <span className="font-medium text-gray-900">{infoData.telephone}</span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Email : <span className="font-medium text-gray-900">{infoData.email}</span>
+                  </p>
+                </div>
+              )}
             </div>
+            
             <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-2xl shadow-sm p-4">
               <h3 className="font-semibold text-gray-900 text-lg mb-2">Adresse</h3>
-              <p className="text-sm text-gray-600">
-                {salonData.adresse}
-              </p>
+              {isEditing ? (
+                <textarea
+                  value={infoData.adresse}
+                  onChange={(e) => handleInfoChange('adresse', e.target.value)}
+                  className="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  rows={3}
+                  placeholder="Adresse complète du salon"
+                />
+              ) : (
+                <p className="text-sm text-gray-600">
+                  {infoData.adresse}
+                </p>
+              )}
             </div>
           </div>
         )}

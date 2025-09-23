@@ -62,6 +62,15 @@ app.get('/api/business/me', (req, res) => {
   res.json({ user: session.user });
 });
 
+// Route GET /api/me : alias pour compatibilité avec useAuth
+app.get('/api/me', (req, res) => {
+  const session = req.session as typeof req.session & AliciaSessionData;
+  if (!session.user) {
+    return res.json({ ok: false, user: null });
+  }
+  res.json({ ok: true, user: { id: session.user.id, role: 'pro' } });
+});
+
 // DEV AUTH — n’active que hors prod. Hydrate req.user à partir du header Authorization.
 if (process.env.NODE_ENV !== "production") {
   app.use((req, _res, next) => {
@@ -137,6 +146,272 @@ app.post('/api/login', async (req, res) => {
     ok: true,
     user: session.user
   });
+});
+
+// Route pour récupérer le salon de l'utilisateur connecté
+app.get('/api/salon/my-salon', async (req, res) => {
+  const session = req.session as typeof req.session & AliciaSessionData;
+  if (!session.user) {
+    return res.status(401).json({ error: 'Non authentifié' });
+  }
+
+  try {
+    const { data: salon, error } = await supabase
+      .from('salons')
+      .select('*')
+      .eq('owner_id', session.user.id)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // Aucun salon trouvé, retourner un salon vide
+        return res.json({
+          id: null,
+          name: '',
+          address: '',
+          telephone: '',
+          description: '',
+          horaires: '',
+          facebook: '',
+          instagram: '',
+          tiktok: '',
+          serviceCategories: [],
+          teamMembers: [],
+          coverImageUrl: ''
+        });
+      }
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json({
+      id: salon.id,
+      name: salon.name || '',
+      address: salon.business_address || '',
+      telephone: salon.business_phone || '',
+      description: salon.description || '',
+      horaires: salon.horaires || '',
+      facebook: salon.facebook || '',
+      instagram: salon.instagram || '',
+      tiktok: salon.tiktok || '',
+      serviceCategories: salon.service_categories || [],
+      teamMembers: salon.team_members || [],
+      coverImageUrl: salon.cover_image_url || ''
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération du salon:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Route pour créer un salon personnalisé avec URL générée
+app.post('/api/salon/create-personalized', async (req, res) => {
+  const session = req.session as typeof req.session & AliciaSessionData;
+  if (!session.user) {
+    return res.status(401).json({ error: 'Non authentifié' });
+  }
+
+  try {
+    const { salonData, serviceCategories, teamMembers, coverImage, galleryImages } = req.body;
+
+    const salonPayload = {
+      name: salonData?.nom || '',
+      business_address: salonData?.adresse || '',
+      business_phone: salonData?.telephone || '',
+      description: salonData?.description || '',
+      horaires: salonData?.horaires || '',
+      facebook: salonData?.facebook || '',
+      instagram: salonData?.instagram || '',
+      tiktok: salonData?.tiktok || '',
+      service_categories: serviceCategories || [],
+      team_members: teamMembers || [],
+      cover_image_url: coverImage || '',
+      gallery_images: galleryImages || [], // Ajout des images de la galerie
+      owner_id: session.user.id,
+      is_template: false // Salon personnalisé, pas un template
+    };
+
+    // Vérifier si l'utilisateur a déjà un salon
+    const { data: existingUserSalon } = await supabase
+      .from('salons')
+      .select('id, name')
+      .eq('owner_id', session.user.id)
+      .eq('is_template', false)
+      .single();
+
+    let salonUrl;
+    let salonId;
+
+    if (existingUserSalon) {
+      // Mettre à jour le salon existant
+      const { error: updateError } = await supabase
+        .from('salons')
+        .update(salonPayload)
+        .eq('id', existingUserSalon.id);
+
+      if (updateError) {
+        return res.status(500).json({ error: updateError.message });
+      }
+      
+      salonId = existingUserSalon.id;
+    } else {
+      // Créer un nouveau salon
+      const { data: newSalon, error: insertError } = await supabase
+        .from('salons')
+        .insert(salonPayload)
+        .select('id')
+        .single();
+
+      if (insertError) {
+        return res.status(500).json({ error: insertError.message });
+      }
+
+      salonId = newSalon.id;
+    }
+
+    // Générer l'URL avec l'ID pour l'instant (en attendant la colonne slug)
+    salonUrl = `/salon/${salonId}`;
+
+    res.json({ 
+      success: true, 
+      message: 'Salon créé avec succès',
+      salonUrl: salonUrl,
+      salonId: salonId
+    });
+  } catch (error) {
+    console.error('Erreur lors de la création du salon:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+
+// Route pour récupérer un salon par son ID (temporaire, en attendant les slugs)
+app.get('/api/salon/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { data: salon, error } = await supabase
+      .from('salons')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return res.status(404).json({ error: 'Salon non trouvé' });
+      }
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json({
+      id: salon.id,
+      name: salon.name || '',
+      address: salon.business_address || '',
+      telephone: salon.business_phone || '',
+      description: salon.description || '',
+      horaires: salon.horaires || '',
+      facebook: salon.facebook || '',
+      instagram: salon.instagram || '',
+      tiktok: salon.tiktok || '',
+      serviceCategories: salon.service_categories || [],
+      teamMembers: salon.team_members || [],
+      coverImageUrl: salon.cover_image_url || '',
+      ownerId: salon.owner_id,
+      isTemplate: salon.is_template || false
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération du salon:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Route pour mettre à jour le salon (POST pour compatibilité)
+app.post('/api/salon/update', async (req, res) => {
+  const session = req.session as typeof req.session & AliciaSessionData;
+  if (!session.user) {
+    return res.status(401).json({ error: 'Non authentifié' });
+  }
+
+  try {
+    const { salonId, salonData, serviceCategories, teamMembers, coverImage, galleryImages } = req.body;
+
+    const salonPayload = {
+      name: salonData?.nom || '',
+      description: salonData?.description || '',
+      business_address: salonData?.adresse || '',
+      business_phone: salonData?.telephone || '',
+      horaires: salonData?.horaires || '',
+      facebook: salonData?.facebook || '',
+      instagram: salonData?.instagram || '',
+      tiktok: salonData?.tiktok || '',
+      service_categories: serviceCategories || [],
+      team_members: teamMembers || [],
+      cover_image_url: coverImage || '',
+      gallery_images: galleryImages || [] // Ajout des images de la galerie
+    };
+
+    if (salonId) {
+      // Mise à jour d'un salon spécifique - vérifier la propriété
+      const { data: salon, error: fetchError } = await supabase
+        .from('salons')
+        .select('owner_id')
+        .eq('id', salonId)
+        .single();
+
+      if (fetchError || !salon) {
+        return res.status(404).json({ error: 'Salon non trouvé' });
+      }
+
+      if (salon.owner_id !== session.user.id) {
+        return res.status(403).json({ error: 'Non autorisé' });
+      }
+
+      const { error: updateError } = await supabase
+        .from('salons')
+        .update(salonPayload)
+        .eq('id', salonId);
+
+      if (updateError) {
+        return res.status(500).json({ error: updateError.message });
+      }
+    } else {
+      // Chercher le salon existant de l'utilisateur
+      const { data: existingSalon, error: findError } = await supabase
+        .from('salons')
+        .select('id')
+        .eq('owner_id', session.user.id)
+        .single();
+
+      if (findError && findError.code !== 'PGRST116') {
+        return res.status(500).json({ error: findError.message });
+      }
+
+      if (existingSalon) {
+        // Mettre à jour le salon existant
+        const { error: updateError } = await supabase
+          .from('salons')
+          .update({ ...salonPayload, owner_id: session.user.id })
+          .eq('id', existingSalon.id);
+
+        if (updateError) {
+          return res.status(500).json({ error: updateError.message });
+        }
+      } else {
+        // Créer un nouveau salon
+        const { error: insertError } = await supabase
+          .from('salons')
+          .insert({ ...salonPayload, owner_id: session.user.id });
+
+        if (insertError) {
+          return res.status(500).json({ error: insertError.message });
+        }
+      }
+    }
+
+    res.json({ success: true, message: 'Salon mis à jour avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du salon:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
 
 // Enregistre la route de diagnostic Appwrite uniquement en dev ou si ENABLE_DIAG_ROUTES n'est pas false
