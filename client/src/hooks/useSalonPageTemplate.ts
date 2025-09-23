@@ -82,12 +82,55 @@ export function useSalonPageTemplate(salonSlug: string): {
   useEffect(() => {
     const loadSalonData = async () => {
       try {
-        // ✅ CORRECTION : Utiliser directement la route publique qui contient toutes les données
+        // ✅ CORRECTION : Charger les données publiques ET vérifier ownership en parallèle
         console.log('🔍 Chargement salon public:', salonSlug);
-        const salonResponse = await fetch(`/api/salon/${salonSlug}`);
+        
+        const [salonResponse, ownershipResponse] = await Promise.allSettled([
+          fetch(`/api/salon/${salonSlug}`),
+          fetch(`/api/salon/${salonSlug}/ownership`)
+        ]);
+        
+        // Vérifier d'abord l'ownership
+        if (ownershipResponse.status === 'fulfilled' && ownershipResponse.value.ok) {
+          const ownershipData = await ownershipResponse.value.json();
+          setIsOwner(ownershipData.isOwner);
+          console.log('🔐 Ownership vérifié:', ownershipData.isOwner);
+        } else {
+          setIsOwner(false);
+          console.log('� Pas de ownership ou erreur');
+        }
+        
+        // Charger les données du salon
+        if (salonResponse.status === 'fulfilled' && salonResponse.value.ok) {
+          const salonResponseData = await salonResponse.value.json();
+          console.log('✅ Données salon reçues:', salonResponseData);
         
         if (salonResponse.ok) {
           const salonResponseData = await salonResponse.json();
+  useEffect(() => {
+    const loadSalonData = async () => {
+      try {
+        // ✅ CORRECTION : Charger les données publiques ET vérifier ownership en parallèle
+        console.log('🔍 Chargement salon public:', salonSlug);
+        
+        const [salonResponse, ownershipResponse] = await Promise.allSettled([
+          fetch(`/api/salon/${salonSlug}`),
+          fetch(`/api/salon/${salonSlug}/ownership`)
+        ]);
+        
+        // Vérifier d'abord l'ownership
+        if (ownershipResponse.status === 'fulfilled' && ownershipResponse.value.ok) {
+          const ownershipData = await ownershipResponse.value.json();
+          setIsOwner(ownershipData.isOwner);
+          console.log('🔐 Ownership vérifié:', ownershipData.isOwner);
+        } else {
+          setIsOwner(false);
+          console.log('🔐 Pas de ownership ou erreur');
+        }
+        
+        // Charger les données du salon
+        if (salonResponse.status === 'fulfilled' && salonResponse.value.ok) {
+          const salonResponseData = await salonResponse.value.json();
           console.log('✅ Données salon reçues:', salonResponseData);
           
           if (salonResponseData) {
@@ -140,10 +183,7 @@ export function useSalonPageTemplate(salonSlug: string): {
                       description: service.description || `Service ${service.name || 'professionnel'}`,
                       price: service.price || 0,
                       duration: parseInt(service.duration) || 30,
-                      category: category.name || 'Services',
-                      rating: service.rating || 4.5,
-                      reviewCount: service.reviewCount || 0,
-                      photos: service.photos || []
+                      category: category.name || 'Services'
                     });
                   });
                 }
@@ -174,84 +214,77 @@ export function useSalonPageTemplate(salonSlug: string): {
           console.error('❌ Erreur lors du chargement du salon:', salonResponse.status);
         }
         
-        // Fallback: essayer la route ownership
-        try {
-          const ownershipResponse = await fetch(`/api/salon/${salonSlug}/ownership`);
-          if (ownershipResponse.ok) {
-            const ownershipData = await ownershipResponse.json();
-            setIsOwner(ownershipData.isOwner);
+        // Si les données publiques ne sont pas disponibles, utiliser les données d'ownership s'il y en a
+        if (ownershipResponse.status === 'fulfilled' && ownershipResponse.value.ok) {
+          const ownershipData = await ownershipResponse.value.json();
+          
+          if (ownershipData.salon) {
+            const salon = ownershipData.salon;
+            const mappedSalonData: SalonData = {
+              id: salon.id,
+              name: salon.name,
+              slug: salon.slug || salonSlug,
+              description: salon.description || `Salon de beauté professionnel ${salon.name}`,
+              address: salon.address || "Adresse non renseignée",
+              phone: salon.phone || "Téléphone non renseigné",
+              rating: salon.rating || 4.8,
+              reviewsCount: salon.reviewCount || 0,
+              coverImageUrl: salon.photos?.[0] || salon.coverImageUrl,
+              logo: salon.logoUrl,
+              openingHours: salon.openingHours || {
+                lundi: { open: '09:00', close: '19:00' },
+                mardi: { open: '09:00', close: '19:00' },
+                mercredi: { open: '09:00', close: '19:00' },
+                jeudi: { open: '09:00', close: '19:00' },
+                vendredi: { open: '09:00', close: '19:00' },
+                samedi: { open: '09:00', close: '18:00' },
+                dimanche: { closed: true, open: '', close: '' }
+              },
+              amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
+              priceRange: salon.priceRange || '€€',
+              customColors: salon.customColors
+            };
             
-            if (ownershipData.salon) {
-              const salon = ownershipData.salon;
-              const mappedSalonData: SalonData = {
-                slug: salon.slug || salonSlug,
-                description: salon.description || `Salon de beauté professionnel ${salon.name}`,
-                address: salon.address || "Adresse non renseignée",
-                phone: salon.phone || "Téléphone non renseigné",
-                rating: salon.rating || 4.8,
-                reviewsCount: salon.reviewCount || 0,
-                coverImageUrl: salon.photos?.[0] || salon.coverImageUrl,
-                logo: salon.logoUrl,
-                openingHours: salon.openingHours || {
-                  lundi: { open: '09:00', close: '19:00' },
-                  mardi: { open: '09:00', close: '19:00' },
-                  mercredi: { open: '09:00', close: '19:00' },
-                  jeudi: { open: '09:00', close: '19:00' },
-                  vendredi: { open: '09:00', close: '19:00' },
-                  samedi: { open: '09:00', close: '18:00' },
-                  dimanche: { closed: true, open: '', close: '' }
-                },
-                amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
-                priceRange: salon.priceRange || '€€',
-                customColors: salon.customColors
-              };
+            setSalonData(mappedSalonData);
+            
+            // ✅ Extraire les services des catégories pour propriétaire aussi
+            if (salon.serviceCategories && salon.serviceCategories.length > 0) {
+              const extractedServices: SalonService[] = [];
               
-              setSalonData(mappedSalonData);
-              
-              // ✅ Extraire les services des catégories pour propriétaire aussi
-              if (salon.serviceCategories && salon.serviceCategories.length > 0) {
-                const extractedServices: SalonService[] = [];
-                
-                salon.serviceCategories.forEach((category: any) => {
-                  if (category.services && category.services.length > 0) {
-                    category.services.forEach((service: any) => {
-                      extractedServices.push({
-                        id: service.id,
-                        name: service.name,
-                        description: service.description || `Service ${service.name}`,
-                        price: service.price,
-                        duration: service.duration,
-                        category: category.name || 'Services',
-                        rating: service.rating,
-                        reviewCount: service.reviewCount,
-                        photos: service.photos || []
-                      });
+              salon.serviceCategories.forEach((category: any) => {
+                if (category.services && category.services.length > 0) {
+                  category.services.forEach((service: any) => {
+                    extractedServices.push({
+                      id: service.id,
+                      name: service.name,
+                      description: service.description || `Service ${service.name}`,
+                      price: service.price,
+                      duration: service.duration,
+                      category: category.name || 'Services'
                     });
-                  }
-                });
-                
-                setServices(extractedServices);
-                console.log('✅ Services propriétaire extraits:', extractedServices.length);
-              }
+                  });
+                }
+              });
               
-              // ✅ Extraire l'équipe
-              if (salon.professionals && salon.professionals.length > 0) {
-                setStaff(salon.professionals);
-                console.log('✅ Équipe extraite:', salon.professionals.length);
-              }
-              
-              // ✅ Extraire les avis
-              if (salon.reviews && salon.reviews.length > 0) {
-                setReviews(salon.reviews);
-                console.log('✅ Avis extraits:', salon.reviews.length);
-              }
-              
-              setLoading(false);
-              return;
+              setServices(extractedServices);
+              console.log('✅ Services propriétaire extraits:', extractedServices.length);
             }
+            
+            // ✅ Extraire l'équipe
+            if (salon.professionals && salon.professionals.length > 0) {
+              setStaff(salon.professionals);
+              console.log('✅ Équipe extraite:', salon.professionals.length);
+            }
+            
+            // ✅ Extraire les avis
+            if (salon.reviews && salon.reviews.length > 0) {
+              setReviews(salon.reviews);
+              console.log('✅ Avis extraits:', salon.reviews.length);
+            }
+            
+            setLoading(false);
+            return;
           }
-        } catch (error) {
-          console.log('❌ Erreur propriété salon:', error);
         }
       } catch (error) {
         console.error('Erreur lors du chargement du salon:', error);

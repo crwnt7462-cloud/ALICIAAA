@@ -31,9 +31,25 @@ export default function SalonPage() {
     retry: false,
     staleTime: 5000
   });
-  // Activer le mode édition par défaut si aucun salon n'existe
+  
+  // ✅ CORRECTION: Activer le mode édition SEULEMENT si:
+  // 1. L'utilisateur est sur /salon (sa propre page) ET authentifié
+  // 2. OU si l'utilisateur est le propriétaire du salon affiché (pour d'autres URLs)
+  const isOwnSalonPage = location === '/salon' && isAuthenticated;
   const isSalonCreated = isAuthenticated && userSalon && (userSalon as any).name;
-  const [isEditing, setIsEditing] = useState(!isSalonCreated);
+  
+  // Fonction pour déterminer si l'utilisateur peut éditer ce salon
+  const canEditSalon = () => {
+    // Seul le propriétaire peut éditer sur /salon
+    if (location === '/salon') {
+      return isAuthenticated;
+    }
+    // Pour les autres pages de salon (salon public), pas d'édition autorisée
+    // TODO: Implémenter vérification d'ownership via API si nécessaire
+    return false;
+  };
+  
+  const [isEditing, setIsEditing] = useState(canEditSalon() && !isSalonCreated);
   const [salonData, setSalonData] = useState({
     nom: "Salon Excellence",
     adresse: "Paris 8ème",
@@ -784,14 +800,15 @@ export default function SalonPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div style={{ position: "absolute", top: 24, right: 32, zIndex: 100 }}>
-        {!isEditing ? (
+        {canEditSalon() && !isEditing && (
           <button
             className="bg-purple-600 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-purple-700 transition"
             onClick={() => setIsEditing(true)}
           >
             Modifier
           </button>
-        ) : (
+        )}
+        {canEditSalon() && isEditing && (
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-full font-semibold shadow hover:bg-green-700 transition"
             onClick={handleSave}
@@ -828,7 +845,7 @@ export default function SalonPage() {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
         </div>
-        {isEditing && (
+        {isEditing && canEditSalon() && (
           <div className="absolute top-4 left-4 z-20 bg-white/80 rounded-xl p-3 shadow">
             <label className="block text-sm font-medium mb-2">Changer la photo de couverture</label>
             <input type="file" accept="image/*" onChange={handleCoverImageUpload} />
@@ -948,7 +965,7 @@ export default function SalonPage() {
       <div className="max-w-full lg:max-w-7xl mx-auto p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4">
         {activeTab === 'services' && (
           <div className="space-y-4">
-            {isEditing && (
+            {isEditing && canEditSalon() && (
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold mb-4"
                 onClick={handleAddCategory}
@@ -987,7 +1004,7 @@ export default function SalonPage() {
                   ) : (
                     <p className="text-sm text-gray-600 mt-0.5">{category.description}</p>
                   )}
-                  {isEditing && (
+                  {isEditing && canEditSalon() && (
                     <button
                       className="bg-green-600 text-white px-3 py-1 rounded-full mb-2"
                       onClick={() => handleAddService(categoryIdx)}
@@ -1144,7 +1161,7 @@ export default function SalonPage() {
         )}
         {activeTab === 'equipe' && (
           <div className="space-y-4">
-            {isEditing && (
+            {isEditing && canEditSalon() && (
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold mb-4"
                 onClick={handleAddTeamMember}

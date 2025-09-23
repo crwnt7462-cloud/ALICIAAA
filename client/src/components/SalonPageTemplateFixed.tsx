@@ -26,6 +26,10 @@ import {
 interface SalonPageTemplateProps {
   salonSlug: string;
   salonData: any;
+  services?: any[];
+  staff?: any[];
+  reviews?: any[];
+  isOwner?: boolean;
   customColors?: {
     primary: string;
     accent: string;
@@ -37,7 +41,15 @@ interface SalonPageTemplateProps {
   };
 }
 
-export default function SalonPageTemplateFixed({ salonSlug, salonData, customColors }: SalonPageTemplateProps) {
+export default function SalonPageTemplateFixed({ 
+  salonSlug, 
+  salonData, 
+  services = [], 
+  staff = [], 
+  reviews = [], 
+  isOwner = false, 
+  customColors 
+}: SalonPageTemplateProps) {
   const [location] = useLocation();
   const { toast } = useToast();
   
