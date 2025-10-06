@@ -1,3 +1,4 @@
+import { broadcastServiceMutation } from '@/lib/broadcastServiceMutation';
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Plus, Scissors, Edit, Save, X, Clock, Euro } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { apiRequest } from '@/lib/queryClient';
+// import { apiRequest } from '@/lib/queryClient'; // Plus utilisé - remplacé par postUpdateSalon
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { ProHeader } from '@/components/ProHeader';
 
@@ -21,6 +22,7 @@ interface Service {
   description?: string;
   requiresDeposit: boolean;
   depositPercentage: number;
+  photos: string[];
 }
 
 interface NewService {
@@ -30,36 +32,98 @@ interface NewService {
   description: string;
   requiresDeposit: boolean;
   depositPercentage: number;
+  photos: string[];
 }
 
+
 export default function ServicesManagement() {
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Helper d'écriture local
+  async function postUpdateSalon(payload: any) {
+    const res = await fetch('/api/salon/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    let j: any = null; try { j = await res.json(); } catch {}
+    if (!res.ok) throw new Error(j?.error || res.statusText || 'Erreur');
+    return j;
+  }
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
-  
   // États séparés pour l'édition
   const [editingServiceHours, setEditingServiceHours] = useState(1);
   const [editingServiceMinutes, setEditingServiceMinutes] = useState(0);
-  
-  const salonId = "demo-user"; // TODO: récupérer dynamiquement
-  
+  // SalonId uniquement utilisé pour broadcast (legacy)
+  const salonId = "e334ec3b-9200-48d4-a9fa-cc044ade2c03"; // ID du salon de test
   const [newService, setNewService] = useState<NewService>({
     name: '',
     price: 0,
     duration: 60,
     description: '',
     requiresDeposit: false,
-    depositPercentage: 30
+    depositPercentage: 30,
+    photos: []
   });
-
   // États séparés pour les heures et minutes
   const [newServiceHours, setNewServiceHours] = useState(1);
   const [newServiceMinutes, setNewServiceMinutes] = useState(0);
 
-  // Récupération des services
+  // Handlers pour les inputs photos
+  function handlePhotoInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.trim();
+    setNewService(prev => ({ ...prev, photos: value ? value.split(',').map(url => url.trim()) : [] }));
+  }
+
+  function handleEditPhotoInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.trim();
+    setEditingService(prev => prev ? { ...prev, photos: value ? value.split(',').map(url => url.trim()) : [] } : null);
+  }
+
+  // Handlers pour les inputs photos
+
+
+  // Mutation pour supprimer un service (nouvelle méthode)
+  const deleteServiceMutation = useMutation({
+    mutationFn: async (serviceId: number) => {
+      const services = servicesData?.data ?? [];
+      const updated = services.filter((s: any) => s.id !== serviceId);
+      console.debug('[ServicesManagement] write via /api/salon/update', {len: updated.length});
+      return postUpdateSalon({ services: updated });
+    },
+    onSuccess: (_data, serviceId) => {
+      queryClient.invalidateQueries({ queryKey: ['my-salon'] });
+      broadcastServiceMutation(salonId, serviceId, 'delete');
+      toast({
+        title: 'Service supprimé',
+        description: 'Le service a été supprimé avec succès.'
+      });
+      console.debug('[services] mutation success', { type: 'delete', salonId, serviceId });
+    },
+    onError: (error: any) => {
+      const msg = error?.message || 'Impossible de supprimer le service.';
+      toast({
+        title: 'Erreur',
+        description: msg,
+        variant: 'default'
+      });
+      console.error('[ServicesManagement] error', error);
+    }
+  });
+
+  // Récupération des services depuis my-salon (nouvelle méthode)
   const { data: servicesData, isLoading: isLoadingServices } = useQuery({
-    queryKey: [`/api/salon/${salonId}/services`]
+    queryKey: ['my-salon'],
+    queryFn: async () => {
+      const res = await fetch('/api/salon/my-salon', { credentials: 'include' });
+      if (!res.ok) throw new Error('Erreur lors du chargement');
+      const data = await res.json();
+      return { ok: true, data: data.services ?? [] };
+    }
   });
 
   // Services simulés si aucune donnée n'est disponible
@@ -71,7 +135,8 @@ export default function ServicesManagement() {
       duration: 90,
       description: "Coupe personnalisée selon votre style et brushing professionnel",
       requiresDeposit: true,
-      depositPercentage: 30
+      depositPercentage: 30,
+      photos: []
     },
     {
       id: 2,
@@ -80,7 +145,8 @@ export default function ServicesManagement() {
       duration: 180,
       description: "Coloration complète avec soins restructurants inclus",
       requiresDeposit: true,
-      depositPercentage: 50
+      depositPercentage: 50,
+      photos: []
     },
     {
       id: 3,
@@ -89,7 +155,8 @@ export default function ServicesManagement() {
       duration: 210,
       description: "Technique moderne de mèches avec balayage naturel",
       requiresDeposit: true,
-      depositPercentage: 40
+      depositPercentage: 40,
+      photos: []
     },
     {
       id: 4,
@@ -98,7 +165,8 @@ export default function ServicesManagement() {
       duration: 120,
       description: "Traitement intensif à la kératine pour cheveux abîmés",
       requiresDeposit: false,
-      depositPercentage: 30
+      depositPercentage: 30,
+      photos: []
     },
     {
       id: 5,
@@ -107,67 +175,110 @@ export default function ServicesManagement() {
       duration: 45,
       description: "Coupe moderne avec finition à la tondeuse",
       requiresDeposit: false,
-      depositPercentage: 30
+      depositPercentage: 30,
+      photos: []
     }
   ];
 
-  const services: Service[] = (servicesData as any)?.services || simulatedServices;
+  // Services depuis la nouvelle API
+  const services: Service[] = Array.isArray(servicesData?.data) 
+    ? servicesData.data 
+    : [];
 
-  // Mutation pour créer un service
-  const createServiceMutation = useMutation({
-    mutationFn: async (service: NewService) => {
-      return apiRequest('POST', `/api/salon/${salonId}/services`, service);
+  // Mutation pour créer un service (nouvelle méthode)
+  const createServiceMutation = useMutation<
+    void,
+    any,
+    NewService
+  >({
+    mutationFn: async (service) => {
+      const services = servicesData?.data ?? [];
+      const newItem = { 
+        ...service, 
+        id: Date.now() + Math.random() // Génération simple d'ID temporaire
+      };
+      const updated = [...services, newItem];
+      console.debug('[ServicesManagement] write via /api/salon/update', {len: updated.length});
+      return postUpdateSalon({ services: updated });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonId}/services`] });
-      setNewService({ name: '', price: 0, duration: 60, description: '', requiresDeposit: false, depositPercentage: 30 });
+      queryClient.invalidateQueries({ queryKey: ['my-salon'] });
+      setNewService({ name: '', price: 0, duration: 60, description: '', requiresDeposit: false, depositPercentage: 30, photos: [] });
       setNewServiceHours(1);
       setNewServiceMinutes(0);
       setShowAddForm(false);
+      broadcastServiceMutation(salonId, undefined, 'create');
       toast({
         title: "Service ajouté",
         description: "Le service a été ajouté avec succès"
       });
+      console.debug('[services] mutation success', { type: 'create', salonId });
     },
-    onError: () => {
+    onError: (err: any) => {
+      const msg = err?.error || err?.message || "Impossible d'ajouter le service";
       toast({
         title: "Erreur",
-        description: "Impossible d'ajouter le service",
+        description: msg,
         variant: "destructive"
       });
+      console.error('[services] mutation error', err);
     }
   });
 
-  // Mutation pour modifier un service
-  const updateServiceMutation = useMutation({
-    mutationFn: async (service: Service) => {
-      return apiRequest('PUT', `/api/salon/${salonId}/services/${service.id}`, service);
+  // Mutation pour modifier un service (nouvelle méthode)
+  const updateServiceMutation = useMutation<
+    void,
+    any,
+    Service
+  >({
+    mutationFn: async (service) => {
+      const services = servicesData?.data ?? [];
+      const updated = services.map((s: any) => s.id === service.id ? { ...s, ...service } : s);
+      console.debug('[ServicesManagement] write via /api/salon/update', {len: updated.length});
+      return postUpdateSalon({ services: updated });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonId}/services`] });
+      queryClient.invalidateQueries({ queryKey: ['my-salon'] });
       setEditingService(null);
+      broadcastServiceMutation(salonId, editingService?.id, 'update');
       toast({
         title: "Service modifié",
         description: "Les informations ont été mises à jour"
       });
+      console.debug('[services] mutation success', { type: 'update', salonId, serviceId: editingService?.id });
+    },
+    onError: (err: any) => {
+      const msg = err?.message || "Impossible de modifier le service";
+      toast({ title: "Erreur", description: msg, variant: "destructive" });
+      console.error('[ServicesManagement] error', err);
     }
   });
 
-  const handleSubmit = () => {
-    if (!newService.name || newService.price <= 0) {
+  const handleSubmit = async () => {
+    const totalDuration = newServiceHours * 60 + newServiceMinutes;
+    if (
+      !newService.name ||
+      typeof newService.name !== 'string' ||
+      newService.price === undefined ||
+      typeof newService.price !== 'number' ||
+      newService.price <= 0 ||
+      totalDuration <= 0 ||
+      !salonId ||
+      typeof salonId !== 'string'
+    ) {
       toast({
         title: "Informations manquantes",
-        description: "Le nom et prix sont obligatoires",
+        description: "Le nom, le prix, la durée et le salon sont obligatoires",
         variant: "destructive"
       });
       return;
     }
-
-    // Calculer la durée totale en minutes
-    const totalDuration = newServiceHours * 60 + newServiceMinutes;
     const serviceToCreate = { ...newService, duration: totalDuration };
-
-    createServiceMutation.mutate(serviceToCreate);
+    try {
+      await createServiceMutation.mutateAsync(serviceToCreate);
+    } catch (error) {
+      // handled in onError
+    }
   };
 
   const handleUpdate = () => {
@@ -287,6 +398,13 @@ export default function ServicesManagement() {
                 onChange={(e) => setNewService(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
               />
+                          <Input
+                            placeholder="URLs des photos (séparées par des virgules)"
+                            value={newService.photos.join(', ')}
+                            onChange={handlePhotoInput}
+                            className="mt-2"
+                          />
+                          <p className="text-xs text-gray-500">Collez une ou plusieurs URLs d’images, séparées par des virgules.</p>
 
               {/* Configuration Acompte */}
               <div className="space-y-3">
@@ -443,6 +561,13 @@ export default function ServicesManagement() {
                         rows={2}
                         placeholder="Description"
                       />
+                                          <Input
+                                            placeholder="URLs des photos (séparées par des virgules)"
+                                            value={editingService.photos?.join(', ') || ''}
+                                            onChange={handleEditPhotoInput}
+                                            className="mt-2"
+                                          />
+                                          <p className="text-xs text-gray-500">Collez une ou plusieurs URLs d’images, séparées par des virgules.</p>
 
                       <div className="flex gap-2">
                         <Button 
@@ -467,28 +592,41 @@ export default function ServicesManagement() {
                       // Mode affichage
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                         <div className="flex-1">
+                          {/* Affichage des photos (carousel simple ou thumbnails) */}
+                          {service.photos && service.photos.length > 0 && (
+                            <div className="flex gap-2 mb-2 overflow-x-auto">
+                              {service.photos.map((url, idx) => (
+                                <img
+                                  key={idx}
+                                  src={url}
+                                  alt={service.name + ' photo ' + (idx + 1)}
+                                  className="w-16 h-16 object-cover rounded border"
+                                  style={{ minWidth: 64, minHeight: 64 }}
+                                />
+                              ))}
+                            </div>
+                          )}
                           <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                             {service.name}
                           </h3>
-                          
                           <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-3">
                             <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
                               <Euro className="h-3 w-3 mr-1" />
                               {service.price}€
                             </Badge>
-                            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {service.duration} min
-                            </Badge>
+                            {service.duration > 0 && (
+                              <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+                                <Clock className="h-3 w-3 mr-1" />
+                                {service.duration} min
+                              </Badge>
+                            )}
                           </div>
-                          
                           {service.description && (
                             <p className="text-gray-600 text-sm">
                               {service.description}
                             </p>
                           )}
                         </div>
-                        
                         <div className="flex gap-2 sm:ml-4">
                           <Button
                             variant="outline"
@@ -504,6 +642,15 @@ export default function ServicesManagement() {
                             className="w-full sm:w-auto"
                           >
                             <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={deleteServiceMutation.isPending}
+                            onClick={() => deleteServiceMutation.mutate(service.id)}
+                            className="w-full sm:w-auto text-red-600 border-red-300 hover:bg-red-50"
+                          >
+                            {deleteServiceMutation.isPending ? 'Suppression...' : 'Supprimer'}
                           </Button>
                         </div>
                       </div>

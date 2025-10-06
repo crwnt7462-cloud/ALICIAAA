@@ -16,6 +16,36 @@ export default function BusinessFeatures() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [activeSection, setActiveSection] = useState<string>('main');
+  const [publicSlug, setPublicSlug] = useState<string>('');
+
+  // Récupérer les données du salon pour obtenir le public_slug
+  const { data: userSalon } = useQuery({
+    queryKey: ["/api/salon/my-salon"],
+    queryFn: async () => {
+      const response = await fetch("/api/salon/my-salon", { credentials: "include" });
+      if (!response.ok) throw new Error("Failed to fetch salon data");
+      return response.json();
+    }
+  });
+
+  // Mettre à jour publicSlug quand les données salon arrivent
+  useEffect(() => {
+    if (userSalon?.public_slug) {
+      setPublicSlug(userSalon.public_slug);
+    } else if (!userSalon && !publicSlug) {
+      // Fallback: récupérer le slug une fois si la query principale a échoué
+      fetch('/api/salon/my-salon', { credentials: 'include' })
+        .then(r => r.json())
+        .then(d => {
+          if (d?.public_slug) {
+            setPublicSlug(d.public_slug);
+          }
+        })
+        .catch(() => {
+          // Ignorer les erreurs silencieusement
+        });
+    }
+  }, [userSalon, publicSlug]);
 
   // Récupérer l'inventaire avec vraies données API
   const { data: inventory = [] } = useQuery({
@@ -90,16 +120,19 @@ export default function BusinessFeatures() {
             <div className="bg-white rounded-lg p-3 mb-4 border">
               <div className="text-xs text-gray-500 mb-1">Lien de partage :</div>
               <div className="text-sm font-mono text-blue-600 break-all">
-                {window.location.origin}/salon/salon-demo
+                {publicSlug ? `${window.location.origin}/salon/${publicSlug}` : 'Chargement...'}
               </div>
               <div className="flex gap-2 mt-2">
                 <Button 
                   size="sm" 
                   variant="ghost" 
                   className="text-xs"
+                  disabled={!publicSlug}
                   onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/salon/salon-demo`);
-                    toast({ title: "Lien copié !" });
+                    if (publicSlug) {
+                      navigator.clipboard.writeText(`${window.location.origin}/salon/${publicSlug}`);
+                      toast({ title: "Lien copié !" });
+                    }
                   }}
                 >
                   Copier le lien
@@ -108,9 +141,12 @@ export default function BusinessFeatures() {
                   size="sm" 
                   variant="outline" 
                   className="text-xs"
+                  disabled={!publicSlug}
                   onClick={() => {
-                    console.log('🔗 OUVERTURE SALON PUBLIC depuis lien partage');
-                    window.open('/salon/salon-demo', '_blank');
+                    if (publicSlug) {
+                      console.log('🔗 OUVERTURE SALON PUBLIC depuis lien partage');
+                      window.open(`/salon/${publicSlug}`, '_blank');
+                    }
                   }}
                 >
                   Voir la page
@@ -154,9 +190,12 @@ export default function BusinessFeatures() {
             <Button
               variant="ghost"
               className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl border-2 border-orange-500"
+              disabled={!publicSlug}
               onClick={() => {
-                console.log('🔗 LIEN SALON - Vers page publique salon-demo');
-                window.open('/salon/salon-demo', '_blank');
+                if (publicSlug) {
+                  console.log('🔗 LIEN SALON - Vers page publique');
+                  window.open(`/salon/${publicSlug}`, '_blank');
+                }
               }}
             >
               <Globe className="h-5 w-5 text-orange-600" />

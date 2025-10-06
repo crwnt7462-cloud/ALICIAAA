@@ -52,7 +52,7 @@ export default function ProRegister() {
       const payload = {
         firstName: formData.firstName,
         lastName: formData.lastName,
-        salonName: formData.salonName,
+        businessName: formData.salonName, // Mapped to businessName for backend
         siret: formData.siret,
         phone: formData.phone,
         city: formData.city,
@@ -60,8 +60,8 @@ export default function ProRegister() {
         email: formData.email.trim().toLowerCase(),
         password: String(formData.password ?? "")
       };
-      console.log('Payload envoyé à /api/register:', payload);
-      await apiRequest("POST", "/api/register", payload);
+  console.log('Payload envoyé à /api/register/professional:', payload);
+  await apiRequest("POST", "/api/register/professional", payload);
       toast({
         title: "Inscription réussie !",
         description: "Votre compte professionnel a été créé.",

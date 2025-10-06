@@ -105,6 +105,15 @@ function HeroSlash() {
 
   return (
     <section className="heroSlash">
+      {/* SVG Filter for Liquid Glass Effect */}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <filter id="liquid-distortion" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence baseFrequency="0.3" numOctaves="2" result="turbulence"/>
+            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="8"/>
+          </filter>
+        </defs>
+      </svg>
       <div className="heroSlash__inner">
         
         {/* Colonne gauche */}
@@ -115,7 +124,7 @@ function HeroSlash() {
           </div>
 
           <h1 className="heroSlash__title">
-            Réservez votre<br/> rendez-vous <span className="light">beauté</span>
+            Réservez tout,<br/> <span className="light">partout</span>
           </h1>
 
           <p className="heroSlash__subtitle">
@@ -163,12 +172,9 @@ function HeroSlash() {
               </span>
             </div>
 
-            <button 
-              onClick={handleSearch}
-              className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-            >
-              Rechercher un salon
-            </button>
+            <div className="magnifier-button-webgl" onClick={handleSearch}>
+              <span className="text-webgl">Rechercher un salon</span>
+            </div>
           </div>
 
           {/* KPIs */}
@@ -642,20 +648,20 @@ export default function PublicLanding() {
               </button>
             </nav>
             
-            <div className="flex items-center gap-2 md:gap-5">
+            <div className="flex items-center gap-3 md:gap-4">
               <button 
-                className="glass-button text-black px-4 py-2 md:px-6 md:py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl text-sm md:text-base"
+                className="apple-glass-header-button"
                 onClick={() => setLocation("/client-login-modern")}
               >
-                <span className="hidden sm:inline">Se connecter</span>
-                <span className="sm:hidden">Connexion</span>
+                <span className="text-header hidden sm:inline">Se connecter</span>
+                <span className="text-header sm:hidden">Connexion</span>
               </button>
               <button 
-                className="glass-button text-black px-4 py-2 md:px-6 md:py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl text-sm md:text-base"
+                className="apple-glass-header-button pro-accent"
                 onClick={() => setLocation("/pro-login")}
               >
-                <span className="hidden sm:inline">Espace Pro</span>
-                <span className="sm:hidden">Pro</span>
+                <span className="text-header hidden sm:inline">Espace Pro</span>
+                <span className="text-header sm:hidden">Pro</span>
               </button>
             </div>
           </div>
@@ -906,23 +912,29 @@ export default function PublicLanding() {
                   }}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-6 rounded-3xl text-center transition-all duration-300 glass-button hover:shadow-xl"
+                  className="group relative p-8 rounded-3xl text-center transition-all duration-500 glass-button hover:shadow-2xl hover:scale-105"
                   style={{
-                    background: 'rgba(255, 255, 255, 0.8)',
+                    background: 'transparent',
                     backdropFilter: 'blur(20px)',
                     WebkitBackdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
                   }}
                 >
-                  <div className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center bg-gray-50 text-gray-600 group-hover:bg-violet-50 group-hover:text-violet-500 transition-all duration-300">
-                    <IconComponent className="w-6 h-6" />
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-3xl flex items-center justify-center text-gray-700 group-hover:text-gray-900 transition-all duration-300" 
+                       style={{
+                         background: 'transparent',
+                         border: '1px solid rgba(255, 255, 255, 0.1)'
+                       }}>
+                    <IconComponent className="w-7 h-7" />
                   </div>
-                  <span className="font-semibold text-sm text-gray-800 group-hover:text-violet-700 transition-colors duration-300">
+                  <span className="font-semibold text-base text-gray-900 group-hover:text-gray-800 transition-colors duration-300">
                     {service.name}
                   </span>
                   
-                  {/* Effet de brillance au survol */}
-                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12" />
+                  {/* Effet de brillance au survol amélioré */}
+                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-20 transition-all duration-500 bg-gradient-to-br from-white/50 via-white/20 to-transparent" />
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-3xl" />
                 </motion.button>
               );
             })}

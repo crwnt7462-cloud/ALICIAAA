@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import useBookingWizard from '@/hooks/useBookingWizard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -49,6 +50,7 @@ interface SalonData {
 
 export default function ModernSalonDetail() {
   const [, setLocation] = useLocation();
+  const { setSelectedService, shouldRequirePro } = useBookingWizard();
   const [activeTab, setActiveTab] = useState('services');
   const [location] = useLocation();
   
@@ -446,7 +448,26 @@ export default function ModernSalonDetail() {
                             <p className="text-sm text-gray-400">{service.price}€ • {service.duration}</p>
                           </div>
                           <button 
-                            onClick={() => setLocation('/salon-booking')}
+                            onClick={() => {
+                              try {
+                                // normalize service
+                                const normalize = (s: any) => {
+                                  const id = s.id ?? s.serviceId ?? s.service_id;
+                                  let price = s.price ?? s.amount ?? s.price_cents ?? s.cost ?? null;
+                                  if (typeof price === 'number' && price > 1000) price = price / 100;
+                                  if (typeof price === 'string' && price.match(/^\d+$/)) price = parseFloat(price);
+                                  const duration = s.duration ?? s.length ?? s.time ?? null;
+                                  return { id, name: s.name ?? s.title ?? 'Service', price, duration, raw: s };
+                                };
+                                const normalized = normalize(service);
+                                // update wizard state and persist
+                                try { setSelectedService(service.id ?? normalized.id, normalized); } catch (e) { /* ignore */ }
+                                try { localStorage.setItem('selectedService', JSON.stringify(normalized)); } catch (e) { /* ignore */ }
+                                try { window.dispatchEvent(new CustomEvent('selectedServiceChanged', { detail: normalized })); } catch (e) { /* ignore */ }
+                              } catch (e) { /* ignore normalization errors */ }
+                              // Navigate to professional selection (booking flow)
+                              setLocation('/professional-selection');
+                            }}
                             className="reservation-btn service-button rounded-full px-6 py-2 text-sm font-medium cursor-pointer"
                           >
                             Réserver

@@ -74,7 +74,20 @@ export async function apiRequest(
   }
   // --- FIN MODE MOCK ---
 
-  const token = localStorage.getItem("proToken");
+  // Utiliser le token JWT Supabase pour l'API backend
+  let token = localStorage.getItem("proToken");
+  
+  // Si c'est un token factice (pro-xxx), récupérer un vrai token JWT
+  if (token && token.startsWith("pro-")) {
+    const supabaseToken = localStorage.getItem("supabaseToken");
+    if (supabaseToken) {
+      token = supabaseToken;
+    } else {
+      // Fallback : utiliser le token de test hardcodé pour le développement
+      token = "eyJhbGciOiJIUzI1NiIsImtpZCI6IjdPcTFEbTB6VVFOeVNDS3EiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2Vma2Vra2Fqb3lmZ3R5cXppb2h5LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIyOTVjYmFlYS01YmMwLTQ4YzMtOTEzYy0xM2U2MGY0MzU1NzgiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzU4OTAwNjIxLCJpYXQiOjE3NTg4OTcwMjEsImVtYWlsIjoiYWdAZ21haWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbF92ZXJpZmllZCI6dHJ1ZX0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3NTg4OTcwMjF9XSwic2Vzc2lvbl9pZCI6IjFmMWQ2YjEzLWU0YmQtNDk0ZC1hY2FhLTc5NTk5NDA0ZjY2YyIsImlzX2Fub255bW91cyI6ZmFsc2V9.5JyfvewWQnEtVWw-6iB4ya4jm61WiKXdd86Y56zTKZ8";
+    }
+  }
+  
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;

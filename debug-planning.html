@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Planning Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+        .info { background-color: #d1ecf1; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Planning Debug</h1>
+    
+    <div class="section info">
+        <h3>1. Test d'authentification</h3>
+        <button onclick="checkAuth()">Vérifier qui est connecté</button>
+        <button onclick="loginAsSalonOwner()">Se connecter en tant que propriétaire salon</button>
+        <div id="auth-result"></div>
+    </div>
+    
+    <div class="section info">
+        <h3>2. Test API Appointments</h3>
+        <button onclick="testAppointmentsAPI()">Tester /api/appointments</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <div class="section info">
+        <h3>3. Actions rapides</h3>
+        <button onclick="goToPlanning()">Aller au Planning</button>
+        <button onclick="clearSession()">Vider la session</button>
+    </div>
+
+    <script>
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/test-whoami', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                document.getElementById('auth-result').innerHTML = `
+                    <h4>Résultat authentification:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('auth-result').innerHTML = `
+                    <div class="error">Erreur: ${error.message}</div>
+                `;
+            }
+        }
+        
+        async function loginAsSalonOwner() {
+            try {
+                const response = await fetch('/api/test-login-salon', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ 
+                        salonOwnerId: '47b38fc8-a9d5-4253-9618-08e81963af42' 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('auth-result').innerHTML = `
+                    <h4>Connexion effectuée:</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                // Vérifier immédiatement l'auth
+                setTimeout(checkAuth, 500);
+                
+            } catch (error) {
+                document.getElementById('auth-result').innerHTML = `
+                    <div class="error">Erreur connexion: ${error.message}</div>
+                `;
+            }
+        }
+        
+        async function testAppointmentsAPI() {
+            try {
+                const response = await fetch('/api/appointments', {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                document.getElementById('api-result').innerHTML = `
+                    <h4>Réponse /api/appointments:</h4>
+                    <p><strong>Nombre d'appointments:</strong> ${data.length}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('api-result').innerHTML = `
+                    <div class="error">Erreur API: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function goToPlanning() {
+            window.location.href = '/planning';
+        }
+        
+        async function clearSession() {
+            try {
+                // Pas d'endpoint de logout, on va juste recharger
+                document.cookie = 'connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+                location.reload();
+            } catch (error) {
+                console.error('Erreur clearing session:', error);
+            }
+        }
+        
+        // Auto-check au chargement
+        window.onload = function() {
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

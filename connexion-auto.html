@@ -1,0 +1,44 @@
+<!-- Page de connexion automatique pour tests -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Connexion Auto Pro</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
+        .btn { padding: 15px 30px; margin: 20px; background: #8B5CF6; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        .btn:hover { background: #7C3AED; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Connexion Rapide Pro</h1>
+    <p>Connectez-vous automatiquement au compte avec des rendez-vous</p>
+    
+    <button class="btn" onclick="connectAndRedirect()">
+        Se connecter et aller au Planning
+    </button>
+    
+    <script>
+        async function connectAndRedirect() {
+            try {
+                // Connexion automatique
+                const response = await fetch('/api/login-direct-pro', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Redirection vers le planning frontend
+                    window.location.href = 'http://localhost:5173/planning';
+                } else {
+                    alert('Erreur de connexion');
+                }
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

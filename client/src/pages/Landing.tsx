@@ -235,7 +235,13 @@ export default function Landing() {
             {/* Salon Avyento - Template officiel */}
             <Card 
               className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer max-w-md w-full"
-              onClick={() => setLocation('/salon')}
+              onClick={() => {
+                // Nettoyer le cache avant de visiter le salon de démo
+                import('@/utils/salonCache').then(({ clearSalonCache }) => {
+                  clearSalonCache();
+                  setLocation('/salon');
+                });
+              }}
             >
               <CardContent className="p-4 lg:p-6">
                 <div className="flex items-center gap-3 lg:gap-4">

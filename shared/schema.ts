@@ -396,11 +396,8 @@ export const clientPhotos = pgTable("client_photos", {
 });
 
 // Appointments
-export const INSERT INTO appointments (price, date, service_id)
-VALUES
-  (50.00, NOW() - INTERVAL '1 day', 1),
-  (75.00, NOW(), 1),
-  (100.00, NOW() + INTERVAL '1 day', 1);appointments = pgTable("appointments", {
+// TODO: Le script d'insertion SQL a été déplacé dans /sql/ si besoin. Ici, ne conserver que le modèle TypeScript.
+export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
   clientId: integer("client_id").references(() => clients.id),
@@ -935,7 +932,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   reviews: many(reviews),
   loyaltyPrograms: many(loyaltyProgram),
   promotions: many(promotions),
-  notifications: many(notifications),
+  // removed orphan relation 'notifications' (not defined/used)
   businessSettings: one(businessSettings),
   serviceCategories: many(serviceCategories),
   paymentMethods: many(paymentMethods),
@@ -948,8 +945,6 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 export const servicesRelations = relations(services, ({ one, many }) => ({
   user: one(users, {
     fields: [services.userId],
-    references: [users.id],
-  }),
     references: [users.id],
   }),
   appointments: many(appointments),
@@ -1207,8 +1202,7 @@ export type InsertLoyaltyProgram = typeof loyaltyProgram.$inferInsert;
 export type Promotion = typeof promotions.$inferSelect;
 export type InsertPromotion = typeof promotions.$inferInsert;
 
-export type Notification = typeof notifications.$inferSelect;
-export type InsertNotification = typeof notifications.$inferInsert;
+// removed orphan types Notification/InsertNotification (not defined/used)
 
 // Types déjà définis plus haut dans le fichier
 

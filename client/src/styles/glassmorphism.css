@@ -119,3 +119,656 @@
   border-radius: inherit;
   pointer-events: none;
 }
+
+/* Liquid Glass Effect */
+.liquid-glass {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 16px 32px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: url(#glass-distortion);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.liquid-glass:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 48px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 30px rgba(255, 255, 255, 0.08);
+}
+
+.liquid-glass:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.liquid-glass:hover::before {
+  left: 100%;
+}
+
+.glass-text {
+  position: relative;
+  font-weight: 600;
+  font-size: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  z-index: 2;
+}
+
+/* Magnifier Effect Button - Inspired by WebGL */
+.magnifier-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.1) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+  transform-origin: center;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.magnifier-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%);
+  border-radius: 50%;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.magnifier-button::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.1));
+  border-radius: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.magnifier-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.2) 100%);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 16px 64px rgba(0, 0, 0, 0.2),
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.magnifier-button:hover::before {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+}
+
+.magnifier-button:hover::after {
+  opacity: 1;
+}
+
+.magnifier-button:active {
+  transform: translateY(-1px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.magnifier-button .text {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, 
+    #ffffff 0%,
+    #f0f0f0 50%,
+    #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.magnifier-button:hover .text {
+  background: linear-gradient(135deg, 
+    #ffffff 0%,
+    #667eea 50%,
+    #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: scale(1.05);
+}
+
+/* Lens distortion effect */
+.magnifier-button .lens-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    rgba(255, 255, 255, 0.05) 60%,
+    transparent 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.magnifier-button:hover .lens-effect {
+  width: 200px;
+  height: 200px;
+  opacity: 0.8;
+}
+
+/* Advanced Magnifier Keyframes */
+@keyframes lens-distortion {
+  0% { 
+    transform: translate(-50%, -50%) scale(0) rotate(0deg); 
+    filter: blur(10px);
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.1) rotate(180deg); 
+    filter: blur(2px);
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(1) rotate(360deg); 
+    filter: blur(0px);
+  }
+}
+
+@keyframes magnify-pulse {
+  0%, 100% { 
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 4px 16px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 16px 64px rgba(0, 0, 0, 0.2),
+      0 8px 32px rgba(102, 126, 234, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+.magnifier-button:hover {
+  animation: magnify-pulse 2s ease-in-out infinite;
+}
+
+.magnifier-button:hover .lens-effect {
+  animation: lens-distortion 0.8s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+/* Apple-Style Glass Button avec texte violet transparent */
+.magnifier-button-webgl {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 40px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: center;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.magnifier-button-webgl::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    rgba(138, 43, 226, 0.05) 60%,
+    transparent 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+}
+
+.magnifier-button-webgl:hover::before {
+  width: 300px;
+  height: 300px;
+  opacity: 0.6;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+/* Effet de shimmer avec flou */
+.magnifier-button-webgl::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.magnifier-button-webgl:hover::after {
+  left: 100%;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.magnifier-button-webgl:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(60px) saturate(220%) brightness(1.1);
+  -webkit-backdrop-filter: blur(60px) saturate(220%) brightness(1.1);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.15),
+    0 4px 24px rgba(138, 43, 226, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.magnifier-button-webgl .text-webgl {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, 
+    rgba(138, 43, 226, 0.9) 0%,
+    rgba(75, 0, 130, 0.8) 25%,
+    rgba(138, 43, 226, 0.7) 50%,
+    rgba(147, 112, 219, 0.8) 75%,
+    rgba(138, 43, 226, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 2px rgba(138, 43, 226, 0.2));
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.magnifier-button-webgl:hover .text-webgl {
+  background: linear-gradient(135deg, 
+    rgba(138, 43, 226, 1) 0%,
+    rgba(75, 0, 130, 0.95) 25%,
+    rgba(138, 43, 226, 0.85) 50%,
+    rgba(147, 112, 219, 0.95) 75%,
+    rgba(138, 43, 226, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(138, 43, 226, 0.4));
+  transform: scale(1.02);
+}
+
+.magnifier-button-webgl:active {
+  transform: translateY(0px);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(138, 43, 226, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.1s ease;
+}
+
+.magnifier-button-webgl:active .text-webgl {
+  transform: scale(0.98);
+  filter: drop-shadow(0 1px 4px rgba(138, 43, 226, 0.3));
+}
+
+/* Animation subtile pour le focus avec flou Apple */
+.magnifier-button-webgl:focus {
+  outline: none;
+  backdrop-filter: blur(50px) saturate(200%) brightness(1.05);
+  -webkit-backdrop-filter: blur(50px) saturate(200%) brightness(1.05);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 0 4px rgba(138, 43, 226, 0.15),
+    0 0 20px rgba(138, 43, 226, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Effet de "breathing" du flou Apple */
+@keyframes apple-breathing {
+  0%, 100% {
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    transform: scale(1);
+  }
+  50% {
+    backdrop-filter: blur(45px) saturate(190%) brightness(1.02);
+    -webkit-backdrop-filter: blur(45px) saturate(190%) brightness(1.02);
+    transform: scale(1.005);
+  }
+}
+
+.magnifier-button-webgl {
+  animation: apple-breathing 4s ease-in-out infinite;
+}
+
+/* Header Buttons Apple Style */
+.apple-glass-header-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: center;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 1px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.apple-glass-header-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.apple-glass-header-button:hover::before {
+  left: 100%;
+}
+
+.apple-glass-header-button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(40px) saturate(200%) brightness(1.05);
+  -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.05);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 12px rgba(138, 43, 226, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02);
+}
+
+.apple-glass-header-button:active {
+  transform: translateY(0px);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 1px 4px rgba(138, 43, 226, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.1s ease;
+}
+
+.apple-glass-header-button .text-header {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, 
+    rgba(75, 85, 99, 0.95) 0%,
+    rgba(55, 65, 81, 0.9) 50%,
+    rgba(75, 85, 99, 0.95) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.apple-glass-header-button:hover .text-header {
+  background: linear-gradient(135deg, 
+    rgba(138, 43, 226, 0.9) 0%,
+    rgba(75, 0, 130, 0.8) 50%,
+    rgba(138, 43, 226, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 2px rgba(138, 43, 226, 0.2));
+  transform: scale(1.02);
+}
+
+/* Animation de breathing pour header buttons */
+@keyframes header-breathing {
+  0%, 100% {
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    transform: scale(1);
+  }
+  50% {
+    backdrop-filter: blur(32px) saturate(185%) brightness(1.01);
+    -webkit-backdrop-filter: blur(32px) saturate(185%) brightness(1.01);
+    transform: scale(1.002);
+  }
+}
+
+.apple-glass-header-button {
+  animation: header-breathing 5s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .apple-glass-header-button {
+    padding: 10px 20px;
+    font-size: 13px;
+    border-radius: 16px;
+  }
+}
+
+/* Bouton Pro avec accent violet */
+.apple-glass-header-button.pro-accent {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(138, 43, 226, 0.05) 50%,
+    rgba(255, 255, 255, 0.12) 100%);
+  border-color: rgba(138, 43, 226, 0.15);
+}
+
+.apple-glass-header-button.pro-accent::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(138, 43, 226, 0.1),
+    transparent
+  );
+}
+
+.apple-glass-header-button.pro-accent:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(138, 43, 226, 0.08) 50%,
+    rgba(255, 255, 255, 0.18) 100%);
+  border-color: rgba(138, 43, 226, 0.25);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 12px rgba(138, 43, 226, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(138, 43, 226, 0.05);
+}
+
+.apple-glass-header-button.pro-accent .text-header {
+  background: linear-gradient(135deg, 
+    rgba(138, 43, 226, 0.8) 0%,
+    rgba(75, 0, 130, 0.7) 50%,
+    rgba(138, 43, 226, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.apple-glass-header-button.pro-accent:hover .text-header {
+  background: linear-gradient(135deg, 
+    rgba(138, 43, 226, 1) 0%,
+    rgba(75, 0, 130, 0.95) 50%,
+    rgba(138, 43, 226, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(138, 43, 226, 0.3));
+}
+
+/* Effet Apple Glass Morphing */
+@keyframes apple-glass-morph {
+  0% { 
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 2px 16px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  50% { 
+    backdrop-filter: blur(70px) saturate(250%) brightness(1.15);
+    -webkit-backdrop-filter: blur(70px) saturate(250%) brightness(1.15);
+    box-shadow: 
+      0 16px 64px rgba(0, 0, 0, 0.18),
+      0 6px 32px rgba(138, 43, 226, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+  100% { 
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 2px 16px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Animation de flou intense au hover */
+@keyframes intense-blur {
+  0% {
+    backdrop-filter: blur(60px) saturate(220%) brightness(1.1);
+    -webkit-backdrop-filter: blur(60px) saturate(220%) brightness(1.1);
+  }
+  25% {
+    backdrop-filter: blur(80px) saturate(280%) brightness(1.2);
+    -webkit-backdrop-filter: blur(80px) saturate(280%) brightness(1.2);
+  }
+  50% {
+    backdrop-filter: blur(100px) saturate(320%) brightness(1.25);
+    -webkit-backdrop-filter: blur(100px) saturate(320%) brightness(1.25);
+  }
+  75% {
+    backdrop-filter: blur(80px) saturate(280%) brightness(1.2);
+    -webkit-backdrop-filter: blur(80px) saturate(280%) brightness(1.2);
+  }
+  100% {
+    backdrop-filter: blur(60px) saturate(220%) brightness(1.1);
+    -webkit-backdrop-filter: blur(60px) saturate(220%) brightness(1.1);
+  }
+}
+
+.magnifier-button-webgl:hover {
+  animation: intense-blur 2s ease-in-out infinite;
+}

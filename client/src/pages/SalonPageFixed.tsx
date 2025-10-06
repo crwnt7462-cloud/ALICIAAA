@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   Search, ChevronDown, Instagram, Facebook, Music
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import useSalonTeam from "@/hooks/useSalonTeam";
 
 interface SalonPageProps {
   pageUrl?: string;
@@ -37,6 +38,9 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('services');
+  
+  // Récupérer l'équipe du salon via le hook unifié
+  const { data: teamMembers, isLoading: teamLoading, error: teamError } = useSalonTeam("de331471-f436-4d82-bbc7-7e70d6af7958");
   
   // Salon par défaut si pas de données
   const defaultSalonData: SalonData = {
@@ -71,28 +75,56 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
   });
 
   // Utiliser les données par défaut si pas de réponse API
-  const pageData: SalonData = pageDataRaw || defaultSalonData;
+  // Ensure pageData always has an id (for salonId)
+  // Type guard for pageDataRaw
+  const isValidSalonData = (data: any): data is SalonData => !!data && typeof data === 'object' && 'id' in data && !!data.id;
+  const pageData: SalonData = isValidSalonData(pageDataRaw) ? pageDataRaw : defaultSalonData;
 
-  // Services par défaut
-  const defaultServices = [
-    { id: "1", name: "Coupe + Brushing", price: 65, duration: 60 },
-    { id: "2", name: "Coloration", price: 120, duration: 120 },
-    { id: "3", name: "Soin Visage", price: 80, duration: 75 },
-    { id: "4", name: "Manucure", price: 35, duration: 45 },
-    { id: "5", name: "Pédicure", price: 45, duration: 60 }
-  ];
 
-  // Récupérer les services disponibles
-  const { data: allServices = [] } = useQuery({
-    queryKey: ["/api/services"],
+  // --- PUBLIC ENDPOINT + BROADCAST + ROBUST MAPPING ---
+  // SalonId: use the real one if available, fallback to demo
+  const salonId = pageData.id || "salon-demo";
+  const queryClient = useQueryClient();
+  const { data: servicesData, isLoading: servicesLoading, refetch: refetchServices } = useQuery({
+    queryKey: [`/api/public/salon/${salonId}/services`]
   });
 
-  // Utiliser les services par défaut si pas de réponse API
-  const availableServices = Array.isArray(allServices) && allServices.length > 0 
-    ? allServices.filter((service: any) => 
-        pageData.selectedServices?.includes(service.id?.toString()) || false
-      )
-    : defaultServices;
+  // Broadcast refetch for real-time sync
+  useEffect(() => {
+    let channel: BroadcastChannel | null = null;
+    let storageListener: ((e: StorageEvent) => void) | null = null;
+    const win: Window = window;
+    const doRefetch = () => {
+      console.log('services_refetch salonId=' + salonId);
+      refetchServices();
+    };
+    if ('BroadcastChannel' in win) {
+      channel = new BroadcastChannel('services-sync');
+      channel.onmessage = () => doRefetch();
+    } else {
+      storageListener = (e: StorageEvent) => {
+        if (e.key === 'services-sync' && e.newValue) doRefetch();
+      };
+      win.addEventListener('storage', storageListener);
+    }
+    return () => {
+      if (channel) channel.close();
+      if (storageListener) win.removeEventListener('storage', storageListener);
+    };
+  }, [refetchServices, salonId]);
+
+  // Robust mapping of services (no N/A)
+  const availableServices = Array.isArray((servicesData as any)?.services)
+    ? (servicesData as any).services.map((svc: any) => ({
+        id: svc.id || svc.serviceId || svc.service_id,
+        name: svc.name || svc.service_name || 'Service',
+        price: svc.price || svc.effective_price || 0,
+        duration: svc.duration || svc.effective_duration || 30,
+        description: svc.description || '',
+        requiresDeposit: svc.requiresDeposit || svc.requires_deposit || false,
+        depositPercentage: svc.depositPercentage || svc.deposit_percentage || 30,
+      }))
+    : [];
 
   const selectedService = availableServices.find((s: any) => s.id?.toString() === formData.serviceId);
 
@@ -396,50 +428,81 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
 
         {activeTab === 'équipe' && (
           <div className="grid md:grid-cols-3 gap-6">
-            <Card>
-              <CardContent className="p-6 text-center">
-                <img 
-                  src="https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=150&h=150&fit=crop&crop=face" 
-                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                  alt="Sophie"
-                />
-                <h3 className="font-semibold text-lg">Sophie</h3>
-                <p className="text-purple-600 font-medium">Esthéticienne Senior</p>
-                <p className="text-sm text-gray-600 mt-2">
-                  Spécialiste en soins anti-âge avec 8 ans d'expérience
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6 text-center">
-                <img 
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" 
-                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                  alt="Marc"
-                />
-                <h3 className="font-semibold text-lg">Marc</h3>
-                <p className="text-purple-600 font-medium">Coiffeur Styliste</p>
-                <p className="text-sm text-gray-600 mt-2">
-                  Expert en coloration et techniques avant-gardistes
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6 text-center">
-                <img 
-                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face" 
-                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                  alt="Léa"
-                />
-                <h3 className="font-semibold text-lg">Léa</h3>
-                <p className="text-purple-600 font-medium">Manucure Expert</p>
-                <p className="text-sm text-gray-600 mt-2">
-                  Spécialiste nail art et soins des ongles
-                </p>
-              </CardContent>
-            </Card>
+            {teamLoading ? (
+              // Skeleton loading - réutilisation du pattern existant
+              Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i}>
+                  <CardContent className="p-6 text-center">
+                    <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gray-200 animate-pulse"></div>
+                    <div className="h-6 bg-gray-200 rounded mx-auto mb-2 w-20 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded mx-auto mb-3 w-32 animate-pulse"></div>
+                    <div className="h-3 bg-gray-200 rounded mx-auto w-40 animate-pulse"></div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : teamError ? (
+              // Gestion d'erreur discrète avec fallback
+              <>
+                {console.log('team_fallback_mock', { error: teamError.message })}
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <img 
+                      src="https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=150&h=150&fit=crop&crop=face" 
+                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                      alt="Sophie"
+                    />
+                    <h3 className="font-semibold text-lg">Sophie</h3>
+                    <p className="text-purple-600 font-medium">Esthéticienne Senior</p>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Spécialiste en soins anti-âge avec 8 ans d'expérience
+                    </p>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              // Données réelles depuis le hook unifié
+              teamMembers.map((member) => (
+                <Card key={member.id}>
+                  <CardContent className="p-6 text-center">
+                    <img 
+                      src={member.photo}
+                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                      alt={member.name}
+                    />
+                    <h3 className="font-semibold text-lg">{member.name}</h3>
+                    <p className="text-purple-600 font-medium">{member.role}</p>
+                    {member.bio && (
+                      <p className="text-sm text-gray-600 mt-2">
+                        {member.bio}
+                      </p>
+                    )}
+                    {member.specialties.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-3 justify-center">
+                        {member.specialties.slice(0, 2).map((specialty, i) => (
+                          <span key={i} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+                            {specialty}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {/* Bouton "Réserver avec ce pro" - navigation vers flux booking */}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-3"
+                      onClick={() => {
+                        // Stocker le professionnel sélectionné
+                        localStorage.setItem('selectedProfessional', JSON.stringify(member));
+                        // Aller d'abord vers la sélection de service, qui redirigera vers professionnel puis datetime
+                        setLocation('/service-selection');
+                      }}
+                    >
+                      Réserver
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         )}
 

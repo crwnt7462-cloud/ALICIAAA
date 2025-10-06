@@ -1,4 +1,3 @@
-git push --force origin main// @ts-nocheck
 import Stripe from 'stripe';
 import { SUBSCRIPTION_PLANS } from '../shared/subscriptionPlans';
 
@@ -219,10 +218,12 @@ export async function listCustomerSubscriptions(customerEmail: string) {
       limit: 1,
     });
 
-    if (customers.data.length === 0) {
+
+
+    if (!customers.data.length || !customers.data[0]?.id) {
       return [];
     }
-
+    // guard optional: check customers.data[0].id before access
     const subscriptions = await stripe.subscriptions.list({
       customer: customers.data[0].id,
     });

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -105,19 +106,27 @@ const employees: Employee[] = [
   }
 ];
 
-// Clients existants pour l'autocomplétion
-const existingClients = [
-  { id: 1, name: "Sophie Martin", phone: "06 12 34 56 78", email: "sophie.martin@email.com", lastVisit: "2024-08-15" },
-  { id: 2, name: "Emma Dubois", phone: "06 23 45 67 89", email: "emma.dubois@email.com", lastVisit: "2024-08-18" },
-  { id: 3, name: "Julie Laurent", phone: "06 34 56 78 90", email: "julie.laurent@email.com", lastVisit: "2024-08-10" },
-  { id: 4, name: "Marie Dupont", phone: "06 45 67 89 01", email: "marie.dupont@email.com", lastVisit: "2024-08-12" },
-  { id: 5, name: "Claire Moreau", phone: "06 56 78 90 12", email: "claire.moreau@email.com", lastVisit: "2024-08-19" },
-  { id: 6, name: "Léa Bernard", phone: "06 67 89 01 23", email: "lea.bernard@email.com", lastVisit: "2024-08-14" },
-  { id: 7, name: "Camille Rousseau", phone: "06 78 90 12 34", email: "camille.rousseau@email.com", lastVisit: "2024-08-16" },
-  { id: 8, name: "Manon Petit", phone: "06 89 01 23 45", email: "manon.petit@email.com", lastVisit: "2024-08-17" },
-  { id: 9, name: "Alice Roux", phone: "06 90 12 34 56", email: "alice.roux@email.com", lastVisit: "2024-08-13" },
-  { id: 10, name: "Lucie Simon", phone: "06 01 23 45 67", email: "lucie.simon@email.com", lastVisit: "2024-08-11" }
-];
+// Types pour les clients (sans données factices)
+interface Client {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  lastVisit: string;
+}
+
+// Types pour les événements/RDV (sans données factices)
+interface AppointmentEvent {
+  id: number;
+  title: string;
+  client: string;
+  time: string;
+  serviceId: number | null;
+  employeeId: string;
+  status: 'confirmed' | 'scheduled' | 'blocked';
+  notes: string;
+  type: 'client' | 'blocked';
+}
 
 // Services beauté
 const beautyServices: ServiceType[] = [
@@ -135,9 +144,20 @@ const beautyServices: ServiceType[] = [
 
 export default function PlanningResponsive() {
   const isMobile = useIsMobile();
-  // Variables simplifiées sans dépendances externes problématiques
 
-  // États pour la navigation
+  // Récupération des employés depuis l'API Supabase
+  const { data: staffData = [], isLoading: staffLoading, error: staffError } = useQuery({
+    queryKey: ["/api/staff"],
+    queryFn: async () => {
+      const response = await fetch("/api/staff");
+      if (!response.ok) {
+        throw new Error("Erreur lors du chargement des employés");
+      }
+      return response.json();
+    }
+  });
+
+  // États pour la navigation (tous les hooks doivent être avant les returns conditionnels)
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -158,6 +178,7 @@ export default function PlanningResponsive() {
     employee: '',
     date: '',
     time: '',
+    endTime: '',
     duration: 60,
     notes: '',
     type: 'client' // 'client' ou 'blocked'
@@ -167,62 +188,191 @@ export default function PlanningResponsive() {
   // États pour l'autocomplétion des clients
   const [clientSearchTerm, setClientSearchTerm] = useState("");
   const [showClientSuggestions, setShowClientSuggestions] = useState(false);
-  const [filteredClients, setFilteredClients] = useState([]);
+  const [filteredClients, setFilteredClients] = useState<Client[]>([]);
+
+  // Récupération des appointments depuis l'API (pour toute la semaine visible)
+  const { data: appointmentsData = [], isLoading: appointmentsLoading, error: appointmentsError } = useQuery({
+    queryKey: ["/api/appointments", currentWeekOffset, selectedEmployee, viewMode],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      
+      // Pour la vue semaine, on charge les appointments de toute la semaine
+      if (viewMode === 'week') {
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        
+        // On ne filtre pas par date pour récupérer tous les appointments de la semaine
+      } else {
+        // Pour la vue mois, on peut garder le filtre par date sélectionnée
+        if (selectedDate) {
+          params.append('date', selectedDate.toISOString().split('T')[0]);
+        }
+      }
+      
+      if (selectedEmployee && selectedEmployee !== 'all') {
+        params.append('staff_id', selectedEmployee);
+      }
+      
+      const response = await fetch(`/api/appointments?${params}`, {
+        credentials: 'include' // IMPORTANT: pour transmettre les cookies de session
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors du chargement des rendez-vous");
+      }
+      const data = await response.json();
+      console.log('📊 Planning API Response:', {
+        url: `/api/appointments?${params}`,
+        status: response.status,
+        dataLength: data.length,
+        data: data
+      });
+      return data;
+    }
+  });
+
+  // Transformation des données de l'API en format attendu par le planning
+  const employees: Employee[] = useMemo(() => {
+    if (!staffData || staffData.length === 0) {
+      // Données de fallback si l'API ne fonctionne pas
+      return [
+        { 
+          id: "1", 
+          name: "Sarah Martin", 
+          color: "#8B5CF6", 
+          avatar: "SM",
+          specialties: ["Coupe", "Coloration", "Lissage"]
+        },
+        { 
+          id: "2", 
+          name: "Emma Dubois", 
+          color: "#06B6D4", 
+          avatar: "ED",
+          specialties: ["Manucure", "Pédicure", "Nail Art"]
+        },
+        { 
+          id: "3", 
+          name: "Julie Moreau", 
+          color: "#F59E0B", 
+          avatar: "JM",
+          specialties: ["Soins visage", "Épilation", "Massage"]
+        },
+        { 
+          id: "4", 
+          name: "Léa Bernard", 
+          color: "#EF4444", 
+          avatar: "LB",
+          specialties: ["Extensions", "Tresses", "Coiffure mariée"]
+        }
+      ];
+    }
+
+    // Couleurs prédéfinies pour les employés
+    const colors = ["#8B5CF6", "#06B6D4", "#F59E0B", "#EF4444", "#10B981", "#F97316", "#EC4899", "#6366F1"];
+
+    return staffData.map((staff: any, index: number) => ({
+      id: String(staff.id || index + 1),
+      name: staff.firstName && staff.lastName ? `${staff.firstName} ${staff.lastName}` : (staff.name || 'Employé'),
+      color: colors[index % colors.length],
+      avatar: staff.firstName && staff.lastName 
+        ? `${staff.firstName.charAt(0)}${staff.lastName.charAt(0)}`.toUpperCase()
+        : (staff.name ? staff.name.split(' ').map((n: string) => n.charAt(0)).join('').toUpperCase() : 'E'),
+      specialties: Array.isArray(staff.specialties) ? staff.specialties : (staff.role ? [staff.role] : ['Généraliste'])
+    }));
+  }, [staffData]);
+
+  console.log('🔄 Planning: employés chargés depuis API', { count: employees.length, employees });
+  console.log('📊 Planning: appointments reçus', { 
+    count: appointmentsData?.length || 0, 
+    appointments: appointmentsData,
+    isLoading: appointmentsLoading,
+    error: appointmentsError 
+  });
+
+  // Calcul des données calendrier (useMemo doit être avant les returns conditionnels)
+  const { currentWeek, currentMonth, monthDays } = useMemo(() => {
+    if (viewMode === 'week') {
+      const today = new Date();
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
+      
+      const week = [];
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(startOfWeek);
+        day.setDate(startOfWeek.getDate() + i);
+        week.push(day);
+      }
+      
+      return {
+        currentWeek: week,
+        currentMonth: startOfWeek.toLocaleDateString('fr-FR', { month: 'long' }),
+        monthDays: [],
+      };
+    } else {
+      const firstDay = new Date(selectedYear, selectedMonth, 1);
+      const startDate = new Date(firstDay);
+      startDate.setDate(startDate.getDate() - firstDay.getDay());
+      
+      const monthDays = [];
+      for (let i = 0; i < 42; i++) {
+        const day = new Date(startDate);
+        day.setDate(startDate.getDate() + i);
+        monthDays.push(day);
+      }
+      
+      return {
+        currentWeek: [],
+        currentMonth: new Date(selectedYear, selectedMonth).toLocaleDateString('fr-FR', { month: 'long' }),
+        monthDays,
+      };
+    }
+  }, [viewMode, currentWeekOffset, selectedMonth, selectedYear]);
+
+  // Affichage d'erreur ou de chargement pour les employés (après tous les hooks)
+  if (staffLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement des employés...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (staffError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Erreur lors du chargement des employés</p>
+          <p className="text-gray-500">Utilisation des données de test...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Suppression des fonctions non utilisées pour corriger les erreurs
 
-  // Rendez-vous d'exemple pour démonstration avec différents statuts
-  const currentHour = new Date().getHours();
-  
-  const sampleAppointmentsMobile = [
-    {
-      id: 1,
-      serviceName: "Coupe + Brushing",
-      clientName: "Sophie Martin",
-      startTime: "08:00",
-      endTime: "09:00", 
-      status: "confirmed",
-      date: new Date(),
-    },
-    {
-      id: 2, 
-      serviceName: "Coloration",
-      clientName: "Emma Dubois",
-      startTime: String(Math.max(8, currentHour - 1)).padStart(2, '0') + ":00",
-      endTime: String(Math.min(20, currentHour + 1)).padStart(2, '0') + ":00",
-      status: "confirmed",
-      date: new Date(),
-    },
-    {
-      id: 3,
-      serviceName: "Manucure",
-      clientName: "Julie Laurent", 
-      startTime: String(Math.min(18, currentHour + 2)).padStart(2, '0') + ":00",
-      endTime: String(Math.min(19, currentHour + 3)).padStart(2, '0') + ":00",
-      status: "pending",
-      date: new Date(),
-    }
-  ];
-
   // Fonction pour récupérer les RDV d'une date
-  const getAppointmentsForDate = (date: Date) => {
-    return sampleAppointmentsMobile.filter(apt => 
-      apt.date.toDateString() === date.toDateString()
-    );
+  const getAppointmentsForDate = (date: Date): AppointmentType[] => {
+    const dateStr = date.toISOString().split('T')[0];
+    return (appointmentsData || []).filter((apt: any) => apt.date === dateStr);
   };
 
   // Fonction pour vérifier si un RDV est en cours
-  const isAppointmentCurrent = (appointment: any) => {
+  const isAppointmentCurrent = (appointment: AppointmentType) => {
     const now = new Date();
     const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    return currentTime >= appointment.startTime && currentTime <= appointment.endTime;
+    return currentTime >= appointment.time && appointment.endTime && currentTime <= appointment.endTime;
   };
 
   // Fonction pour vérifier si un RDV est terminé
-  const isAppointmentFinished = (appointment: any) => {
+  const isAppointmentFinished = (appointment: AppointmentType) => {
     const now = new Date();
     const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    return currentTime > appointment.endTime;
+    return appointment.endTime && currentTime > appointment.endTime;
   };
 
   // Fonction pour gérer le clic sur un créneau
@@ -231,19 +381,16 @@ export default function PlanningResponsive() {
     setIsActionChoiceOpen(true);
   };
 
-  // Fonction pour filtrer les clients selon la recherche
+  // Fonction pour filtrer les clients selon la recherche (sans données factices)
   const handleClientSearch = (searchTerm: string) => {
     setClientSearchTerm(searchTerm);
     setNewAppointment({...newAppointment, clientName: searchTerm});
     
     if (searchTerm.length > 0) {
-      const filtered = existingClients.filter(client =>
-        client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.phone.includes(searchTerm) ||
-        client.email.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredClients(filtered);
-      setShowClientSuggestions(filtered.length > 0);
+      // TODO: Implémenter la recherche client depuis l'API
+      // Pour l'instant, array vide
+      setFilteredClients([]);
+      setShowClientSuggestions(false);
     } else {
       setFilteredClients([]);
       setShowClientSuggestions(false);
@@ -265,6 +412,7 @@ export default function PlanningResponsive() {
       employee: selectedEmployee === 'all' ? '' : selectedEmployee,
       date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       time: timeSlot || '08:00',
+      endTime: '',
       duration: 60,
       notes: '',
       type: 'client'
@@ -283,6 +431,7 @@ export default function PlanningResponsive() {
       employee: selectedEmployee === 'all' ? '' : selectedEmployee,
       date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       time: timeSlot || '08:00',
+      endTime: '',
       duration: 60,
       notes: '',
       type: 'blocked'
@@ -324,6 +473,7 @@ export default function PlanningResponsive() {
       employee: '',
       date: '',
       time: '',
+      endTime: '',
       duration: 60,
       notes: '',
       type: 'client'
@@ -332,115 +482,7 @@ export default function PlanningResponsive() {
     setSelectedTimeSlot(null);
   };
 
-  // Calcul des données calendrier
-  const { currentWeek, currentMonth, monthDays } = useMemo(() => {
-    if (viewMode === 'week') {
-      const today = new Date();
-      const startOfWeek = new Date(today);
-      startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
-      
-      const week = [];
-      for (let i = 0; i < 7; i++) {
-        const day = new Date(startOfWeek);
-        day.setDate(startOfWeek.getDate() + i);
-        week.push(day);
-      }
-      
-      return {
-        currentWeek: week,
-        currentMonth: startOfWeek.toLocaleDateString('fr-FR', { month: 'long' }),
-        monthDays: [],
-      };
-    } else {
-      const firstDay = new Date(selectedYear, selectedMonth, 1);
-      const startDate = new Date(firstDay);
-      startDate.setDate(startDate.getDate() - firstDay.getDay());
-      
-      const monthDays = [];
-      for (let i = 0; i < 42; i++) {
-        const day = new Date(startDate);
-        day.setDate(startDate.getDate() + i);
-        monthDays.push(day);
-      }
-      
-      return {
-        currentWeek: [],
-        currentMonth: firstDay.toLocaleDateString('fr-FR', { month: 'long' }),
-        monthDays,
-      };
-    }
-  }, [currentWeekOffset, viewMode, selectedMonth, selectedYear]);
-
-  // Rendez-vous simulés avec types
-  const beautySampleEvents = [
-    { 
-      id: 1, 
-      title: "Coupe + Brushing", 
-      client: "Marie Durand",
-      time: "09:00-10:00", 
-      serviceId: 1,
-      employeeId: "1",
-      status: "confirmed",
-      notes: "Première visite",
-      type: "client"
-    },
-    { 
-      id: 2, 
-      title: "Coloration", 
-      client: "Sophie Laurent",
-      time: "10:30-12:30", 
-      serviceId: 2,
-      employeeId: "1",
-      status: "confirmed",
-      notes: "Châtain clair",
-      type: "client"
-    },
-    { 
-      id: 3, 
-      title: "Manucure", 
-      client: "Claire Moreau",
-      time: "10:00-10:45", 
-      serviceId: 4,
-      employeeId: "2",
-      status: "scheduled",
-      notes: "French manucure",
-      type: "client"
-    },
-    { 
-      id: 4, 
-      title: "Soin Visage", 
-      client: "Lucie Bernard",
-      time: "14:00-15:30", 
-      serviceId: 7,
-      employeeId: "3",
-      status: "confirmed",
-      notes: "Peau sensible",
-      type: "client"
-    },
-    // Exemples de créneaux bloqués
-    { 
-      id: 5, 
-      title: "BLOQUÉ", 
-      client: "Pause déjeuner",
-      time: "12:00-13:00", 
-      serviceId: null,
-      employeeId: "1",
-      status: "blocked",
-      notes: "Pause déjeuner",
-      type: "blocked"
-    },
-    { 
-      id: 6, 
-      title: "BLOQUÉ", 
-      client: "Formation",
-      time: "16:00-17:00", 
-      serviceId: null,
-      employeeId: "2",
-      status: "blocked",
-      notes: "Formation produits",
-      type: "blocked"
-    }
-  ];
+  // Données de planning propres (sans données factices)
 
   // Fonction supprimée car non utilisée
 
@@ -588,7 +630,7 @@ export default function PlanningResponsive() {
               const hour = i + 6; // De 6h à 23h
               const hourStr = `${hour.toString().padStart(2, '0')}:00`;
               const appointments = getAppointmentsForDate(selectedDate).filter(apt => 
-                parseInt(apt.startTime?.split(':')[0] || '0') === hour
+                parseInt(apt.time?.split(':')[0] || '0') === hour
               );
               
               return (
@@ -625,9 +667,9 @@ export default function PlanningResponsive() {
                             }`}
                           >
                             <div className="flex justify-between items-start mb-1">
-                              <h4 className="font-medium text-gray-900 text-sm">{appointment.serviceName}</h4>
+                              <h4 className="font-medium text-gray-900 text-sm">{appointment.service}</h4>
                               <span className="text-xs text-gray-500">
-                                {appointment.startTime} - {appointment.endTime}
+                                {appointment.time} - {appointment.endTime}
                               </span>
                             </div>
                             <p className="text-sm text-gray-600">{appointment.clientName}</p>
@@ -636,11 +678,11 @@ export default function PlanningResponsive() {
                                 ? 'bg-purple-200 text-purple-800'
                                 : isFinishedAppointment
                                   ? 'bg-green-200 text-green-800'
-                                  : appointment.status === 'confirmed' 
+                                  : appointment.type === 'client' 
                                     ? 'bg-gray-200 text-gray-700' 
                                     : 'bg-yellow-100 text-yellow-700'
                             }`}>
-                              {isCurrentAppointment ? 'En cours' : isFinishedAppointment ? 'Terminé' : appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
+                              {isCurrentAppointment ? 'En cours' : isFinishedAppointment ? 'Terminé' : appointment.type === 'client' ? 'Confirmé' : 'Bloqué'}
                             </div>
                           </div>
                         );
@@ -668,7 +710,7 @@ export default function PlanningResponsive() {
           {Array.from({ length: 12 }, (_, i) => {
             const hour = 8 + i;
             const timeSlot = `${hour.toString().padStart(2, '0')}:00`;
-            const dayEvents = beautySampleEvents.filter(() => Math.random() > 0.7);
+            const dayEvents: AppointmentEvent[] = []; // Suppression des données factices
             const eventsAtThisTime = dayEvents.filter(event => event.time.startsWith(timeSlot));
             const hasClientEvent = eventsAtThisTime.some(event => event.type === 'client');
             
@@ -872,7 +914,7 @@ export default function PlanningResponsive() {
                 {/* Colonnes des jours */}
                 {currentWeek.map((day, dayIndex) => {
                   const isToday = day.toDateString() === new Date().toDateString();
-                  const dayEvents = beautySampleEvents.filter(() => Math.random() > 0.7);
+                  const dayEvents: AppointmentEvent[] = []; // Suppression des données factices
 
                   return (
                     <div key={dayIndex} className="space-y-2">
@@ -997,7 +1039,7 @@ export default function PlanningResponsive() {
                 {monthDays.map((date, index) => {
                   const isToday = date.toDateString() === new Date().toDateString();
                   const isCurrentMonth = date.getMonth() === selectedMonth;
-                  const dayEvents = beautySampleEvents.filter(() => Math.random() > 0.8).slice(0, 3);
+                  const dayEvents: AppointmentEvent[] = []; // Suppression des données factices
 
                   const isSelected = selectedDate?.toDateString() === date.toDateString();
                   

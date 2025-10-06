@@ -2451,8 +2451,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         customerName,
         appointmentId,
         salonName,
-        successUrl: `${process.env.FRONTEND_URL || 'http://localhost:5000'}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${process.env.FRONTEND_URL || 'http://localhost:5000'}/booking`
+  successUrl: `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
+  cancelUrl: `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`}/booking`
       });
       
       console.log('✅ Session Stripe créée:', session.sessionId);
@@ -2518,8 +2518,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           customerName,
           type: 'subscription'
         },
-        success_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}/cancel`,
+  success_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || `localhost:${process.env.PORT || 3000}`}/success?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || `localhost:${process.env.PORT || 3000}`}/cancel`,
         subscription_data: {
           trial_period_days: 14,
         },
@@ -2604,8 +2604,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           originalAmount: String(amount),
           detectedFormat: amountValidation.detectedFormat,
         },
-        success_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}/cancel`,
+  success_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || `localhost:${process.env.PORT || 3000}`}/success?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || `localhost:${process.env.PORT || 3000}`}/cancel`,
       });
       
       console.log(`✅ [STRIPE] CheckoutSession créée: ${session.id} pour ${amountValidation.amountInEuros.toFixed(2)}€`);
@@ -3855,7 +3855,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         message: 'Inscription réussie avec création automatique de page salon',
         business,
         salon: createdSalon,
-        salonUrl: `http://localhost:5000${createdSalon.shareableUrl}`,
+  salonUrl: `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`}${createdSalon.shareableUrl}`,
         editorUrl: `/salon-editor/${createdSalon.id}`,
         subscriptionPlan
       });
@@ -3892,7 +3892,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         success: true,
         message: 'Salon de test créé avec succès',
         salon: testSalon,
-        publicUrl: `http://localhost:5000${testSalon.shareableUrl}`,
+  publicUrl: `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`}${testSalon.shareableUrl}`,
         editorUrl: `/salon-editor/${testSalon.id}`
       });
 
@@ -4208,6 +4208,12 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   });
 
   // INSCRIPTION DIRECTE SANS VERIFICATION PAR CODE
+  // Alias: some clients call /api/register (legacy) — forward POSTs to professional registration
+  app.post('/api/register', async (req, res) => {
+    console.log('Alias /api/register called - forwarding to /api/register/professional');
+    // Use 307 to preserve the method and body for the redirected request
+    return res.redirect(307, '/api/register/professional');
+  });
 
   // ROUTE D'INSCRIPTION DIRECTE POUR PROFESSIONNELS AVEC ABONNEMENTS
   app.post('/api/register/professional', async (req, res) => {

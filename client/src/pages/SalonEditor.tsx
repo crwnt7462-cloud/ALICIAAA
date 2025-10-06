@@ -9,6 +9,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUpdateSalon } from "@/hooks/useUpdateSalon";
 import { useToast } from "@/hooks/use-toast";
+
 import {
   Save,
   Eye,
@@ -23,21 +24,11 @@ import {
 type CustomColors = {
   primary: string;
   accent: string;
-  buttonText: string;
-  buttonClass: string;
-  intensity: number;
-  priceColor: string;
-  neonFrame: string;
 };
 
 const DEFAULT_CUSTOM_COLORS: CustomColors = {
   primary: "#f59e0b",
   accent: "#d97706",
-  buttonText: "#ffffff",
-  buttonClass: "btn-primary",
-  intensity: 35,
-  priceColor: "#111827",
-  neonFrame: "#a855f7",
 };
 
 function normalizeCustomColors(c?: Partial<CustomColors> | null): CustomColors {
@@ -104,6 +95,14 @@ export default function SalonEditor() {
           toast({ title: "Aucune ligne modifiée", description: "Droits ou ownership manquants.", variant: "default" });
         } else {
           toast({ title: "Salon mis à jour", description: "Vos modifications ont été sauvegardées avec succès." });
+          // Invalidate queries to refresh data
+          queryClient.invalidateQueries({ queryKey: ['/api/salon/my-salon'] });
+          queryClient.invalidateQueries({ queryKey: ['salon'] });
+          queryClient.invalidateQueries({ queryKey: ['salons'] });
+          // Force refresh after a small delay
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
       },
       onError: (err) => {
@@ -303,58 +302,138 @@ export default function SalonEditor() {
           )}
 
           {activeTab === 'colors' && (
-            <div className="max-w-2xl space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900">Personnalisation des couleurs</h2>
-              
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="block mb-2" htmlFor="salon-primary">Couleur principale</label>
-                  <input
-                    id="salon-primary"
-                    type="color"
-                    className="w-full h-12 rounded-lg border border-gray-300"
-                    value={editingData.customColors?.primary || '#7c3aed'}
-                    onChange={(e) => setEditingData({
-                      ...editingData,
-                      customColors: normalizeCustomColors({
-                        ...editingData.customColors,
-                        primary: e.target.value
-                      })
-                    })}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2" htmlFor="salon-accent">Couleur d'accent</label>
-                  <input
-                    id="salon-accent"
-                    type="color"
-                    className="w-full h-12 rounded-lg border border-gray-300"
-                    value={editingData.customColors?.accent || '#a855f7'}
-                    onChange={(e) => setEditingData({
-                      ...editingData,
-                      customColors: normalizeCustomColors({
-                        ...editingData.customColors,
-                        accent: e.target.value
-                      })
-                    })}
-                  />
-                </div>
+            <div className="max-w-4xl space-y-8">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">🎨 Personnalisation des couleurs</h2>
+                <p className="text-gray-600 text-sm mt-1">Personnalisez l'apparence de vos boutons de réservation et éléments interactifs</p>
               </div>
               
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Aperçu</h3>
-                <div className="space-y-2">
-                  <div 
-                    className="px-4 py-2 rounded-lg text-white text-center"
-                    style={{ backgroundColor: editingData.customColors?.primary || '#7c3aed' }}
-                  >
-                    Bouton Principal
+              {/* Couleurs du salon */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-800">Personnalisation des couleurs</h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                      Couleur principale
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        className="w-12 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                        value={editingData.customColors?.primary || '#f59e0b'}
+                        onChange={(e) => setEditingData({
+                          ...editingData,
+                          customColors: normalizeCustomColors({
+                            ...editingData.customColors,
+                            primary: e.target.value
+                          })
+                        })}
+                      />
+                      <input
+                        type="text"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                        value={editingData.customColors?.primary || '#f59e0b'}
+                        onChange={(e) => setEditingData({
+                          ...editingData,
+                          customColors: normalizeCustomColors({
+                            ...editingData.customColors,
+                            primary: e.target.value
+                          })
+                        })}
+                      />
+                    </div>
                   </div>
-                  <div 
-                    className="px-4 py-2 rounded-lg text-white text-center"
-                    style={{ backgroundColor: editingData.customColors?.accent || '#a855f7' }}
-                  >
-                    Bouton d'Accent
+                  
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                      Couleur d'accent
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        className="w-12 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                        value={editingData.customColors?.accent || '#d97706'}
+                        onChange={(e) => setEditingData({
+                          ...editingData,
+                          customColors: normalizeCustomColors({
+                            ...editingData.customColors,
+                            accent: e.target.value
+                          })
+                        })}
+                      />
+                      <input
+                        type="text"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                        value={editingData.customColors?.accent || '#d97706'}
+                        onChange={(e) => setEditingData({
+                          ...editingData,
+                          customColors: normalizeCustomColors({
+                            ...editingData.customColors,
+                            accent: e.target.value
+                          })
+                        })}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Aperçu */}
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Aperçu des couleurs</h4>
+                  <div className="flex gap-3">
+                    <div 
+                      className="w-16 h-16 rounded-lg border-2 border-white shadow-sm"
+                      style={{ backgroundColor: editingData.customColors?.primary || '#f59e0b' }}
+                    />
+                    <div 
+                      className="w-16 h-16 rounded-lg border-2 border-white shadow-sm"
+                      style={{ backgroundColor: editingData.customColors?.accent || '#d97706' }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Ces couleurs seront appliquées aux éléments de votre salon
+                  </p>
+                </div>
+
+                {/* Couleurs prédéfinies */}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Palettes prédéfinies</h4>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { name: 'Orange', primary: '#f59e0b', accent: '#d97706' },
+                      { name: 'Violet', primary: '#7c3aed', accent: '#a855f7' },
+                      { name: 'Rose', primary: '#ec4899', accent: '#f472b6' },
+                      { name: 'Bleu', primary: '#3b82f6', accent: '#60a5fa' },
+                      { name: 'Vert', primary: '#10b981', accent: '#34d399' },
+                      { name: 'Rouge', primary: '#ef4444', accent: '#f87171' }
+                    ].map((colorSet) => (
+                      <button
+                        key={colorSet.name}
+                        onClick={() => setEditingData({
+                          ...editingData,
+                          customColors: normalizeCustomColors({
+                            ...editingData.customColors,
+                            primary: colorSet.primary,
+                            accent: colorSet.accent
+                          })
+                        })}
+                        className="group flex flex-col items-center p-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+                        title={`Thème ${colorSet.name}`}
+                      >
+                        <div className="flex gap-1 mb-1">
+                          <div 
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: colorSet.primary }}
+                          />
+                          <div 
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: colorSet.accent }}
+                          />
+                        </div>
+                        <span className="text-xs text-gray-600 group-hover:text-gray-900">{colorSet.name}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>

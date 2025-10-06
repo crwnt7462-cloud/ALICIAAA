@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useLocation, useParams } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -77,99 +77,96 @@ interface SalonData {
 export default function SalonPagePublic() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { slug } = useParams<{ slug: string }>();
   const [isLiked, setIsLiked] = useState(false);
   const [activeTab, setActiveTab] = useState('services');
+  // Mode lecture seule forcé : aucune édition possible
+  const isReadOnly = true;
 
-  // Données du salon (identiques à SalonPageEditor mais en affichage public)
-  const salonData: SalonData = {
-    id: 'agashou-salon',
-    name: 'Agashou - Salon de Beauté',
-    description: 'Salon de beauté moderne et professionnel spécialisé dans les coupes tendances',
-    longDescription: `Notre salon Agashou vous accueille dans un cadre moderne et chaleureux. Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
-
-Situé au cœur de Paris, nous proposons une gamme complète de services pour sublimer votre beauté naturelle. De la coupe classique aux colorations les plus audacieuses, en passant par nos soins anti-âge révolutionnaires, chaque prestation est réalisée avec la plus grande attention.`,
-    address: '15 Avenue des Champs-Élysées, 75008 Paris',
-    phone: '01 42 25 76 89',
-    rating: 4.8,
-    reviews: 247,
-    coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop',
-    logoUrl: '',
-    photos: [
-      'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400&h=300&fit=crop'
-    ],
-    verified: true,
-    certifications: [
-      'Salon labellisé L\'Oréal Professionnel',
-      'Formation continue Kérastase',
-      'Certification bio Shu Uemura'
-    ],
-    awards: [
-      'Élu Meilleur Salon Paris 8ème 2023',
-      'Prix de l\'Innovation Beauté 2022',
-      'Certification Éco-responsable'
-    ],
-    customColors: {
-      primary: '#06b6d4', // cyan
-      accent: '#ec4899',  // pink
-      buttonText: '#ffffff',
-      priceColor: '#ec4899', // pink pour les prix
-      neonFrame: '#ef4444' // rouge néon
+  // Récupérer les données réelles du salon depuis l'API
+  const { data: salonData, isLoading, error } = useQuery({
+    queryKey: ['/api/public/salon', slug],
+    queryFn: async () => {
+      if (!slug) throw new Error('No slug provided');
+      const response = await fetch(`/api/public/salon/${slug}`);
+      if (!response.ok) {
+        if (response.status === 404) throw new Error('404');
+        throw new Error('Server error');
+      }
+      const result = await response.json();
+      return result.salon;
     },
-    serviceCategories: [
-      {
-        id: 1,
-        name: 'Cheveux',
-        expanded: true,
-        services: [
-          { id: 1, name: 'Coupe & Brushing', price: 45, duration: '1h', description: 'Coupe personnalisée et brushing professionnel' },
-          { id: 2, name: 'Coloration', price: 80, duration: '2h', description: 'Coloration complète avec soins' },
-          { id: 3, name: 'Mèches', price: 120, duration: '2h30', description: 'Mèches naturelles ou colorées' },
-          { id: 4, name: 'Coupe Enfant', price: 25, duration: '30min', description: 'Coupe adaptée aux enfants -12 ans' }
-        ]
-      },
-      {
-        id: 2,
-        name: 'Barbe',
-        expanded: false,
-        services: [
-          { id: 5, name: 'Taille de barbe', price: 35, duration: '45min', description: 'Taille et stylisation de barbe' },
-          { id: 6, name: 'Rasage traditionnel', price: 40, duration: '1h', description: 'Rasage au rasoir avec soins' }
-        ]
-      },
-      {
-        id: 3,
-        name: 'Rasage',
-        expanded: false,
-        services: [
-          { id: 7, name: 'Rasage classique', price: 30, duration: '30min', description: 'Rasage traditionnel complet' },
-          { id: 8, name: 'Rasage de luxe', price: 50, duration: '45min', description: 'Rasage avec soins premium' }
-        ]
-      }
-    ],
-    professionals: [
-      {
-        id: '1',
-        name: 'Sarah Martinez',
-        specialty: 'Coiffure & Coloration',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
-        rating: 4.9,
-        price: 65,
-        bio: 'Expert en coiffure moderne et coloration naturelle',
-        experience: '8 ans d\'expérience'
-      },
-      {
-        id: '2', 
-        name: 'Marie Dubois',
-        specialty: 'Soins Esthétiques',
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-        rating: 4.8,
-        price: 80,
-        bio: 'Spécialiste en soins anti-âge et bien-être',
-        experience: '10 ans d\'expérience'
-      }
-    ]
+    enabled: !!slug
+  });
+
+  // Si erreur 404 ou pas de données
+  if (error) {
+    const is404 = error.message === '404';
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            {is404 ? 'Salon introuvable' : 'Erreur de chargement'}
+          </h1>
+          <p className="text-gray-600 mb-4">
+            {is404 ? 'Ce salon n\'existe pas ou n\'est plus disponible.' : 'Une erreur s\'est produite lors du chargement.'}
+          </p>
+          <Button onClick={() => setLocation('/')}>
+            Retour à l'accueil
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Chargement
+  if (isLoading || !salonData) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement du salon...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Données de fallback pour éviter les erreurs si des champs sont manquants
+  const salon = {
+    id: salonData.id || '',
+    name: salonData.name || 'Salon',
+    description: salonData.description || '',
+    longDescription: salonData.long_description || salonData.description || '',
+    address: salonData.address || '',
+    phone: salonData.phone || '',
+    rating: salonData.rating || 0,
+    reviews: salonData.reviews || 0,
+    coverImageUrl: salonData.cover_image_url || '',
+    logoUrl: salonData.logo_url || '',
+    photos: salonData.photos || [],
+    serviceCategories: salonData.services ? [{
+      id: 1,
+      name: 'Services',
+      expanded: true,
+      services: Array.isArray(salonData.services) ? salonData.services.map((service: any, index: number) => ({
+        id: index + 1,
+        name: service.name || '',
+        price: service.price || 0,
+        duration: service.duration || '',
+        description: service.description || ''
+      })) : []
+    }] : [],
+    professionals: salonData.professionals || [],
+    verified: salonData.verified || false,
+    certifications: salonData.certifications || [],
+    awards: salonData.awards || [],
+    customColors: salonData.custom_colors || {
+      primary: '#06b6d4',
+      accent: '#ec4899',
+      buttonText: '#ffffff',
+      priceColor: '#ec4899',
+      neonFrame: '#ef4444'
+    }
   };
 
   const handleBooking = () => {
@@ -179,6 +176,22 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
     });
     // setLocation('/salon-booking');
   };
+
+  // Sécurité UI : désactive tous les champs input/textarea/file si jamais ils sont présents (défense en profondeur)
+  useEffect(() => {
+    if (isReadOnly) {
+      const inputs = document.querySelectorAll('input, textarea, select, button[type="submit"], button[data-edit], [contenteditable="true"]');
+      inputs.forEach((el) => {
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement) {
+          el.disabled = true;
+        }
+        if (el instanceof HTMLElement) {
+          el.setAttribute('readonly', 'true');
+          el.setAttribute('tabindex', '-1');
+        }
+      });
+    }
+  }, []);
 
   const handleShare = () => {
     toast({
@@ -200,7 +213,7 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50/30 to-purple-100/20 backdrop-blur-sm">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50/30 to-purple-100/20 backdrop-blur-sm" aria-readonly="true">
       <div className="max-w-lg mx-auto glass-card shadow-lg">
         {/* Header avec navigation */}
         <div className="sticky top-0 z-50 glass-button border-b border-white/20">
@@ -237,16 +250,16 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
 
         {/* Photo de couverture */}
         <div className="relative h-48 bg-gradient-to-br from-cyan-100 to-pink-100">
-          {salonData.coverImageUrl ? (
+          {salon.coverImageUrl ? (
             <img 
-              src={salonData.coverImageUrl} 
+              src={salon.coverImageUrl} 
               alt="Photo de couverture" 
               className="w-full h-full object-cover" 
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-cyan-400 to-pink-400 flex items-center justify-center">
               <div className="text-center text-white">
-                <h1 className="text-xl font-bold">{salonData.name}</h1>
+                <h1 className="text-xl font-bold">{salon.name}</h1>
               </div>
             </div>
           )}
@@ -256,29 +269,29 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
         <div className="p-4 space-y-4">
           {/* Nom et notation */}
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{salonData.name}</h1>
+            <h1 className="text-xl font-bold text-gray-900">{salon.name}</h1>
             <div className="flex items-center gap-1 mt-1">
               <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <span className="text-yellow-600 font-medium">{salonData.rating}</span>
-              <span className="text-gray-500">({salonData.reviews} avis)</span>
-              {salonData.verified && (
+              <span className="text-yellow-600 font-medium">{salon.rating}</span>
+              <span className="text-gray-500">({salon.reviews} avis)</span>
+              {salon.verified && (
                 <CheckCircle className="w-4 h-4 text-blue-500 ml-2" />
               )}
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-gray-600 text-sm">{salonData.description}</p>
+          <p className="text-gray-600 text-sm">{salon.description}</p>
 
           {/* Adresse et téléphone */}
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2 text-gray-600">
               <MapPin className="w-4 h-4" />
-              <span>{salonData.address}</span>
+              <span>{salon.address}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <Phone className="w-4 h-4" />
-              <span>{salonData.phone}</span>
+              <span>{salon.phone}</span>
             </div>
           </div>
 
@@ -286,7 +299,7 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
           <Button 
             onClick={handleBooking}
             className="w-full glass-button text-black rounded-xl py-3 font-medium"
-            style={{ backgroundColor: salonData.customColors?.primary }}
+            style={{ backgroundColor: salon.customColors?.primary }}
           >
             <Calendar className="w-4 h-4 mr-2" />
             Prendre rendez-vous
@@ -319,13 +332,13 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
         <div className="p-4">
           {activeTab === 'services' && (
             <div className="space-y-4">
-              {salonData.serviceCategories.map((category) => (
+              {salon.serviceCategories.map((category: any) => (
                 <Card 
                   key={category.id} 
                   className="glass-card shadow-sm"
                   style={{
-                    border: `2px solid ${salonData.customColors?.neonFrame || '#ef4444'}`,
-                    boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#ef4444'}30`
+                    border: `2px solid ${salon.customColors?.neonFrame || '#ef4444'}`,
+                    boxShadow: `0 0 12px ${salon.customColors?.neonFrame || '#ef4444'}30`
                   }}
                 >
                   <CardContent className="p-4">
@@ -357,7 +370,7 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
                               <div className="text-right ml-4">
                                 <div 
                                   className="text-lg font-bold price-preview"
-                                  style={{ color: salonData.customColors?.priceColor || '#ec4899' }}
+                                  style={{ color: salon.customColors?.priceColor || '#ec4899' }}
                                 >
                                   {service.price}€
                                 </div>
@@ -366,8 +379,8 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
                                   onClick={handleBooking}
                                   className="glass-button text-black mt-2 reservation-preview-btn"
                                   style={{ 
-                                    backgroundColor: salonData.customColors?.primary,
-                                    color: salonData.customColors?.buttonText 
+                                    backgroundColor: salon.customColors?.primary,
+                                    color: salon.customColors?.buttonText 
                                   }}
                                 >
                                   Choisir
@@ -388,7 +401,7 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
             <div className="space-y-4">
               <h3 className="font-semibold text-gray-900 mb-4">👩‍💼 Notre équipe</h3>
               
-              {salonData.professionals.map((professional) => (
+              {salon.professionals.map((professional: any) => (
                 <Card key={professional.id} className="glass-card shadow-sm">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
@@ -413,7 +426,7 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
                           size="sm" 
                           onClick={handleBooking}
                           className="glass-button text-black mt-3"
-                          style={{ backgroundColor: salonData.customColors?.primary }}
+                          style={{ backgroundColor: salon.customColors?.primary }}
                         >
                           <User className="w-3 h-3 mr-1" />
                           Réserver avec {professional.name}
@@ -431,8 +444,8 @@ Situé au cœur de Paris, nous proposons une gamme complète de services pour su
               <div className="text-center py-8">
                 <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Note moyenne</h3>
-                <div className="text-3xl font-bold text-yellow-600 mb-2">{salonData.rating}</div>
-                <p className="text-gray-500">Basé sur {salonData.reviews} avis clients</p>
+                <div className="text-3xl font-bold text-yellow-600 mb-2">{salon.rating}</div>
+                <p className="text-gray-500">Basé sur {salon.reviews} avis clients</p>
               </div>
               
               {/* Simulation d'avis */}

@@ -96,6 +96,7 @@ async function apiRequest<T>(
       'Content-Type': 'application/json',
       ...(init.headers || {}),
     },
+    credentials: 'include', // IMPORTANT: pour transmettre les cookies de session
     body: init.body ?? null,
   };
   const res = await fetch(finalUrl, fetchOptions);

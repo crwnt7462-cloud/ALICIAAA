@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useProAuth } from '@/hooks/useProAuth';
 import { useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
 import { useToast } from '@/hooks/use-toast';
 import { 
   ArrowLeft, 
@@ -31,6 +32,17 @@ import {
 } from 'lucide-react';
 
 export default function ClientProDashboard() {
+  const { proData } = useProAuth();
+  const [publicSlug, setPublicSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/salon/my-salon')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        // Utiliser strictement la valeur public_slug fournie par l'API
+        setPublicSlug(data && typeof data.public_slug === 'string' && data.public_slug.length > 0 ? data.public_slug : null);
+      });
+  }, []);
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("accueil");
   const { toast } = useToast();
@@ -101,6 +113,34 @@ export default function ClientProDashboard() {
       </div>
 
       <div className="max-w-md mx-auto p-4">
+        {/* Nouvel encart d'affichage de l'URL publique du salon */}
+        <Card className="mb-6 bg-white/70 border border-green-200 shadow-sm rounded-xl backdrop-blur-sm">
+          <CardContent className="p-4 flex flex-col gap-2">
+            <div className="font-semibold text-green-700 text-base mb-1">Lien de réservation à partager</div>
+            <div className="flex items-center gap-2">
+              <Input
+                readOnly
+                value={publicSlug ? `${window.location.origin}/book/${publicSlug}` : 'Aucune URL publique disponible'}
+                className="flex-1 min-w-0 text-xs bg-green-50 border-green-200 rounded-lg px-3 py-2 font-mono"
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  if (publicSlug) {
+                    navigator.clipboard.writeText(`${window.location.origin}/book/${publicSlug}`);
+                    toast({ title: 'Lien copié !', description: 'Le lien public du salon a été copié dans le presse-papier.' });
+                  }
+                }}
+                className="bg-green-500 hover:bg-green-600 text-white rounded-lg px-3 py-2"
+                disabled={!publicSlug}
+              >
+                Copier
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
         {/* Welcome Card */}
         <Card className="mb-6 bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
           <CardContent className="p-6">
@@ -112,7 +152,7 @@ export default function ClientProDashboard() {
                 <h2 className="text-xl font-bold text-gray-900">Excellence Beauty Salon</h2>
                 <p className="text-gray-600">Tableau de bord professionnel</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge className="bg-violet-100 text-violet-700">Plan Pro</Badge>
+                  <Badge variant="secondary" className="bg-violet-100 text-violet-700">Plan Pro</Badge>
                   <Badge variant="outline" className="text-green-600 border-green-300">En ligne</Badge>
                 </div>
               </div>
@@ -121,7 +161,7 @@ export default function ClientProDashboard() {
         </Card>
 
         {/* Navigation Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-6">
             <TabsTrigger value="accueil" className="flex flex-col items-center gap-1 py-3">
               <BarChart3 className="h-4 w-4" />

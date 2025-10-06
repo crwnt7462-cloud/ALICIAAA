@@ -1,0 +1,55 @@
+✅ server_boot_supabase_ok {
+  projectHost: 'efkekkajoyfgtyqziohy',
+  useMock: false,
+  serviceRoleConfigured: true,
+  anonConfigured: true
+}
+✅ server_boot_env_ok {
+  mode: 'database',
+  nodeEnv: 'development',
+  port: '3000',
+  mockDb: false,
+  diagnosticRoutes: false
+}
+⚠️ server_boot_env_warnings {
+  warnings: [
+    'ENABLE_DIAG_ROUTES not set - using defaults',
+    'ADDITIONAL_CORS_ORIGINS not set - using defaults'
+  ]
+}
+⚠️ cors_fallback_dev {
+  origins: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ],
+  hint: 'Set FRONT_ORIGIN in environment'
+}
+🌐 cors_config_init { allowedOrigins: 3, env: 'development', wildcard: false }
+SUPABASE_URL: https://efkekkajoyfgtyqziohy.supabase.co
+SRK length: 219
+node:events:502
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+    at listenInCluster (node:net:1965:12)
+    at Server.listen (node:net:2067:7)
+    at Function.listen (/Users/agash/Downloads/ALICIAAA/node_modules/express/lib/application.js:635:24)
+    at bootstrap (/Users/agash/Downloads/ALICIAAA/server/index.ts:1092:22)
+    at <anonymous> (/Users/agash/Downloads/ALICIAAA/server/index.ts:1108:1)
+    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1944:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+Node.js v20.19.4

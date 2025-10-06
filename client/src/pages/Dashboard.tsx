@@ -1,6 +1,5 @@
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { 
   Search, 
   Globe, 
@@ -19,10 +18,24 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from 'react';
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ProHeader } from "@/components/ProHeader";
 
 export default function Dashboard() {
+  const [publicSlug, setPublicSlug] = useState<string | null>(null);
+  useEffect(() => {
+    fetch('/api/salon/my-salon', { credentials: 'include' })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data) {
+          const salon = data.salon || data;
+          if (typeof salon.public_slug === 'string') {
+            setPublicSlug(salon.public_slug);
+          }
+        }
+      });
+  }, []);
   const [, setLocation] = useLocation();
   const [selectedPeriod, setSelectedPeriod] = useState("Week");
 
@@ -119,6 +132,8 @@ export default function Dashboard() {
     );
   }
 
+  // Debug : afficher la valeur de publicSlug dans la console
+  console.log('publicSlug récupéré pour le lien partageable :', publicSlug);
   return (
     <div className="min-h-screen bg-gray-50 relative">
       {/* Header horizontal avec logo et navigation */}
@@ -128,7 +143,32 @@ export default function Dashboard() {
       {/* Contenu principal avec marge pour header fixe */}
       <div className="pt-20 md:pt-24 pb-20 md:pb-8">
         <div className="p-4 sm:p-5 md:p-6 lg:p-8 max-w-full">
-          {/* Header - Responsive */}
+          {/* Affichage du lien partageable comme avant */}
+          {/* Encart de partage du lien public (affiché si publicSlug trouvé) */}
+          {publicSlug && (
+            <div style={{ maxWidth: 480, margin: '24px auto', padding: 0 }}>
+              <div style={{ border: '2px solid #22c55e', borderRadius: 12, background: '#f0fdf4', padding: 16 }}>
+                <div style={{ fontWeight: 600, color: '#15803d', marginBottom: 8 }}>Lien à partager à vos clients :</div>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <span style={{ fontSize: 13, color: '#666' }}>{window.location.origin}/salon/</span>
+                  <input
+                    type="text"
+                    value={publicSlug ?? ''}
+                    readOnly
+                    style={{ flex: 1, fontSize: 13, background: '#dcfce7', border: '1px solid #bbf7d0', borderRadius: 6, padding: '6px 8px' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/salon/${publicSlug}`);
+                      alert('Lien copié dans le presse-papier !');
+                    }}
+                    style={{ background: '#22c55e', color: 'white', border: 'none', borderRadius: 6, padding: '6px 14px', fontSize: 13, cursor: 'pointer' }}
+                  >Copier</button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="flex flex-col space-y-4 sm:space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6 md:mb-7 lg:mb-8">
             <div className="flex items-center">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Tableau de Bord</h1>

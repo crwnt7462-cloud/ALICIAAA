@@ -281,7 +281,7 @@ export default function ClientDashboardSimple() {
                       Aucun rendez-vous à venir
                     </h3>
                     <p className="text-gray-600 mb-4">
-                      Réservez votre prochain rendez-vous beauté
+                      Réservez tout, partout
                     </p>
                     <Button
                       onClick={() => setLocation('/search')}

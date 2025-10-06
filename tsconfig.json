@@ -15,7 +15,7 @@
     "useUnknownInCatchVariables": true,
     "exactOptionalPropertyTypes": true,
     "lib": ["esnext", "dom", "dom.iterable"],
-    "jsx": "preserve",
+  "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,

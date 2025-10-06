@@ -1,3 +1,13 @@
+// ─── SUPABASE AUDIT (boot info, sans secrets) ─────────────────────────────────
+const AUDIT_SUPABASE = process.env.AUDIT_SUPABASE === '1';
+if (AUDIT_SUPABASE) {
+  try {
+    const u = process.env.SUPABASE_URL || '';
+    const m = u.match(/^https:\/\/([a-z0-9]{20})\.supabase\.co/i);
+    const ref = m ? m[1] : 'unknown';
+    console.log(`[AUDIT][supabase][boot] projectRef=${ref.slice(0,6)} urlHost=${new URL(u).host}`);
+  } catch { /* ignore */ }
+}
 import { createClient } from '@supabase/supabase-js';
 
 // Configuration Supabase pour Replit
@@ -137,3 +147,13 @@ export class SupabaseRealtimeService {
 }
 
 export const realtimeService = new SupabaseRealtimeService();
+
+const AUDIT_SUPABASE = process.env.AUDIT_SUPABASE === '1';
+if (AUDIT_SUPABASE) {
+  try {
+    const u = process.env.SUPABASE_URL || '';
+    const m = u.match(/^https:\/\/([a-z0-9]{20})\.supabase\.co/i);
+    const ref = m ? m[1] : 'unknown';
+    console.log(`[AUDIT][supabase][boot] projectRef=${ref.slice(0,6)} urlHost=${new URL(u).host}`);
+  } catch {}
+}

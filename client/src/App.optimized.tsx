@@ -34,8 +34,24 @@ import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
 import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
 
 function Router() {
+  // Route publique : /book/:public_slug
+  const bookMatch = location.match(/^\/book\/([a-zA-Z0-9_-]+)$/);
+  if (bookMatch) {
+    const public_slug = bookMatch[1];
+    const BookPublicSalonPage = require("@/pages/SalonPagePublic").default;
+    return <BookPublicSalonPage public_slug={public_slug} />;
+  }
+
   const { isAuthenticated, isLoading } = useAuth();
   const [location] = useLocation();
+
+  // Routage public /book/:public_slug (doit être avant les autres routes)
+  const bookMatch = location.match(/^\/book\/([a-zA-Z0-9_-]+)$/);
+  if (bookMatch) {
+    const public_slug = bookMatch[1];
+    const BookPublicSalonPage = require("@/pages/SalonPagePublic").default;
+    return <BookPublicSalonPage public_slug={public_slug} />;
+  }
 
   // Gestion des redirections critiques avec validation
   if (location === '/salon/excellence-hair-paris') {

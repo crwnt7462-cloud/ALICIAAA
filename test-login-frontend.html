@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login & Planning</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .btn { padding: 10px 20px; margin: 10px; background: #4f46e5; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #3730a3; }
+        .result { background: #f3f4f6; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .error { background: #fee2e2; border: 1px solid #fca5a5; }
+        .success { background: #dcfce7; border: 1px solid #86efac; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Login & Planning</h1>
+    
+    <div>
+        <button class="btn" onclick="loginPro()">1. Se connecter au compte PRO (avec rendez-vous)</button>
+        <button class="btn" onclick="getAppointments()">2. Récupérer les rendez-vous</button>
+        <button class="btn" onclick="testFull()">3. Test complet</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = typeof message === 'object' ? 
+                `<pre>${JSON.stringify(message, null, 2)}</pre>` : 
+                message;
+            document.getElementById('results').appendChild(div);
+        }
+
+        async function loginPro() {
+            try {
+                log('🔑 Connexion au compte PRO...', 'info');
+                
+                const response = await fetch('/api/login-direct-pro', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('✅ Connexion réussie !', 'success');
+                    log(`Bienvenue ${data.user.firstName} ${data.user.lastName}`, 'success');
+                    log(`Salon: ${data.user.salonName}`, 'success');
+                } else {
+                    log('❌ Erreur de connexion: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('❌ Erreur: ' + error.message, 'error');
+            }
+        }
+
+        async function loginSalon() {
+            try {
+                log('🔑 Connexion au salon...', 'info');
+                
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'pro@avyento.com',
+                        password: 'avyento2025'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('✅ Connexion réussie !', 'success');
+                    log(data.user, 'success');
+                } else {
+                    log('❌ Erreur de connexion: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('❌ Erreur: ' + error.message, 'error');
+            }
+        }
+
+        async function getAppointments() {
+            try {
+                log('📅 Récupération des rendez-vous...', 'info');
+                
+                const response = await fetch('/api/appointments', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const appointments = await response.json();
+                    log(`✅ ${appointments.length} rendez-vous trouvés`, 'success');
+                    if (appointments.length > 0) {
+                        log(appointments, 'success');
+                    }
+                } else {
+                    const error = await response.text();
+                    log(`❌ Erreur API (${response.status}): ${error}`, 'error');
+                }
+            } catch (error) {
+                log('❌ Erreur: ' + error.message, 'error');
+            }
+        }
+
+        async function testFull() {
+            document.getElementById('results').innerHTML = '';
+            await loginPro();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await getAppointments();
+        }
+    </script>
+</body>
+</html>

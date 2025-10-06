@@ -56,3 +56,24 @@ export const getSalonGlassCard = (salonId?: string): string => {
   };
   return classMap[variant];
 };
+
+// Fonction utilitaire pour créer un style glassmorphism personnalisé
+export const getGlassStyle = (
+  primaryColor: string = '#F4F1E8', 
+  glassOpacity: number = 20, 
+  glassBlur: number = 10,
+  buttonText: string = '#ffffff'
+) => {
+  const r = parseInt(primaryColor.slice(1, 3), 16);
+  const g = parseInt(primaryColor.slice(3, 5), 16);
+  const b = parseInt(primaryColor.slice(5, 7), 16);
+  const opacity = (glassOpacity / 100) + 0.3;
+  
+  return {
+    backgroundColor: `rgba(${r}, ${g}, ${b}, ${opacity})`,
+    backdropFilter: `blur(${glassBlur}px)`,
+    WebkitBackdropFilter: `blur(${glassBlur}px)`,
+    border: `1px solid rgba(${r}, ${g}, ${b}, 0.3)`,
+    color: buttonText
+  };
+};

@@ -162,12 +162,12 @@ import StripeCancel from "@/pages/StripeCancel";
 import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import SalonSettings from "@/pages/SalonSettings";
-import BookingPage from "@/pages/BookingPage";
 import ClientManagement from "@/pages/ClientManagement";
 import RealTimeMessaging from "@/pages/RealTimeMessaging";
 import ClientMessaging from "@/pages/ClientMessaging";
 import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 import LoginClassic from "@/pages/LoginClassic";
+import TestLogin from "@/pages/TestLogin";
 
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
@@ -179,6 +179,7 @@ import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword
 import BookingSuccess from "@/pages/BookingSuccess";
 import SalonBookingFixed from "@/pages/SalonBookingFixed";
 import ClientLoginBooking from "@/pages/ClientLoginBooking";
+import ChoisirProfessionnel from "@/pages/ChoisirProfessionnel";
 import AuthTest from "@/pages/AuthTest";
 
 import StripePayment from "@/pages/StripePayment";
@@ -285,8 +286,7 @@ function Router() {
   '/services',
   '/staff',
     '/inventory',
-    '/professional-settings-demo',
-    '/avyento-style-booking-fixed'
+    '/professional-settings-demo'
   ];
   // Page de paiement Stripe
   if (location === '/stripe-payment') {
@@ -330,7 +330,15 @@ function Router() {
   if (location === '/booking') {
     return (
       <div className="h-full">
-        <BookingPage />
+        <PlanityStyleBookingFixed />
+      </div>
+    );
+  }
+  // Page de réservation style Avyento (sans header)
+  if (location === '/avyento-style-booking-fixed') {
+    return (
+      <div className="h-full">
+        <PlanityStyleBookingFixed />
       </div>
     );
   }
@@ -417,7 +425,7 @@ function Router() {
   if (location === '/booking' || location.startsWith('/booking/')) {
     return (
       <div className="h-full">
-        <BookingPage />
+        <PlanityStyleBookingFixed />
       </div>
     );
   }
@@ -946,11 +954,11 @@ function Router() {
       </div>
     );
   }
-  // Page de sélection des services (nouvelle étape de réservation)
+  // Page de sélection des services -> remplacée par choix date/heure
   if (location === '/service-selection') {
     return (
       <div className="h-full">
-        <ServiceSelection />
+        <BookingDateTime />
       </div>
     );
   }
@@ -958,10 +966,11 @@ function Router() {
   if (location === '/professional-selection') {
     return (
       <div className="h-full">
-        <ProfessionalSelection />
+        <ChoisirProfessionnel />
       </div>
     );
   }
+
   // Page de choix date/heure (accessible sans authentification)
   if (location === '/booking-datetime') {
     return (
@@ -1210,8 +1219,8 @@ function Router() {
           <Route path="/advanced-booking" component={AdvancedBookingManager} />
           <Route path="/booking-success" component={BookingSuccess} />
           <Route path="/salon-booking" component={SalonBookingFlow} />
-          <Route path="/avyento-style-booking-fixed" component={PlanityStyleBookingFixed} />
-          <Route path="/avyento-style-booking-fixed" component={PlanityStyleBookingFixed} />
+          <Route path="/salon/:public_slug/reserver" component={PlanityStyleBookingFixed} />
+          <Route path="/book/:public_slug/reserver" component={SalonBookingFlow} />
           {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />
           <Route path="/share" component={ShareBooking} />
@@ -1244,6 +1253,7 @@ function Router() {
           <Route path="/avyento-beauty-institute" component={AvyentoStyleBeautyInstitute} />
           {/* CONNEXION PROFESSIONNELLE CLASSIQUE */}
           <Route path="/login-classic" component={LoginClassic} />
+          <Route path="/test-login" component={TestLogin} />
           {/* Routes Salons Template - Nouvelle génération standardisée */}
           <Route path="/salons/salon-excellence-paris" component={SalonExcellenceParis} />
           <Route path="/salons/barbier-gentleman-marais" component={BarbierGentlemanMarais} />

@@ -172,8 +172,16 @@ export default function Register() {
       const { confirmPassword, ...registerData } = formData;
       
       // Inscription avec plan d'abonnement sélectionné
-  const response = await apiRequest("POST", "/api/register", {
-        ...registerData,
+      const response = await apiRequest("POST", "/api/register/professional", {
+        firstName: registerData.firstName,
+        lastName: registerData.lastName,
+        businessName: registerData.salonName, // Mapped to businessName for backend
+        email: registerData.email,
+        password: registerData.password,
+        siret: registerData.siret,
+        phone: registerData.phone,
+        city: registerData.city,
+        address: registerData.address,
         subscriptionPlan: selectedPlan
       });
       const data = await response.json();
