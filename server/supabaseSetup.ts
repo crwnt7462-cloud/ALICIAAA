@@ -13,7 +13,7 @@ import { createClient } from '@supabase/supabase-js';
 // Configuration Supabase pour Replit
 export const SUPABASE_CONFIG = {
   // Activer Supabase pour fonctionnalités temps réel
-  USE_SUPABASE: false, // Changer à true quand vous avez vos clés Supabase
+  USE_SUPABASE: true, // Activé pour le temps réel !
   
   // Vérifier si les clés Supabase sont disponibles
   hasSupabaseSecrets(): boolean {
@@ -148,12 +148,16 @@ export class SupabaseRealtimeService {
 
 export const realtimeService = new SupabaseRealtimeService();
 
-const AUDIT_SUPABASE = process.env.AUDIT_SUPABASE === '1';
+// Log de démarrage Supabase
 if (AUDIT_SUPABASE) {
   try {
     const u = process.env.SUPABASE_URL || '';
     const m = u.match(/^https:\/\/([a-z0-9]{20})\.supabase\.co/i);
     const ref = m ? m[1] : 'unknown';
-    console.log(`[AUDIT][supabase][boot] projectRef=${ref.slice(0,6)} urlHost=${new URL(u).host}`);
-  } catch {}
+    if (ref) {
+      console.log(`[AUDIT][supabase][realtime] projectRef=${ref.slice(0,6)} urlHost=${new URL(u).host}`);
+    }
+  } catch {
+    // Ignore errors
+  }
 }

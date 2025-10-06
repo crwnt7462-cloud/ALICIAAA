@@ -548,24 +548,6 @@ export default function SalonCreation() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 flex-1">
-                      {isEditing && (
-                        <div className="flex flex-col gap-1 mr-2">
-                          <button
-                            onClick={() => moveCategoryUp(category.id)}
-                            className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
-                            disabled={serviceCategories.findIndex(cat => cat.id === category.id) === 0}
-                          >
-                            <ChevronUp className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={() => moveCategoryDown(category.id)}
-                            className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
-                            disabled={serviceCategories.findIndex(cat => cat.id === category.id) === serviceCategories.length - 1}
-                          >
-                            <ChevronDown className="w-3 h-3" />
-                          </button>
-                        </div>
-                      )}
                       <button
                         onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
                         className="flex items-center gap-2 text-left flex-1"
@@ -632,7 +614,7 @@ export default function SalonCreation() {
                                         type="number"
                                         value={service.price}
                                         onChange={(e) => updateServiceField(category.id, index, 'price', parseInt(e.target.value) || 0)}
-                                        className="w-20 pr-8"
+                                        className="w-24 pr-8"
                                         placeholder="Prix"
                                       />
                                       <div className="absolute right-1 top-0 bottom-0 flex flex-col">
@@ -664,7 +646,7 @@ export default function SalonCreation() {
                                             const minutes = service.duration % 60;
                                             updateServiceField(category.id, index, 'duration', hours * 60 + minutes);
                                           }}
-                                          className="w-12 sm:w-16 pr-6 sm:pr-8 text-center text-sm"
+                                          className="w-16 sm:w-20 pr-6 sm:pr-8 text-center text-sm"
                                           min="0"
                                           max="8"
                                           placeholder="0"
@@ -705,7 +687,7 @@ export default function SalonCreation() {
                                             const minutes = parseInt(e.target.value);
                                             updateServiceField(category.id, index, 'duration', hours * 60 + minutes);
                                           }}
-                                          className="w-12 sm:w-16 px-1 sm:px-2 py-1 border border-gray-300 rounded text-xs sm:text-sm bg-white text-center"
+                                          className="w-16 sm:w-20 px-1 sm:px-2 py-1 border border-gray-300 rounded text-xs sm:text-sm bg-white text-center"
                                         >
                                           {[...Array(12)].map((_, i) => (
                                             <option key={i} value={i * 5}>

@@ -14,6 +14,7 @@ import { insertAppointmentSchema, type Appointment, type Client, type Service } 
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { useProNotifications, usePlanningRealtime } from "@/hooks/useSupabaseRealtime";
 
 type InsertAppointmentForm = {
   clientId: number;
@@ -43,6 +44,35 @@ export default function PlanningModern() {
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Récupération du salon ID pour l'utilisateur connecté
+  const { data: userSalon } = useQuery({
+    queryKey: ['/api/salon/my-salon'],
+    queryFn: async () => {
+      const response = await fetch('/api/salon/my-salon', {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Salon non trouvé');
+      }
+      return response.json();
+    }
+  });
+
+  const salonId = userSalon?.id;
+
+  // 🔔 HOOKS TEMPS RÉEL pour le planning
+  // Notifications de nouveaux RDV (toasts + notifications navigateur)
+  useProNotifications(salonId);
+
+  // Mise à jour automatique du planning en temps réel
+  usePlanningRealtime(salonId, undefined, () => {
+    // Callback appelé quand un RDV est modifié/ajouté/supprimé
+    console.log('🔄 Rechargement du planning suite à une mise à jour temps réel');
+    queryClient.invalidateQueries({ 
+      queryKey: ['/api/appointments'] 
+    });
+  });
 
   // Queries
   const { data: appointments, isLoading } = useQuery({

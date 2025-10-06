@@ -59,7 +59,7 @@ dashboardRouter.get('/stats', async (req, res) => {
     const yearlyRevenue = yearlyApps?.reduce((sum, a) => sum + (a.price || 0), 0) || 0;
 
     const revenue = {
-      Day: { value: 0, data: [0, 0, 0, 0, 0, 0, 0] },
+      Day: { value: 0, data: [0, 0, 0, 0, 0, 0, 0] }, // TODO: calculer journée
       Week: { value: weeklyRevenue, data: [0, 0, 0, 0, 0, 0, weeklyRevenue] },
       Month: { value: monthlyRevenue, data: [0, 0, 0, monthlyRevenue] },
       Year: { value: yearlyRevenue, data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, yearlyRevenue] }
@@ -142,7 +142,7 @@ dashboardRouter.get('/popular-services', async (req, res) => {
         name,
         count: stats.count,
         revenue: stats.revenue,
-        growth: '+0%'
+        growth: '+0%' // TODO: calculer la croissance réelle
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 4);

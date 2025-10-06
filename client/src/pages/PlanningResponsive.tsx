@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ProHeader } from "@/components/ProHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useProNotifications, usePlanningRealtime } from "@/hooks/useSupabaseRealtime";
 
 // Types simplifiés pour éviter les erreurs
 
@@ -189,6 +190,36 @@ export default function PlanningResponsive() {
   const [clientSearchTerm, setClientSearchTerm] = useState("");
   const [showClientSuggestions, setShowClientSuggestions] = useState(false);
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
+
+  // Récupération du salon ID pour l'utilisateur connecté
+  const { data: userSalon } = useQuery({
+    queryKey: ['/api/salon/my-salon'],
+    queryFn: async () => {
+      const response = await fetch('/api/salon/my-salon', {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Salon non trouvé');
+      }
+      return response.json();
+    }
+  });
+
+  const salonId = userSalon?.id;
+  const queryClient = useQueryClient();
+
+  // 🔔 HOOKS TEMPS RÉEL pour le planning
+  // Notifications de nouveaux RDV (toasts + notifications navigateur)
+  useProNotifications(salonId);
+
+  // Mise à jour automatique du planning en temps réel
+  usePlanningRealtime(salonId, selectedEmployee, () => {
+    // Callback appelé quand un RDV est modifié/ajouté/supprimé
+    console.log('🔄 Rechargement du planning suite à une mise à jour temps réel');
+    queryClient.invalidateQueries({ 
+      queryKey: ["/api/appointments"] 
+    });
+  });
 
   // Récupération des appointments depuis l'API (pour toute la semaine visible)
   const { data: appointmentsData = [], isLoading: appointmentsLoading, error: appointmentsError } = useQuery({

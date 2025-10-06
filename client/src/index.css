@@ -1,6 +1,10 @@
 /* Import glassmorphism authentique d'abord */
 @import './styles/glassmorphism.css';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @layer utilities {
   .text-foreground {
     color: var(--foreground);
@@ -9,10 +13,6 @@
     background-color: var(--background);
   }
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 /* Custom breakpoint for very small screens */
 @media (min-width: 480px) {

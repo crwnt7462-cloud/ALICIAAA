@@ -98,6 +98,7 @@ import SalonDynamicPage from "@/pages/SalonDynamicPage";
 
 import SalonPageFixed from "@/pages/SalonPageFixed";
 import SalonPage from "@/pages/SalonPage";
+import DevProLogin from "@/pages/DevProLogin";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
 import MessagingSystem from "@/pages/MessagingSystem";
@@ -1067,6 +1068,16 @@ function Router() {
   // alors rediriger vers la page de connexion
   // Note: /planning est maintenant géré dans la section "Pages professionnelles avec sidebar persistant"
   // Note: /planning est maintenant géré dans la section "Pages professionnelles avec sidebar persistant"
+  
+  // 🔓 Page DEV LOGIN - Connexion directe pour développement
+  if (location === '/dev-login') {
+    return (
+      <div className="h-full">
+        <DevProLogin />
+      </div>
+    );
+  }
+
   // Page Dashboard - PROTÉGÉE - Plein écran sans contraintes avec glassmorphism
   if (location === '/dashboard') {
     // Redirection vers login professionnel si pas authentifié

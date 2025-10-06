@@ -157,6 +157,37 @@ app.get('/api/me', (req, res) => {
   res.json({ ok: true, user: { id: session.user.id, role: 'pro' } });
 });
 
+// Route GET /api/logout : déconnexion utilisateur avec redirection
+app.get('/api/logout', (req, res) => {
+  try {
+    const session = req.session as any;
+    
+    if (session) {
+      // Détruire la session
+      session.destroy((err: any) => {
+        if (err) {
+          console.error('❌ Erreur destruction session:', err);
+          return res.redirect('/?error=logout');
+        }
+        
+        // Nettoyer le cookie de session
+        res.clearCookie('connect.sid');
+        
+        console.log('✅ Utilisateur déconnecté avec succès');
+        // Redirection vers la page d'accueil
+        res.redirect('/');
+      });
+    } else {
+      console.log('ℹ️ Aucune session active à détruire');
+      // Redirection vers la page d'accueil même sans session
+      res.redirect('/');
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors de la déconnexion:', error);
+    res.redirect('/?error=logout');
+  }
+});
+
 // DEV AUTH — n’active que hors prod. Hydrate req.user à partir du header Authorization.
 if (process.env.NODE_ENV !== "production") {
   app.use((req, _res, next) => {
@@ -1609,11 +1640,11 @@ app.get('/api/appointments', async (req, res) => {
     const salonId = userSalon.id;
     console.log('🏢 Salon ID pour filtrage:', salonId);
 
-    // 🔒 FILTRAGE STRICT PAR SALON_ID : Construire la requête
+    // 🔒 FILTRAGE STRICT PAR USER_ID : Construire la requête
     let query = supabase
       .from('appointments')
       .select('*')
-      .eq('salon_id', salonId) // 🔒 FILTRER UNIQUEMENT PAR LE SALON
+      .eq('user_id', userId) // 🔒 FILTRER PAR USER_ID (propriétaire du salon)
       .order('date', { ascending: true })
       .order('appointment_time', { ascending: true });
 

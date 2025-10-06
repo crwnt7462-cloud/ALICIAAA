@@ -24,6 +24,8 @@ import { ProHeader } from "@/components/ProHeader";
 
 export default function Dashboard() {
   const [publicSlug, setPublicSlug] = useState<string | null>(null);
+  const [salonName, setSalonName] = useState<string>('');
+  
   useEffect(() => {
     fetch('/api/salon/my-salon', { credentials: 'include' })
       .then(res => res.ok ? res.json() : null)
@@ -32,6 +34,9 @@ export default function Dashboard() {
           const salon = data.salon || data;
           if (typeof salon.public_slug === 'string') {
             setPublicSlug(salon.public_slug);
+          }
+          if (typeof salon.name === 'string') {
+            setSalonName(salon.name);
           }
         }
       });
@@ -73,29 +78,17 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/popular-services"],
   });
 
-  // Données API (avec fallback sur données simulées si non chargées)
-  // Chiffre d'affaires
+  // Données dynamiques uniquement - pas de fallback template
   const revenueData: RevenueData = stats?.revenue?.[selectedPeriod] || {
     value: 0,
     data: [0, 0, 0, 0, 0, 0, 0]
   };
 
-  // Services populaires
-  const popularServicesData: PopularService[] = popularServices || [
-    { name: "Coupe + Brushing", count: 24, revenue: 1200, growth: "+12%" },
-    { name: "Coloration", count: 18, revenue: 1440, growth: "+8%" },
-    { name: "Balayage", count: 12, revenue: 1080, growth: "+15%" },
-    { name: "Soin Capillaire", count: 15, revenue: 675, growth: "+5%" }
-  ];
+  // Services populaires - données réelles uniquement
+  const popularServicesData: PopularService[] = popularServices || [];
 
-  // Planning du jour
-  const todaySchedule: Appointment[] = todayAppointments || [
-    { time: "09:00", client: "Marie Dubois", service: "Coupe + Brushing", duration: "1h30" },
-    { time: "10:30", client: "Sophie Martin", service: "Coloration", duration: "2h30" },
-    { time: "14:00", client: "Julie Petit", service: "Balayage", duration: "3h00" },
-    { time: "16:30", client: "Claire Moreau", service: "Soin + Coupe", duration: "2h00" },
-    { time: "18:30", client: "Emma Bernard", service: "Brushing", duration: "45min" }
-  ];
+  // Planning du jour - données réelles uniquement
+  const todaySchedule: Appointment[] = todayAppointments || [];
   
   // Labels pour les graphiques selon la période
   const getLabels = (period: string) => {
@@ -200,33 +193,6 @@ export default function Dashboard() {
               </Button>
               
               <Button 
-                onClick={async () => {
-                  try {
-                    const response = await fetch('/api/salon/my-salon');
-                    if (response.ok) {
-                      const data = await response.json();
-                      if (data.salon) {
-                        setLocation(`/salon-editor/${data.salon.id}`);
-                      } else {
-                        setLocation('/salon-creation');
-                      }
-                    } else {
-                      setLocation('/salon-creation');
-                    }
-                  } catch (error) {
-                    console.error('Erreur récupération salon:', error);
-                    setLocation('/salon-creation');
-                  }
-                }}
-                variant="outline"
-                size="sm"
-                className="hidden lg:flex items-center space-x-2"
-              >
-                <SettingsIcon className="w-4 h-4" />
-                <span>Modifier</span>
-              </Button>
-              
-              <Button 
                 onClick={() => setLocation('/salon-settings-modern')}
                 variant="outline"
                 size="sm"
@@ -249,7 +215,9 @@ export default function Dashboard() {
               </Button>
               
               <div className="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-semibold text-sm sm:text-base">AV</span>
+                <span className="text-white font-semibold text-sm sm:text-base">
+                  {salonName ? salonName.substring(0, 2).toUpperCase() : 'SA'}
+                </span>
               </div>
             </div>
           </div>
@@ -359,18 +327,25 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="space-y-3 sm:space-y-4">
-                    {popularServicesData.map((service, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 sm:p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-gray-900 text-sm sm:text-base truncate">{service.name}</div>
-                          <div className="text-xs sm:text-sm text-gray-500">{service.count} réservations</div>
+                    {popularServicesData.length > 0 ? (
+                      popularServicesData.map((service, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 sm:p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-gray-900 text-sm sm:text-base truncate">{service.name}</div>
+                            <div className="text-xs sm:text-sm text-gray-500">{service.count} réservations</div>
+                          </div>
+                          <div className="text-right ml-3">
+                            <div className="text-sm sm:text-base font-semibold text-gray-900">{service.revenue}€</div>
+                            <div className="text-xs text-green-600">{service.growth}</div>
+                          </div>
                         </div>
-                        <div className="text-right ml-3">
-                          <div className="text-sm sm:text-base font-semibold text-gray-900">{service.revenue}€</div>
-                          <div className="text-xs text-green-600">{service.growth}</div>
-                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center text-gray-500 py-8">
+                        <p className="text-sm">Aucun service populaire pour le moment.</p>
+                        <p className="text-xs mt-1">Les données apparaîtront après vos premiers rendez-vous.</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -391,7 +366,9 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="flex items-center justify-between md:justify-start md:space-x-4">
-                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{todaySchedule.length} RDV</div>
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
+                      {todaySchedule.length} RDV{todaySchedule.length > 1 ? 's' : ''}
+                    </div>
                     <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => setLocation('/planning')}>
                       <Calendar className="w-4 h-4 mr-2" />
                       <span className="hidden lg:inline">Voir Planning</span>
@@ -401,21 +378,29 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-                  {todaySchedule.map((appointment, index) => (
-                    <div key={index} className="bg-gray-50 rounded-2xl p-3 sm:p-3.5 md:p-4 hover:bg-gray-100 transition-colors cursor-pointer touch-manipulation">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="font-medium text-gray-900 text-sm sm:text-base truncate pr-2" title={appointment.service}>{appointment.service}</div>
-                        <div className="text-xs sm:text-sm text-purple-600 font-medium flex-shrink-0">{appointment.time}</div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 min-w-0">
-                          <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                          <span className="truncate" title={appointment.client}>{appointment.client}</span>
+                  {todaySchedule.length > 0 ? (
+                    todaySchedule.map((appointment, index) => (
+                      <div key={index} className="bg-gray-50 rounded-2xl p-3 sm:p-3.5 md:p-4 hover:bg-gray-100 transition-colors cursor-pointer touch-manipulation">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="font-medium text-gray-900 text-sm sm:text-base truncate pr-2" title={appointment.service}>{appointment.service}</div>
+                          <div className="text-xs sm:text-sm text-purple-600 font-medium flex-shrink-0">{appointment.time}</div>
                         </div>
-                        <div className="text-xs text-gray-500 flex-shrink-0 ml-2">{appointment.duration}</div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 min-w-0">
+                            <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                            <span className="truncate" title={appointment.client}>{appointment.client}</span>
+                          </div>
+                          <div className="text-xs text-gray-500 flex-shrink-0 ml-2">{appointment.duration}</div>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center text-gray-500 py-8">
+                      <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                      <p className="text-sm">Aucun rendez-vous aujourd'hui.</p>
+                      <p className="text-xs mt-1">Votre planning apparaîtra ici quand vous aurez des rendez-vous.</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
