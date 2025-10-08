@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:analyze": "ANALYZE=true vite build",
     "preview": "vite preview",
+    "performance": "node performance-report.js",
+    "build:report": "npm run build && npm run performance",
     "typecheck": "tsc --noEmit",
     "typecheck:salon": "tsc -p tsconfig.salon.json --noEmit",
     "lint": "eslint . --ext .ts,.tsx",

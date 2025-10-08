@@ -4,7 +4,7 @@ const urlParams = new URLSearchParams(window.location.search);
 // N2/N3-AUDIT: IMPORTS TOP-LEVEL UNIQUEMENT
 import React from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import App from "./App.optimized.lazy";
 import "./index.css";
 import HealthCheckPage from "@/pages/HealthCheckPage";
 import { ErrorBoundary } from "@/components/ErrorBoundary";

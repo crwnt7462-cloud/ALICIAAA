@@ -17,7 +17,7 @@ import {
   Filter,
   Heart
 } from "lucide-react";
-import avyentoLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@/assets/avyento-logo.png";
 
 
 const salonColors: Record<string, string> = {
