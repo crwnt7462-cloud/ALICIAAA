@@ -864,36 +864,39 @@ export default function SalonPage() {
     setSalonData({ ...salonData, [e.target.name]: e.target.value });
   }
 
-  // � FLASH KILLER ULTIME : Contrôle total du chargement
+  // Chargement contrôlé sans flash de données par défaut sur les pages publiques /salon/:slug
   useEffect(() => {
-    // Si on a des données API, les afficher IMMÉDIATEMENT
+    const isPublicSalonRoute = typeof window !== 'undefined' && window.location.pathname.startsWith('/salon/');
+
+    // Cas public: n'afficher le template qu'une fois les données chargées
+    if (isPublicSalonRoute) {
+      if (specificSalon) {
+        setHasLoadedApiData(true);
+        setIsDataLoading(false);
+        setShowTemplate(true);
+      } else {
+        // Attente silencieuse: pas de fallback qui pourrait montrer un autre salon
+        setHasLoadedApiData(false);
+        setIsDataLoading(true);
+        setShowTemplate(false);
+      }
+      return;
+    }
+
+    // Cas template/éditeur: conserver l'ancien comportement
     if (specificSalon || (userSalon && (userSalon as any)?.name)) {
-      console.log('🚀 DONNÉES DÉTECTÉES - Affichage immédiat sans loading');
       setHasLoadedApiData(true);
       setIsDataLoading(false);
       setShowTemplate(true);
       return;
     }
 
-    // Si on est sur template view et authentifié mais pas de données
     if (isTemplateView && isAuthenticated && !userSalon) {
-      console.log('⏳ TEMPLATE VIEW - Attente données utilisateur...');
       setIsDataLoading(true);
       setShowTemplate(false);
-      
-      // Timeout ultra-court pour éviter le flash
-      const timeoutId = setTimeout(() => {
-        console.log('⏰ TIMEOUT - Affichage template par défaut');
-        setIsDataLoading(false);
-        setShowTemplate(true);
-        setHasLoadedApiData(true);
-      }, 50); // ULTRA COURT : 50ms seulement
-
-      return () => clearTimeout(timeoutId);
+      return;
     }
 
-    // Pour template view non-authentifié ou autres cas
-    console.log('📋 AFFICHAGE TEMPLATE STANDARD');
     setIsDataLoading(false);
     setShowTemplate(true);
     setHasLoadedApiData(true);

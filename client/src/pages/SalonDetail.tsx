@@ -91,18 +91,20 @@ export default function SalonDetail() {
   const salonId = location.split('/salon/')[1];
   
   // Récupérer les données réelles du salon depuis l'API
+  // Ne jamais afficher un faux salon nommé "Salon Excellence" en fallback.
+  // Utiliser des placeholders neutres si besoin.
   const defaultSalon: SalonData = {
     id: salonId || 'default-salon',
-    name: 'Salon Excellence',
-    rating: 4.8,
-    reviews: 127,
-    address: '15 rue de la Beauté, 75001 Paris',
-    phone: '01 42 36 78 90',
-    verified: true,
-    certifications: ['Salon Certifié', 'Produits Bio'],
-    awards: ['Prix Excellence 2024', 'Meilleur Salon Paris'],
-    longDescription: 'Notre salon vous accueille dans un cadre moderne et chaleureux pour vous offrir une expérience beauté exceptionnelle.',
-    coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+    name: '',
+    rating: 0,
+    reviews: 0,
+    address: '',
+    phone: '',
+    verified: false,
+    certifications: [],
+    awards: [],
+    longDescription: '',
+    coverImageUrl: '',
     photos: [],
     customColors: {
       primary: '#7c3aed',

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -257,6 +258,80 @@ export default function PlanityStyleBookingFixed() {
   const [elementsKey, setElementsKey] = useState(0); // Force re-mount Elements
   const [selectedService, setSelectedService] = useState<any>(null);
   const [selectedPro, setSelectedPro] = useState<any>(null);
+
+  // Récupérer le slug du salon depuis l'URL
+  const [location] = useLocation();
+  const slugMatch = location.match(/^\/(salon|book)\/([^/]+)\/reserver$/);
+  const salonSlug = slugMatch?.[2] || sessionStorage.getItem('salonSlug') || 'salon-15228957';
+  
+  console.log('🚀 PlanityStyleBookingFixed component loaded!', { location, salonSlug });
+  console.log('🔍 PlanityStyleBookingFixed slug debug:', {
+    location,
+    slugMatch,
+    salonSlug,
+    sessionStorage: sessionStorage.getItem('salonSlug')
+  });
+
+  // Récupérer les services depuis l'API
+  const { data: salonData, isLoading: salonLoading } = useQuery({
+    queryKey: ['public-salon', salonSlug],
+    queryFn: async () => {
+      const response = await fetch(`/api/public/salon/${salonSlug}`);
+      if (!response.ok) throw new Error('Salon non trouvé');
+      const payload = await response.json();
+      return payload.salon;
+    },
+    enabled: !!salonSlug,
+    retry: 1
+  });
+
+  // Extraire les services des données du salon
+  const availableServices = (() => {
+    if (!salonData) return [];
+    
+    let allServices: any[] = [];
+    
+    // Services directs du salon
+    if (Array.isArray(salonData.services)) {
+      allServices = [...allServices, ...salonData.services];
+    }
+    
+    // Services des catégories
+    if (Array.isArray(salonData.serviceCategories)) {
+      salonData.serviceCategories.forEach((category: any) => {
+        if (Array.isArray(category.services)) {
+          allServices = [...allServices, ...category.services];
+        }
+      });
+    }
+    
+    return allServices.map((svc: any) => ({
+      id: svc.id || svc.serviceId || svc.service_id || Math.random() * 1000000,
+      name: svc.name || svc.service_name || '',
+      price: typeof svc.price === 'string' ? parseFloat(svc.price) : (svc.price || 0),
+      duration: typeof svc.duration === 'string' ? parseInt(svc.duration) : (svc.duration || 0),
+      description: svc.description || '',
+      requiresDeposit: svc.requiresDeposit || svc.requires_deposit || false,
+      depositPercentage: svc.depositPercentage || svc.deposit_percentage || 30,
+    }));
+  })();
+
+  console.log('🔍 PlanityStyleBookingFixed services:', {
+    salonSlug,
+    salonData,
+    availableServices: availableServices.map(s => ({ id: s.id, name: s.name, price: s.price })),
+    servicesCount: availableServices.length,
+    isLoading: salonLoading
+  });
+
+  // Auto-sélectionner la prestation s'il n'y en a qu'une
+  useEffect(() => {
+    if (!salonLoading && selectedService == null && Array.isArray(availableServices) && availableServices.length === 1) {
+      const only = availableServices[0];
+      setSelectedService(only);
+      try { localStorage.setItem('selectedService', JSON.stringify(only)); } catch (e) { /* ignore */ }
+    }
+  }, [salonLoading, availableServices, selectedService]);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -480,6 +555,8 @@ export default function PlanityStyleBookingFixed() {
       {/* Contenu principal */}
       <div className="max-w-lg mx-auto pt-0 lg:max-w-6xl lg:pt-16">
         <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
+        
+        {/* Section choix de service supprimée ici: le service est déjà choisi en amont */}
         
         {/* Colonne gauche - Informations service (Desktop seulement) */}
         <div className="hidden lg:block">
@@ -897,10 +974,11 @@ export default function PlanityStyleBookingFixed() {
                           return new Date().toISOString().split('T')[0];
                         };
 
+                        const clientName = (formData.firstName && formData.lastName)
+                          ? `${formData.firstName} ${formData.lastName}`.trim()
+                          : (formData.firstName || formData.lastName || formData.email || 'Client');
                         const appointmentData = {
-                          client_name: formData.firstName && formData.lastName 
-                            ? `${formData.firstName} ${formData.lastName}` 
-                            : formData.email,
+                          client_name: clientName,
                           service: selectedService?.name || 'Service',
                           date: convertToISODate(selectedDateTime?.date) || new Date().toISOString().split('T')[0],
                           start_time: selectedDateTime?.time || '09:00',

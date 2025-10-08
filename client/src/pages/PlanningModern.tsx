@@ -15,6 +15,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { useProNotifications, usePlanningRealtime } from "@/hooks/useSupabaseRealtime";
+import React from "react";
 
 type InsertAppointmentForm = {
   clientId: number;
@@ -60,6 +61,10 @@ export default function PlanningModern() {
   });
 
   const salonId = userSalon?.id;
+  const salonSlug = (typeof window !== 'undefined') 
+    ? (sessionStorage.getItem('salonSlug') || localStorage.getItem('salonSlug') || '')
+    : '';
+  const effectiveSalonSlug = salonSlug || userSalon?.public_slug || '';
 
   // 🔔 HOOKS TEMPS RÉEL pour le planning
   // Notifications de nouveaux RDV (toasts + notifications navigateur)
@@ -76,9 +81,39 @@ export default function PlanningModern() {
 
   // Queries
   const { data: appointments, isLoading } = useQuery({
-    queryKey: ['/api/appointments'],
+    queryKey: ['/api/appointments', userSalon?.id, effectiveSalonSlug],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (userSalon?.id) {
+        params.set('salon_id', userSalon.id);
+      }
+      if (effectiveSalonSlug) {
+        params.set('salon_slug', effectiveSalonSlug);
+      }
+      const response = await fetch(`/api/appointments?${params.toString()}`, {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des rendez-vous');
+      }
+      return response.json();
+    },
+    enabled: !!(userSalon?.id || effectiveSalonSlug),
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    staleTime: 0,
+    gcTime: 0,
+    // Polling léger pour capter immédiatement un nouveau RDV après paiement
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
     retry: 1
   });
+
+  // Invalider et recharger dès que le salon détecté change (changement de compte pro)
+  if (userSalon?.id) {
+    queryClient.invalidateQueries({ queryKey: ['/api/appointments', userSalon.id] });
+  }
 
   const { data: clients } = useQuery({
     queryKey: ['/api/clients'],
@@ -86,9 +121,67 @@ export default function PlanningModern() {
   });
 
   const { data: services } = useQuery({
-    queryKey: ['/api/services'],
+    queryKey: ['planning-services', salonId, effectiveSalonSlug],
+    queryFn: async () => {
+      // Priorité: récupérer services du salon courant (slug public si dispo)
+      if (effectiveSalonSlug) {
+        const res = await fetch(`/api/public/salon/${effectiveSalonSlug}`);
+        if (!res.ok) throw new Error('Salon public introuvable');
+        const payload = await res.json();
+        const s = payload?.salon;
+        let list: any[] = [];
+        if (Array.isArray(s?.services)) list = list.concat(s.services);
+        // Supporter camelCase et snake_case
+        const categories = Array.isArray(s?.serviceCategories) ? s.serviceCategories : (Array.isArray(s?.service_categories) ? s.service_categories : []);
+        categories.forEach((c: any) => Array.isArray(c?.services) && (list = list.concat(c.services)));
+        return list.map((svc: any) => ({
+          id: svc.id || svc.serviceId || svc.service_id,
+          name: svc.name || svc.service_name,
+          duration: typeof svc.duration === 'string' ? parseInt(svc.duration) : (svc.duration || 0),
+          price: typeof svc.price === 'string' ? parseFloat(svc.price) : (svc.price || 0),
+        }));
+      }
+      // Fallback: salon du pro connecté
+      const res = await fetch('/api/salon/my-salon', { credentials: 'include' });
+      if (!res.ok) throw new Error('Salon non trouvé');
+      const s = await res.json();
+      let list: any[] = [];
+      if (Array.isArray(s?.services)) list = list.concat(s.services);
+      const categories = Array.isArray(s?.service_categories) ? s.service_categories : (Array.isArray(s?.serviceCategories) ? s.serviceCategories : []);
+      categories.forEach((c: any) => Array.isArray(c?.services) && (list = list.concat(c.services)));
+      return list.map((svc: any) => ({
+        id: svc.id || svc.serviceId || svc.service_id,
+        name: svc.name || svc.service_name,
+        duration: typeof svc.duration === 'string' ? parseInt(svc.duration) : (svc.duration || 0),
+        price: typeof svc.price === 'string' ? parseFloat(svc.price) : (svc.price || 0),
+      }));
+    },
     retry: 1
   });
+
+  // Équipe (employés) dynamique du salon
+  const { data: employees = [] } = useQuery({
+    queryKey: ['planning-employees', salonId, effectiveSalonSlug],
+    queryFn: async () => {
+      if (effectiveSalonSlug) {
+        const res = await fetch(`/api/public/salon/${effectiveSalonSlug}`);
+        if (!res.ok) throw new Error('Salon public introuvable');
+        const payload = await res.json();
+        const s = payload?.salon;
+        // Supporter team_members (snake) et team (legacy/camel)
+        const list = Array.isArray(s?.team_members) ? s.team_members : (Array.isArray(s?.team) ? s.team : []);
+        return list.map((m: any) => ({ id: m.id, name: m.name || m.firstName || 'Employé' }));
+      }
+      const res = await fetch('/api/salon/my-salon', { credentials: 'include' });
+      if (!res.ok) throw new Error('Salon non trouvé');
+      const s = await res.json();
+      const list = Array.isArray(s?.team_members) ? s.team_members : (Array.isArray(s?.team) ? s.team : []);
+      return list.map((m: any) => ({ id: m.id, name: m.name || m.firstName || 'Employé' }));
+    },
+    retry: 1
+  });
+
+  const [selectedStaffId, setSelectedStaffId] = React.useState<string>("");
 
   // Form
   const form = useForm<InsertAppointmentForm>({
@@ -196,6 +289,8 @@ export default function PlanningModern() {
   };
 
   const revenueStats = calculateRevenue();
+  // Objectif: pas de template. Par défaut 0 tant qu'aucune config n'est fournie côté salon.
+  const targetRevenue = 0;
 
   // Statistiques par période
   const getPeriodLabel = () => {
@@ -601,7 +696,7 @@ export default function PlanningModern() {
                                 <SelectValue placeholder="Sélectionner un service" />
                               </SelectTrigger>
                               <SelectContent>
-                                {(services as Service[]).map((service: Service) => (
+                                {(services as any[]).map((service: any) => (
                                   <SelectItem key={service.id} value={service.id.toString()}>
                                     {service.name} - {service.price}€
                                   </SelectItem>
@@ -610,6 +705,31 @@ export default function PlanningModern() {
                             </Select>
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Employé */}
+                    <FormField
+                      control={form.control}
+                      name="notes"
+                      render={() => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">Employé</FormLabel>
+                          <FormControl>
+                            <Select onValueChange={(value) => setSelectedStaffId(value)}>
+                              <SelectTrigger className="rounded-xl border-gray-200">
+                                <SelectValue placeholder="Sélectionner un employé" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {employees.map((e: any) => (
+                                  <SelectItem key={e.id} value={String(e.id)}>
+                                    {e.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
                         </FormItem>
                       )}
                     />
@@ -716,10 +836,10 @@ export default function PlanningModern() {
                   Objectif
                 </h3>
                 <p className="text-lg font-bold text-amber-600">
-                  {viewMode === 'day' ? '250' : '1500'}€
+                  {targetRevenue > 0 ? `${targetRevenue.toFixed?.(0) ?? targetRevenue}€` : '—'}
                 </p>
                 <p className="text-xs text-gray-600">
-                  {((revenueStats.revenue / (viewMode === 'day' ? 250 : 1500)) * 100).toFixed(0)}% atteint
+                  {targetRevenue > 0 ? `${((revenueStats.revenue / targetRevenue) * 100).toFixed(0)}% atteint` : '0% atteint'}
                 </p>
               </CardContent>
             </Card>

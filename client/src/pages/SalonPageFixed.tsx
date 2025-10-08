@@ -40,7 +40,8 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
   const [activeTab, setActiveTab] = useState('services');
   
   // Récupérer l'équipe du salon via le hook unifié
-  const { data: teamMembers, isLoading: teamLoading, error: teamError } = useSalonTeam("de331471-f436-4d82-bbc7-7e70d6af7958");
+  // Utiliser le salon ID depuis les données de la page ou fallback
+  const { data: teamMembers, isLoading: teamLoading, error: teamError } = useSalonTeam("15228957-f9f1-4f2d-82ac-ecba9f33c922");
   
   // Salon par défaut si pas de données
   const defaultSalonData: SalonData = {
@@ -83,7 +84,9 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
 
   // --- PUBLIC ENDPOINT + BROADCAST + ROBUST MAPPING ---
   // SalonId: use the real one if available, fallback to demo
-  const salonId = pageData.id || "salon-demo";
+  // Avoid redeclaration across HMR reloads; keep a stable ID
+  const salonId = pageData.id || (defaultSalonData.id);
+  const publicSlug = 'salon-15228957';
   const queryClient = useQueryClient();
   const { data: servicesData, isLoading: servicesLoading, refetch: refetchServices } = useQuery({
     queryKey: [`/api/public/salon/${salonId}/services`]
@@ -493,8 +496,10 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
                       onClick={() => {
                         // Stocker le professionnel sélectionné
                         localStorage.setItem('selectedProfessional', JSON.stringify(member));
-                        // Aller d'abord vers la sélection de service, qui redirigera vers professionnel puis datetime
-                        setLocation('/service-selection');
+                        // Mémoriser le slug public pour le flux client
+                        try { sessionStorage.setItem('salonSlug', publicSlug); } catch (e) { /* ignore */ }
+                        // Aller directement dans le flux de réservation public
+                        setLocation(`/salon/${publicSlug}/reserver`);
                       }}
                     >
                       Réserver

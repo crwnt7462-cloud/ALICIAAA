@@ -75,37 +75,7 @@ const generateTimeSlots = () => {
 
 const timeSlots = generateTimeSlots();
 
-// Employés du salon
-const employees: Employee[] = [
-  { 
-    id: "1", 
-    name: "Sarah Martin", 
-    color: "#8B5CF6", 
-    avatar: "SM",
-    specialties: ["Coupe", "Coloration", "Lissage"]
-  },
-  { 
-    id: "2", 
-    name: "Emma Dubois", 
-    color: "#06B6D4", 
-    avatar: "ED",
-    specialties: ["Manucure", "Pédicure", "Nail Art"]
-  },
-  { 
-    id: "3", 
-    name: "Julie Moreau", 
-    color: "#F59E0B", 
-    avatar: "JM",
-    specialties: ["Soins visage", "Épilation", "Massage"]
-  },
-  { 
-    id: "4", 
-    name: "Léa Bernard", 
-    color: "#EF4444", 
-    avatar: "LB",
-    specialties: ["Extensions", "Tresses", "Coiffure mariée"]
-  }
-];
+// Suppression du template d'employés: chargement depuis API plus bas
 
 // Types pour les clients (sans données factices)
 interface Client {
@@ -129,19 +99,7 @@ interface AppointmentEvent {
   type: 'client' | 'blocked';
 }
 
-// Services beauté
-const beautyServices: ServiceType[] = [
-  { id: 1, name: "Coupe + Brushing", category: "Coiffure", duration: 60, price: 45, color: "#8B5CF6" },
-  { id: 2, name: "Coloration", category: "Coiffure", duration: 120, price: 85, color: "#7C3AED" },
-  { id: 3, name: "Balayage", category: "Coiffure", duration: 180, price: 120, color: "#6366F1" },
-  { id: 4, name: "Manucure", category: "Ongles", duration: 45, price: 25, color: "#06B6D4" },
-  { id: 5, name: "Pédicure", category: "Ongles", duration: 60, price: 35, color: "#0891B2" },
-  { id: 6, name: "Pose Vernis Semi", category: "Ongles", duration: 30, price: 20, color: "#0E7490" },
-  { id: 7, name: "Soin Visage", category: "Esthétique", duration: 90, price: 65, color: "#F59E0B" },
-  { id: 8, name: "Épilation Sourcils", category: "Esthétique", duration: 15, price: 15, color: "#D97706" },
-  { id: 9, name: "Extensions", category: "Coiffure", duration: 240, price: 200, color: "#EF4444" },
-  { id: 10, name: "Lissage Brésilien", category: "Coiffure", duration: 180, price: 150, color: "#DC2626" }
-];
+// Suppression du template de services: chargement depuis API plus bas
 
 export default function PlanningResponsive() {
   const isMobile = useIsMobile();
@@ -263,6 +221,45 @@ export default function PlanningResponsive() {
       return data;
     }
   });
+
+  // Slug public pour récupérer salon courant
+  const salonSlug = (typeof window !== 'undefined')
+    ? (sessionStorage.getItem('salonSlug') || localStorage.getItem('salonSlug') || '')
+    : '';
+
+  // Salon public ou privé selon le contexte
+  const { data: salonPayload } = useQuery({
+    queryKey: ['responsive-salon', salonSlug, salonId],
+    queryFn: async () => {
+      if (salonSlug) {
+        const r = await fetch(`/api/public/salon/${salonSlug}`);
+        if (!r.ok) throw new Error('Salon public introuvable');
+        const p = await r.json();
+        return p?.salon;
+      }
+      const r = await fetch('/api/salon/my-salon', { credentials: 'include' });
+      if (!r.ok) throw new Error('Salon non trouvé');
+      return r.json();
+    }
+  });
+
+  // Services réels
+  const beautyServices: ServiceType[] = useMemo(() => {
+    const s: any = salonPayload;
+    if (!s) return [];
+    let list: any[] = [];
+    if (Array.isArray(s?.services)) list = list.concat(s.services);
+    const cats = Array.isArray(s?.serviceCategories) ? s.serviceCategories : (Array.isArray(s?.service_categories) ? s.service_categories : []);
+    cats.forEach((c: any) => Array.isArray(c?.services) && (list = list.concat(c.services)));
+    return list.map((svc: any, idx: number) => ({
+      id: svc.id || svc.serviceId || svc.service_id || idx + 1,
+      name: svc.name || svc.service_name || 'Service',
+      category: svc.category || '',
+      duration: typeof svc.duration === 'string' ? parseInt(svc.duration) : (svc.duration || 0),
+      price: typeof svc.price === 'string' ? parseFloat(svc.price) : (svc.price || 0),
+      color: '#8B5CF6'
+    }));
+  }, [salonPayload]);
 
   // Transformation des données de l'API en format attendu par le planning
   const employees: Employee[] = useMemo(() => {
@@ -806,55 +803,84 @@ export default function PlanningResponsive() {
             className="mb-8"
           >
             {/* Insights CA au-dessus */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
-              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">CA Jour</p>
-                      <p className="text-2xl font-bold text-purple-600">1847€</p>
-                    </div>
-                    <Euro className="h-8 w-8 text-purple-500" />
-                  </div>
-                </CardContent>
-              </Card>
+            {(() => {
+              // Calculs dynamiques à partir des RDV réels
+              const todayIso = new Date().toISOString().split('T')[0];
+              const startOfWeek = new Date();
+              startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+              const endOfWeek = new Date(startOfWeek);
+              endOfWeek.setDate(startOfWeek.getDate() + 6);
+              const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+              const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 
-              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">CA Semaine</p>
-                      <p className="text-2xl font-bold text-blue-600">8392€</p>
-                    </div>
-                    <TrendingUp className="h-8 w-8 text-blue-500" />
-                  </div>
-                </CardContent>
-              </Card>
+              const inRange = (d: string, start: Date, end: Date) => {
+                if (!d) return false;
+                const x = new Date(d);
+                return x >= start && x <= end;
+              };
 
-              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">CA Mois</p>
-                      <p className="text-2xl font-bold text-amber-600">28450€</p>
-                    </div>
-                    <Target className="h-8 w-8 text-amber-500" />
-                  </div>
-                </CardContent>
-              </Card>
+              const dayApts = (appointmentsData || []).filter((a: any) => a.date === todayIso);
+              const weekApts = (appointmentsData || []).filter((a: any) => inRange(a.date, startOfWeek, endOfWeek));
+              const monthApts = (appointmentsData || []).filter((a: any) => inRange(a.date, startOfMonth, endOfMonth));
 
-              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Ticket Moyen</p>
-                      <p className="text-2xl font-bold text-green-600">67€</p>
-                    </div>
-                    <Clock className="h-8 w-8 text-green-500" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+              const sumRevenue = (arr: any[]) => arr.reduce((acc, a) => acc + (Number(a.revenue) || 0), 0);
+              const dayRevenue = sumRevenue(dayApts);
+              const weekRevenue = sumRevenue(weekApts);
+              const monthRevenue = sumRevenue(monthApts);
+              const ticketMoyen = dayApts.length > 0 ? dayRevenue / dayApts.length : 0;
+
+              return (
+                <div className="grid grid-cols-4 gap-4 mb-6">
+                  <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600">CA Jour</p>
+                          <p className="text-2xl font-bold text-purple-600">{Math.round(dayRevenue)}€</p>
+                        </div>
+                        <Euro className="h-8 w-8 text-purple-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600">CA Semaine</p>
+                          <p className="text-2xl font-bold text-blue-600">{Math.round(weekRevenue)}€</p>
+                        </div>
+                        <TrendingUp className="h-8 w-8 text-blue-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600">CA Mois</p>
+                          <p className="text-2xl font-bold text-amber-600">{Math.round(monthRevenue)}€</p>
+                        </div>
+                        <Target className="h-8 w-8 text-amber-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600">Ticket Moyen</p>
+                          <p className="text-2xl font-bold text-green-600">{Math.round(ticketMoyen)}€</p>
+                        </div>
+                        <Clock className="h-8 w-8 text-green-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            })()}
 
             {/* Header du calendrier */}
             <div className="flex items-center justify-between mb-6">

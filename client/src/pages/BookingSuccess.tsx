@@ -4,11 +4,59 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Calendar, MapPin, Clock, User, ArrowLeft } from "lucide-react";
 
 export default function BookingSuccess() {
-  const [, setLocation] = useLocation();
+  const [locationPath, setLocation] = useLocation();
 
   // Récupérer les données de la réservation
-  const selectedProfessional = localStorage.getItem('selectedProfessional');
+  const selectedProfessionalRaw = localStorage.getItem('selectedProfessional');
   const selectedDateTime = JSON.parse(localStorage.getItem('selectedDateTime') || '{}');
+  const selectedService = JSON.parse(localStorage.getItem('selectedService') || '{}');
+  const salonData = JSON.parse(localStorage.getItem('salonData') || '{}');
+  const bookingData = JSON.parse(localStorage.getItem('confirmedBooking') || '{}');
+  // Déduire le slug public depuis l'URL courante ou le storage
+  const slugMatch = locationPath.match(/^\/(salon|book)\/([^/]+)/);
+  const publicSlug = slugMatch?.[2] || sessionStorage.getItem('salonSlug') || '';
+  
+  // Parser correctement les données du professionnel
+  let selectedProfessional = 'Aucune préférence';
+  if (selectedProfessionalRaw && selectedProfessionalRaw !== 'any') {
+    try {
+      const professionalData = JSON.parse(selectedProfessionalRaw);
+      selectedProfessional = professionalData.name || professionalData.firstName || 'Professionnel assigné';
+    } catch (e) {
+      // Si ce n'est pas du JSON, utiliser la valeur directement
+      selectedProfessional = selectedProfessionalRaw;
+    }
+  }
+
+  // Récupérer les données réelles du salon
+  const [salonName, setSalonName] = React.useState<string>(salonData?.name || salonData?.salon?.name || 'Salon');
+  const [salonAddress, setSalonAddress] = React.useState<string>(salonData?.business_address || salonData?.salon?.business_address || 'Adresse non renseignée');
+
+  // Fallback: récupère les infos du salon public par slug si manquantes
+  React.useEffect(() => {
+    if (!salonData?.name && publicSlug) {
+      fetch(`/api/public/salon/${publicSlug}`)
+        .then(res => res.ok ? res.json() : null)
+        .then(payload => {
+          const s = payload?.salon;
+          if (s) {
+            setSalonName(s.name || 'Salon');
+            setSalonAddress(s.business_address || 'Adresse non renseignée');
+            try { localStorage.setItem('salonData', JSON.stringify(s)); } catch {}
+          }
+        })
+        .catch(() => {});
+    }
+  }, [publicSlug]);
+  
+  // Récupérer les données réelles du service
+  const serviceName = selectedService?.name || bookingData?.serviceName || 'Service';
+  const servicePrice = selectedService?.price || bookingData?.servicePrice || 0;
+  const serviceDuration = selectedService?.duration || '30 minutes';
+  
+  // Calculer l'acompte (30% par défaut)
+  const depositAmount = Math.round(servicePrice * 0.3 * 100) / 100;
+  const remainingAmount = servicePrice - depositAmount;
 
   const handleBackToHome = () => {
     // Nettoyer les données de réservation
@@ -33,7 +81,7 @@ export default function BookingSuccess() {
             </Button>
             <div className="flex-1">
               <h1 className="font-semibold text-gray-900">Confirmation de réservation</h1>
-              <div className="text-sm text-gray-600">Salon Excellence Paris</div>
+              <div className="text-sm text-gray-600">{salonName}</div>
             </div>
           </div>
         </div>
@@ -92,7 +140,7 @@ export default function BookingSuccess() {
               </div>
               <div className="flex-1">
                 <p className="font-medium text-gray-900 text-base">
-                  {selectedProfessional === 'any' ? 'Aucune préférence' : selectedProfessional}
+                  {selectedProfessional}
                 </p>
                 <p className="text-sm text-gray-500">Professionnel(le)</p>
               </div>
@@ -103,8 +151,8 @@ export default function BookingSuccess() {
                 <MapPin className="w-6 h-6 text-green-600" />
               </div>
               <div className="flex-1">
-                <p className="font-medium text-gray-900 text-base">Salon Excellence Paris</p>
-                <p className="text-sm text-gray-500">45 Avenue Victor Hugo, 75116 Paris</p>
+                <p className="font-medium text-gray-900 text-base">{salonName}</p>
+                <p className="text-sm text-gray-500">{salonAddress}</p>
               </div>
             </div>
           </div>
@@ -118,10 +166,10 @@ export default function BookingSuccess() {
           
           <div className="flex items-center justify-between mb-6">
             <div>
-              <p className="font-medium text-gray-900 text-base">Coupe Signature</p>
-              <p className="text-sm text-gray-500">30 minutes</p>
+              <p className="font-medium text-gray-900 text-base">{serviceName}</p>
+              <p className="text-sm text-gray-500">{serviceDuration}</p>
             </div>
-            <span className="text-xl font-bold text-violet-600">39,00 €</span>
+            <span className="text-xl font-bold text-violet-600">{servicePrice.toFixed(2)} €</span>
           </div>
           
           <div className="bg-green-500/10 backdrop-blur-12 border border-green-200/40 rounded-2xl p-5">
@@ -130,7 +178,7 @@ export default function BookingSuccess() {
                 <p className="font-medium text-green-800">Acompte payé</p>
                 <p className="text-sm text-green-600">Le reste sera réglé sur place</p>
               </div>
-              <span className="text-lg font-bold text-green-700">11,70 €</span>
+              <span className="text-lg font-bold text-green-700">{depositAmount.toFixed(2)} €</span>
             </div>
           </div>
         </div>
@@ -156,7 +204,7 @@ export default function BookingSuccess() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-500 mt-0.5">•</span>
-              <span>Le solde de 27,30 € sera à régler sur place</span>
+              <span>Le solde de {remainingAmount.toFixed(2)} € sera à régler sur place</span>
             </li>
           </ul>
         </div>

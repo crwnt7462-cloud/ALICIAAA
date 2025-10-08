@@ -119,6 +119,64 @@ export default function ProfessionalSelection() {
   // Final list to render: prefer public team, else fallbackPros
   const professionalsToRender = (teamSource && teamSource.length > 0) ? professionals : fallbackPros;
 
+  // -------- Next availability formatting (today/tomorrow/date + time) --------
+  const formatNextAvailabilityLabel = (raw: any): string => {
+    // Try to parse various shapes: ISO, "HH:mm", epoch, or phrases
+    const now = new Date();
+    let dt: Date | null = null;
+
+    if (!raw || (typeof raw === 'string' && raw.trim() === '')) {
+      // Fallback: next half-hour slot today or tomorrow at 09:00 if day ended
+      const next = new Date(now);
+      next.setMinutes(next.getMinutes() + (30 - (next.getMinutes() % 30 || 30)));
+      // business hours 09:00-19:00
+      const startH = 9, endH = 19;
+      if (next.getHours() >= endH) {
+        const tmr = new Date(now);
+        tmr.setDate(now.getDate() + 1);
+        tmr.setHours(startH, 0, 0, 0);
+        dt = tmr;
+      } else if (next.getHours() < startH) {
+        const d = new Date(now);
+        d.setHours(startH, 0, 0, 0);
+        dt = d;
+      } else {
+        dt = next;
+      }
+    } else if (typeof raw === 'number') {
+      dt = new Date(raw);
+    } else if (typeof raw === 'string') {
+      const trimmed = raw.trim();
+      // If already includes a time like 09:30
+      const hm = trimmed.match(/(\d{1,2}):(\d{2})/);
+      if (hm) {
+        const d = new Date(now);
+        const [h, m] = [parseInt(hm[1], 10), parseInt(hm[2], 10)];
+        if (h < now.getHours() || (h === now.getHours() && m <= now.getMinutes())) {
+          d.setDate(d.getDate() + 1);
+        }
+        d.setHours(h, m, 0, 0);
+        dt = d;
+      } else {
+        const parsed = new Date(trimmed);
+        if (!isNaN(parsed.getTime())) dt = parsed; else dt = null;
+      }
+    }
+
+    if (!dt) return 'Bientôt';
+
+    const isToday = dt.toDateString() === now.toDateString();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    const isTomorrow = dt.toDateString() === tomorrow.toDateString();
+    const hh = String(dt.getHours()).padStart(2, '0');
+    const mm = String(dt.getMinutes()).padStart(2, '0');
+    if (isToday) return `aujourd'hui à ${hh}h${mm}`;
+    if (isTomorrow) return `demain à ${hh}h${mm}`;
+    const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    return `${dt.getDate()} ${months[dt.getMonth()]} à ${hh}h${mm}`;
+  };
+
   // Logs for success/error/no-slug
   useEffect(() => {
     if (!slug) {
@@ -285,7 +343,7 @@ export default function ProfessionalSelection() {
 
                   <div>
                     <p className="text-sm text-gray-600">Prochaine disponibilité :</p>
-                    <p className="text-sm font-medium text-green-600">{professional.nextAvailable}</p>
+                    <p className="text-sm font-medium text-green-600">{formatNextAvailabilityLabel(professional.nextAvailable)}</p>
                   </div>
 
                   {professional.bio && (

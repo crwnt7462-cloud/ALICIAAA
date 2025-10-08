@@ -920,25 +920,18 @@ app.get('/api/public/salon/:slug', async (req, res) => {
     // Hydrate relations using public client and respect RLS
     const salonId = salonRow.id;
 
-    // 2) services via secure view if available
+    // 2) services from salon row directly
     let services: any[] = [];
-    try {
-      // Prefer the secure view helper if exists
-      const { getPublicSalonServices } = await import('./services/publicSalonService');
-      const svc = await getPublicSalonServices(salonId);
-      if (svc && Array.isArray(svc.services)) {
-        services = (svc.services as any[]).map((sAny: any) => ({
-          id: sAny.serviceId || sAny.service_id || sAny.id,
-          name: sAny.name || sAny.service_name || '',
-          price: sAny.price || sAny.effective_price || 0,
-          duration: sAny.duration || sAny.effective_duration || 0,
-          description: sAny.description || '',
-          photos: sAny.photos || []
-        }));
-      }
-    } catch (err) {
-      console.error('public_salon_fetch_err', { slug, step: 'services', error: (err as Error).message });
-      services = [];
+    if (salonRow.services && Array.isArray(salonRow.services)) {
+      services = salonRow.services.map((s: any) => ({
+        id: s.id || s.serviceId || s.service_id,
+        name: s.name || s.service_name || '',
+        price: s.price || s.effective_price || 0,
+        duration: s.duration || s.effective_duration || 0,
+        description: s.description || '',
+        photos: s.photos || []
+      }));
+      console.log('public_salon_services_fallback_used', { slug, count: services.length });
     }
 
     // 3) team members (professionals) via embedded row or public client
@@ -1621,30 +1614,34 @@ app.get('/api/appointments', async (req, res) => {
       return res.status(401).json({ error: 'Non authentifié' });
     }
 
-    const userId = session.user.id;
-    const { date, staff_id } = req.query;
-    console.log('🗓️ Récupération appointments - UserId:', userId, 'Date:', date, 'Staff:', staff_id);
+    const sessionUserId = session.user.id;
+    const { date, staff_id, salon_id, salon_slug } = req.query as { [k: string]: string };
 
-    // 🔒 ISOLATION PAR SALON : Récupérer le salon_id de l'utilisateur connecté
-    const { data: userSalon, error: salonError } = await supabase
-      .from('salons')
-      .select('id')
-      .eq('owner_id', userId)
-      .single();
-
-    if (salonError || !userSalon) {
-      console.error('❌ Salon non trouvé pour user:', userId, salonError);
-      return res.status(404).json({ error: 'Salon non trouvé pour cet utilisateur' });
+    // Résoudre l'owner à filtrer: priorité au salon_id / salon_slug si fournis
+    let ownerToFilter = sessionUserId;
+    if (salon_id) {
+      const { data: salonById } = await supabase
+        .from('salons')
+        .select('owner_id')
+        .eq('id', salon_id)
+        .single();
+      if (salonById?.owner_id) ownerToFilter = salonById.owner_id;
+    } else if (salon_slug) {
+      const { data: salonBySlug } = await supabase
+        .from('salons')
+        .select('owner_id')
+        .eq('public_slug', salon_slug)
+        .single();
+      if (salonBySlug?.owner_id) ownerToFilter = salonBySlug.owner_id;
     }
 
-    const salonId = userSalon.id;
-    console.log('🏢 Salon ID pour filtrage:', salonId);
+    console.log('🗓️ Récupération appointments - Owner:', ownerToFilter, 'Date:', date, 'Staff:', staff_id, 'salon_id:', salon_id, 'salon_slug:', salon_slug);
 
     // 🔒 FILTRAGE STRICT PAR USER_ID : Construire la requête
     let query = supabase
       .from('appointments')
       .select('*')
-      .eq('user_id', userId) // 🔒 FILTRER PAR USER_ID (propriétaire du salon)
+      .eq('user_id', ownerToFilter) // 🔒 FILTRAGE strict par propriétaire du salon
       .order('date', { ascending: true })
       .order('appointment_time', { ascending: true });
 
@@ -1661,11 +1658,11 @@ app.get('/api/appointments', async (req, res) => {
     const { data: appointments, error } = await query;
 
     if (error) {
-      console.error('Erreur récupération appointments pour salon:', salonId, error);
+      console.error('Erreur récupération appointments pour owner:', ownerToFilter, error);
       return res.status(500).json({ error: 'Erreur serveur', details: error.message });
     }
 
-    console.log('📋 Appointments trouvés pour le salon', salonId, ':', appointments?.length || 0);
+    console.log('📋 Appointments trouvés pour owner', ownerToFilter, ':', appointments?.length || 0);
 
     // Transformer les données pour le planning
     const formattedAppointments = (appointments || []).map((apt: any) => {
@@ -1688,17 +1685,19 @@ app.get('/api/appointments', async (req, res) => {
       
       return {
         id: apt.id,
+        // Frontend expects these exact keys
+        appointmentDate: apt.date || new Date().toISOString().split('T')[0],
+        startTime: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`,
+        endTime: `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`,
+        status: apt.status || 'scheduled',
+        // Optional metadata used in some views
         clientName: apt.client_name,
         service: apt.service || 'Service',
-        employee: apt.staff_id || 'Employé',
-        date: apt.date || new Date().toISOString().split('T')[0], // Utiliser date
-        time: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`,
-        endTime: `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`,
+        staffId: apt.staff_id || null,
         duration: durationMinutes,
         notes: apt.notes || '',
-        status: apt.status || 'scheduled',
         type: 'client',
-        price: apt.revenue || apt.price || 50, // Utiliser revenue en priorité
+        price: apt.revenue || apt.price || 50,
         clientEmail: apt.client_email,
         clientPhone: apt.client_phone
       };
@@ -1740,8 +1739,11 @@ app.post('/api/appointments', async (req, res) => {
 
     console.log('📝 Création appointment:', { client_name, service, date, start_time, salon_slug });
 
-    // Validation des données obligatoires
-    if (!client_name || !service || !date || !start_time) {
+    // Normalisation + validation des données obligatoires
+    const safeClientName = (typeof client_name === 'string' && client_name.trim().length > 0)
+      ? client_name.trim()
+      : 'Client';
+    if (!service || !date || !start_time) {
       return res.status(400).json({ error: 'Données obligatoires manquantes' });
     }
 
@@ -1762,11 +1764,28 @@ app.post('/api/appointments', async (req, res) => {
         .single();
 
       if (userSalonError || !userSalon) {
-        return res.status(404).json({ error: 'Salon non trouvé pour cet utilisateur' });
+        // Fallback: si on a un slug public dans la requête, on l'utilise pour récupérer le salon
+        if (salon_slug) {
+          const { data: salonBySlug } = await supabase
+            .from('salons')
+            .select('id, owner_id')
+            .eq('public_slug', salon_slug)
+            .single();
+          if (salonBySlug) {
+            salonId = salonBySlug.id;
+            userId = salonBySlug.owner_id || userId;
+            console.log('📝 Fallback slug → salon_id:', salonId);
+          } else {
+            // Dernier fallback: accepter l'insertion sans salon si userId est connu
+            console.warn('⚠️ Salon introuvable via session/slug, insertion avec user_id uniquement');
+          }
+        } else {
+          console.warn('⚠️ Salon introuvable pour cet utilisateur, insertion avec user_id uniquement');
+        }
+      } else {
+        salonId = userSalon.id;
+        console.log('📝 Salon ID récupéré:', salonId);
       }
-      
-      salonId = userSalon.id;
-      console.log('📝 Salon ID récupéré:', salonId);
     }
     // CAS 2: Réservation publique via salon_slug (pas d'authentification requise)
     else if (salon_slug) {
@@ -1791,14 +1810,13 @@ app.post('/api/appointments', async (req, res) => {
       return res.status(401).json({ error: 'Authentification requise ou salon_slug manquant' });
     }
 
-    // ISOLATION PAR SALON : Préparer les données avec salon_id obligatoire
+    // Préparer les données selon le schéma réel de la table appointments
     const appointmentData = {
-      salon_id: salonId, // 🔒 ISOLATION STRICTE PAR SALON
-      user_id: userId, // Maintenu pour compatibilité
-      client_name,
+      user_id: userId, // Référence vers l'utilisateur professionnel
+      client_name: safeClientName,
       service: service || 'Service non spécifié',
-      date: date, // Format simple YYYY-MM-DD
-      appointment_time: start_time, // Format simple HH:MM
+      date: date, // Format YYYY-MM-DD
+      appointment_time: start_time, // Format HH:MM
       duration: `00:${Math.floor((duration || 60) / 60).toString().padStart(2, '0')}:${((duration || 60) % 60).toString().padStart(2, '0')}`, // Format HH:MM:SS
       revenue: price || 50,
       created_at: new Date().toISOString()

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Storage</title>
+</head>
+<body>
+    <h1>Nettoyage du storage</h1>
+    <button onclick="clearAll()">Nettoyer tout le storage</button>
+    <pre id="output"></pre>
+    
+    <script>
+        function clearAll() {
+            const output = document.getElementById('output');
+            output.textContent = '';
+            
+            // Nettoyer localStorage
+            output.textContent += '🧹 Nettoyage du localStorage...\n';
+            const localStorageKeys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key) {
+                    localStorageKeys.push(key);
+                }
+            }
+            
+            localStorageKeys.forEach(key => {
+                localStorage.removeItem(key);
+                output.textContent += `🗑️ Supprimé (localStorage): ${key}\n`;
+            });
+            
+            // Nettoyer sessionStorage
+            output.textContent += '\n🧹 Nettoyage du sessionStorage...\n';
+            const sessionStorageKeys = [];
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                if (key) {
+                    sessionStorageKeys.push(key);
+                }
+            }
+            
+            sessionStorageKeys.forEach(key => {
+                sessionStorage.removeItem(key);
+                output.textContent += `🗑️ Supprimé (sessionStorage): ${key}\n`;
+            });
+            
+            output.textContent += '\n✅ Storage nettoyé !\n';
+            output.textContent += '\n🔄 Rechargez maintenant la page pour voir les changements.';
+        }
+    </script>
+</body>
+</html>

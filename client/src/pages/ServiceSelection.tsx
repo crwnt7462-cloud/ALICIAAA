@@ -109,17 +109,47 @@ export default function ServiceSelection() {
 
   // Mapping robuste des services (plus de N/A)
   // Map services from the public salon payload. Be tolerant to missing fields.
-  const services: Service[] = Array.isArray((servicesData as any)?.salon?.services)
-    ? (servicesData as any).salon.services.map((svc: any) => ({
-        id: svc.id || svc.serviceId || svc.service_id || 0,
-        name: svc.name || svc.service_name || '',
-        price: svc.price || svc.effective_price || 0,
-        duration: svc.duration || svc.effective_duration || 0,
-        description: svc.description || '',
-        requiresDeposit: svc.requiresDeposit || svc.requires_deposit || false,
-        depositPercentage: svc.depositPercentage || svc.deposit_percentage || 30,
-      }))
-    : [];
+  const services: Service[] = (() => {
+    const salon = (servicesData as any)?.salon;
+    if (!salon) return [];
+    
+    let allServices: any[] = [];
+    
+    // Services directs du salon
+    if (Array.isArray(salon.services)) {
+      allServices = [...allServices, ...salon.services];
+    }
+    
+    // Services des catégories
+    if (Array.isArray(salon.serviceCategories)) {
+      salon.serviceCategories.forEach((category: any) => {
+        if (Array.isArray(category.services)) {
+          allServices = [...allServices, ...category.services];
+        }
+      });
+    }
+    
+    return allServices.map((svc: any) => ({
+      id: svc.id || svc.serviceId || svc.service_id || Math.random() * 1000000,
+      name: svc.name || svc.service_name || '',
+      price: typeof svc.price === 'string' ? parseFloat(svc.price) : (svc.price || svc.effective_price || 0),
+      duration: typeof svc.duration === 'string' ? parseInt(svc.duration) : (svc.duration || svc.effective_duration || 0),
+      description: svc.description || '',
+      requiresDeposit: svc.requiresDeposit || svc.requires_deposit || false,
+      depositPercentage: svc.depositPercentage || svc.deposit_percentage || 30,
+    }));
+  })();
+
+  // Debug: log services for troubleshooting
+  console.log('🔍 ServiceSelection debug:', {
+    slug,
+    servicesData,
+    salon: (servicesData as any)?.salon,
+    servicesCount: services.length,
+    services: services.map(s => ({ id: s.id, name: s.name, price: s.price })),
+    isLoading,
+    error: servicesData?.error
+  });
 
   // Try to read a previously selected service from localStorage for fallback display
   const [savedServiceFromStorage, setSavedServiceFromStorage] = useState<any>(() => {

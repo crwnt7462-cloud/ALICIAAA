@@ -963,11 +963,11 @@ function Router() {
       </div>
     );
   }
-  // Page de sélection des professionnels (accessible sans authentification)
+  // Page de sélection des professionnels (chargement automatique de l'équipe)
   if (location === '/professional-selection') {
     return (
       <div className="h-full">
-        <ChoisirProfessionnel />
+        <ProfessionalSelection />
       </div>
     );
   }

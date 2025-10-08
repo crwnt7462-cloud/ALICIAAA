@@ -26,6 +26,8 @@ export default function BookingDateTime() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null);
+  const [extraServiceIds, setExtraServiceIds] = useState<string[]>([]);
+  const [showServicePicker, setShowServicePicker] = useState(false);
   const { bookingState, isWizardReady, shouldRequirePro } = useBookingWizard();
   const hasRedirectedRef = useRef(false);
   
@@ -38,15 +40,72 @@ export default function BookingDateTime() {
   // Hook pour la mise à jour des services
   const { updateService, isLoading: isUpdating } = useUpdateSalonService();
 
-  // Récupération des services avec overrides de prix/durée  
-  const salonId = "45a6fc7a-78ec-4ada-bd89-f6f3fc17ea8a"; // Salon AGAS3 où est créé jgcgh
-
-  // Query pour récupérer tous les services disponibles
-  const { data: servicesData, isLoading: servicesLoading } = useQuery({
-    queryKey: [`/api/salons/salon/${salonId}/services/admin`]
+  // Récupération du salon ID depuis l'URL ou localStorage
+  const [location] = useLocation();
+  const slugMatch = location.match(/^\/(salon|book)\/([^/]+)/);
+  const salonSlug = slugMatch?.[2] || sessionStorage.getItem('salonSlug') || 'salon-15228957';
+  
+  // Récupérer le salon ID depuis l'API publique
+  const { data: salonData } = useQuery({
+    queryKey: ['public-salon', salonSlug],
+    queryFn: async () => {
+      const response = await fetch(`/api/public/salon/${salonSlug}`);
+      if (!response.ok) throw new Error('Salon non trouvé');
+      const payload = await response.json();
+      return payload.salon;
+    },
+    enabled: !!salonSlug,
+    retry: 1
   });
   
-  const availableServices = (servicesData as any)?.services || [];
+  const salonId = salonData?.id || "15228957-f9f1-4f2d-82ac-ecba9f33c922"; // Fallback vers le bon salon
+
+  // Utiliser les services du payload public (évite le 404 de l'endpoint admin)
+  const servicesLoading = !salonData;
+  const availableServices = (() => {
+    if (!salonData) return [];
+    let all: any[] = [];
+    if (Array.isArray((salonData as any).services)) all = all.concat((salonData as any).services);
+    if (Array.isArray((salonData as any).serviceCategories)) {
+      (salonData as any).serviceCategories.forEach((cat: any) => {
+        if (Array.isArray(cat.services)) all = all.concat(cat.services);
+      });
+    }
+    return all.map((svc: any) => ({
+      id: svc.id || svc.serviceId || svc.service_id || String(Math.random()),
+      name: svc.name || svc.service_name || '',
+      price: typeof svc.price === 'string' ? parseFloat(svc.price) : (svc.price || 0),
+      duration: typeof svc.duration === 'string' ? parseInt(svc.duration) : (svc.duration || 0),
+      description: svc.description || ''
+    }));
+  })();
+
+  // Auto-sélection si une seule prestation
+  useEffect(() => {
+    if (!servicesLoading && availableServices.length === 1 && !selectedServiceId) {
+      setSelectedServiceId(availableServices[0].id);
+    }
+  }, [servicesLoading, availableServices, selectedServiceId]);
+
+  // Durée totale (calcul plus bas après initialisation de effectiveServiceData)
+  const normalizedLocalSelected = React.useMemo(() => {
+    try {
+      const raw = localStorage.getItem('selectedService');
+      if (!raw) return null;
+      return normalizeService(JSON.parse(raw));
+    } catch (e) { return null; }
+  }, [selectedServiceId]);
+
+  // Reset any previous persisted extra services on entry to avoid stale 375min carry-over
+  useEffect(() => {
+    try { localStorage.removeItem('extraServiceIds'); } catch (e) { /* ignore */ }
+    setExtraServiceIds([]);
+  }, []);
+
+  // Persist extra services each time they change
+  useEffect(() => {
+    try { localStorage.setItem('extraServiceIds', JSON.stringify(extraServiceIds)); } catch (e) { /* ignore */ }
+  }, [extraServiceIds]);
   
   // Nouveau hook pour récupérer les données effectives avec priorité pro → salon → base
   // Ne déclenche l'API que si wizard ready et service sélectionné
@@ -609,7 +668,9 @@ export default function BookingDateTime() {
       // Stocker la sélection et passer à l'inscription
       localStorage.setItem('selectedDateTime', JSON.stringify({
         date: selectedDate,
-        time: selectedTime
+        time: selectedTime,
+        totalDurationMinutes,
+        extraServiceIds
       }));
       setLocation('/avyento-style-booking-fixed');
     }
@@ -624,9 +685,25 @@ export default function BookingDateTime() {
     });
   };
 
+  const servicesSectionRef = useRef<HTMLDivElement | null>(null);
+  // Recalcule totalDurationMinutes après que toutes les sources potentielles soient disponibles
+  const findServiceById = (id?: string | number | null) => availableServices.find((s: any) => String(s.id) === String(id));
+  const baseService = findServiceById(selectedServiceId);
+  const extraServices = extraServiceIds.map(id => findServiceById(id)).filter(Boolean) as any[];
+  // Priorité UX: utiliser la durée du service sélectionné dans la liste courante,
+  // puis (si absent) retomber sur les données effectives, puis le cache local.
+  // Fix demandé: durée de base forcée si indétectable (fallback 20 min)
+  const baseDurationMinutes = (
+    (baseService && typeof baseService.duration === 'number' ? baseService.duration : undefined) ??
+    20
+  );
+  const totalDurationMinutes = Math.max(0, baseDurationMinutes + extraServices.reduce((acc, s) => acc + (typeof s?.duration === 'number' ? s.duration : 0), 0));
+
   const handleAddService = () => {
-    // Aller à la sélection de services pour ajouter une prestation
-    setLocation('/service-selection');
+    setShowServicePicker(true);
+    if (servicesSectionRef.current) {
+      servicesSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   // Fonctions de gestion de l'édition
@@ -818,34 +895,59 @@ export default function BookingDateTime() {
         </div>
 
         {/* Sélection de service */}
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/50 shadow-sm p-4 lg:p-6 mx-4 lg:mx-0 mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Choisir un service</h3>
-          {servicesLoading ? (
-            <div className="text-gray-500">Chargement des services...</div>
-          ) : (
-            <div className="space-y-2">
-              {availableServices.map((service: any) => (
-                <div
-                  key={service.id}
-                  onClick={() => setSelectedServiceId(service.id)}
-                  className={`p-3 rounded-lg cursor-pointer border-2 transition-colors ${
-                    selectedServiceId === service.id
-                      ? 'border-violet-600 bg-violet-50'
-                      : 'border-gray-200 bg-gray-50 hover:border-violet-300'
-                  }`}
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="font-medium text-gray-900">{service.name}</div>
-                      <div className="text-sm text-gray-600">{service.duration || 60} min</div>
+        {showServicePicker && (
+          <div ref={servicesSectionRef} className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/50 shadow-sm p-4 lg:p-6 mx-4 lg:mx-0 mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Ajouter une prestation</h3>
+            {servicesLoading ? (
+              <div className="text-gray-500">Chargement des services...</div>
+            ) : (
+              <div className="space-y-2">
+                {availableServices
+                  .filter((s: any) => String(s.id) !== String(selectedServiceId))
+                  .map((service: any) => (
+                    <div
+                      key={service.id}
+                      onClick={() => {
+                        if (!extraServiceIds.includes(String(service.id))) {
+                          setExtraServiceIds([...extraServiceIds, String(service.id)]);
+                        }
+                        setShowServicePicker(false);
+                      }}
+                      className={`p-3 rounded-lg cursor-pointer border-2 transition-colors border-gray-200 bg-gray-50 hover:border-violet-300`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="font-medium text-gray-900">{service.name}</div>
+                          <div className="text-sm text-gray-600">{service.duration || 60} min</div>
+                        </div>
+                        <div className="font-semibold text-violet-600">{service.price},00 €</div>
+                      </div>
                     </div>
-                    <div className="font-semibold text-violet-600">{service.price},00 €</div>
-                  </div>
+                  ))}
+              </div>
+            )}
+            {extraServiceIds.length > 0 && (
+              <div className="mt-4">
+                <div className="text-sm font-medium text-gray-900 mb-2">Prestations ajoutées</div>
+                <div className="space-y-2">
+                  {extraServices.map((svc: any) => (
+                    <div key={String(svc.id)} className="flex justify-between items-center p-2 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="text-sm text-gray-800">
+                        {svc.name} · {svc.duration || 60} min
+                      </div>
+                      <button
+                        onClick={() => setExtraServiceIds(extraServiceIds.filter(id => String(id) !== String(svc.id)))}
+                        className="text-xs text-red-600 hover:text-red-700"
+                      >
+                        Retirer
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Bouton "Ajouter une prestation" avec même style que "Continuer" */}
         <div className="px-4 lg:px-0 pb-2">
@@ -860,6 +962,9 @@ export default function BookingDateTime() {
         {/* Étape */}
         <div className="px-4 mb-4">
           <div className="text-sm text-violet-600 font-medium mb-1">2. Choix de la date & heure</div>
+          {totalDurationMinutes > 0 && (
+            <div className="text-xs text-gray-600">Durée totale: {totalDurationMinutes} min</div>
+          )}
         </div>
 
         {/* Planning par jour - responsive */}
