@@ -61,13 +61,19 @@ export function Header() {
       label: 'Analytics',
       icon: BarChart3,
       path: '/client-analytics',
-      active: location === '/client-analytics' || location === '/analytics-dashboard'
+      active: location === '/client-analytics'
     },
     {
       label: 'IA Assistant',
       icon: Sparkles,
       path: '/ai-pro-complete',
       active: location === '/ai-pro-complete' || location === '/ai'
+    },
+    {
+      label: 'Équipe',
+      icon: Users,
+      path: '/staff-management',
+      active: location === '/staff-management' || location === '/staff'
     },
     {
       label: 'Paramètres',
@@ -140,10 +146,10 @@ export function Header() {
             variant="ghost" 
             className="h-8 w-8 p-0 relative"
             onClick={() => {
-              setLocation("/notifications");
+              setLocation("/planning");
               toast({
-                title: "Notifications",
-                description: "Centre de notifications ouvert"
+                title: "Planning",
+                description: "Accès au planning avec notifications"
               });
             }}
           >

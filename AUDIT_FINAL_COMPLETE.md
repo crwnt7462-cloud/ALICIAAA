@@ -164,8 +164,7 @@ export async function createPaymentIntent(data: any): Promise<any>
 
 ### B. MOCKS OUBLIÉS ⚠️
 ```typescript
-// MessagingMobile.tsx:  
-// Conversations mockées pour le moment
+// MessagingMobile.tsx: SUPPRIMÉ
 
 // ClientAnalytics.tsx:
 const mockInsight: ClientInsight = { ... }
@@ -256,7 +255,7 @@ EMAIL_FROM - server/emailService.ts
 
 ### C. CODE SMELLS - Mocks résiduels ⚠️
 **Problèmes identifiés**:
-1. **Conversations mockées** dans MessagingMobile.tsx
+1. **MessagingMobile.tsx** - SUPPRIMÉ
 2. **ClientInsight mockés** dans ClientAnalytics.tsx  
 3. **Conversations mockées** dans ProMessagingModern.tsx
 
@@ -288,7 +287,7 @@ EMAIL_FROM - server/emailService.ts
 
 ### 3. REMPLACER MOCKS PAR DONNÉES RÉELLES (IMPORTANT)
 **Fichiers**: 
-- MessagingMobile.tsx - API conversations réelles
+- MessagingMobile.tsx - SUPPRIMÉ
 - ClientAnalytics.tsx - API analytics réelles  
 - ProMessagingModern.tsx - API messagerie réelle
 

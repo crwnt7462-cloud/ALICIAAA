@@ -24,7 +24,7 @@ export default function TestSalon() {
           </li>
           <li className="flex items-center gap-3">
             <span className="text-green-300">✅</span> 
-            ModernSalonMobileFixed template prêt
+            ModernSalonMobile template supprimé
           </li>
           <li className="flex items-center gap-3">
             <span className="text-yellow-300">🔄</span> 

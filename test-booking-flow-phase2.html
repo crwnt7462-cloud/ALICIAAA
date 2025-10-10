@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Flux Réservation - Phase 2</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Flux Réservation - Phase 2</h1>
+    
+    <div class="test-section info">
+        <h3>📋 Informations du Test</h3>
+        <p><strong>Salon :</strong> azswer (salon-15228957)</p>
+        <p><strong>Services :</strong> aswf (45€, 20min) + testtttt gratuit 🐀 (1900€, 375min)</p>
+        <p><strong>Équipe :</strong> afrt, biugo</p>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 1. Test Accès Page Publique</h3>
+        <button onclick="testPublicSalon()">Tester API Publique</button>
+        <div id="public-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 2. Test Flux Réservation</h3>
+        <button onclick="openBookingFlow()">Ouvrir Flux Réservation</button>
+        <p><em>Ouvre la page publique du salon pour tester le flux complet</em></p>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 3. Test Multi-Services</h3>
+        <button onclick="testMultiServices()">Tester Sélection Multi-Services</button>
+        <div id="multi-services-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 4. Test Calculs Totaux</h3>
+        <button onclick="testCalculations()">Tester Calculs</button>
+        <div id="calculations-result"></div>
+    </div>
+
+    <script>
+        const SALON_SLUG = 'salon-15228957';
+        const BASE_URL = 'http://localhost:3000';
+        const FRONTEND_URL = 'http://localhost:5173';
+
+        async function testPublicSalon() {
+            const resultDiv = document.getElementById('public-result');
+            resultDiv.innerHTML = '<p>🔄 Test en cours...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/public/salon/${SALON_SLUG}`);
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    const salon = data.salon;
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Publique Fonctionnelle</h4>
+                            <p><strong>Nom :</strong> ${salon.name}</p>
+                            <p><strong>Services :</strong> ${salon.services.length}</p>
+                            <p><strong>Équipe :</strong> ${salon.team_members.length}</p>
+                            <pre>${JSON.stringify(salon.services, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur API</h4><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        function openBookingFlow() {
+            // Ouvrir la page publique du salon dans un nouvel onglet
+            window.open(`${FRONTEND_URL}/salon/${SALON_SLUG}`, '_blank');
+        }
+
+        async function testMultiServices() {
+            const resultDiv = document.getElementById('multi-services-result');
+            resultDiv.innerHTML = '<p>🔄 Test multi-services en cours...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/public/salon/${SALON_SLUG}`);
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    const services = data.salon.services;
+                    const categories = data.salon.service_categories;
+                    
+                    // Simuler la sélection multi-services
+                    const selectedServices = [
+                        { id: services[0].id, name: services[0].name, price: parseFloat(services[0].price), duration: parseInt(services[0].duration) },
+                        { id: categories[0].services[0].name, name: categories[0].services[0].name, price: parseFloat(categories[0].services[0].price), duration: parseInt(categories[0].services[0].duration) }
+                    ];
+                    
+                    const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
+                    const totalDuration = selectedServices.reduce((sum, s) => sum + s.duration, 0);
+                    
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Multi-Services Fonctionnel</h4>
+                            <p><strong>Services sélectionnés :</strong> ${selectedServices.length}</p>
+                            <p><strong>Prix total :</strong> ${totalPrice}€</p>
+                            <p><strong>Durée totale :</strong> ${totalDuration} min</p>
+                            <pre>${JSON.stringify(selectedServices, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur</h4><p>Impossible de récupérer les services</p></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        function testCalculations() {
+            const resultDiv = document.getElementById('calculations-result');
+            
+            // Test des calculs avec les vraies données
+            const services = [
+                { name: "aswf", price: 45, duration: 20 },
+                { name: "testtttt gratuit 🐀", price: 1900, duration: 375 }
+            ];
+            
+            const totalPrice = services.reduce((sum, s) => sum + s.price, 0);
+            const totalDuration = services.reduce((sum, s) => sum + s.duration, 0);
+            const hours = Math.floor(totalDuration / 60);
+            const minutes = totalDuration % 60;
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Calculs Corrects</h4>
+                    <p><strong>Services :</strong> ${services.length}</p>
+                    <p><strong>Prix total :</strong> ${totalPrice}€</p>
+                    <p><strong>Durée totale :</strong> ${totalDuration} min (${hours}h ${minutes}min)</p>
+                    <p><strong>Prix moyen :</strong> ${(totalPrice / services.length).toFixed(2)}€</p>
+                    <p><strong>Durée moyenne :</strong> ${(totalDuration / services.length).toFixed(0)} min</p>
+                </div>
+            `;
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            testPublicSalon();
+        };
+    </script>
+</body>
+</html>
+

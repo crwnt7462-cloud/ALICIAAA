@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Affichage Complet Prestations</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .step { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+        .completed { background: #d4edda; }
+        .warning { background: #fff3cd; }
+        .preview { background: #e9ecef; padding: 15px; border-radius: 8px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Affichage Complet Prestations</h1>
+    
+    <div class="test-section info">
+        <h3>📋 Nouvelles Fonctionnalités Ajoutées</h3>
+        <div class="step completed">
+            <strong>✅ Affichage de toutes les prestations :</strong> Liste complète des services sélectionnés
+        </div>
+        <div class="step completed">
+            <strong>✅ Montant total :</strong> Affiché sous le professionnel
+        </div>
+        <div class="step completed">
+            <strong>✅ Acompte calculé :</strong> Affiché avec pourcentage si requis
+        </div>
+        <div class="step completed">
+            <strong>✅ "À régler aujourd'hui" :</strong> Montant final à payer
+        </div>
+        <div class="step completed">
+            <strong>✅ Version mobile :</strong> Même logique appliquée au mobile
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 1. Test 3 Prestations Payantes</h3>
+        <button onclick="testThreePaidServices()">Simuler 3 Prestations Payantes</button>
+        <div id="three-paid-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 2. Test Mixte (Gratuit + Payants)</h3>
+        <button onclick="testMixedServices()">Simuler Mixte</button>
+        <div id="mixed-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 3. Test Service Gratuit</h3>
+        <button onclick="testFreeService()">Simuler Service Gratuit</button>
+        <div id="free-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 4. Test Page BookingFix</h3>
+        <button onclick="openBookingFix()">Ouvrir BookingFix</button>
+        <div id="booking-fix-result"></div>
+    </div>
+
+    <script>
+        const FRONTEND_URL = 'http://localhost:5173';
+
+        function testThreePaidServices() {
+            const resultDiv = document.getElementById('three-paid-result');
+            
+            const threePaidServicesData = {
+                selectedServices: [
+                    { 
+                        id: "service1", 
+                        name: "Coupe + Brushing", 
+                        price: 45, 
+                        duration: 60 
+                    },
+                    { 
+                        id: "service2", 
+                        name: "Coloration complète", 
+                        price: 80, 
+                        duration: 90 
+                    },
+                    { 
+                        id: "service3", 
+                        name: "Manucure", 
+                        price: 25, 
+                        duration: 30 
+                    }
+                ],
+                totalPrice: 150,
+                totalDuration: 180,
+                serviceCount: 3,
+                selectedDate: "Lundi 20 janvier 2025",
+                selectedTime: "14:00",
+                professionalName: "Marie Dubois",
+                professionalId: "1759862715734",
+                salonId: "15228957-f9f1-4f2d-82ac-ecba9f33c922",
+                salonSlug: "salon-15228957"
+            };
+            
+            sessionStorage.setItem('preBookingData', JSON.stringify(threePaidServicesData));
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ 3 Prestations Payantes Simulées</h4>
+                    <div class="preview">
+                        <strong>Affichage Attendu :</strong>
+                        <ul>
+                            <li><strong>3 prestations sélectionnées</strong> (titre)</li>
+                            <li><strong>Liste des 3 services</strong> avec nom, durée et prix</li>
+                            <li><strong>Professionnel :</strong> Marie Dubois</li>
+                            <li><strong>Montant total :</strong> 150,00 €</li>
+                            <li><strong>Acompte (50%) :</strong> 75,00 €</li>
+                            <li><strong>À régler aujourd'hui :</strong> 75,00 €</li>
+                        </ul>
+                    </div>
+                    <div class="step completed">
+                        <strong>Services :</strong> ${threePaidServicesData.selectedServices.length} prestations
+                    </div>
+                    <div class="step completed">
+                        <strong>Prix Total :</strong> ${threePaidServicesData.totalPrice}€
+                    </div>
+                    <div class="step completed">
+                        <strong>Acompte :</strong> 75,00 € (50% de 150€)
+                    </div>
+                    <div class="step completed">
+                        <strong>À régler :</strong> 75,00 €
+                    </div>
+                    <pre>${JSON.stringify(threePaidServicesData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function testMixedServices() {
+            const resultDiv = document.getElementById('mixed-result');
+            
+            const mixedServicesData = {
+                selectedServices: [
+                    { 
+                        id: "service1", 
+                        name: "testtttt gratuit", 
+                        price: 0, 
+                        duration: 30 
+                    },
+                    { 
+                        id: "service2", 
+                        name: "Coloration complète", 
+                        price: 80, 
+                        duration: 90 
+                    },
+                    { 
+                        id: "service3", 
+                        name: "Manucure", 
+                        price: 25, 
+                        duration: 30 
+                    }
+                ],
+                totalPrice: 105,
+                totalDuration: 150,
+                serviceCount: 3,
+                selectedDate: "Lundi 20 janvier 2025",
+                selectedTime: "14:00",
+                professionalName: "Marie Dubois",
+                professionalId: "1759862715734",
+                salonId: "15228957-f9f1-4f2d-82ac-ecba9f33c922",
+                salonSlug: "salon-15228957"
+            };
+            
+            sessionStorage.setItem('preBookingData', JSON.stringify(mixedServicesData));
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Services Mixtes Simulés</h4>
+                    <div class="preview">
+                        <strong>Affichage Attendu :</strong>
+                        <ul>
+                            <li><strong>3 prestations sélectionnées</strong> (titre)</li>
+                            <li><strong>Liste des 3 services</strong> (1 gratuit + 2 payants)</li>
+                            <li><strong>Professionnel :</strong> Marie Dubois</li>
+                            <li><strong>Montant total :</strong> 105,00 €</li>
+                            <li><strong>Acompte (50%) :</strong> 52,50 €</li>
+                            <li><strong>À régler aujourd'hui :</strong> 52,50 €</li>
+                        </ul>
+                    </div>
+                    <div class="step completed">
+                        <strong>Services :</strong> 3 prestations (1 gratuit + 2 payants)
+                    </div>
+                    <div class="step completed">
+                        <strong>Prix Total :</strong> ${mixedServicesData.totalPrice}€
+                    </div>
+                    <div class="step completed">
+                        <strong>Acompte :</strong> 52,50 € (50% de 105€)
+                    </div>
+                    <div class="step completed">
+                        <strong>À régler :</strong> 52,50 €
+                    </div>
+                    <pre>${JSON.stringify(mixedServicesData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function testFreeService() {
+            const resultDiv = document.getElementById('free-result');
+            
+            const freeServiceData = {
+                selectedServices: [
+                    { 
+                        id: "service1", 
+                        name: "testtttt gratuit 🐀", 
+                        price: 0, 
+                        duration: 30 
+                    }
+                ],
+                totalPrice: 0,
+                totalDuration: 30,
+                serviceCount: 1,
+                selectedDate: "Lundi 20 janvier 2025",
+                selectedTime: "14:00",
+                professionalName: "Marie Dubois",
+                professionalId: "1759862715734",
+                salonId: "15228957-f9f1-4f2d-82ac-ecba9f33c922",
+                salonSlug: "salon-15228957"
+            };
+            
+            sessionStorage.setItem('preBookingData', JSON.stringify(freeServiceData));
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Service Gratuit Simulé</h4>
+                    <div class="preview">
+                        <strong>Affichage Attendu :</strong>
+                        <ul>
+                            <li><strong>1 prestation sélectionnée</strong> (titre)</li>
+                            <li><strong>Service :</strong> testtttt gratuit 🐀</li>
+                            <li><strong>Professionnel :</strong> Marie Dubois</li>
+                            <li><strong>Montant total :</strong> 0,00 €</li>
+                            <li><strong>Pas d'acompte affiché</strong> (service gratuit)</li>
+                            <li><strong>À régler aujourd'hui :</strong> 0,00 €</li>
+                        </ul>
+                    </div>
+                    <div class="step completed">
+                        <strong>Service :</strong> ${freeServiceData.selectedServices[0].name}
+                    </div>
+                    <div class="step completed">
+                        <strong>Prix :</strong> ${freeServiceData.totalPrice}€
+                    </div>
+                    <div class="step completed">
+                        <strong>Acompte :</strong> Aucun (service gratuit)
+                    </div>
+                    <div class="step completed">
+                        <strong>À régler :</strong> 0,00 €
+                    </div>
+                    <pre>${JSON.stringify(freeServiceData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function openBookingFix() {
+            const resultDiv = document.getElementById('booking-fix-result');
+            resultDiv.innerHTML = `
+                <div class="info">
+                    <h4>🔗 Ouverture Page BookingFix</h4>
+                    <div class="step completed">
+                        <strong>URL :</strong> ${FRONTEND_URL}/booking-fix
+                    </div>
+                    <div class="step completed">
+                        <strong>Vérifications :</strong>
+                        <ol>
+                            <li>✅ <strong>Toutes les prestations</strong> affichées dans la liste</li>
+                            <li>✅ <strong>Nombre correct</strong> de prestations (ex: "3 prestations sélectionnées")</li>
+                            <li>✅ <strong>Montant total</strong> affiché sous le professionnel</li>
+                            <li>✅ <strong>Acompte calculé</strong> avec pourcentage si requis</li>
+                            <li>✅ <strong>"À régler aujourd'hui"</strong> avec le bon montant</li>
+                            <li>✅ <strong>Pas de texte "Gratuit"</strong> visible</li>
+                            <li>✅ <strong>Logs de debug</strong> dans la console</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+            
+            // Ouvrir la page booking-fix
+            window.open(`${FRONTEND_URL}/booking-fix`, '_blank');
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            console.log('🧪 Test affichage complet prestations chargé');
+            
+            // Vérifier si des données existent déjà
+            const existingData = sessionStorage.getItem('preBookingData');
+            if (existingData) {
+                console.log('📋 Données existantes trouvées:', JSON.parse(existingData));
+            }
+        };
+    </script>
+</body>
+</html>
+

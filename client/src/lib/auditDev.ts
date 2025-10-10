@@ -22,9 +22,6 @@ export function showAuditBanner(message: string): void {
   el.textContent = `[AUDIT] ${message}`;
 }
 
-export function shouldShowHealth(urlParams: URLSearchParams): boolean {
-  return import.meta.env.VITE_HEALTHCHECK === "1" || urlParams.has("health");
-}
 
 export function bootAuditMarks(label: string): void {
   if (typeof console !== "undefined") {

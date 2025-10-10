@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug API - Phase 2</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug API - Phase 2</h1>
+    
+    <div class="test-section info">
+        <h3>📋 APIs à Tester</h3>
+        <p><strong>Salon :</strong> salon-15228957</p>
+        <p><strong>Base URL :</strong> http://localhost:3000</p>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 1. Test API Publique</h3>
+        <button onclick="testPublicAPI()">Tester API Publique</button>
+        <div id="public-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 2. Test API Staff (Pro)</h3>
+        <button onclick="testStaffAPI()">Tester API Staff</button>
+        <div id="staff-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 3. Test API Disponibilité</h3>
+        <button onclick="testAvailabilityAPI()">Tester API Disponibilité</button>
+        <div id="availability-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 4. Test API Salon Services</h3>
+        <button onclick="testSalonServicesAPI()">Tester API Salon Services</button>
+        <div id="salon-services-result"></div>
+    </div>
+
+    <script>
+        const SALON_SLUG = 'salon-15228957';
+        const BASE_URL = 'http://localhost:3000';
+
+        async function testPublicAPI() {
+            const resultDiv = document.getElementById('public-result');
+            resultDiv.innerHTML = '<p>🔄 Test API publique...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/public/salon/${SALON_SLUG}`);
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Publique OK</h4>
+                            <p><strong>Nom :</strong> ${data.salon.name}</p>
+                            <p><strong>Services :</strong> ${data.salon.services.length}</p>
+                            <p><strong>Équipe :</strong> ${data.salon.team_members.length}</p>
+                            <pre>${JSON.stringify(data.salon.team_members, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur API Publique</h4><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function testStaffAPI() {
+            const resultDiv = document.getElementById('staff-result');
+            resultDiv.innerHTML = '<p>🔄 Test API staff...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/staff`, {
+                    credentials: 'include',
+                    headers: { 'Origin': 'http://localhost:5173' }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.length >= 0) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Staff OK</h4>
+                            <p><strong>Professionnels :</strong> ${data.length}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur API Staff</h4><p>Status: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function testAvailabilityAPI() {
+            const resultDiv = document.getElementById('availability-result');
+            resultDiv.innerHTML = '<p>🔄 Test API disponibilité...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/professionals/1759862715734/availability`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        serviceId: 1759861618425.438,
+                        totalDuration: 375,
+                        timezone: 'Europe/Paris',
+                        dateRange: { start: '2024-01-20', end: '2024-01-27' }
+                    })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Disponibilité OK</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur API Disponibilité</h4><p>Status: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function testSalonServicesAPI() {
+            const resultDiv = document.getElementById('salon-services-result');
+            resultDiv.innerHTML = '<p>🔄 Test API salon services...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/salon/15228957-f9f1-4f2d-82ac-ecba9f33c922/services`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Salon Services OK</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur API Salon Services</h4><p>Status: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            testPublicAPI();
+        };
+    </script>
+</body>
+</html>
+

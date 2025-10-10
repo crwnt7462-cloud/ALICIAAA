@@ -1,12 +1,185 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Palette, Calendar, Upload, Settings, Globe, Smartphone } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, Palette, Calendar, Upload, Settings, Globe, Smartphone, Save, Eye, Plus, Star, X } from 'lucide-react';
+
+// Types pour une meilleure structure
+interface PageData {
+  salonName: string;
+  description: string;
+  history: string;
+  services: Service[];
+  reviews: Review[];
+  photos: string[];
+}
+
+interface Service {
+  id: string;
+  name: string;
+  price: number;
+  duration: string;
+  professional?: string;
+}
+
+interface Review {
+  id: string;
+  text: string;
+  author: string;
+  rating: number;
+}
+
+interface BookingData {
+  title: string;
+  welcomeMessage: string;
+  services: Service[];
+}
+
+// Constantes configurables
+const DEFAULT_PLACEHOLDERS = {
+  salonName: "Nom de votre salon",
+  description: "Décrivez votre salon en quelques mots...",
+  history: "Racontez l'histoire de votre salon...",
+  reviewText: "Avis client",
+  reviewAuthor: "Nom du client",
+  bookingTitle: "Titre de votre page de réservation",
+  welcomeMessage: "Message d'accueil pour vos clients...",
+  serviceName: "Nom du service",
+  newService: "Nouveau service"
+};
+
+const UI_TEXT = {
+  coverPhoto: "Photo de couverture",
+  photosCount: (count: number) => `${count} photo(s)`,
+  salonName: "Nom du salon",
+  salonDescription: "Description du salon...",
+  bookingTitle: "Titre de la page",
+  bookingMessage: "Message d'accueil...",
+  services: "Services",
+  history: "Notre histoire",
+  reviews: "Avis clients",
+  addPhoto: "Ajouter des photos",
+  addService: "Ajouter un service",
+  addReview: "Ajouter un avis",
+  chooseService: "Choisir ce service",
+  publishPage: "Publier la page",
+  saveDraft: "Sauvegarder brouillon",
+  publishing: "Publication...",
+  saving: "Sauvegarde...",
+  createPage: "Créer cette page",
+  createNewPage: "Créer une nouvelle page",
+  pageTypeSelection: "Choisissez le type de page que vous souhaitez créer",
+  realTimePreview: "Aperçu en temps réel",
+  customizePage: "Personnalisez votre page en temps réel"
+};
+
+const DEFAULT_VALUES = {
+  salon: {
+    salonName: "",
+    description: "",
+    history: "",
+    services: [],
+    reviews: [],
+    photos: []
+  },
+  booking: {
+    title: "",
+    welcomeMessage: "",
+    services: []
+  }
+};
 
 export default function PageCreator() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const [selectedType, setSelectedType] = useState<'salon' | 'booking' | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+  
+  // États pour les données dynamiques
+  const [salonData, setSalonData] = useState<PageData>(DEFAULT_VALUES.salon);
+  const [bookingData, setBookingData] = useState<BookingData>(DEFAULT_VALUES.booking);
+
+  // Fonctions utilitaires
+  const handleSave = useCallback(async (type: 'draft' | 'publish') => {
+    setIsSaving(true);
+    try {
+      // Simulation de sauvegarde
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: type === 'publish' ? "Page publiée !" : "Brouillon sauvegardé !",
+        description: type === 'publish' 
+          ? "Votre page est maintenant en ligne et accessible à vos clients."
+          : "Vos modifications ont été sauvegardées. Vous pouvez continuer plus tard.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur de sauvegarde",
+        description: "Une erreur est survenue lors de la sauvegarde.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  }, [toast]);
+
+  const addService = useCallback((type: 'salon' | 'booking') => {
+    const newService: Service = {
+      id: Date.now().toString(),
+      name: DEFAULT_PLACEHOLDERS.newService,
+      price: 0,
+      duration: "30 min"
+    };
+    
+    if (type === 'salon') {
+      setSalonData(prev => ({
+        ...prev,
+        services: [...prev.services, newService]
+      }));
+    } else {
+      setBookingData(prev => ({
+        ...prev,
+        services: [...prev.services, newService]
+      }));
+    }
+  }, []);
+
+  const removeService = useCallback((serviceId: string, type: 'salon' | 'booking') => {
+    if (type === 'salon') {
+      setSalonData(prev => ({
+        ...prev,
+        services: prev.services.filter(s => s.id !== serviceId)
+      }));
+    } else {
+      setBookingData(prev => ({
+        ...prev,
+        services: prev.services.filter(s => s.id !== serviceId)
+      }));
+    }
+  }, []);
+
+  const updateService = useCallback((serviceId: string, field: keyof Service, value: any, type: 'salon' | 'booking') => {
+    if (type === 'salon') {
+      setSalonData(prev => ({
+        ...prev,
+        services: prev.services.map(s => 
+          s.id === serviceId ? { ...s, [field]: value } : s
+        )
+      }));
+    } else {
+      setBookingData(prev => ({
+        ...prev,
+        services: prev.services.map(s => 
+          s.id === serviceId ? { ...s, [field]: value } : s
+        )
+      }));
+    }
+  }, []);
 
   const pageTypes = [
     {
@@ -29,88 +202,173 @@ export default function PageCreator() {
 
   if (selectedType) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto p-6">
+      <div className="min-h-screen" style={{background: 'radial-gradient(1200px 600px at 20% -10%, #F3EFFF 0%, #FFFFFF 55%)'}}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
             <Button
               variant="ghost"
               onClick={() => setSelectedType(null)}
-              className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-100 shadow-sm"
+              className="avyento-button-secondary h-10 w-10 sm:h-12 sm:w-12 p-0 rounded-2xl self-start"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
                 Créer une {selectedType === 'salon' ? 'Page Salon' : 'Page Réservation'}
               </h1>
-              <p className="text-gray-600">Personnalisez votre page en temps réel</p>
+              <p className="text-gray-600 text-base sm:text-lg mt-1">{UI_TEXT.customizePage}</p>
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
             {/* Éditeur */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="w-5 h-5" />
+            <div className="space-y-4 sm:space-y-6">
+              <Card 
+                className="rounded-2xl sm:rounded-3xl p-4 sm:p-6"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                  backdropFilter: 'blur(25px)',
+                  WebkitBackdropFilter: 'blur(25px)',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)'
+                }}
+              >
+                <CardHeader className="pb-4 sm:pb-6">
+                  <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl font-bold">
+                    <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
                     Configuration
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 sm:space-y-4">
                   {selectedType === 'salon' && (
                     <>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Nom du salon</label>
-                        <input 
-                          type="text" 
-                          placeholder="Excellence Beauty Paris"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                        <Label htmlFor="salon-name">Nom du salon</Label>
+                        <Input 
+                          id="salon-name"
+                          value={salonData.salonName}
+                          onChange={(e) => setSalonData(prev => ({ ...prev, salonName: e.target.value }))}
+                          placeholder={DEFAULT_PLACEHOLDERS.salonName}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-sm sm:text-base"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.25)',
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
+                            color: 'black'
+                          }}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                        <textarea 
-                          placeholder="Votre salon de beauté au cœur de Paris..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 h-20"
+                        <Label htmlFor="salon-description">Description</Label>
+                        <Textarea 
+                          id="salon-description"
+                          value={salonData.description}
+                          onChange={(e) => setSalonData(prev => ({ ...prev, description: e.target.value }))}
+                          placeholder={DEFAULT_PLACEHOLDERS.description}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-sm sm:text-base h-16 sm:h-20"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.25)',
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
+                            color: 'black'
+                          }}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Photos du salon</label>
-                        <Button variant="outline" className="w-full h-20 border-dashed">
-                          <Upload className="w-5 h-5 mr-2" />
-                          Ajouter des photos
+                        <Label>Photos du salon</Label>
+                        <Button 
+                          variant="outline" 
+                          className="w-full h-16 sm:h-20 border-dashed border-2 border-gray-300 hover:border-violet-400 rounded-xl sm:rounded-2xl text-sm sm:text-base"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.25)',
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)',
+                            border: '2px dashed rgba(156, 163, 175, 0.5)',
+                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
+                            color: 'black'
+                          }}
+                        >
+                          <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                          <span className="hidden sm:inline">{UI_TEXT.addPhoto} ({salonData.photos.length})</span>
+                          <span className="sm:hidden">Photos ({salonData.photos.length})</span>
                         </Button>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Services</label>
+                        <Label>Services</Label>
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                            <span className="text-sm">Coupe & Brushing</span>
-                            <span className="text-sm text-gray-500">45€</span>
-                          </div>
-                          <Button variant="outline" size="sm" className="w-full">
-                            + Ajouter un service
+                          {salonData.services.map((service) => (
+                            <div key={service.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                              <div className="flex-1">
+                                <Input 
+                                  value={service.name}
+                                  onChange={(e) => updateService(service.id, 'name', e.target.value, 'salon')}
+                                  className="border-0 bg-transparent p-0 h-auto"
+                                />
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Input 
+                                  type="number"
+                                  value={service.price}
+                                  onChange={(e) => updateService(service.id, 'price', Number(e.target.value), 'salon')}
+                                  className="w-16 h-6 text-xs"
+                                />
+                                <span className="text-xs text-gray-500">€</span>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  onClick={() => removeService(service.id, 'salon')}
+                                  className="h-6 w-6 p-0"
+                                >
+                                  <X className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="avyento-button-secondary w-full"
+                            onClick={() => addService('salon')}
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            {UI_TEXT.addService}
                           </Button>
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Histoire du salon</label>
-                        <textarea 
-                          placeholder="15 ans d'excellence dans l'art de la beauté..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 h-16"
+                        <Label htmlFor="salon-history">Histoire du salon</Label>
+                        <Textarea 
+                          id="salon-history"
+                          value={salonData.history}
+                          onChange={(e) => setSalonData(prev => ({ ...prev, history: e.target.value }))}
+                          placeholder={DEFAULT_PLACEHOLDERS.history}
+                          className="avyento-input h-16"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Avis clients</label>
+                        <Label>Avis clients</Label>
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                            <span className="text-sm">"Service exceptionnel !" - Marie D.</span>
-                            <span className="text-sm text-yellow-500">⭐⭐⭐⭐⭐</span>
-                          </div>
-                          <Button variant="outline" size="sm" className="w-full">
-                            + Ajouter un avis
+                          {salonData.reviews.map((review) => (
+                            <div key={review.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                              <span className="text-sm">"{review.text}" - {review.author}</span>
+                              <div className="flex items-center gap-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star 
+                                    key={i} 
+                                    className={`w-3 h-3 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                          <Button variant="outline" size="sm" className="avyento-button-secondary w-full">
+                            <Plus className="w-4 h-4 mr-2" />
+                            {UI_TEXT.addReview}
                           </Button>
                         </div>
                       </div>
@@ -120,29 +378,64 @@ export default function PageCreator() {
                   {selectedType === 'booking' && (
                     <>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Titre de la page</label>
-                        <input 
-                          type="text" 
-                          placeholder="Réservez votre rendez-vous"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                        <Label htmlFor="booking-title">Titre de la page</Label>
+                        <Input 
+                          id="booking-title"
+                          value={bookingData.title}
+                          onChange={(e) => setBookingData(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder={DEFAULT_PLACEHOLDERS.bookingTitle}
+                          className="avyento-input"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Message d'accueil</label>
-                        <textarea 
-                          placeholder="Choisissez votre créneau et service..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 h-20"
+                        <Label htmlFor="booking-message">Message d'accueil</Label>
+                        <Textarea 
+                          id="booking-message"
+                          value={bookingData.welcomeMessage}
+                          onChange={(e) => setBookingData(prev => ({ ...prev, welcomeMessage: e.target.value }))}
+                          placeholder={DEFAULT_PLACEHOLDERS.welcomeMessage}
+                          className="avyento-input h-20"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Services disponibles</label>
+                        <Label>Services disponibles</Label>
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                            <span className="text-sm">Coupe & Brushing</span>
-                            <span className="text-sm text-gray-500">45€</span>
-                          </div>
-                          <Button variant="outline" size="sm" className="w-full">
-                            + Ajouter un service
+                          {bookingData.services.map((service) => (
+                            <div key={service.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                              <div className="flex-1">
+                                <Input 
+                                  value={service.name}
+                                  onChange={(e) => updateService(service.id, 'name', e.target.value, 'booking')}
+                                  className="border-0 bg-transparent p-0 h-auto"
+                                />
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Input 
+                                  type="number"
+                                  value={service.price}
+                                  onChange={(e) => updateService(service.id, 'price', Number(e.target.value), 'booking')}
+                                  className="w-16 h-6 text-xs"
+                                />
+                                <span className="text-xs text-gray-500">€</span>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  onClick={() => removeService(service.id, 'booking')}
+                                  className="h-6 w-6 p-0"
+                                >
+                                  <X className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="avyento-button-secondary w-full"
+                            onClick={() => addService('booking')}
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            {UI_TEXT.addService}
                           </Button>
                         </div>
                       </div>
@@ -153,89 +446,152 @@ export default function PageCreator() {
             </div>
 
             {/* Aperçu */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Globe className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-500">Aperçu</span>
-                <div className="flex bg-gray-100 rounded p-1 ml-auto">
-                  <Button variant="ghost" size="sm" className="h-6 px-2">
-                    <Smartphone className="w-3 h-3" />
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-violet-600" />
+                  <span className="text-base sm:text-lg font-semibold text-gray-900">{UI_TEXT.realTimePreview}</span>
+                </div>
+                <div className="avyento-nav-tabs ml-auto">
+                  <Button 
+                    variant={isPreviewMode ? "default" : "ghost"} 
+                    size="sm" 
+                    className="avyento-nav-tab h-7 sm:h-8 px-2 sm:px-3"
+                    onClick={() => setIsPreviewMode(!isPreviewMode)}
+                  >
+                    <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-6 px-2">
-                    <Globe className="w-3 h-3" />
+                  <Button variant="ghost" size="sm" className="avyento-nav-tab h-7 sm:h-8 px-2 sm:px-3">
+                    <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="avyento-nav-tab h-7 sm:h-8 px-2 sm:px-3">
+                    <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
                   </Button>
                 </div>
               </div>
 
-              <Card className="border-2 border-dashed border-gray-300">
-                <CardContent className="p-6">
+              <Card 
+                className="border-2 border-dashed border-violet-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                  backdropFilter: 'blur(25px)',
+                  WebkitBackdropFilter: 'blur(25px)',
+                  border: '2px dashed rgba(139, 92, 246, 0.3)',
+                  boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)'
+                }}
+              >
+                <CardContent className="p-4 sm:p-6">
                   <div className="space-y-4">
                     {selectedType === 'salon' && (
                       <>
-                        <div className="h-32 bg-gradient-to-r from-violet-100 to-pink-100 rounded-lg flex items-center justify-center">
-                          <span className="text-gray-500">Photo de couverture</span>
+                        <div className="h-24 sm:h-32 bg-gradient-to-r from-violet-100 to-pink-100 rounded-lg flex items-center justify-center">
+                          <span className="text-gray-500 text-sm sm:text-base">
+                            {salonData.photos.length > 0 ? UI_TEXT.photosCount(salonData.photos.length) : UI_TEXT.coverPhoto}
+                          </span>
                         </div>
                         <div>
-                          <h2 className="text-xl font-semibold text-gray-900">Excellence Beauty Paris</h2>
-                          <p className="text-gray-600 text-sm">Votre salon de beauté au cœur de Paris...</p>
+                          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+                            {salonData.salonName || DEFAULT_PLACEHOLDERS.salonName}
+                          </h2>
+                          <p className="text-gray-600 text-xs sm:text-sm">
+                            {salonData.description || DEFAULT_PLACEHOLDERS.description}
+                          </p>
                         </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="h-16 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-500">Photo 1</div>
-                          <div className="h-16 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-500">Photo 2</div>
-                        </div>
+                        {salonData.photos.length > 0 && (
+                          <div className="grid grid-cols-2 gap-2">
+                            {salonData.photos.slice(0, 2).map((photo, index) => (
+                              <div key={index} className="h-12 sm:h-16 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-500">
+                                {photo}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                         
                         {/* Services */}
-                        <div className="space-y-2">
-                          <h3 className="font-medium text-gray-900">Services</h3>
-                          <div className="p-3 border border-gray-200 rounded-lg">
-                            <div className="flex justify-between items-center">
-                              <span className="font-medium">Coupe & Brushing</span>
-                              <span className="text-violet-600 font-semibold">45€</span>
-                            </div>
-                            <span className="text-sm text-gray-500">45 min - Expert Sophie</span>
+                        {salonData.services.length > 0 && (
+                          <div className="space-y-2">
+                            <h3 className="font-medium text-gray-900 text-sm sm:text-base">{UI_TEXT.services}</h3>
+                            {salonData.services.map((service) => (
+                              <div key={service.id} className="p-2 sm:p-3 border border-gray-200 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                  <span className="font-medium text-sm sm:text-base">{service.name}</span>
+                                  <span className="text-violet-600 font-semibold text-sm sm:text-base">{service.price}€</span>
+                                </div>
+                                <span className="text-xs sm:text-sm text-gray-500">
+                                  {service.duration} {service.professional && `- Expert ${service.professional}`}
+                                </span>
+                              </div>
+                            ))}
                           </div>
-                        </div>
+                        )}
 
                         {/* Histoire */}
-                        <div className="space-y-2">
-                          <h3 className="font-medium text-gray-900">Notre histoire</h3>
-                          <div className="p-3 bg-gray-50 rounded-lg">
-                            <p className="text-xs text-gray-700">15 ans d'excellence dans l'art de la beauté...</p>
+                        {salonData.history && (
+                          <div className="space-y-2">
+                            <h3 className="font-medium text-gray-900 text-sm sm:text-base">{UI_TEXT.history}</h3>
+                            <div className="p-2 sm:p-3 bg-gray-50 rounded-lg">
+                              <p className="text-xs sm:text-sm text-gray-700">{salonData.history}</p>
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         {/* Avis */}
-                        <div className="space-y-2">
-                          <h3 className="font-medium text-gray-900">Avis clients</h3>
-                          <div className="p-3 bg-gray-50 rounded-lg">
-                            <div className="flex items-center gap-1 mb-1">
-                              {[...Array(5)].map((_, i) => (
-                                <div key={i} className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                              ))}
-                            </div>
-                            <p className="text-xs text-gray-700">"Service exceptionnel !" - Marie D.</p>
+                        {salonData.reviews.length > 0 && (
+                          <div className="space-y-2">
+                            <h3 className="font-medium text-gray-900 text-sm sm:text-base">{UI_TEXT.reviews}</h3>
+                            {salonData.reviews.map((review) => (
+                              <div key={review.id} className="p-2 sm:p-3 bg-gray-50 rounded-lg">
+                                <div className="flex items-center gap-1 mb-1">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star 
+                                      key={i} 
+                                      className={`w-2 h-2 sm:w-3 sm:h-3 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                                    />
+                                  ))}
+                                </div>
+                                <p className="text-xs sm:text-sm text-gray-700">"{review.text}" - {review.author}</p>
+                              </div>
+                            ))}
                           </div>
-                        </div>
+                        )}
                       </>
                     )}
 
                     {selectedType === 'booking' && (
                       <>
                         <div>
-                          <h2 className="text-xl font-semibold text-gray-900">Réservez votre rendez-vous</h2>
-                          <p className="text-gray-600 text-sm">Choisissez votre créneau et service...</p>
+                          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+                            {bookingData.title || DEFAULT_PLACEHOLDERS.bookingTitle}
+                          </h2>
+                          <p className="text-gray-600 text-xs sm:text-sm">
+                            {bookingData.welcomeMessage || DEFAULT_PLACEHOLDERS.welcomeMessage}
+                          </p>
                         </div>
-                        <div className="space-y-2">
-                          <div className="p-3 border border-gray-200 rounded-lg">
-                            <div className="flex justify-between items-center">
-                              <span className="font-medium">Coupe & Brushing</span>
-                              <span className="text-violet-600 font-semibold">45€</span>
-                            </div>
-                            <span className="text-sm text-gray-500">45 min</span>
+                        {bookingData.services.length > 0 && (
+                          <div className="space-y-2">
+                            {bookingData.services.map((service) => (
+                              <div key={service.id} className="p-2 sm:p-3 border border-gray-200 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                  <span className="font-medium text-sm sm:text-base">{service.name}</span>
+                                  <span className="text-violet-600 font-semibold text-sm sm:text-base">{service.price}€</span>
+                                </div>
+                                <span className="text-xs sm:text-sm text-gray-500">{service.duration}</span>
+                              </div>
+                            ))}
                           </div>
-                        </div>
-                        <Button className="w-full bg-violet-600 hover:bg-violet-700">
-                          Choisir ce service
+                        )}
+                        <Button 
+                          className="w-full px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-lg font-semibold shadow-xl hover:shadow-2xl transition-all"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(168, 85, 247, 0.15) 100%)',
+                            backdropFilter: 'blur(15px)',
+                            WebkitBackdropFilter: 'blur(15px)',
+                            border: 'none',
+                            boxShadow: '0 6px 20px rgba(168, 85, 247, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5)',
+                            color: 'black'
+                          }}
+                        >
+                          {UI_TEXT.chooseService}
                         </Button>
                       </>
                     )}
@@ -243,22 +599,60 @@ export default function PageCreator() {
                 </CardContent>
               </Card>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Button 
-                  className="flex-1 bg-violet-600 hover:bg-violet-700"
-                  onClick={() => {
-                    alert('Page publiée avec succès ! Votre page sera disponible à l\'adresse : beautybook.com/salon/mon-salon');
+                  className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-lg font-semibold shadow-xl hover:shadow-2xl transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(168, 85, 247, 0.15) 100%)',
+                    backdropFilter: 'blur(15px)',
+                    WebkitBackdropFilter: 'blur(15px)',
+                    border: 'none',
+                    boxShadow: '0 6px 20px rgba(168, 85, 247, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5)',
+                    color: 'black'
                   }}
+                  onClick={() => handleSave('publish')}
+                  disabled={isSaving}
                 >
-                  Publier la page
+                  {isSaving ? (
+                    <>
+                      <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                      <span className="hidden sm:inline">{UI_TEXT.publishing}</span>
+                      <span className="sm:hidden">Publication...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Globe className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      <span className="hidden sm:inline">{UI_TEXT.publishPage}</span>
+                      <span className="sm:hidden">Publier</span>
+                    </>
+                  )}
                 </Button>
                 <Button 
-                  variant="outline"
-                  onClick={() => {
-                    alert('Brouillon sauvegardé ! Vous pouvez continuer à modifier votre page plus tard.');
+                  className="px-4 sm:px-6 py-3 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold shadow-xl hover:shadow-2xl transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: '2px solid rgba(255, 255, 255, 0.4)',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.3)',
+                    color: 'black'
                   }}
+                  onClick={() => handleSave('draft')}
+                  disabled={isSaving}
                 >
-                  Sauvegarder brouillon
+                  {isSaving ? (
+                    <>
+                      <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                      <span className="hidden sm:inline">{UI_TEXT.saving}</span>
+                      <span className="sm:hidden">Sauvegarde...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      <span className="hidden sm:inline">{UI_TEXT.saveDraft}</span>
+                      <span className="sm:hidden">Brouillon</span>
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
@@ -269,52 +663,81 @@ export default function PageCreator() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto p-6">
+    <div className="min-h-screen" style={{background: 'radial-gradient(1200px 600px at 20% -10%, #F3EFFF 0%, #FFFFFF 55%)'}}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Button
             variant="ghost"
             onClick={() => setLocation('/pro-tools')}
-            className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-100 shadow-sm"
+            className="avyento-button-secondary h-10 w-10 sm:h-12 sm:w-12 p-0 rounded-2xl self-start"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Créer une nouvelle page</h1>
-            <p className="text-gray-600">Choisissez le type de page que vous souhaitez créer</p>
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">{UI_TEXT.createNewPage}</h1>
+            <p className="text-gray-600 text-base sm:text-lg mt-1">{UI_TEXT.pageTypeSelection}</p>
           </div>
         </div>
 
         {/* Types de pages */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {pageTypes.map((pageType) => (
             <Card 
               key={pageType.type}
-              className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2 hover:border-violet-300"
+              className="cursor-pointer transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 rounded-2xl sm:rounded-3xl p-4 sm:p-6"
+              style={{
+                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                backdropFilter: 'blur(25px)',
+                WebkitBackdropFilter: 'blur(25px)',
+                border: '1px solid rgba(255, 255, 255, 0.18)',
+                boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)'
+              }}
               onClick={() => setSelectedType(pageType.type)}
             >
-              <CardHeader className="text-center pb-4">
-                <div className={`mx-auto w-16 h-16 bg-${pageType.color}-100 rounded-full flex items-center justify-center text-${pageType.color}-600 mb-4`}>
-                  {pageType.icon}
+              <CardHeader className="text-center pb-4 sm:pb-6">
+                <div 
+                  className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                    backdropFilter: 'blur(15px)',
+                    WebkitBackdropFilter: 'blur(15px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
+                    color: pageType.color === 'violet' ? '#7c3aed' : '#3b82f6'
+                  }}
+                >
+                  <div className="w-6 h-6 sm:w-8 sm:h-8">
+                    {pageType.icon}
+                  </div>
                 </div>
-                <CardTitle className="text-xl">{pageType.title}</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">{pageType.title}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-4">{pageType.description}</p>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm text-gray-900">Fonctionnalités incluses :</h4>
-                  <ul className="text-xs text-gray-600 space-y-1">
+              <CardContent className="pt-0">
+                <p className="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">{pageType.description}</p>
+                <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
+                  <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Fonctionnalités incluses :</h4>
+                  <ul className="text-xs sm:text-sm text-gray-600 space-y-1 sm:space-y-2">
                     {pageType.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <div className="w-1 h-1 bg-violet-600 rounded-full"></div>
-                        {feature}
+                      <li key={idx} className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
+                        <span className="text-xs sm:text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-                <Button className="w-full mt-4 bg-violet-600 hover:bg-violet-700">
-                  Créer cette page
+                <Button 
+                  className="w-full px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-lg font-semibold shadow-xl hover:shadow-2xl transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(168, 85, 247, 0.15) 100%)',
+                    backdropFilter: 'blur(15px)',
+                    WebkitBackdropFilter: 'blur(15px)',
+                    border: 'none',
+                    boxShadow: '0 6px 20px rgba(168, 85, 247, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5)',
+                    color: 'black'
+                  }}
+                >
+                  {UI_TEXT.createPage}
                 </Button>
               </CardContent>
             </Card>

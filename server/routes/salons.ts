@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { supabase } from "../db";
+// import { supabase } from "../db";
 const router = Router();
 
 // GET /:salonId/services

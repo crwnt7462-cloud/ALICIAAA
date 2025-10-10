@@ -1,42 +1,181 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 import avyentoLogo from "@/assets/avyento-logo.png";
 
+type PlanConfig = {
+  id: string;
+  name: string;
+  monthlyPrice: number;
+  description: string;
+  features: string[];
+  popular?: boolean;
+};
+
+const DEFAULT_PLANS: PlanConfig[] = [
+  { id: 'essentiel', name: 'Essentiel', monthlyPrice: 29, description: 'Pour commencer', features: ['Planning et réservations', "Jusqu'à 200 RDV/mois", 'Gestion clientèle'] },
+  { id: 'professionnel', name: 'Pro', monthlyPrice: 79, description: 'Le plus populaire', features: ["Tout de l'Essentiel", 'Analytics avancés', "Jusqu'à 1000 RDV/mois"], popular: true },
+  { id: 'premium', name: 'Premium', monthlyPrice: 149, description: 'Fonctionnalités avancées', features: ["Tout du Professionnel", 'Assistant IA intégré', 'RDV illimités'] }
+];
+
 export default function ProfessionalPlans() {
   const [, setLocation] = useLocation();
-  const [, setSelectedPlan] = useState<string | null>(null);
   const [isYearly, setIsYearly] = useState(false);
-  const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number, type: 'percentage' | 'fixed'} | null>(null);
+  const [plans, setPlans] = useState<PlanConfig[]>(DEFAULT_PLANS);
 
-  // Codes promo disponibles (gardés pour /register)
-  const availablePromoCodes = {
-    'AVYENTO2025': { discount: 20, type: 'percentage' as const, description: '20% de réduction' },
-    'SALON50': { discount: 50, type: 'fixed' as const, description: '50€ de réduction' },
-    'PREMIUM15': { discount: 15, type: 'percentage' as const, description: '15% de réduction' },
-    'FIRST100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction' },
-    'EMPIRE100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction sur Beauty Empire' },
-    'FREE149': { discount: 149, type: 'fixed' as const, description: 'Abonnement gratuit - 149€ de réduction' },
-  };
+  useEffect(() => {
+    let isMounted = true;
+    const sanitizeText = (value: any, maxLen = 120): string => {
+      const s = String(value ?? '').replace(/[\u0000-\u001F\u007F]/g, '').slice(0, maxLen);
+      return s;
+    };
+    const isSafeId = (value: any): boolean => /^[a-z0-9-]{1,40}$/i.test(String(value || ''));
+    const normalizePlan = (p: any): PlanConfig | null => {
+      if (!p) return null;
+      const monthlyRaw = typeof p.monthlyPrice === 'string' ? parseFloat(p.monthlyPrice) : p.monthlyPrice;
+      const monthly = Number.isFinite(monthlyRaw) ? Math.max(0, Math.min(9999, Number(monthlyRaw))) : NaN;
+      if (!isSafeId(p.id) || !p.name || !Number.isFinite(monthly)) return null;
+      return {
+        id: String(p.id).toLowerCase(),
+        name: sanitizeText(p.name, 60),
+        monthlyPrice: monthly,
+        description: sanitizeText(p.description || '', 160),
+        features: Array.isArray(p.features)
+          ? p.features.slice(0, 10).map((f: any) => sanitizeText(f, 80))
+          : [],
+        popular: Boolean(p.popular)
+      };
+    };
 
-  const getDiscountedPrice = (originalPrice: number) => {
-    if (!appliedPromo) return originalPrice;
-    
-    if (appliedPromo.type === 'percentage') {
-      return originalPrice * (1 - appliedPromo.discount / 100);
-    } else {
-      return Math.max(0, originalPrice - appliedPromo.discount);
+    (async () => {
+      try {
+        const controller = new AbortController();
+        const tryFetch = async (url: string) => {
+          const res = await fetch(url, {
+            credentials: 'include',
+            cache: 'no-store',
+            referrerPolicy: 'same-origin',
+            signal: controller.signal
+          });
+          if (!res.ok) throw new Error('bad status');
+          const data = await res.json();
+          const items = Array.isArray(data?.plans) ? data.plans : Array.isArray(data) ? data : [];
+          const mapped = items.map(normalizePlan).filter(Boolean) as PlanConfig[];
+          if (mapped.length > 0) return mapped;
+          throw new Error('invalid payload');
+        };
+
+        const fetched = await tryFetch('/api/public/plans').catch(() => tryFetch('/api/plans'));
+        if (isMounted && fetched && fetched.length > 0) setPlans(fetched);
+      } catch {
+        // Keep defaults silently
+      }
+    })();
+    return () => { isMounted = false; };
+  }, []);
+  const computeDisplayed = (monthlyPrice: number) => {
+    if (isYearly) {
+      const yearly = Math.round(monthlyPrice * 12 * 0.8); // -20%
+      const perMonthEq = Math.round(yearly / 12);
+      return { main: yearly, suffix: '/ an TTC', sub: `soit ${perMonthEq}€/mois TTC` };
     }
+    return { main: monthlyPrice, suffix: '/ mois TTC', sub: '' };
   };
 
-  const handleSelectPlan = (planId: string) => {
-    setSelectedPlan(planId);
-    // Sauvegarder le plan sélectionné pour la page register
-    localStorage.setItem('selectedPlan', planId);
+  const handleSelectPlan = useCallback((planId: string) => {
+    try { localStorage.setItem('selectedPlan', planId); } catch {}
     setLocation('/register');
+  }, [setLocation]);
+
+  const PlanCard = ({ plan, layout }: { plan: PlanConfig; layout: 'mobile' | 'desktop' }) => {
+    const { main, suffix, sub } = computeDisplayed(plan.monthlyPrice);
+    const isPopular = !!plan.popular;
+    const isVioletCard = plan.id === 'professionnel';
+    const commonCta = (
+      <>
+        <Button
+          onClick={() => handleSelectPlan(plan.id)}
+          className={
+            isVioletCard
+              ? (layout === 'mobile'
+                  ? 'w-full py-3 text-base font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20'
+                  : 'w-full py-4 text-lg font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20')
+              : (layout === 'mobile'
+                  ? 'w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300'
+                  : 'w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300')
+          }
+        >
+          Commencer l'essai gratuit
+        </Button>
+      </>
+    );
+
+    return (
+      <div className={layout === 'desktop' ? (plan.id === 'essentiel' ? 'absolute left-0 top-16' : plan.id === 'premium' ? 'absolute right-0 top-16' : 'absolute left-1/2 transform -translate-x-1/2 top-0 z-20') : ''}
+           style={layout === 'desktop' ? (plan.id === 'essentiel' ? { transform: 'rotate(-5deg)' } : plan.id === 'premium' ? { transform: 'rotate(5deg)' } : undefined) : undefined}
+      >
+        {isPopular && (
+          <div className={layout === 'mobile' ? 'absolute -top-3 left-1/2 transform -translate-x-1/2 z-10' : 'absolute -top-3 left-1/2 transform -translate-x-1/2 z-10'}>
+            <Badge className={layout === 'mobile' ? 'bg-white/90 text-violet-800 px-4 py-1 rounded-full border border-white/30 text-xs font-bold shadow-lg' : 'bg-white/90 text-violet-800 px-6 py-2 rounded-full border border-white/30 text-sm font-bold shadow-lg'}>
+              Le plus populaire
+            </Badge>
+          </div>
+        )}
+        <Card className={
+          isVioletCard
+            ? (layout === 'mobile' ? 'glass-card-violet shadow-2xl rounded-3xl border-0 overflow-hidden' : 'glass-card-violet shadow-2xl rounded-3xl border-0 w-96 overflow-hidden')
+            : (layout === 'mobile' ? 'bg-white shadow-lg rounded-3xl border-0 overflow-hidden' : 'bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden')
+        }>
+          <CardContent className={layout === 'mobile' ? 'p-6 text-center' : 'p-8 text-center'}>
+            <div className={isVioletCard ? (layout === 'mobile' ? 'text-white mb-4 pt-4' : 'text-white mb-6 pt-6') : (layout === 'mobile' ? 'text-gray-800 mb-4' : 'text-gray-800 mb-6')}>
+              <div className="flex items-baseline justify-center mb-2">
+                <span className={layout === 'mobile' ? 'text-3xl font-light' : 'text-4xl font-light'}>€</span>
+                <span className={isVioletCard ? (layout === 'mobile' ? 'text-5xl font-bold text-white' : 'text-7xl font-bold') : (layout === 'mobile' ? 'text-5xl font-bold text-green-600' : 'text-6xl font-bold')}>
+                  {main}
+                </span>
+                <span className={layout === 'mobile' ? 'text-base font-normal ml-2' : 'text-lg font-normal ml-2'}>{suffix}</span>
+              </div>
+              {!!sub && (
+                <div className={isVioletCard ? 'text-white/90 text-xs' : 'text-gray-600 text-xs'}>
+                  {sub}
+                </div>
+              )}
+            </div>
+
+            <h3 className={layout === 'mobile' ? (isVioletCard ? 'text-2xl font-bold text-white mb-2' : 'text-xl font-bold text-gray-800 mb-2') : (isVioletCard ? 'text-3xl font-bold text-white mb-2' : 'text-2xl font-bold text-gray-800 mb-2')}>
+              {plan.name}
+            </h3>
+            <p className={isVioletCard ? (layout === 'mobile' ? 'text-white/90 text-sm mb-4 font-medium' : 'text-white/90 text-sm mb-6 font-medium') : (layout === 'mobile' ? 'text-gray-500 text-sm mb-4' : 'text-gray-500 text-sm mb-6')}>
+              {plan.description}
+            </p>
+
+            <div className={layout === 'mobile' ? 'space-y-2 mb-6 text-center' : 'space-y-2 mb-6 text-left'}>
+              {plan.features.map((f) => (
+                <div key={f} className={isVioletCard ? 'flex items-center justify-center text-sm text-white font-medium' : 'flex items-center justify-center text-sm text-gray-600'}>
+                  <div className={isVioletCard ? 'w-1.5 h-1.5 bg-white rounded-full mr-2' : 'w-1.5 h-1.5 bg-blue-500 rounded-full mr-2'}></div>
+                  <span>{f}</span>
+                </div>
+              ))}
+            </div>
+
+            {commonCta}
+            <div className={layout === 'mobile' ? 'mt-3 text-[11px] text-gray-500' : 'mt-4 text-xs text-gray-500'}>
+              Prix en euros TTC. Reconduction tacite. Résiliation possible à tout moment avant renouvellement.
+              <span className="ml-2">
+                <a href="/cgu" className="underline hover:text-violet-600">CGV</a>
+                <span className="mx-1">·</span>
+                <a href="/confidentialite" className="underline hover:text-violet-600">Confidentialité</a>
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
+
+  // (handler moved below with useCallback)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-2 sm:p-4">
@@ -134,290 +273,24 @@ export default function ProfessionalPlans() {
         {/* Pricing Cards - Responsive: Stack on mobile, Asymmetric Slay layout on desktop */}
         
         {/* Mobile Layout - Stack vertical */}
-        <div className="block lg:hidden space-y-6 mb-20 px-2">
-          {/* Plan Essentiel */}
-          <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
-            <CardContent className="p-6 text-center">
-              <div className="text-gray-800 mb-4">
-                <div className="flex items-baseline justify-center mb-2">
-                  <span className="text-3xl font-light">€</span>
-                  <span className="text-5xl font-bold text-green-600">29</span>
-                  <span className="text-base font-normal ml-2">/ mois</span>
-                </div>
-              </div>
-              
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Essentiel
-              </h3>
-              
-              <p className="text-gray-500 text-sm mb-4">
-                Pour commencer
-              </p>
-
-              {/* 3 éléments descriptifs */}
-              <div className="space-y-2 mb-6 text-center">
-                <div className="flex items-center justify-center text-sm text-gray-600">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Planning et réservations</span>
-                </div>
-                <div className="flex items-center justify-center text-sm text-gray-600">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Jusqu'à 200 RDV/mois</span>
-                </div>
-                <div className="flex items-center justify-center text-sm text-gray-600">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Gestion clientèle</span>
-                </div>
-              </div>
-              
-              <button 
-                onClick={() => handleSelectPlan('essentiel')}
-                className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
-              >
-                Commencer l'essai gratuit
-              </button>
-            </CardContent>
-          </Card>
-
-          {/* Plan Professionnel - Populaire au milieu */}
-          <div className="relative">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-              <Badge className="bg-white/90 text-violet-800 px-4 py-1 rounded-full border border-white/30 text-xs font-bold shadow-lg">
-                Le plus populaire
-              </Badge>
-            </div>
-            <Card className="glass-card-violet shadow-2xl rounded-3xl border-0 overflow-hidden">
-              <CardContent className="p-6 text-center">
-                <div className="text-white mb-4 pt-4">
-                  <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-3xl font-light">€</span>
-                    <span className="text-5xl font-bold text-white">79</span>
-                    <span className="text-base font-normal ml-2">/ mois</span>
-                  </div>
-                </div>
-                
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  Professionnel
-                </h3>
-                
-                <p className="text-white/90 text-sm mb-4 font-medium">
-                  Le plus populaire
-                </p>
-
-                {/* 3 éléments descriptifs */}
-                <div className="space-y-2 mb-6 text-center">
-                  <div className="flex items-center justify-center text-sm text-white font-medium">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
-                    <span>Tout de l'Essentiel</span>
-                  </div>
-                  <div className="flex items-center justify-center text-sm text-white font-medium">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
-                    <span>Analytics avancés</span>
-                  </div>
-                  <div className="flex items-center justify-center text-sm text-white font-medium">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
-                    <span>Jusqu'à 1000 RDV/mois</span>
-                  </div>
-                </div>
-                
-                <Button 
-                  onClick={() => handleSelectPlan('professionnel')}
-                  className="w-full py-3 text-base font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
-                >
-                  Commencer l'essai gratuit
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Plan Premium */}
-          <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
-            <CardContent className="p-6 text-center">
-              <div className="text-gray-800 mb-4">
-                <div className="flex items-baseline justify-center mb-2">
-                  <span className="text-3xl font-light">€</span>
-                  <span className="text-5xl font-bold text-green-600">149</span>
-                  <span className="text-base font-normal ml-2">/ mois</span>
-                </div>
-              </div>
-              
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Premium
-              </h3>
-              
-              <p className="text-gray-500 text-sm mb-4">
-                Fonctionnalités avancées
-              </p>
-
-              {/* 3 éléments descriptifs */}
-              <div className="space-y-2 mb-6 text-center">
-                <div className="flex items-center justify-center text-sm text-gray-600">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Tout du Professionnel</span>
-                </div>
-                <div className="flex items-center justify-center text-sm text-gray-600">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Assistant IA intégré</span>
-                </div>
-                <div className="flex items-center justify-center text-sm text-gray-600">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>RDV illimités</span>
-                </div>
-              </div>
-              
-              <button 
-                onClick={() => handleSelectPlan('premium')}
-                className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
-              >
-                Commencer l'essai gratuit
-              </button>
-            </CardContent>
-          </Card>
+        <div className="block lg:hidden space-y-6 mb-20 px-2 relative">
+          {plans.map((p) => (
+            <PlanCard key={`m-${p.id}`} plan={p} layout="mobile" />
+          ))}
         </div>
 
         {/* Desktop Layout - Exact Slay asymmetric layout avec Professionnel AU CENTRE */}
         <div className="hidden lg:block relative flex items-start justify-center min-h-[500px] mb-20">
-          {/* Carte de gauche - Essentiel décalée vers le bas et inclinée */}
-          <div className="absolute left-0 top-16" style={{transform: 'rotate(-5deg)'}}>
-            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
-              <CardContent className="p-8 text-center">
-                <div className="text-gray-800 mb-6">
-                  <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-4xl font-light">€</span>
-                    <span className="text-6xl font-bold">29</span>
-                    <span className="text-lg font-normal ml-2">/ mois</span>
-                  </div>
+          {/* Desktop asymmetric layout using shared PlanCard */}
+          {plans[0] && <PlanCard plan={plans[0]} layout="desktop" />}
+          {plans[1] && <PlanCard plan={plans[1]} layout="desktop" />}
+          {plans[2] && <PlanCard plan={plans[2]} layout="desktop" />}
                 </div>
                 
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                  Essentiel
-                </h3>
-                
-                <p className="text-gray-500 text-sm mb-6">
-                  Pour commencer
-                </p>
-
-                {/* 3 éléments descriptifs */}
-                <div className="space-y-2 mb-6 text-left">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Planning et réservations</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Jusqu'à 200 RDV/mois</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Gestion clientèle</span>
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={() => handleSelectPlan('essentiel')}
-                  className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                >
-                  Commencer l'essai gratuit
-                </button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Carte CENTRALE - Professionnel (LE PLUS POPULAIRE) surélevée AU CENTRE */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 top-0 z-20">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-              <Badge className="bg-white/90 text-violet-800 px-6 py-2 rounded-full border border-white/30 text-sm font-bold shadow-lg">
-                Le plus populaire
-              </Badge>
-            </div>
-            <Card className="glass-card-violet shadow-2xl rounded-3xl border-0 w-96 overflow-hidden">
-              <CardContent className="p-10 text-center">
-                <div className="text-white mb-6 pt-6">
-                  <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-5xl font-light">€</span>
-                    <span className="text-7xl font-bold">79</span>
-                    <span className="text-xl font-normal ml-2">/ mois</span>
-                  </div>
-                </div>
-                
-                <h3 className="text-3xl font-bold text-white mb-2">
-                  Professionnel
-                </h3>
-                
-                <p className="text-white/90 text-sm mb-6 font-medium">
-                  Le plus populaire
-                </p>
-
-                {/* 3 éléments descriptifs */}
-                <div className="space-y-2 mb-6 text-left">
-                  <div className="flex items-center text-sm text-white font-medium">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
-                    <span>Tout de l'Essentiel</span>
-                  </div>
-                  <div className="flex items-center text-sm text-white font-medium">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
-                    <span>Analytics avancés</span>
-                  </div>
-                  <div className="flex items-center text-sm text-white font-medium">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
-                    <span>Jusqu'à 1000 RDV/mois</span>
-                  </div>
-                </div>
-                
-                <Button 
-                  onClick={() => handleSelectPlan('professionnel')}
-                  className="w-full py-4 text-lg font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
-                >
-                  Commencer l'essai gratuit
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Carte de droite - Premium décalée vers le bas et inclinée */}
-          <div className="absolute right-0 top-16" style={{transform: 'rotate(5deg)'}}>
-            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
-              <CardContent className="p-8 text-center">
-                <div className="text-gray-800 mb-6">
-                  <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-4xl font-light">€</span>
-                    <span className="text-6xl font-bold">149</span>
-                    <span className="text-lg font-normal ml-2">/ mois</span>
-                  </div>
-                </div>
-                
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                  Premium
-                </h3>
-                
-                <p className="text-gray-500 text-sm mb-6">
-                  Fonctionnalités avancées
-                </p>
-
-                {/* 3 éléments descriptifs */}
-                <div className="space-y-2 mb-6 text-left">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Tout du Professionnel</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Assistant IA intégré</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>RDV illimités</span>
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={() => handleSelectPlan('premium')}
-                  className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                >
-                  Commencer l'essai gratuit
-                </button>
-              </CardContent>
-            </Card>
+        {/* Bandeau légal tarification */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+          <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl p-4 text-xs text-gray-600">
+            * Les tarifs affichés sont toutes taxes comprises (TTC), en euros. En formule annuelle, le total indiqué correspond au montant TTC dû pour 12 mois (remise de 20% déjà appliquée). Abonnement à reconduction tacite; vous pouvez résilier à tout moment avant la date de renouvellement depuis votre espace client. Voir <a href="/cgu" className="underline hover:text-violet-600">Conditions Générales</a> et <a href="/confidentialite" className="underline hover:text-violet-600">Politique de confidentialité</a>.
           </div>
         </div>
 
@@ -441,9 +314,9 @@ export default function ProfessionalPlans() {
               <div className="text-gray-500 text-sm">Réservations automatiques</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-violet-600 mb-2">NF525</div>
-              <div className="text-gray-900 font-medium mb-1">Caisse certifiée</div>
-              <div className="text-gray-500 text-sm">Conforme à la loi française</div>
+              <div className="text-4xl font-bold text-violet-600 mb-2">RGPD</div>
+              <div className="text-gray-900 font-medium mb-1">Sécurité et conformité</div>
+              <div className="text-gray-500 text-sm">Données hébergées en Europe</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-violet-600 mb-2">0€</div>

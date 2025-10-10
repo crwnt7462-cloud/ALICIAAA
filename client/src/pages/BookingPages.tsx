@@ -10,6 +10,7 @@ import {
 import { useLocation } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { BookingDataProvider, useBookingContext } from "@/components/BookingDataProvider";
 
 interface BookingPage {
   id: number;
@@ -29,7 +30,9 @@ interface BookingPage {
   createdAt: string;
 }
 
-export default function BookingPages() {
+function BookingPagesContent() {
+  // Utilisation des données centralisées
+  const { services, timeSlots: contextTimeSlots, salon, professionals, isLoading: contextLoading, error: contextError } = useBookingContext();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -258,5 +261,19 @@ export default function BookingPages() {
         </div>
       )}
     </div>
+  );
+}
+
+// Composant principal avec provider
+export default function BookingPages() {
+  // Récupérer le salonSlug depuis l'URL ou sessionStorage
+  const [location] = useLocation();
+  const slugMatch = location.match(/^\/(salon|book)\/([^/]+)\/reserver$/);
+  const salonSlug = slugMatch?.[2] || sessionStorage.getItem('salonSlug') || 'salon-excellence-paris';
+  
+  return (
+    <BookingDataProvider salonSlug={salonSlug}>
+      <BookingPagesContent />
+    </BookingDataProvider>
   );
 }

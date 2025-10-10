@@ -1,60 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, X, LogIn, UserCheck, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, ChevronDown, HelpCircle, Cookie, Scissors, Palette, Users, Sparkles } from "lucide-react";
+import { Star, Clock, CheckCircle2, X, UserCheck, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, ChevronDown, HelpCircle, Cookie, Users } from "lucide-react";
 
 import { useLocation } from "wouter";
 import logoImage from "@/assets/avyento-logo.png";
 
+// Constantes
+const CITIES = [
+  "Paris", "Lyon", "Marseille", "Toulouse", 
+  "Bruxelles", "Genève", "Montréal", "Lausanne"
+];
 
+const SERVICES = [
+  "Cils", "Massage", "Coaching", "Santé",
+  "Consulting", "Esthétique", "Barbier", "Développement personnel"
+];
 
-// Composant HeroSlash avec animations de frappe
-function HeroSlash() {
-  const [, setLocation] = useLocation();
+const ANIMATION_CONFIG = {
+  interval: 80,
+  pauseDuration: 2000,
+  serviceDelay: 1000
+};
 
-  // États pour les champs de recherche fonctionnels
-  const [searchService, setSearchService] = useState("");
-  const [searchLocation, setSearchLocation] = useState("");
-  
-  // États pour l'effet typewriter
+// Hook personnalisé pour l'effet typewriter synchronisé avec optimisations
+function useSynchronizedTypewriter() {
   const [cityText, setCityText] = useState("");
-  const [cityIndex, setCityIndex] = useState(0);
-  const [cityCharIndex, setCityCharIndex] = useState(0);
-  const [isCityDeleting, setIsCityDeleting] = useState(false);
-
   const [serviceText, setServiceText] = useState("");
+  const [cityIndex, setCityIndex] = useState(0);
   const [serviceIndex, setServiceIndex] = useState(0);
+  const [cityCharIndex, setCityCharIndex] = useState(0);
   const [serviceCharIndex, setServiceCharIndex] = useState(0);
+  const [isCityDeleting, setIsCityDeleting] = useState(false);
   const [isServiceDeleting, setIsServiceDeleting] = useState(false);
 
-  const frenchCities = [
-    "Paris",
-    "Lyon",
-    "Marseille",
-    "Toulouse",
-    "Nice",
-    "Nantes",
-    "Bordeaux",
-    "Lille",
-    "Rennes",
-    "Strasbourg"
-  ];
-
-  const beautyServices = [
-    "Coiffure",
-    "Massage",
-    "Manucure",
-    "Esthétique",
-    "Barbier",
-    "Extensions",
-    "Épilation",
-    "Soins visage"
-  ];
-
-  // Animation synchronisée et fluide pour les villes et services
   useEffect(() => {
+    // Vérifier si l'utilisateur préfère les animations réduites
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      setCityText(CITIES[0]);
+      setServiceText(SERVICES[0]);
+      return;
+    }
+
     const interval = setInterval(() => {
-      // Changement de ville 
-      const currentCity = frenchCities[cityIndex];
+      // Animation des villes
+      const currentCity = CITIES[cityIndex];
       if (currentCity && !isCityDeleting && cityCharIndex < currentCity.length) {
         setCityText(currentCity.slice(0, cityCharIndex + 1));
         setCityCharIndex(prev => prev + 1);
@@ -62,46 +52,219 @@ function HeroSlash() {
         setCityText(currentCity.slice(0, cityCharIndex - 1));
         setCityCharIndex(prev => prev - 1);
       } else if (currentCity && !isCityDeleting && cityCharIndex === currentCity.length) {
-        setTimeout(() => setIsCityDeleting(true), 2000);
+        setTimeout(() => setIsCityDeleting(true), ANIMATION_CONFIG.pauseDuration);
       } else if (currentCity && isCityDeleting && cityCharIndex === 0) {
         setIsCityDeleting(false);
-        setCityIndex(prev => (prev + 1) % frenchCities.length);
+        setCityIndex(prev => (prev + 1) % CITIES.length);
       }
 
-      // Changement de service (décalé de 1 seconde pour éviter la simultanéité)
-      setTimeout(() => {
-        const currentService = beautyServices[serviceIndex];
-        if (currentService && !isServiceDeleting && serviceCharIndex < currentService.length) {
-          setServiceText(currentService.slice(0, serviceCharIndex + 1));
-          setServiceCharIndex(prev => prev + 1);
-        } else if (currentService && isServiceDeleting && serviceCharIndex > 0) {
-          setServiceText(currentService.slice(0, serviceCharIndex - 1));
-          setServiceCharIndex(prev => prev - 1);
-        } else if (currentService && !isServiceDeleting && serviceCharIndex === currentService.length) {
-          setTimeout(() => setIsServiceDeleting(true), 2000);
-        } else if (currentService && isServiceDeleting && serviceCharIndex === 0) {
-          setIsServiceDeleting(false);
-          setServiceIndex(prev => (prev + 1) % beautyServices.length);
-        }
-      }, 1000);
-    }, 80);
+      // Animation des services (synchronisée)
+      const currentService = SERVICES[serviceIndex];
+      if (currentService && !isServiceDeleting && serviceCharIndex < currentService.length) {
+        setServiceText(currentService.slice(0, serviceCharIndex + 1));
+        setServiceCharIndex(prev => prev + 1);
+      } else if (currentService && isServiceDeleting && serviceCharIndex > 0) {
+        setServiceText(currentService.slice(0, serviceCharIndex - 1));
+        setServiceCharIndex(prev => prev - 1);
+      } else if (currentService && !isServiceDeleting && serviceCharIndex === currentService.length) {
+        setTimeout(() => setIsServiceDeleting(true), ANIMATION_CONFIG.pauseDuration);
+      } else if (currentService && isServiceDeleting && serviceCharIndex === 0) {
+        setIsServiceDeleting(false);
+        setServiceIndex(prev => (prev + 1) % SERVICES.length);
+      }
+    }, ANIMATION_CONFIG.interval);
 
     return () => clearInterval(interval);
-  }, [cityCharIndex, cityIndex, isCityDeleting, serviceCharIndex, serviceIndex, isServiceDeleting]);
+  }, [
+    cityIndex, cityCharIndex, isCityDeleting,
+    serviceIndex, serviceCharIndex, isServiceDeleting
+  ]);
 
-  // Fonction de recherche
-  const handleSearch = () => {
-    const query = searchService.trim();
-    const location = searchLocation.trim();
-    
-    // Construire l'URL avec les paramètres de recherche
-    const searchParams = new URLSearchParams();
-    if (query) searchParams.set('q', query);
-    if (location) searchParams.set('location', location);
-    
-    const searchUrl = `/search-results${searchParams.toString() ? '?' + searchParams.toString() : ''}`;
-    setLocation(searchUrl);
+  return { cityText, serviceText };
+}
+
+// Types pour les composants
+interface ProfessionalCardProps {
+  name: string;
+  location: string;
+  rating: number;
+  reviewCount: number;
+  distance: string;
+  priceRange: string;
+  services: string[];
+  availability: string;
+  image: string;
+  onClick: () => void;
+}
+
+interface StatItem {
+  number: string;
+  label: string;
+}
+
+interface AIFeature {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  highlight: string;
+  benefits: string[];
+}
+
+interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  avatar: string;
+  content: string;
+  rating: number;
+  location: string;
+}
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface ServiceItem {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  category: string;
+}
+
+// Composant pour les cartes de professionnels
+function ProfessionalCard({ 
+  name, 
+  location, 
+  rating, 
+  reviewCount, 
+  distance, 
+  priceRange, 
+  services, 
+  availability, 
+  image, 
+  onClick 
+}: ProfessionalCardProps) {
+  return (
+    <div 
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow h-full"
+      onClick={onClick}
+    >
+      <div className="relative h-48 bg-gradient-to-br from-amber-400 to-orange-500">
+        <img 
+          src={image}
+          alt={name}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+        
+        <div className="absolute top-3 left-3 flex gap-2">
+          <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+            <CheckCircle2 className="h-3 w-3 inline mr-1" />
+            Vérifié
+          </span>
+        </div>
+      </div>
+      
+      <div className="p-4">
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex-1">
+            <h4 className="font-semibold text-gray-900 text-lg mb-1">{name}</h4>
+            <p className="text-sm text-gray-500 mb-2">{location}</p>
+          </div>
+          <span className="text-sm text-gray-600 font-medium">{priceRange}</span>
+        </div>
+        
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <span className="text-sm font-semibold">{rating}</span>
+            <span className="text-sm text-gray-500">({reviewCount} avis)</span>
+          </div>
+          <span className="text-sm text-gray-500">• {distance}</span>
+        </div>
+        
+        <div className="flex flex-wrap gap-1 mb-3">
+          {services.map((service, index) => (
+            <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+              {service}
+            </span>
+          ))}
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4 text-gray-400" />
+            <span className={`text-sm font-medium ${
+              availability === 'Fermé' ? 'text-gray-500' : 'text-green-600'
+            }`}>
+              {availability}
+            </span>
+          </div>
+          <button 
+            className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
+          >
+            Réserver
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+// Composant HeroSlash avec animations de frappe
+function HeroSlash({ isSearching }: { isSearching: boolean }) {
+  const [, setLocation] = useLocation();
+
+  // États pour les champs de recherche fonctionnels
+  const [searchService, setSearchService] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  
+  // Utilisation du hook typewriter synchronisé
+  const { cityText, serviceText } = useSynchronizedTypewriter();
+
+  // Fonction de recherche sécurisée avec validation
+  const sanitizeInput = (input: string): string => {
+    return input
+      .trim()
+      .replace(/[<>\"'&]/g, '') // Supprimer les caractères dangereux
+      .slice(0, 100); // Limiter la longueur
   };
+
+  const validateInput = (input: string): boolean => {
+    const dangerousPatterns = [
+      /<script/i,
+      /javascript:/i,
+      /on\w+\s*=/i,
+      /eval\(/i,
+      /expression\(/i
+    ];
+    return !dangerousPatterns.some(pattern => pattern.test(input));
+  };
+
+  const handleSearch = useCallback(() => {
+    const sanitizedQuery = sanitizeInput(searchService);
+    const sanitizedLocation = sanitizeInput(searchLocation);
+    
+    if (!sanitizedQuery && !sanitizedLocation) return;
+    
+    // Validation supplémentaire
+    if (!validateInput(sanitizedQuery) || !validateInput(sanitizedLocation)) {
+      console.warn('Invalid input detected');
+      return;
+    }
+    
+    const searchParams = new URLSearchParams();
+    if (sanitizedQuery) searchParams.set('q', sanitizedQuery);
+    if (sanitizedLocation) searchParams.set('location', sanitizedLocation);
+    
+    setLocation(`/search-results?${searchParams.toString()}`);
+  }, [searchService, searchLocation, setLocation]);
 
   return (
     <section className="heroSlash">
@@ -138,10 +301,22 @@ function HeroSlash() {
               <input 
                 type="text"
                 value={searchService}
-                onChange={(e) => setSearchService(e.target.value)}
-                placeholder={serviceText || "Service (coiffure, massage...)"}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Validation en temps réel
+                  if (value.length <= 100 && !/<script|javascript:|on\w+=/i.test(value)) {
+                    setSearchService(value);
+                  }
+                }}
+                placeholder={serviceText}
                 className="w-full"
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                aria-label="Rechercher un service"
+                autoComplete="off"
+                role="searchbox"
+                maxLength={100}
+                pattern="[a-zA-ZÀ-ÿ0-9\s\-']+"
+                title="Seuls les lettres, chiffres, espaces, tirets et apostrophes sont autorisés"
               />
               <span className="icon">
                 {/* loupe */}
@@ -157,10 +332,22 @@ function HeroSlash() {
               <input 
                 type="text"
                 value={searchLocation}
-                onChange={(e) => setSearchLocation(e.target.value)}
-                placeholder={cityText || "Ville"}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Validation en temps réel
+                  if (value.length <= 100 && !/<script|javascript:|on\w+=/i.test(value)) {
+                    setSearchLocation(value);
+                  }
+                }}
+                placeholder={cityText}
                 className="w-full"
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                aria-label="Rechercher une ville"
+                autoComplete="off"
+                role="searchbox"
+                maxLength={100}
+                pattern="[a-zA-ZÀ-ÿ0-9\s\-']+"
+                title="Seuls les lettres, chiffres, espaces, tirets et apostrophes sont autorisés"
               />
               <span className="icon location">
                 {/* pin */}
@@ -172,15 +359,28 @@ function HeroSlash() {
               </span>
             </div>
 
-            <div className="magnifier-button-webgl" onClick={handleSearch}>
-              <span className="text-webgl">Rechercher un salon</span>
-            </div>
+            <button 
+              className="magnifier-button-webgl" 
+              onClick={handleSearch}
+              aria-label="Lancer la recherche"
+              type="button"
+              disabled={isSearching}
+            >
+              {isSearching ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-webgl">Recherche...</span>
+                </div>
+              ) : (
+                <span className="text-webgl">Rechercher un professionnel</span>
+              )}
+            </button>
           </div>
 
           {/* KPIs */}
           <ul className="heroSlash__kpis">
             <li><strong>50 000+</strong><span>Rendez-vous / mois</span></li>
-            <li><strong>2 500+</strong><span>Salons partenaires</span></li>
+            <li><strong>2 500+</strong><span>Professionnels partenaires</span></li>
             <li><strong>4,9/5</strong><span>Satisfaction client</span></li>
             <li><strong>24h/24</strong><span>Réservation dispo</span></li>
           </ul>
@@ -259,29 +459,75 @@ export default function PublicLanding() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [showCookiePopup, setShowCookiePopup] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // Vérifier si l'utilisateur a déjà donné son consentement
+  // Configuration CSP sécurisée
   useEffect(() => {
-    const cookieConsent = localStorage.getItem('avyento-cookie-consent');
-    if (!cookieConsent) {
+    const meta = document.createElement('meta');
+    meta.httpEquiv = 'Content-Security-Policy';
+    meta.content = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https:",
+      "font-src 'self'",
+      "connect-src 'self'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'"
+    ].join('; ');
+    document.head.appendChild(meta);
+
+    return () => {
+      document.head.removeChild(meta);
+    };
+  }, []);
+
+  // Vérifier si l'utilisateur a déjà donné son consentement avec sécurité
+  useEffect(() => {
+    try {
+      const cookieConsent = localStorage.getItem('avyento-cookie-consent');
+      // Validation du contenu stocké
+      if (cookieConsent && ['accepted', 'declined'].includes(cookieConsent)) {
+        if (cookieConsent === 'accepted') {
+          // Consentement accepté - pas de popup
+        } else {
+          // Consentement refusé - pas de popup
+        }
+      } else {
+        setShowCookiePopup(true);
+      }
+    } catch (error) {
+      console.warn('LocalStorage access denied:', error);
       setShowCookiePopup(true);
     }
   }, []);
 
-  // Gérer l'acceptation/refus des cookies
-  const handleCookieChoice = (accepted: boolean) => {
-    localStorage.setItem('avyento-cookie-consent', accepted ? 'accepted' : 'declined');
-    setShowCookiePopup(false);
-  };
+  // Gérer l'acceptation/refus des cookies avec sécurité renforcée
+  const handleCookieChoice = useCallback((accepted: boolean) => {
+    try {
+      const value = accepted ? 'accepted' : 'declined';
+      // Validation avant stockage
+      if (['accepted', 'declined'].includes(value)) {
+        localStorage.setItem('avyento-cookie-consent', value);
+        // Ajouter un timestamp pour expiration (optionnel)
+        localStorage.setItem('avyento-cookie-timestamp', Date.now().toString());
+      }
+      setShowCookiePopup(false);
+    } catch (error) {
+      console.warn('LocalStorage not available:', error);
+      setShowCookiePopup(false);
+    }
+  }, []);
 
-  const stats = [
+  const stats: StatItem[] = [
     { number: "50,000+", label: "Rendez-vous par mois" },
-    { number: "2,500+", label: "Salons partenaires" },
+    { number: "2,500+", label: "Professionnels partenaires" },
     { number: "4.9/5", label: "Satisfaction client" },
     { number: "24h/24", label: "Réservation disponible" }
   ];
 
-  const aiFeatures = [
+  const aiFeatures: AIFeature[] = [
     {
       icon: <Bot className="w-6 h-6" />,
       title: "IA Prédictive",
@@ -298,7 +544,7 @@ export default function PublicLanding() {
     }
   ];
 
-  const testimonials = [
+  const testimonials: Testimonial[] = [
     {
       id: 1,
       name: "Marie Dubois",
@@ -310,8 +556,8 @@ export default function PublicLanding() {
     },
     {
       id: 2,
-      name: "Thomas Barbier",
-      role: "Propriétaire, Barbier Moderne",
+      name: "Thomas Martin",
+      role: "Coach sportif",
       avatar: "T",
       content: "La messagerie intégrée est géniale ! Plus de calls ratés, tout passe par l'app. Mes clients adorent la simplicité.",
       rating: 5,
@@ -320,7 +566,7 @@ export default function PublicLanding() {
     {
       id: 3,
       name: "Sarah Wellness",
-      role: "Institut de beauté",
+      role: "Professionnelle de santé",
       avatar: "S",
       content: "Enfin une solution complète ! Planning, paiements, suivi client... tout est centralisé. Un gain de temps énorme.",
       rating: 5,
@@ -328,17 +574,17 @@ export default function PublicLanding() {
     }
   ];
 
-  const faqData = [
+  const faqData: FAQItem[] = [
     {
       question: "Qu'est-ce qu'Avyento ?",
-      answer: "Avyento est une application dédiée à la beauté et au bien-être qui vous permet de trouver facilement les meilleurs salons et professionnels près de chez vous, consulter leurs avis, vérifier leurs disponibilités en temps réel et réserver instantanément. Mais Avyento, c'est plus qu'une simple app : c'est une solution pensée par une ancienne professionnelle de la beauté qui connaît parfaitement les défis du secteur comme les attentes des clientes. Notre mission est simple : rendre vos rendez-vous beauté plus accessibles, plus fluides et surtout plus agréables."
+      answer: "Avyento est une application dédiée aux services professionnels qui vous permet de trouver facilement les meilleurs professionnels près de chez vous, consulter leurs avis, vérifier leurs disponibilités en temps réel et réserver instantanément. Mais Avyento, c'est plus qu'une simple app : c'est une solution pensée par des professionnels qui connaissent parfaitement les défis du secteur comme les attentes des clients. Notre mission est simple : rendre vos rendez-vous plus accessibles, plus fluides et surtout plus agréables."
     },
     {
       question: "Comment fonctionne l'application ?",
-      answer: "Il vous suffit de créer un compte, de rechercher un salon ou un professionnel, puis de réserver directement en ligne."
+      answer: "Il vous suffit de créer un compte, de rechercher un professionnel, puis de réserver directement en ligne."
     },
     {
-      question: "Dois-je appeler le salon pour confirmer ma réservation ?",
+      question: "Dois-je appeler le professionnel pour confirmer ma réservation ?",
       answer: "Non. Votre réservation est confirmée instantanément depuis l'application et vous recevez un rappel automatique avant votre rendez-vous."
     },
     {
@@ -351,7 +597,7 @@ export default function PublicLanding() {
     },
     {
       question: "Les prix affichés sont-ils définitifs ?",
-      answer: "Oui, les tarifs indiqués sont transparents et fixés par le salon/professionnel."
+      answer: "Oui, les tarifs indiqués sont transparents et fixés par le professionnel."
     },
     {
       question: "Mon paiement est-il sécurisé ?",
@@ -366,7 +612,7 @@ export default function PublicLanding() {
       answer: "Bien sûr. Votre avis aide la communauté et valorise le travail des professionnels."
     },
     {
-      question: "Comment savoir si un salon est disponible ?",
+      question: "Comment savoir si un professionnel est disponible ?",
       answer: "Le calendrier en temps réel vous montre uniquement les créneaux libres."
     },
     {
@@ -387,17 +633,35 @@ export default function PublicLanding() {
 
 
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      setLocation(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
+  // Génération de token CSRF sécurisé
+  const generateCSRFToken = useCallback(() => {
+    const array = new Uint8Array(32);
+    crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  }, []);
+
+  const handleSearch = useCallback(() => {
+    if (!searchQuery.trim()) return;
+    
+    setIsSearching(true);
+    
+    // Ajouter protection CSRF
+    const csrfToken = generateCSRFToken();
+    sessionStorage.setItem('csrf-token', csrfToken);
+    
+    // Simuler un délai de recherche pour l'UX
+    setTimeout(() => {
+      const sanitizedQuery = encodeURIComponent(searchQuery.trim());
+      setLocation(`/search?q=${sanitizedQuery}&_csrf=${csrfToken}`);
+      setIsSearching(false);
+    }, 500);
+  }, [searchQuery, setLocation, generateCSRFToken]);
 
   const menuItems = [
     { 
       id: 'services', 
       label: 'Services', 
-      icon: <Scissors className="w-5 h-5" />,
+      icon: <UserCheck className="w-5 h-5" />,
       action: () => setLocation("/search-results")
     },
     { 
@@ -565,8 +829,8 @@ export default function PublicLanding() {
 
       {/* Header professionnel */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
             <div className="flex items-center gap-3">
               {/* Menu hamburger pour mobile/tablette */}
               <motion.button
@@ -610,7 +874,7 @@ export default function PublicLanding() {
                 className="cursor-pointer"
                 onClick={() => setLocation('/')}
               >
-                <img src={logoImage} alt="Logo" className="h-24 w-auto" />
+                <img src={logoImage} alt="Logo" className="h-16 sm:h-20 lg:h-24 w-auto" />
               </div>
             </div>
             
@@ -648,20 +912,20 @@ export default function PublicLanding() {
               </button>
             </nav>
             
-            <div className="flex items-center gap-3 md:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
               <button 
-                className="apple-glass-header-button"
-                onClick={() => setLocation("/client-login-modern")}
+                className="apple-glass-header-button text-xs sm:text-sm px-3 py-2 sm:px-4 sm:py-2"
+                onClick={() => setLocation("/client-login")}
               >
-                <span className="text-header hidden sm:inline">Se connecter</span>
-                <span className="text-header sm:hidden">Connexion</span>
+                <span className="hidden sm:inline">Se connecter</span>
+                <span className="sm:hidden">Connexion</span>
               </button>
               <button 
-                className="apple-glass-header-button pro-accent"
+                className="apple-glass-header-button pro-accent text-xs sm:text-sm px-3 py-2 sm:px-4 sm:py-2"
                 onClick={() => setLocation("/pro-login")}
               >
-                <span className="text-header hidden sm:inline">Espace Pro</span>
-                <span className="text-header sm:hidden">Pro</span>
+                <span className="hidden sm:inline">Espace Pro</span>
+                <span className="sm:hidden">Pro</span>
               </button>
             </div>
           </div>
@@ -669,7 +933,7 @@ export default function PublicLanding() {
       </header>
 
       {/* Nouveau Hero selon spécifications exactes */}
-      <HeroSlash />
+      <HeroSlash isSearching={isSearching} />
 
       {/* Section IA Minimaliste - Style iOS */}
       <section className="py-12 bg-white">
@@ -678,20 +942,22 @@ export default function PublicLanding() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              viewport={{ once: true, margin: "-50px" }}
               className="inline-block bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-sm font-medium mb-4"
+              style={{ willChange: 'transform, opacity' }}
             >
               Intelligence Artificielle
             </motion.div>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              viewport={{ once: true, margin: "-50px" }}
               className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-1 leading-tight"
+              style={{ willChange: 'transform, opacity' }}
             >
-              Première plateforme beauté avec <br/><span className="text-violet-600">IA prédictive</span>
+              Première plateforme de services avec <br/><span className="text-violet-600">IA prédictive</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -710,9 +976,10 @@ export default function PublicLanding() {
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+                viewport={{ once: true, margin: "-50px" }}
                 className="relative"
+                style={{ willChange: 'transform, opacity' }}
               >
                 <div className="bg-gray-50 rounded-3xl p-6 h-full border border-gray-100 hover:border-violet-200 transition-colors">
                   <div className="flex items-start gap-4 mb-4">
@@ -747,13 +1014,14 @@ export default function PublicLanding() {
           </div>
 
           {/* CTA vers abonnements */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              viewport={{ once: true, margin: "-50px" }}
+              className="text-center"
+              style={{ willChange: 'transform, opacity' }}
+            >
             <button 
               className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center"
               onClick={() => setLocation("/professional-plans")}
@@ -773,7 +1041,7 @@ export default function PublicLanding() {
             <h2 className="text-3xl font-bold text-gray-900 mb-1">Rejoignez des milliers de professionnels</h2>
             <p className="text-lg text-gray-600">Ils nous font confiance pour <br className="sm:hidden" />développer leur activité</p>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
@@ -783,10 +1051,10 @@ export default function PublicLanding() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="text-3xl lg:text-4xl font-bold text-violet-600 mb-2">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-violet-600 mb-1 sm:mb-2">
                   {stat.number}
                 </div>
-                <div className="text-gray-600">
+                <div className="text-sm sm:text-base text-gray-600">
                   {stat.label}
                 </div>
               </motion.div>
@@ -829,7 +1097,7 @@ export default function PublicLanding() {
             </motion.p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={testimonial.id}
@@ -892,15 +1160,15 @@ export default function PublicLanding() {
               Découvrez nos <span className="light">partenaires</span>
             </h2>
             <p className="heroSlash__subtitle text-base max-w-2xl mx-auto">
-              Trouvez l'excellence dans chaque domaine de la beauté avec nos experts certifiés
+              Trouvez l'excellence dans chaque domaine avec nos experts certifiés
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
               { name: "Coiffure", icon: Zap, category: "coiffure" },
-              { name: "Esthétique", icon: Crown, category: "esthetique" },
-              { name: "Massage", icon: Waves, category: "massage" },
-              { name: "Onglerie", icon: Flame, category: "onglerie" }
+              { name: "Coaching", icon: Crown, category: "coaching" },
+              { name: "Santé", icon: Waves, category: "sante" },
+              { name: "Consulting", icon: Flame, category: "consulting" }
             ].map((service, index) => {
               const IconComponent = service.icon;
               return (
@@ -953,7 +1221,7 @@ export default function PublicLanding() {
               ))}
             </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">
-              Salons recommandés
+              Professionnels recommandés
             </h2>
             <p className="text-lg text-gray-600">
               Découvrez nos partenaires les mieux notés
@@ -1265,16 +1533,16 @@ export default function PublicLanding() {
       <section className="py-20 bg-gradient-to-br from-white via-purple-50/20 to-pink-50/30">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            Prêt à transformer votre routine beauté ?
+            Prêt à transformer votre routine ?
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Découvrez des milliers de salons vérifiés près de chez vous et réservez en quelques clics.
+            Découvrez des milliers de professionnels vérifiés près de chez vous et réservez en quelques clics.
           </p>
           <button 
             className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
             onClick={() => setLocation('/search')}
           >
-            Explorer tous les salons
+            Explorer tous les professionnels
           </button>
         </div>
       </section>
@@ -1358,7 +1626,7 @@ export default function PublicLanding() {
               >
                 <button
                   onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                  className="w-full text-left p-6 rounded-2xl transition-all duration-300 hover:shadow-lg"
+                  className="w-full text-left p-6 rounded-2xl transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
                   style={{
                     background: 'rgba(248, 250, 252, 0.8)',
                     backdropFilter: 'blur(16px)',
@@ -1366,9 +1634,16 @@ export default function PublicLanding() {
                     border: '1px solid rgba(148, 163, 184, 0.2)',
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)'
                   }}
+                  aria-expanded={openFaqIndex === index}
+                  aria-controls={`faq-answer-${index}`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-gray-900 text-lg pr-4">{faq.question}</span>
+                    <span 
+                      id={`faq-question-${index}`}
+                      className="font-semibold text-gray-900 text-lg pr-4"
+                    >
+                      {faq.question}
+                    </span>
                     <ChevronDown 
                       className={`w-5 h-5 text-violet-600 transition-transform duration-300 flex-shrink-0 ${
                         openFaqIndex === index ? 'rotate-180' : ''
@@ -1385,7 +1660,12 @@ export default function PublicLanding() {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="pt-4 text-gray-700 leading-relaxed">
+                        <div 
+                          id={`faq-answer-${index}`}
+                          className="pt-4 text-gray-700 leading-relaxed"
+                          role="region"
+                          aria-labelledby={`faq-question-${index}`}
+                        >
                           {faq.answer}
                         </div>
                       </motion.div>
@@ -1440,21 +1720,21 @@ export default function PublicLanding() {
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/search-results?q=esthétique')}
+                  onClick={() => setLocation('/search-results?q=coaching')}
                 >
-                  Esthétique
+                  Coaching
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/search-results?q=manucure')}
+                  onClick={() => setLocation('/search-results?q=sante')}
                 >
-                  Manucure
+                  Santé
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setLocation('/search-results?q=massage')}
+                  onClick={() => setLocation('/search-results?q=consulting')}
                 >
-                  Massage
+                  Consulting
                 </div>
               </div>
             </div>
@@ -1513,6 +1793,12 @@ export default function PublicLanding() {
                   onClick={() => setLocation('/confidentialite')}
                 >
                   Confidentialité
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/mentions-legales')}
+                >
+                  Mentions légales
                 </div>
               </div>
             </div>
@@ -1618,7 +1904,7 @@ export default function PublicLanding() {
                   {/* Lien politique */}
                   <p className="text-xs text-gray-500 mt-4 text-center">
                     En continuant, vous acceptez notre{" "}
-                    <a href="#" className="text-violet-600 hover:text-violet-700 underline">
+                    <a href="/confidentialite" className="text-violet-600 hover:text-violet-700 underline">
                       politique de confidentialité
                     </a>
                   </p>

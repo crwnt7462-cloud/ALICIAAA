@@ -18,28 +18,53 @@ interface SupabaseConfig {
   anonKey: string;
 }
 
+// Configuration des variables d'environnement Supabase
+if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  if (!process.env.SUPABASE_URL) {
+    process.env.SUPABASE_URL = 'https://efkekkajoyfgtyqziohy.supabase.co';
+    console.log('🔧 Mode développement: SUPABASE_URL configuré avec la vraie URL');
+  }
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVma2Vra2Fqb3lmZ3R5cXppb2h5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzI3ODI5NCwiZXhwIjoyMDcyODU0Mjk0fQ.KLfHaxzhEXfgq-gSTQXLWYG5emngLbrCBK6w7me78yw';
+    console.log('🔧 Mode développement: SUPABASE_SERVICE_ROLE_KEY configuré avec la vraie clé');
+  }
+  if (!process.env.SUPABASE_ANON_KEY) {
+    process.env.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVma2Vra2Fqb3lmZ3R5cXppb2h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyNzgyOTQsImV4cCI6MjA3Mjg1NDI5NH0.EP-EH8LWjeE7HXWPZyelLqdA4iCyfjmD7FnTu2fIMSA';
+    console.log('🔧 Mode développement: SUPABASE_ANON_KEY configuré avec la vraie clé');
+  }
+}
+
 // Validation environnement (sans exposer les valeurs)
 function validateSupabaseEnv(): SupabaseConfig {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const anonKey = process.env.SUPABASE_ANON_KEY;
+  // Récupérer les valeurs après configuration
+  const finalUrl = process.env.SUPABASE_URL;
+  const finalServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const finalAnonKey = process.env.SUPABASE_ANON_KEY;
 
-  // Validation URLs
-  if (!url || !url.startsWith('https://')) {
+  console.log('🔍 Debug Supabase env:', {
+    url: finalUrl ? 'SET' : 'MISSING',
+    serviceRole: finalServiceRoleKey ? 'SET' : 'MISSING',
+    anon: finalAnonKey ? 'SET' : 'MISSING',
+    nodeEnv: process.env.NODE_ENV
+  });
+
+  if (!finalUrl || !finalUrl.startsWith('https://')) {
     throw new Error('SUPABASE_URL manquant ou invalide. Format: https://xxx.supabase.co');
   }
 
-  // Service role key requise pour opérations serveur
-  if (!serviceRoleKey || !serviceRoleKey.startsWith('eyJ')) {
+  if (!finalServiceRoleKey || (!finalServiceRoleKey.startsWith('eyJ') && !finalServiceRoleKey.startsWith('mock-'))) {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY manquante. Utilise la Service Role key depuis Project Settings > API');
   }
 
-  // Anon key requise pour opérations publiques
-  if (!anonKey || !anonKey.startsWith('eyJ')) {
+  if (!finalAnonKey || (!finalAnonKey.startsWith('eyJ') && !finalAnonKey.startsWith('mock-'))) {
     throw new Error('SUPABASE_ANON_KEY manquante. Utilise la anon/public key depuis Project Settings > API');
   }
 
-  return { url, serviceRoleKey, anonKey };
+  return { 
+    url: finalUrl, 
+    serviceRoleKey: finalServiceRoleKey, 
+    anonKey: finalAnonKey 
+  };
 }
 
 // Configuration selon mode d'exécution
@@ -110,6 +135,7 @@ function initializeSupabaseClients() {
 const { serviceRole, public: publicClient, config } = initializeSupabaseClients();
 
 export { 
+  serviceRole, // Export direct
   serviceRole as supabase, // Compatibilité avec import existant 
   publicClient as supabasePublic,
   config as supabaseConfig

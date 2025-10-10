@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Flux de Réservation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a32a3; }
+        .url { background: #f8f9fa; padding: 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test du Flux de Réservation</h1>
+    
+    <div class="step">
+        <h3>1. Données de Test</h3>
+        <button onclick="setupTestData()">Configurer les données de test</button>
+        <div id="data-status"></div>
+    </div>
+    
+    <div class="step">
+        <h3>2. Navigation du Flux</h3>
+        <button onclick="goToProfessionalSelection()">1. Sélection Professionnel</button>
+        <button onclick="goToStripePayment()">2. Paiement Stripe</button>
+        <button onclick="goToBookingConfirmation()">3. Confirmation</button>
+    </div>
+    
+    <div class="step">
+        <h3>3. URLs du Flux</h3>
+        <div class="url">http://localhost:5173/professional-selection</div>
+        <div class="url">http://localhost:5173/stripe-payment</div>
+        <div class="url">http://localhost:5173/booking-confirmation</div>
+    </div>
+    
+    <div class="step">
+        <h3>4. Vérification des Données</h3>
+        <button onclick="checkData()">Vérifier les données stockées</button>
+        <div id="data-check"></div>
+    </div>
+
+    <script>
+        function setupTestData() {
+            // Simuler les données de pré-réservation
+            const preBookingData = {
+                salonSlug: '15228957-f9f1-4f2d-82ac-ecba9f33c922',
+                professionalId: 'demo-professional',
+                professionalName: 'Marie Dubois',
+                serviceId: 'demo-service',
+                serviceName: 'Coupe et Brushing',
+                servicePrice: '45.00',
+                serviceDuration: '60'
+            };
+            
+            try {
+                sessionStorage.setItem('preBookingData', JSON.stringify(preBookingData));
+                document.getElementById('data-status').innerHTML = '<div class="success">✅ Données de test configurées</div>';
+            } catch (e) {
+                document.getElementById('data-status').innerHTML = '<div class="error">❌ Erreur: ' + e.message + '</div>';
+            }
+        }
+        
+        function goToProfessionalSelection() {
+            window.open('http://localhost:5173/professional-selection', '_blank');
+        }
+        
+        function goToStripePayment() {
+            window.open('http://localhost:5173/stripe-payment', '_blank');
+        }
+        
+        function goToBookingConfirmation() {
+            window.open('http://localhost:5173/booking-confirmation', '_blank');
+        }
+        
+        function checkData() {
+            const preBookingData = sessionStorage.getItem('preBookingData');
+            const currentBooking = sessionStorage.getItem('currentBooking');
+            const selectedService = localStorage.getItem('selectedService');
+            
+            let html = '<h4>Données stockées:</h4>';
+            html += '<p><strong>preBookingData:</strong> ' + (preBookingData ? '✅ Présent' : '❌ Absent') + '</p>';
+            html += '<p><strong>currentBooking:</strong> ' + (currentBooking ? '✅ Présent' : '❌ Absent') + '</p>';
+            html += '<p><strong>selectedService:</strong> ' + (selectedService ? '✅ Présent' : '❌ Absent') + '</p>';
+            
+            if (preBookingData) {
+                try {
+                    const data = JSON.parse(preBookingData);
+                    html += '<h4>Contenu preBookingData:</h4>';
+                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } catch (e) {
+                    html += '<p class="error">Erreur parsing preBookingData</p>';
+                }
+            }
+            
+            document.getElementById('data-check').innerHTML = html;
+        }
+        
+        // Auto-configurer les données au chargement
+        window.onload = function() {
+            setupTestData();
+        };
+    </script>
+</body>
+</html>

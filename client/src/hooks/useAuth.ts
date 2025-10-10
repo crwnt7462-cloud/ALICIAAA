@@ -4,14 +4,22 @@ export function useAuth() {
   const queryClient = useQueryClient();
 
   const { data: user, isLoading, refetch } = useQuery({
-    queryKey: ["/api/business/me"],
+    queryKey: ["/api/salon/my-salon"],
     queryFn: async () => {
-      const res = await fetch("/api/business/me", {
+      const res = await fetch("/api/salon/my-salon", {
         credentials: "include",
         headers: { "Accept": "application/json" }
       });
       if (!res.ok) throw new Error("Non authentifié");
-      return (await res.json()).user;
+      const salonData = await res.json();
+      // Retourner un objet user compatible avec l'interface attendue
+      return {
+        id: salonData.owner_id || 'unknown',
+        email: 'user@example.com', // Pas disponible dans salon data
+        firstName: 'User',
+        lastName: 'Name',
+        salonName: salonData.name
+      };
     },
     retry: 3,
     staleTime: 60 * 60 * 1000,
@@ -20,14 +28,14 @@ export function useAuth() {
 
   // Fonction pour rafraîchir l'état d'authentification
   const refreshAuth = () => {
-    queryClient.invalidateQueries({ queryKey: ["/api/business/me"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/salon/my-salon"] });
     refetch();
   };
 
   return {
     user,
-    isLoading, // Plus d'arrêt du loading sur 401 - maintenir l'état utilisateur
+    isLoading,
     isAuthenticated: !!user,
-    refreshAuth, // Exposer la fonction de rafraîchissement
+    refreshAuth,
   };
 }

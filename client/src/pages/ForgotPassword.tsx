@@ -11,7 +11,6 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
-import { getGenericGlassButton } from '@/lib/salonColors';
 import { useMutation } from '@tanstack/react-query';
 
 export default function ForgotPassword() {
@@ -19,6 +18,8 @@ export default function ForgotPassword() {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [step, setStep] = useState<'form' | 'sent' | 'error'>('form');
+  const [lastAttempt, setLastAttempt] = useState<number>(0);
+  const [attemptCount, setAttemptCount] = useState<number>(0);
 
   const resetMutation = useMutation({
     mutationFn: async (emailData: { email: string }) => {
@@ -46,6 +47,25 @@ export default function ForgotPassword() {
     }
   });
 
+  // Rate limiting: max 3 tentatives par minute
+  const canSubmit = () => {
+    const now = Date.now();
+    const timeSinceLastAttempt = now - lastAttempt;
+    const oneMinute = 60 * 1000;
+    
+    if (attemptCount >= 3 && timeSinceLastAttempt < oneMinute) {
+      const remainingTime = Math.ceil((oneMinute - timeSinceLastAttempt) / 1000);
+      toast({
+        title: "Trop de tentatives",
+        description: `Veuillez attendre ${remainingTime} secondes avant de réessayer`,
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -58,8 +78,9 @@ export default function ForgotPassword() {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validation email plus robuste
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!emailRegex.test(email.trim())) {
       toast({
         title: "Email invalide",
         description: "Veuillez saisir une adresse email valide",
@@ -67,6 +88,20 @@ export default function ForgotPassword() {
       });
       return;
     }
+
+    // Vérification rate limiting
+    if (!canSubmit()) {
+      return;
+    }
+
+    // Mise à jour des compteurs
+    const now = Date.now();
+    if (now - lastAttempt > 60 * 1000) {
+      setAttemptCount(1);
+    } else {
+      setAttemptCount(prev => prev + 1);
+    }
+    setLastAttempt(now);
 
     resetMutation.mutate({ email: email.trim() });
   };
@@ -120,13 +155,16 @@ export default function ForgotPassword() {
                   </div>
                 </div>
 
-                <Button
+                <button
                   type="submit"
-                  disabled={resetMutation.isPending}
-                  className={`w-full ${getGenericGlassButton(0)} font-semibold`}
+                  disabled={resetMutation.isPending || (attemptCount >= 3 && Date.now() - lastAttempt < 60 * 1000)}
+                  className="w-full glass-button rounded-xl py-3 font-medium flex items-center justify-center text-white"
                 >
-                  {resetMutation.isPending ? 'Envoi en cours...' : 'Envoyer le lien'}
-                </Button>
+                  {resetMutation.isPending ? 'Envoi en cours...' : 
+                   attemptCount >= 3 && Date.now() - lastAttempt < 60 * 1000 ? 
+                   `Attendez ${Math.ceil((60 * 1000 - (Date.now() - lastAttempt)) / 1000)}s` : 
+                   'Envoyer le lien'}
+                </button>
               </form>
             )}
 
@@ -161,12 +199,12 @@ export default function ForgotPassword() {
                     Impossible d'envoyer l'email. Vérifiez que l'adresse est correcte.
                   </p>
                 </div>
-                <Button
+                <button
                   onClick={() => setStep('form')}
-                  className={`w-full ${getGenericGlassButton(1)} font-semibold`}
+                  className="w-full glass-button rounded-xl py-3 font-medium text-white"
                 >
                   Réessayer
-                </Button>
+                </button>
               </div>
             )}
 

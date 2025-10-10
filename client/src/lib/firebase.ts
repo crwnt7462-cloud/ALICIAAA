@@ -23,9 +23,10 @@ export const storage = getStorage(app);
 // Connect to emulators in development
 if (import.meta.env.DEV) {
   try {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-    connectAuthEmulator(auth, 'http://localhost:9099');
-    connectStorageEmulator(storage, 'localhost', 9199);
+    const emulatorHost = import.meta.env.VITE_FIREBASE_EMULATOR_HOST || 'localhost';
+    connectFirestoreEmulator(db, emulatorHost, 8080);
+    connectAuthEmulator(auth, `http://${emulatorHost}:9099`);
+    connectStorageEmulator(storage, emulatorHost, 9199);
   } catch (error) {
     // Emulators already connected
   }

@@ -3,7 +3,7 @@
     "wouter_routes": [
       {
         "path": "/",
-        "component": "Landing | Dashboard",
+        "component": "PublicLanding | Dashboard",
         "condition": "isAuthenticated",
         "library": "wouter"
       },
@@ -48,7 +48,8 @@
       {
         "path": "/client-login",
         "component": "ClientLogin",
-        "library": "wouter"
+        "library": "wouter",
+        "description": "Page de connexion client unique"
       },
       {
         "path": "/pro-login", 
@@ -72,7 +73,6 @@
           "useProAuth.ts",
           "AIProModern.tsx",
           "AIAssistantFixed.tsx",
-          "Landing.tsx",
           "BusinessFeatures.tsx"
         ],
         "pattern": "const [location, setLocation] = useLocation();"

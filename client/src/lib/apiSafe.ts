@@ -7,8 +7,7 @@ function getApiBase(): string {
   const sources = [
     (window as any).__API_URL__,
     import.meta.env.VITE_API_URL,
-    window.location.origin, // Fallback sur l'origine actuelle
-    'http://localhost:5000'  // Dernier recours
+    window.location.origin // Fallback sur l'origine actuelle
   ];
   
   for (const source of sources) {

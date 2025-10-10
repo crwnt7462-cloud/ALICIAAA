@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,17 +11,36 @@ import { useLocation } from 'wouter';
 export default function SalonPolicies() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [policies, setPolicies] = useState({
-    cancellation: "Annulation gratuite jusqu'à 24h avant le rendez-vous",
-    lateness: "Retard de plus de 15min = annulation automatique",
-    deposit: "30% d'acompte requis pour valider la réservation", 
-    modification: "Modification possible jusqu'à 12h avant",
-    noShow: "En cas d'absence, l'acompte reste acquis au salon",
-    refund: "Remboursement sous 5-7 jours ouvrés en cas d'annulation valide"
+  type Policies = {
+    cancellation: string;
+    lateness: string;
+    deposit: string;
+    modification: string;
+    noShow: string;
+    refund: string;
+  };
+
+  type Settings = {
+    depositPercentage: number;
+    cancellationDeadline: number;
+    modificationDeadline: number;
+    latenessGracePeriod: number;
+    autoConfirmBookings: boolean;
+    requireDepositForBooking: boolean;
+  };
+
+  const [policies, setPolicies] = useState<Policies>({
+    cancellation: "Annulation gratuite jusqu'à 24h avant le rendez-vous. Au-delà, des frais d'annulation peuvent s'appliquer.",
+    lateness: "En cas de retard de plus de 15 minutes, votre créneau pourra être reporté ou annulé selon la disponibilité.",
+    deposit: "Un acompte peut être demandé pour confirmer votre réservation. Le montant sera déduit du total à régler.",
+    modification: "Les modifications de rendez-vous sont possibles jusqu'à 12h avant l'heure prévue, sous réserve de disponibilité.",
+    noShow: "En cas d'absence non signalée, l'acompte versé reste acquis au professionnel.",
+    refund: "Le remboursement s'effectue sous 5-7 jours ouvrés en cas d'annulation valide selon nos conditions."
   });
 
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<Settings>({
     depositPercentage: 30,
     cancellationDeadline: 24,
     modificationDeadline: 12,
@@ -30,33 +49,104 @@ export default function SalonPolicies() {
     requireDepositForBooking: true
   });
 
-  const handleSave = async () => {
+  // Chargement des données depuis l'API
+  useEffect(() => {
+    const loadPolicies = async () => {
+      try {
+        const response = await fetch('/api/salon/policies', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          credentials: 'include',
+          cache: 'no-store',
+          referrerPolicy: 'same-origin'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.policies) setPolicies(data.policies);
+          if (data.settings) setSettings(data.settings);
+        }
+      } catch (error) {
+        console.error('Erreur chargement politiques:', error);
+      }
+    };
+
+    loadPolicies();
+  }, []);
+
+  // Sécurité : validation et sanitisation des entrées
+  const sanitizeInput = useCallback((input: string): string => {
+    return input
+      .replace(/[<>]/g, '') // Supprime < et >
+      .replace(/javascript:/gi, '') // Supprime javascript:
+      .replace(/on\w+=/gi, '') // Supprime les event handlers
+      .trim()
+      .substring(0, 500); // Limite la longueur
+  }, []);
+
+  const validateNumber = useCallback((value: number, min: number, max: number): number => {
+    return Math.max(min, Math.min(max, Number.isFinite(value) ? value : min));
+  }, []);
+
+  const updatePolicy = useCallback((key: keyof Policies, value: string) => {
+    const sanitized = sanitizeInput(value);
+    setPolicies(prev => ({ ...prev, [key]: sanitized }));
+  }, [sanitizeInput]);
+
+  const updateSettingNumber = useCallback((key: keyof Settings, value: number) => {
+    const constraints = {
+      depositPercentage: { min: 0, max: 100 },
+      cancellationDeadline: { min: 0, max: 168 }, // 7 jours max
+      modificationDeadline: { min: 0, max: 168 },
+      latenessGracePeriod: { min: 0, max: 60 } // 1h max
+    };
+    
+    const constraint = constraints[key as keyof typeof constraints];
+    if (constraint) {
+      const validated = validateNumber(value, constraint.min, constraint.max);
+      setSettings(prev => ({ ...prev, [key]: validated }));
+    } else {
+      setSettings(prev => ({ ...prev, [key]: value }));
+    }
+  }, [validateNumber]);
+
+  const handleSave = useCallback(async () => {
+    setIsSaving(true);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
     try {
-      // Simuler la sauvegarde des politiques
       const response = await fetch('/api/salon/policies', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          policies,
-          settings
-        })
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'include',
+        cache: 'no-store',
+        referrerPolicy: 'same-origin',
+        body: JSON.stringify({ policies, settings }),
+        signal: controller.signal
       });
-
-      if (response.ok) {
-        toast({
-          title: "Politiques sauvegardées",
-          description: "Vos politiques de salon ont été mises à jour avec succès",
-          variant: "success" as any
-        });
-      }
-    } catch (error) {
+      if (!response.ok) throw new Error('Request failed');
       toast({
-        title: "Erreur",
-        description: "Erreur lors de la sauvegarde des politiques",
-        variant: "destructive"
+        title: "Politiques sauvegardées",
+        description: "Vos politiques ont été mises à jour avec succès",
       });
+    } catch (error) {
+      const isAbort = (error as Error)?.name === 'AbortError';
+      toast({
+        title: isAbort ? 'Délai dépassé' : 'Erreur',
+        description: isAbort ? "La requête a pris trop de temps." : "Erreur lors de la sauvegarde des politiques",
+        variant: 'destructive'
+      });
+    } finally {
+      clearTimeout(timer);
+      setIsSaving(false);
     }
-  };
+  }, [policies, settings, toast]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
@@ -83,6 +173,7 @@ export default function SalonPolicies() {
       </div>
 
       <div className="max-w-4xl mx-auto p-6 space-y-6">
+
         {/* Paramètres généraux */}
         <Card className="glass-card border-white/40">
           <CardHeader>
@@ -90,55 +181,25 @@ export default function SalonPolicies() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pourcentage d'acompte (%)
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={settings.depositPercentage}
-                  onChange={(e) => setSettings(prev => ({ ...prev, depositPercentage: parseInt(e.target.value) }))}
-                  className="glass-input"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Délai d'annulation (heures)
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  value={settings.cancellationDeadline}
-                  onChange={(e) => setSettings(prev => ({ ...prev, cancellationDeadline: parseInt(e.target.value) }))}
-                  className="glass-input"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Délai de modification (heures)
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  value={settings.modificationDeadline}
-                  onChange={(e) => setSettings(prev => ({ ...prev, modificationDeadline: parseInt(e.target.value) }))}
-                  className="glass-input"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tolérance retard (minutes)
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  value={settings.latenessGracePeriod}
-                  onChange={(e) => setSettings(prev => ({ ...prev, latenessGracePeriod: parseInt(e.target.value) }))}
-                  className="glass-input"
-                />
-              </div>
+              {[
+                { key: 'depositPercentage', label: "Pourcentage d'acompte (%)", min: 0, max: 100 },
+                { key: 'cancellationDeadline', label: "Délai d'annulation (heures)", min: 0 },
+                { key: 'modificationDeadline', label: "Délai de modification (heures)", min: 0 },
+                { key: 'latenessGracePeriod', label: "Tolérance retard (minutes)", min: 0 },
+              ].map(({ key, label, min, max }) => (
+                <div key={key}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+                  <Input
+                    type="number"
+                    min={min as number}
+                    {...(max !== undefined ? { max } : {})}
+                    value={settings[key as keyof Settings] as number}
+                    onChange={(e) => updateSettingNumber(key as keyof Settings, parseInt(e.target.value))}
+                    className="glass-input"
+                    maxLength={3}
+                  />
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -147,84 +208,97 @@ export default function SalonPolicies() {
         <Card className="glass-card border-white/40">
           <CardHeader>
             <CardTitle className="text-lg text-gray-900">Messages des politiques</CardTitle>
+            <p className="text-sm text-gray-600">Les textes sont limités à 500 caractères pour la sécurité</p>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Politique d'annulation
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Politique d'annulation</label>
               <Textarea
                 value={policies.cancellation}
-                onChange={(e) => setPolicies(prev => ({ ...prev, cancellation: e.target.value }))}
+                onChange={(e) => updatePolicy('cancellation', e.target.value)}
                 className="glass-input"
                 rows={2}
                 placeholder="Conditions d'annulation..."
+                maxLength={500}
               />
+              <div className="text-xs text-gray-500 mt-1">
+                {policies.cancellation.length}/500 caractères
+              </div>
             </div>
-
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Politique de retard
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Politique de retard</label>
               <Textarea
                 value={policies.lateness}
-                onChange={(e) => setPolicies(prev => ({ ...prev, lateness: e.target.value }))}
+                onChange={(e) => updatePolicy('lateness', e.target.value)}
                 className="glass-input"
                 rows={2}
                 placeholder="Conditions en cas de retard..."
+                maxLength={500}
               />
+              <div className="text-xs text-gray-500 mt-1">
+                {policies.lateness.length}/500 caractères
+              </div>
             </div>
-
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Politique d'acompte
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Politique d'acompte</label>
               <Textarea
                 value={policies.deposit}
-                onChange={(e) => setPolicies(prev => ({ ...prev, deposit: e.target.value }))}
+                onChange={(e) => updatePolicy('deposit', e.target.value)}
                 className="glass-input"
                 rows={2}
                 placeholder="Conditions d'acompte..."
+                maxLength={500}
               />
+              <div className="text-xs text-gray-500 mt-1">
+                {policies.deposit.length}/500 caractères
+              </div>
             </div>
-
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Politique de modification
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Politique de modification</label>
               <Textarea
                 value={policies.modification}
-                onChange={(e) => setPolicies(prev => ({ ...prev, modification: e.target.value }))}
+                onChange={(e) => updatePolicy('modification', e.target.value)}
                 className="glass-input"
                 rows={2}
                 placeholder="Conditions de modification..."
+                maxLength={500}
               />
+              <div className="text-xs text-gray-500 mt-1">
+                {policies.modification.length}/500 caractères
+              </div>
             </div>
-
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Politique no-show
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Politique no-show</label>
               <Textarea
                 value={policies.noShow}
-                onChange={(e) => setPolicies(prev => ({ ...prev, noShow: e.target.value }))}
+                onChange={(e) => updatePolicy('noShow', e.target.value)}
                 className="glass-input"
                 rows={2}
                 placeholder="Conditions en cas d'absence..."
+                maxLength={500}
               />
+              <div className="text-xs text-gray-500 mt-1">
+                {policies.noShow.length}/500 caractères
+              </div>
             </div>
-
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Politique de remboursement
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Politique de remboursement</label>
               <Textarea
                 value={policies.refund}
-                onChange={(e) => setPolicies(prev => ({ ...prev, refund: e.target.value }))}
+                onChange={(e) => updatePolicy('refund', e.target.value)}
                 className="glass-input"
                 rows={2}
                 placeholder="Conditions de remboursement..."
+                maxLength={500}
               />
+              <div className="text-xs text-gray-500 mt-1">
+                {policies.refund.length}/500 caractères
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -248,14 +322,25 @@ export default function SalonPolicies() {
           </CardContent>
         </Card>
 
+
         {/* Bouton sauvegarde */}
         <div className="flex justify-end">
           <Button
             onClick={handleSave}
-            className="glass-button hover:glass-effect text-black font-medium px-8 py-2.5 rounded-full transition-all duration-300"
+            disabled={isSaving}
+            className="glass-button hover:glass-effect text-black font-medium px-8 py-2.5 rounded-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save className="w-4 h-4 mr-2" />
-            Sauvegarder les politiques
+            {isSaving ? (
+              <>
+                <div className="animate-spin w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+                Sauvegarde en cours...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Sauvegarder les politiques
+              </>
+            )}
           </Button>
         </div>
       </div>

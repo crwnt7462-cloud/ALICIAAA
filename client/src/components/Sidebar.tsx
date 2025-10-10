@@ -55,6 +55,13 @@ export function Sidebar() {
         </div>
         
         <div 
+          onClick={() => setLocation('/staff-management')}
+          className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+        >
+          <Users className="w-6 h-6 text-white/80" />
+        </div>
+        
+        <div 
           onClick={() => setLocation('/messaging-hub')}
           className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
         >

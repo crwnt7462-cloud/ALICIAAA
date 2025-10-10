@@ -1,4 +1,4 @@
-import { supabase } from "./db";
+import { supabase } from "./lib/clients/supabaseServer";
 import { v4 as uuidv4 } from "uuid";
 import { businessRegistrations, services, staffMembers, salonTemplates } from "@shared/schema";
 import { eq } from "drizzle-orm";
@@ -205,6 +205,12 @@ export async function initializeTestData() {
 
 // Helper pour le seed du template par défaut
 export async function seedDefaultSalonTemplate() {
+  // Skip seeding if supabase is not available
+  if (!supabase) {
+    console.log('⚠️ Supabase not available, skipping seed');
+    return;
+  }
+  
   const slug = "default-modern";
   const { data: already } = await supabase.from('salon').select('*');
   // Sécurise: si Supabase retourne null, utilise un tableau vide

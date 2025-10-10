@@ -1117,7 +1117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   */
 
-  // Route de connexion classique (compatible avec LoginClassic.tsx)
+  // Route de connexion classique
   app.post('/api/login-classic', validateRequest(professionalLoginSchema), async (req: any, res) => {
     try {
       const { email, password } = req.validatedData;

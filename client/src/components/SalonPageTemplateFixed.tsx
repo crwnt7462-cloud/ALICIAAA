@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { formatDuration } from '@/lib/utils';
 import { 
   MapPin, 
   Phone, 
@@ -50,6 +51,29 @@ export default function SalonPageTemplateFixed({
   isOwner = false, 
   customColors 
 }: SalonPageTemplateProps) {
+  
+  // Fonction pour récupérer les services assignés à un employé
+  const getMemberServices = (memberId: number) => {
+    // Récupérer tous les services du salon
+    const allServices = salonData?.services || services || [];
+    
+    // Logique d'assignation des services par employé
+    const member = staff.find(m => m.id === memberId);
+    if (!member) return [];
+    
+    // Si l'employé a des spécialités, on peut filtrer les services
+    if (member.specialties && member.specialties.length > 0) {
+      return allServices.filter(service => 
+        member.specialties.some(specialty => 
+          service.name.toLowerCase().includes(specialty.toLowerCase()) ||
+          specialty.toLowerCase().includes(service.name.toLowerCase())
+        )
+      );
+    }
+    
+    // Par défaut, tous les employés peuvent proposer tous les services
+    return allServices;
+  };
   const [location] = useLocation();
   const { toast } = useToast();
   
@@ -82,7 +106,7 @@ export default function SalonPageTemplateFixed({
       cat.services.map(service => ({
         id: service.id,
         name: service.name,
-        duration: `${Math.floor(service.duration / 60)}h${service.duration % 60 > 0 ? `${service.duration % 60}min` : ''}`,
+        duration: formatDuration(service.duration),
         price: service.price,
         description: service.description || ''
       }))
@@ -305,9 +329,9 @@ export default function SalonPageTemplateFixed({
                       <div>
                         <h3 className="font-semibold">{member.name}</h3>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {member.specialties.map((specialty: string, index: number) => (
+                          {getMemberServices(member.id).map((service: any, index: number) => (
                             <Badge key={index} variant="secondary" className="text-xs">
-                              {specialty}
+                              {service.name}
                             </Badge>
                           ))}
                         </div>

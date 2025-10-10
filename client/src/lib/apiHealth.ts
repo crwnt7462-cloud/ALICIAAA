@@ -30,9 +30,9 @@ export async function autoDetectApiUrl(): Promise<string | null> {
       if (ok) return candidate;
     }
     
-    // Cas localhost (port 5000 pour Express)
+    // Cas localhost (port configurable)
     if (host === 'localhost' || host === '127.0.0.1') {
-      const localhostUrl = 'http://localhost:5000';
+      const localhostUrl = import.meta.env.VITE_API_URL || window.location.origin;
       const okLocal = await checkApiHealth(localhostUrl);
       if (okLocal) return localhostUrl;
     }

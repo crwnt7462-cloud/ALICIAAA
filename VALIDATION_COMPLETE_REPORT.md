@@ -54,7 +54,7 @@
 ### 🔥 Pages Client Validées :
 - **✅ `/`** - PublicLanding - Landing page publique fonctionnelle
 - **✅ `/search`** - SalonSearchComplete - Recherche salons avec filtres
-- **✅ `/salon/demo-user`** - ModernSalonDetail - Détail salon avec services
+- **✅ `/salon/demo-user`** - SUPPRIMÉ - Détail salon avec services
 - **✅ `/booking`** - BookingPage - Réservation complète
 - **✅ `/client-login`** - ClientLogin - Connexion client fonctionnelle
 - **✅ `/client-dashboard`** - ClientDashboard - Dashboard client complet
@@ -64,13 +64,13 @@
 - **✅ `/business-features`** - BusinessFeaturesModern - Outils pro complets
 - **⭐ `/salon-page-editor`** - SalonPageEditor - ÉDITEUR SALON OPÉRATIONNEL
 - **✅ `/planning`** - PlanningModern - Planning RDV interactif
-- **✅ `/inventory`** - InventoryModern - Gestion stock avec alertes
+- **✅ `/inventory`** - Inventory - Gestion stock avec alertes
 - **✅ `/pro-messaging`** - ProMessagingModern - Communication temps réel
 
 ### 🎯 Pages Spécialisées Validées :
 - **✅ `/ai-assistant`** - ChatGPTInterface - Assistant IA fonctionnel
 - **✅ `/stripe-payment`** - StripePayment - Paiements sécurisés
-- **✅ `/subscription-plans`** - ModernSubscriptionPlans - Abonnements salon
+- **✅ `/subscription-plans`** - ModernSubscriptionPlans - SUPPRIMÉ
 - **✅ `/salon-settings`** - SalonSettingsModern - Configuration salon
 
 ### Pages Spécialisées :

@@ -8,7 +8,7 @@ import { supabase } from './supabaseSetup';
 export interface AppointmentNotification {
   id: string;
   salon_id: string;
-  staff_id: string;
+  professional_id: string;
   client_name: string;
   service_name: string;
   date: string;
@@ -124,7 +124,7 @@ export class PlanningRealtimeService {
             event: 'planning_updated',
             payload: {
               salon_id: salonId,
-              staff_id: staffId,
+              professional_id: staffId,
               message: message || 'Planning mis à jour',
               timestamp: new Date().toISOString()
             }

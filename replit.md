@@ -90,7 +90,7 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **SÉCURITÉ MAJEURE - Authentification Renforcée (18/08/2025 21h26)**:
   * Suppression du système de démo utilisateur automatique qui bypassait l'authentification
   * Protection complète de toutes les pages professionnelles (/dashboard, /planning, /services-management, /business-features, /clients, etc.)
-  * Protection des pages clients (/avyento-booking, /avyento-account, /original-booking, /notifications, etc.)
+  * Protection des pages clients (/avyento-booking, /avyento-account, /notifications, etc.)
   * Messages d'erreur élégants avec design glassmorphism pour accès non autorisé
   * Système d'authentification Replit Auth maintenant pleinement fonctionnel
   * Toutes les routes sensibles nécessitent maintenant une vraie authentification

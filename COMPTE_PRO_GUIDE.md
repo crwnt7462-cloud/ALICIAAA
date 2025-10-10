@@ -36,7 +36,7 @@ Couleurs Premium configurées :
 ### 🔑 Comment se Connecter
 
 **MÉTHODE SIMPLE (Recommandée) :**
-1. **Allez sur** : `/login-classic`
+1. **Allez sur** : `/pro-login`
 2. **Utilisez les identifiants** :
    - Email : `pro@avyento.com`
    - Mot de passe : `avyento2025`

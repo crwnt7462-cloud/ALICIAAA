@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Mail, Phone, MessageCircle, MapPin, Clock, Shield } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Clock, Shield, CheckCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 export default function Contact() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const captchaInputRef = useRef<HTMLInputElement>(null);
+  
+  // Variables d'environnement sécurisées
+  const SUPPORT_EMAIL = import.meta.env.VITE_SUPPORT_EMAIL || 'support@avyento.com';
+  const COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME || 'Avyento';
   
   // États pour le formulaire
   const [formData, setFormData] = useState({
@@ -25,6 +30,23 @@ export default function Contact() {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [captchaChallenge, setCaptchaChallenge] = useState("");
   const [captchaAnswer, setCaptchaAnswer] = useState("");
+  
+  // États pour la sécurité
+  const [submitAttempts, setSubmitAttempts] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
+  
+  // Rate limiting (max 3 tentatives par 5 minutes)
+  useEffect(() => {
+    if (submitAttempts >= 3) {
+      setIsBlocked(true);
+      const timer = setTimeout(() => {
+        setIsBlocked(false);
+        setSubmitAttempts(0);
+      }, 5 * 60 * 1000); // 5 minutes
+      return () => clearTimeout(timer);
+    }
+  }, [submitAttempts]);
 
   // Générer un défi mathématique simple
   const generateCaptcha = () => {
@@ -58,6 +80,18 @@ export default function Contact() {
     return result.toString();
   };
 
+  // Validation email sécurisée
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Sanitisation des entrées
+  const sanitizeInput = (input: string): string => {
+    if (!input) return '';
+    return input.trim().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  };
+
   // Valider les champs du formulaire
   const validateForm = () => {
     if (!formData.name.trim()) {
@@ -72,6 +106,14 @@ export default function Contact() {
       toast({
         title: "Email manquant",
         description: "Veuillez renseigner votre email",
+        variant: "destructive"
+      });
+      return false;
+    }
+    if (!validateEmail(formData.email)) {
+      toast({
+        title: "Email invalide",
+        description: "Veuillez renseigner un email valide",
         variant: "destructive"
       });
       return false;
@@ -92,11 +134,28 @@ export default function Contact() {
       });
       return false;
     }
+    if (!gdprConsent) {
+      toast({
+        title: "Consentement requis",
+        description: "Veuillez accepter le traitement de vos données",
+        variant: "destructive"
+      });
+      return false;
+    }
     return true;
   };
 
   // Initier l'envoi (afficher le reCAPTCHA)
   const handleInitiateSubmit = () => {
+    if (isBlocked) {
+      toast({
+        title: "Trop de tentatives",
+        description: "Veuillez attendre 5 minutes avant de réessayer",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!validateForm()) return;
     
     const correctAnswer = generateCaptcha();
@@ -107,11 +166,12 @@ export default function Contact() {
 
   // Vérifier le reCAPTCHA et envoyer
   const handleSubmitWithCaptcha = () => {
-    const userAnswer = (document.getElementById('captcha-input') as HTMLInputElement)?.value;
+    const userAnswer = captchaInputRef.current?.value;
     
     if (userAnswer === captchaAnswer) {
       setCaptchaVerified(true);
       setShowCaptcha(false);
+      setSubmitAttempts(0); // Reset en cas de succès
       
       // Simuler l'envoi du message
       toast({
@@ -127,13 +187,15 @@ export default function Contact() {
         subject: "",
         message: ""
       });
+      setGdprConsent(false);
       
       // Rediriger vers mailto en backup
       setTimeout(() => {
-        window.location.href = `mailto:support@avyento.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(formData.message)}`;
+        window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(formData.message)}`;
       }, 1000);
       
     } else {
+      setSubmitAttempts(prev => prev + 1);
       toast({
         title: "Erreur reCAPTCHA",
         description: "Réponse incorrecte. Veuillez réessayer.",
@@ -150,11 +212,12 @@ export default function Contact() {
     setCaptchaVerified(false);
   };
 
-  // Gérer les changements de formulaire
+  // Gérer les changements de formulaire avec sanitisation
   const handleInputChange = (field: string, value: string) => {
+    const sanitizedValue = sanitizeInput(value);
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: sanitizedValue
     }));
   };
 
@@ -162,16 +225,16 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      description: "support@avyento.com",
+      description: SUPPORT_EMAIL,
       subtitle: "Réponse sous 24h",
       color: "from-blue-100 to-cyan-100"
     },
     {
-      icon: MessageCircle,
-      title: "Chat en direct",
-      description: "Support instantané",
-      subtitle: "Disponible 9h-18h",
-      color: "from-purple-100 to-violet-100"
+      icon: Phone,
+      title: "Téléphone",
+      description: "01 23 45 67 89",
+      subtitle: "Lundi-Vendredi 9h-18h",
+      color: "from-green-100 to-emerald-100"
     }
   ];
 
@@ -290,16 +353,36 @@ export default function Contact() {
                     onChange={(e) => handleInputChange('message', e.target.value)}
                     rows={4}
                     className="bg-white/50 border-white/50"
+                    maxLength={1000}
                   />
+                  
+                  {/* Checkbox RGPD */}
+                  <div className="flex items-start gap-3 p-4 bg-white/20 rounded-xl">
+                    <input
+                      type="checkbox"
+                      id="gdpr-consent"
+                      checked={gdprConsent}
+                      onChange={(e) => setGdprConsent(e.target.checked)}
+                      className="mt-1 w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
+                    />
+                    <label htmlFor="gdpr-consent" className="text-sm text-gray-600">
+                      J'accepte que {COMPANY_NAME} traite mes données personnelles pour répondre à ma demande. 
+                      <a href="/confidentialite" className="text-violet-600 hover:underline ml-1">
+                        Politique de confidentialité
+                      </a>
+                    </label>
+                  </div>
+                  
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <Button 
                       onClick={handleInitiateSubmit}
-                      className="glass-button text-black w-full py-3 rounded-xl"
+                      disabled={isBlocked}
+                      className="glass-button text-black w-full py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Envoyer le message
+                      {isBlocked ? "Trop de tentatives" : "Envoyer le message"}
                     </Button>
                   </motion.div>
                 </div>
@@ -321,7 +404,7 @@ export default function Contact() {
                     </div>
                     
                     <Input
-                      id="captcha-input"
+                      ref={captchaInputRef}
                       placeholder="Votre réponse"
                       type="number"
                       className="bg-white/50 border-white/50 text-center mb-4"

@@ -1,5 +1,5 @@
 import { broadcastServiceMutation } from '@/lib/broadcastServiceMutation';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,9 +10,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Plus, Scissors, Edit, Save, X, Clock, Euro } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-// import { apiRequest } from '@/lib/queryClient'; // Plus utilisé - remplacé par postUpdateSalon
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { ProHeader } from '@/components/ProHeader';
+import { formatDuration } from '@/lib/utils';
 
 interface Service {
   id: number;
@@ -41,18 +41,41 @@ export default function ServicesManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Helper d'écriture local
-  async function postUpdateSalon(payload: any) {
-    const res = await fetch('/api/salon/update', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(payload),
-    });
-    let j: any = null; try { j = await res.json(); } catch {}
-    if (!res.ok) throw new Error(j?.error || res.statusText || 'Erreur');
-    return j;
-  }
+  // Helper d'écriture local avec sécurité renforcée
+  const postUpdateSalon = useCallback(async (payload: unknown) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    
+    try {
+      const res = await fetch('/api/salon/update', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'Cache-Control': 'no-store'
+        },
+        credentials: 'include',
+        referrerPolicy: 'same-origin',
+        signal: controller.signal,
+        body: JSON.stringify(payload),
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData?.error || res.statusText || 'Erreur de mise à jour');
+      }
+      
+      return await res.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Délai d\'attente dépassé');
+      }
+      throw error;
+    }
+  }, []);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   // États séparés pour l'édition
@@ -73,26 +96,81 @@ export default function ServicesManagement() {
   const [newServiceHours, setNewServiceHours] = useState(1);
   const [newServiceMinutes, setNewServiceMinutes] = useState(0);
 
-  // Handlers pour les inputs photos
-  function handlePhotoInput(e: React.ChangeEvent<HTMLInputElement>) {
+  // Validation et sanitisation des URLs
+  const validateAndSanitizeUrls = useCallback((urls: string[]): string[] => {
+    return urls
+      .map(url => url.trim())
+      .filter(url => {
+        try {
+          const parsedUrl = new URL(url);
+          return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+        } catch {
+          return false;
+        }
+      })
+      .slice(0, 10); // Limite à 10 photos max
+  }, []);
+
+  // Handlers pour les inputs photos avec validation
+  const handlePhotoInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
-    setNewService(prev => ({ ...prev, photos: value ? value.split(',').map(url => url.trim()) : [] }));
-  }
+    const urls = value ? value.split(',').map(url => url.trim()) : [];
+    const sanitizedUrls = validateAndSanitizeUrls(urls);
+    setNewService(prev => ({ ...prev, photos: sanitizedUrls }));
+  }, [validateAndSanitizeUrls]);
 
-  function handleEditPhotoInput(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleEditPhotoInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
-    setEditingService(prev => prev ? { ...prev, photos: value ? value.split(',').map(url => url.trim()) : [] } : null);
-  }
+    const urls = value ? value.split(',').map(url => url.trim()) : [];
+    const sanitizedUrls = validateAndSanitizeUrls(urls);
+    setEditingService(prev => prev ? { ...prev, photos: sanitizedUrls } : null);
+  }, [validateAndSanitizeUrls]);
 
-  // Handlers pour les inputs photos
+  // Validation des données de service
+  const validateServiceData = useCallback((service: Partial<Service | NewService>): string[] => {
+    const errors: string[] = [];
+    
+    if (!service.name || service.name.trim().length < 2) {
+      errors.push('Le nom du service doit contenir au moins 2 caractères');
+    }
+    
+    if (service.name && service.name.length > 100) {
+      errors.push('Le nom du service ne peut pas dépasser 100 caractères');
+    }
+    
+    if (typeof service.price !== 'number' || service.price < 0 || service.price > 10000) {
+      errors.push('Le prix doit être entre 0 et 10000€');
+    }
+    
+    if (typeof service.duration !== 'number' || service.duration < 15 || service.duration > 480) {
+      errors.push('La durée doit être entre 15 minutes et 8 heures');
+    }
+    
+    if (service.description && service.description.length > 500) {
+      errors.push('La description ne peut pas dépasser 500 caractères');
+    }
+    
+    if (typeof service.depositPercentage === 'number' && (service.depositPercentage < 0 || service.depositPercentage > 100)) {
+      errors.push('Le pourcentage d\'acompte doit être entre 0 et 100%');
+    }
+    
+    return errors;
+  }, []);
 
-
-  // Mutation pour supprimer un service (nouvelle méthode)
+  // Mutation pour supprimer un service avec sécurité
   const deleteServiceMutation = useMutation({
     mutationFn: async (serviceId: number) => {
+      if (!Number.isInteger(serviceId) || serviceId <= 0) {
+        throw new Error('ID de service invalide');
+      }
+      
       const services = servicesData?.data ?? [];
-      const updated = services.filter((s: any) => s.id !== serviceId);
-      console.debug('[ServicesManagement] write via /api/salon/update', {len: updated.length});
+      const updated = services.filter((s: Service) => s.id !== serviceId);
+      
+      if (updated.length === services.length) {
+        throw new Error('Service non trouvé');
+      }
+      
       return postUpdateSalon({ services: updated });
     },
     onSuccess: (_data, serviceId) => {
@@ -115,15 +193,48 @@ export default function ServicesManagement() {
     }
   });
 
-  // Récupération des services depuis my-salon (nouvelle méthode)
+  // Récupération des services avec sécurité renforcée
   const { data: servicesData, isLoading: isLoadingServices } = useQuery({
     queryKey: ['my-salon'],
     queryFn: async () => {
-      const res = await fetch('/api/salon/my-salon', { credentials: 'include' });
-      if (!res.ok) throw new Error('Erreur lors du chargement');
-      const data = await res.json();
-      return { ok: true, data: data.services ?? [] };
-    }
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      try {
+        const res = await fetch('/api/salon/my-salon', { 
+          credentials: 'include',
+          cache: 'no-store',
+          referrerPolicy: 'same-origin',
+          signal: controller.signal,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!res.ok) {
+          throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+        }
+        
+        const data = await res.json();
+        
+        // Validation des données reçues
+        if (!Array.isArray(data.services)) {
+          throw new Error('Format de données invalide');
+        }
+        
+        return { ok: true, data: data.services };
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error instanceof Error && error.name === 'AbortError') {
+          throw new Error('Délai d\'attente dépassé');
+        }
+        throw error;
+      }
+    },
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Services simulés si aucune donnée n'est disponible
@@ -254,41 +365,49 @@ export default function ServicesManagement() {
     }
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     const totalDuration = newServiceHours * 60 + newServiceMinutes;
-    if (
-      !newService.name ||
-      typeof newService.name !== 'string' ||
-      newService.price === undefined ||
-      typeof newService.price !== 'number' ||
-      newService.price <= 0 ||
-      totalDuration <= 0 ||
-      !salonId ||
-      typeof salonId !== 'string'
-    ) {
+    const serviceToCreate = { ...newService, duration: totalDuration };
+    
+    // Validation complète des données
+    const validationErrors = validateServiceData(serviceToCreate);
+    
+    if (validationErrors.length > 0) {
       toast({
-        title: "Informations manquantes",
-        description: "Le nom, le prix, la durée et le salon sont obligatoires",
+        title: "Données invalides",
+        description: validationErrors.join(', '),
         variant: "destructive"
       });
       return;
     }
-    const serviceToCreate = { ...newService, duration: totalDuration };
+    
     try {
       await createServiceMutation.mutateAsync(serviceToCreate);
     } catch (error) {
-      // handled in onError
+      // Géré dans onError de la mutation
     }
-  };
+  }, [newService, newServiceHours, newServiceMinutes, validateServiceData, createServiceMutation, toast]);
 
-  const handleUpdate = () => {
-    if (editingService) {
-      // Calculer la durée totale en minutes
-      const totalDuration = editingServiceHours * 60 + editingServiceMinutes;
-      const serviceToUpdate = { ...editingService, duration: totalDuration };
-      updateServiceMutation.mutate(serviceToUpdate);
+  const handleUpdate = useCallback(() => {
+    if (!editingService) return;
+    
+    const totalDuration = editingServiceHours * 60 + editingServiceMinutes;
+    const serviceToUpdate = { ...editingService, duration: totalDuration };
+    
+    // Validation des données avant mise à jour
+    const validationErrors = validateServiceData(serviceToUpdate);
+    
+    if (validationErrors.length > 0) {
+      toast({
+        title: "Données invalides",
+        description: validationErrors.join(', '),
+        variant: "destructive"
+      });
+      return;
     }
-  };
+    
+    updateServiceMutation.mutate(serviceToUpdate);
+  }, [editingService, editingServiceHours, editingServiceMinutes, validateServiceData, updateServiceMutation, toast]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative">
@@ -617,7 +736,7 @@ export default function ServicesManagement() {
                             {service.duration > 0 && (
                               <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
                                 <Clock className="h-3 w-3 mr-1" />
-                                {service.duration} min
+                                {formatDuration(service.duration)}
                               </Badge>
                             )}
                           </div>
@@ -661,9 +780,9 @@ export default function ServicesManagement() {
               )}
             </div>
 
-            <div className="mt-6 sm:mt-8 p-4 bg-violet-50 rounded-lg">
-              <h4 className="font-medium text-violet-900 mb-2">💡 Étape suivante</h4>
-              <p className="text-violet-800 text-sm">
+            <div className="mt-6 sm:mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h4 className="font-medium text-blue-900 mb-2">💡 Étape suivante</h4>
+              <p className="text-blue-800 text-sm">
                 Une fois vos services créés, allez dans "Gestion de l'équipe" pour assigner chaque professionnel aux services qu'il/elle maîtrise.
               </p>
             </div>

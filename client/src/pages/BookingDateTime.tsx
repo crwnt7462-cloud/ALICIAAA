@@ -19,6 +19,7 @@ interface DaySchedule {
   dayName: string;
   expanded: boolean;
   slots: TimeSlot[];
+  isoDate?: string; // YYYY-MM-DD en fuseau pro
 }
 
 export default function BookingDateTime() {
@@ -26,8 +27,9 @@ export default function BookingDateTime() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null);
-  const [extraServiceIds, setExtraServiceIds] = useState<string[]>([]);
-  const [showServicePicker, setShowServicePicker] = useState(false);
+  // Multi-sélection de prestations
+  const [selectedServices, setSelectedServices] = useState<any[]>([]);
+  const [showServiceDropdown, setShowServiceDropdown] = useState(false);
   const { bookingState, isWizardReady, shouldRequirePro } = useBookingWizard();
   const hasRedirectedRef = useRef(false);
   
@@ -40,72 +42,84 @@ export default function BookingDateTime() {
   // Hook pour la mise à jour des services
   const { updateService, isLoading: isUpdating } = useUpdateSalonService();
 
-  // Récupération du salon ID depuis l'URL ou localStorage
-  const [location] = useLocation();
-  const slugMatch = location.match(/^\/(salon|book)\/([^/]+)/);
-  const salonSlug = slugMatch?.[2] || sessionStorage.getItem('salonSlug') || 'salon-15228957';
-  
-  // Récupérer le salon ID depuis l'API publique
-  const { data: salonData } = useQuery({
-    queryKey: ['public-salon', salonSlug],
+  // Récupérer le salon ID depuis preBookingData ou sessionStorage
+  const [salonId, setSalonId] = useState<string | null>(null);
+
+  // Récupérer le salon ID au chargement
+  useEffect(() => {
+    try {
+      // Essayer d'abord preBookingData
+      const preBookingData = sessionStorage.getItem('preBookingData');
+      if (preBookingData) {
+        const data = JSON.parse(preBookingData);
+        if (data.salonId || data.salonSlug) {
+          // Préférence pour l'UUID si présent
+          setSalonId(data.salonId || data.salonSlug);
+          return;
+        }
+      }
+      
+      // Fallback: sessionStorage (préférence salonUuid)
+      const storedSalonId = sessionStorage.getItem('salonUuid') || sessionStorage.getItem('salonId') || sessionStorage.getItem('salonSlug');
+      if (storedSalonId) {
+        setSalonId(storedSalonId);
+        return;
+      }
+      
+      // Fallback final: rediriger vers l'accueil
+      setLocation('/');
+    } catch (e) {
+      console.warn('Erreur récupération salon ID:', e);
+      setLocation('/');
+    }
+  }, [setLocation]);
+
+  // Slug sauvegardé (fallback pour la route publique)
+  const salonSlugFallback = React.useMemo(() => {
+    try {
+      const pre = sessionStorage.getItem('preBookingData');
+      if (pre) {
+        const d = JSON.parse(pre);
+        if (d.salonSlug) return d.salonSlug;
+      }
+    } catch {}
+    return sessionStorage.getItem('salonSlug');
+  }, []);
+
+  // Query pour récupérer tous les services disponibles (avec fallbacks)
+  const { data: servicesData, isLoading: servicesLoading } = useQuery({
+    queryKey: ['salon-services', salonId, salonSlugFallback],
     queryFn: async () => {
-      const response = await fetch(`/api/public/salon/${salonSlug}`);
-      if (!response.ok) throw new Error('Salon non trouvé');
-      const payload = await response.json();
-      return payload.salon;
+      if (!salonId) throw new Error('Salon ID manquant');
+      // 1) Essayer l'endpoint direct UUID
+      try {
+        const res = await fetch(`/api/salon/${salonId}/services`);
+        if (res.ok) return await res.json();
+      } catch {}
+      // 2) Essayer l'endpoint public sur l'ID/slug courant
+      try {
+        const res2 = await fetch(`/api/public/salon/${salonId}`);
+        if (res2.ok) return await res2.json();
+      } catch {}
+      // 3) Essayer l'endpoint public sur le slug fallback (si présent)
+      if (salonSlugFallback) {
+        const res3 = await fetch(`/api/public/salon/${salonSlugFallback}`);
+        if (res3.ok) return await res3.json();
+      }
+      throw new Error('Services non trouvés');
     },
-    enabled: !!salonSlug,
+    enabled: !!salonId,
     retry: 1
   });
   
-  const salonId = salonData?.id || "15228957-f9f1-4f2d-82ac-ecba9f33c922"; // Fallback vers le bon salon
-
-  // Utiliser les services du payload public (évite le 404 de l'endpoint admin)
-  const servicesLoading = !salonData;
-  const availableServices = (() => {
-    if (!salonData) return [];
-    let all: any[] = [];
-    if (Array.isArray((salonData as any).services)) all = all.concat((salonData as any).services);
-    if (Array.isArray((salonData as any).serviceCategories)) {
-      (salonData as any).serviceCategories.forEach((cat: any) => {
-        if (Array.isArray(cat.services)) all = all.concat(cat.services);
-      });
-    }
-    return all.map((svc: any) => ({
-      id: svc.id || svc.serviceId || svc.service_id || String(Math.random()),
-      name: svc.name || svc.service_name || '',
-      price: typeof svc.price === 'string' ? parseFloat(svc.price) : (svc.price || 0),
-      duration: typeof svc.duration === 'string' ? parseInt(svc.duration) : (svc.duration || 0),
-      description: svc.description || ''
-    }));
-  })();
-
-  // Auto-sélection si une seule prestation
-  useEffect(() => {
-    if (!servicesLoading && availableServices.length === 1 && !selectedServiceId) {
-      setSelectedServiceId(availableServices[0].id);
-    }
-  }, [servicesLoading, availableServices, selectedServiceId]);
-
-  // Durée totale (calcul plus bas après initialisation de effectiveServiceData)
-  const normalizedLocalSelected = React.useMemo(() => {
-    try {
-      const raw = localStorage.getItem('selectedService');
-      if (!raw) return null;
-      return normalizeService(JSON.parse(raw));
-    } catch (e) { return null; }
-  }, [selectedServiceId]);
-
-  // Reset any previous persisted extra services on entry to avoid stale 375min carry-over
-  useEffect(() => {
-    try { localStorage.removeItem('extraServiceIds'); } catch (e) { /* ignore */ }
-    setExtraServiceIds([]);
-  }, []);
-
-  // Persist extra services each time they change
-  useEffect(() => {
-    try { localStorage.setItem('extraServiceIds', JSON.stringify(extraServiceIds)); } catch (e) { /* ignore */ }
-  }, [extraServiceIds]);
+  // Normalisation de la réponse en tableau de services
+  const availableServices = React.useMemo(() => {
+    const raw: any = servicesData;
+    if (!raw) return [] as any[];
+    if (Array.isArray(raw)) return raw as any[];
+    // Réponses possibles: { data: Service[] } ou { services: Service[] } ou payload public { services: Service[] } ou { salon: { services: [] } }
+    return (raw.data || raw.services || raw?.salon?.services || []);
+  }, [servicesData]);
   
   // Nouveau hook pour récupérer les données effectives avec priorité pro → salon → base
   // Ne déclenche l'API que si wizard ready et service sélectionné
@@ -114,22 +128,21 @@ export default function BookingDateTime() {
     error: effectiveServiceError, 
     data: effectiveServiceData 
   } = useEffectiveService(
-    salonId, 
+    salonId || undefined, 
     isWizardReady && bookingState.selectedServiceId ? bookingState.selectedServiceId : undefined, 
     bookingState.selectedProId
   );
 
   // Debug logging + Garde-fou réseau obligatoire
-  console.log('[BookingDateTime] State:', {
-    salonId,
-    selectedServiceId: bookingState.selectedServiceId,
-    selectedProId: bookingState.selectedProId,
-    effectiveServiceLoading,
-    effectiveServiceError,
-    effectiveServiceData,
-    wizardReady: isWizardReady,
-    hasSelectedService: !!bookingState.selectedServiceId
-  });
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[BookingDateTime] State:', {
+      salonId,
+      selectedServiceId: bookingState.selectedServiceId,
+      selectedProId: bookingState.selectedProId,
+      effectiveServiceLoading,
+      hasSelectedService: !!bookingState.selectedServiceId
+    });
+  }
 
   // Log source des données au montage du récap
   useEffect(() => {
@@ -155,10 +168,14 @@ export default function BookingDateTime() {
   // Selected professional/service: keep local state and sync with localStorage + bookingState
   const [selectedProfessionalData, setSelectedProfessionalData] = React.useState<any>(() => {
     try {
-      const raw = localStorage.getItem('selectedProfessional');
-      if (raw) return JSON.parse(raw);
+      // Préférence: sessionStorage (écrit par ProfessionalSelection)
+      const rawSession = sessionStorage.getItem('selectedProfessional');
+      if (rawSession) return JSON.parse(rawSession);
+      // Fallback: localStorage (anciens flux)
+      const rawLocal = localStorage.getItem('selectedProfessional');
+      if (rawLocal) return JSON.parse(rawLocal);
     } catch (e) { /* ignore */ }
-    return { name: 'Sarah Martin', role: 'Coiffeuse experte', photo: '/api/placeholder/40/40' };
+    return null;
   });
 
   const [savedSelectedService, setSavedSelectedService] = React.useState<any>(() => {
@@ -270,10 +287,19 @@ export default function BookingDateTime() {
     }
   }, [bookingState.selectedServiceId, savedSelectedService]);
 
-  // Sync selectedProfessionalData when bookingState or localStorage changes
+  // Sync selectedProfessionalData when bookingState or storage changes
   useEffect(() => {
+    // Essayez sessionStorage d'abord
+    try {
+      const raw = sessionStorage.getItem('selectedProfessional');
+      if (raw) {
+        setSelectedProfessionalData(JSON.parse(raw));
+        return;
+      }
+    } catch (e) { /* ignore */ }
+
     if (bookingState.selectedProId) {
-      // try to read detailed pro from localStorage
+      // fallback localStorage
       try {
         const raw = localStorage.getItem('selectedProfessional');
         if (raw) setSelectedProfessionalData(JSON.parse(raw));
@@ -362,8 +388,112 @@ export default function BookingDateTime() {
     };
   }, []);
 
-  // Service sélectionné depuis notre liste
+  // Service sélectionné depuis notre liste (legacy mono-prestation)
   const selectedService = availableServices.find((s: any) => s.id === selectedServiceId) || null;
+
+  // Helpers robustes prix/durée + format (déclarés avant utilisation)
+  const extractPrice = (s: any): number => {
+    if (!s) return 0;
+    if (typeof s.price === 'number') return s.price;
+    if (typeof s.price === 'string') {
+      const n = parseFloat(s.price.replace(/[^0-9.,-]/g, '').replace(',', '.'));
+      if (!isNaN(n)) return n;
+    }
+    const cents = s.price_cents || s.amount_cents || s.priceInCents;
+    if (typeof cents === 'number') return Math.round(cents) / 100;
+    return 0;
+  };
+
+  const extractDuration = (s: any): number => {
+    if (!s) return 0;
+    if (typeof s.duration === 'number') return s.duration;
+    const d = parseInt(String(s.duration || s.length || s.time || 0), 10);
+    return isNaN(d) ? 0 : d;
+  };
+
+  const formatDurationTotal = (mins: number): string => {
+    if (mins < 60) {
+      return `${mins} min`;
+    }
+    
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    
+    if (m === 0) {
+      return `${h}h`;
+    }
+    
+    return `${h}h${m.toString().padStart(2, '0')}`;
+  };
+
+  // Gestion multi-prestations
+  const toggleServiceSelection = (service: any) => {
+    const normalizedId = service?.id ?? service?.serviceId ?? service?.service_id;
+    setSelectedServices(prev => {
+      const exists = prev.some((s) => (s.id ?? s.serviceId ?? s.service_id) === normalizedId);
+      return exists
+        ? prev.filter(s => (s.id ?? s.serviceId ?? s.service_id) !== normalizedId)
+        : [...prev, {
+            id: normalizedId,
+            name: service?.name || service?.nom || 'Prestation',
+            duration: extractDuration(service) || 60,
+            price: extractPrice(service)
+          }];
+    });
+  };
+
+  const removeService = (serviceId: number) => {
+    setSelectedServices(prev => prev.filter(s => s.id !== serviceId));
+  };
+
+  const totalDuration = React.useMemo(() => {
+    return selectedServices.reduce((sum, s:any) => sum + extractDuration(s), 0);
+  }, [selectedServices]);
+
+  const totalPrice = React.useMemo(() => {
+    return selectedServices.reduce((sum, s:any) => sum + extractPrice(s), 0);
+  }, [selectedServices]);
+
+  // Prestation principale (déjà choisie dans l'étape précédente) à inclure dans le total global
+  const baseService = React.useMemo(() => {
+    if (effectiveServiceData) return effectiveServiceData;
+    if (storageSelectedService) return storageSelectedService;
+    if (savedSelectedService) return savedSelectedService;
+    if (selectedService) return selectedService;
+    if (rawLocalSelectedService) return rawLocalSelectedService;
+    return null;
+  }, [effectiveServiceData, storageSelectedService, savedSelectedService, selectedService, rawLocalSelectedService]);
+
+  // Ajouter automatiquement le service de base aux services sélectionnés s'il n'y est pas déjà
+  React.useEffect(() => {
+    if (baseService && !selectedServices.some(s => s.id === baseService.id)) {
+      setSelectedServices(prev => [...prev, {
+        id: baseService.id,
+        name: baseService.name || baseService.nom || 'Prestation',
+        duration: extractDuration(baseService) || 60,
+        price: extractPrice(baseService)
+      }]);
+    }
+  }, [baseService]); // Supprimé selectedServices de la dépendance pour éviter la boucle
+
+  const baseDuration = React.useMemo(() => extractDuration(baseService), [baseService]);
+  const basePrice = React.useMemo(() => extractPrice(baseService), [baseService]);
+  const grandTotalDuration = React.useMemo(() => baseDuration + totalDuration, [baseDuration, totalDuration]);
+  const grandTotalPrice = React.useMemo(() => basePrice + totalPrice, [basePrice, totalPrice]);
+  const totalServicesCount = React.useMemo(() => (baseService ? 1 : 0) + selectedServices.length, [baseService, selectedServices.length]);
+
+  // Regrouper les services par catégorie pour l'affichage
+  const servicesByCategory = React.useMemo(() => {
+    const m: Record<string, any[]> = {};
+    (availableServices || []).forEach((s: any) => {
+      const key = (s.category || s.categorie || 'Autres').toString();
+      if (!m[key]) m[key] = [];
+      m[key].push(s);
+    });
+    return m;
+  }, [availableServices]);
+
+  
 
   // Valeurs d'affichage basées sur (ordre de priorité): effectiveServiceData -> savedSelectedService -> selectedService -> first available -> fallback
   const serviceDisplay = React.useMemo(() => {
@@ -485,8 +615,8 @@ export default function BookingDateTime() {
   };
   // --- end debug panel --------------------------------------------------------
 
-  // Fonction pour générer les créneaux basés sur le professionnel sélectionné
-  const generateScheduleForProfessional = (professionalData: any) => {
+  // Fonction pour générer les créneaux basés sur le professionnel sélectionné et la durée totale
+  const generateScheduleForProfessional = (professionalData: any, requiredDuration: number = 60) => {
     if (!professionalData) {
       // Créneaux par défaut si aucun professionnel
       return [
@@ -507,17 +637,16 @@ export default function BookingDateTime() {
       ];
     }
 
-    // Récupérer les disponibilités du professionnel
-    const availability = professionalData.availability || professionalData.horaires || {};
-    const workingHours = professionalData.workingHours || professionalData.heures_travail || {};
+    // Récupérer les horaires de travail du professionnel depuis work_schedule ou workingHours
+    const workSchedule = professionalData.work_schedule || professionalData.workingHours || {};
     
     // Générer les prochains 7 jours
     const schedule: DaySchedule[] = [];
-    const today = new Date();
+    const now = new Date();
     
     for (let i = 0; i < 7; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
+      const date = new Date(now);
+      date.setDate(now.getDate() + i);
       
       const dayName = date.toLocaleDateString('fr-FR', { weekday: 'long' });
       const formattedDate = date.toLocaleDateString('fr-FR', { 
@@ -525,93 +654,111 @@ export default function BookingDateTime() {
         day: 'numeric', 
         month: 'long' 
       });
+      const isoDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString().slice(0,10);
       
-      // Récupérer les horaires de travail pour ce jour
-      const dayKey = dayName.toLowerCase();
-      const dayAvailability = availability[dayKey] || availability[dayName] || {};
-      const dayWorkingHours = workingHours[dayKey] || workingHours[dayName] || {};
+      // Récupérer les horaires de travail pour ce jour depuis work_schedule
+      const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+      const daySchedule = workSchedule[dayOfWeek] || workSchedule[dayName.toLowerCase()] || {};
       
-      // Horaires par défaut basés sur le professionnel
+      // Horaires par défaut si pas de configuration
       let startHour = 9;
       let endHour = 18;
       let breakStart = 12;
       let breakEnd = 14;
+      let isUnavailable = false;
       
-      // Si le professionnel a des horaires spécifiques
-      if (dayWorkingHours.start) {
-        startHour = parseInt(dayWorkingHours.start.split(':')[0]);
+      // Si le professionnel a des horaires spécifiques dans work_schedule
+      if (daySchedule.start) {
+        startHour = parseInt(daySchedule.start.split(':')[0]);
       }
-      if (dayWorkingHours.end) {
-        endHour = parseInt(dayWorkingHours.end.split(':')[0]);
+      if (daySchedule.end) {
+        endHour = parseInt(daySchedule.end.split(':')[0]);
       }
-      if (dayWorkingHours.breakStart) {
-        breakStart = parseInt(dayWorkingHours.breakStart.split(':')[0]);
+      if (daySchedule.breakStart) {
+        breakStart = parseInt(daySchedule.breakStart.split(':')[0]);
       }
-      if (dayWorkingHours.breakEnd) {
-        breakEnd = parseInt(dayWorkingHours.breakEnd.split(':')[0]);
+      if (daySchedule.breakEnd) {
+        breakEnd = parseInt(daySchedule.breakEnd.split(':')[0]);
+      }
+      if (daySchedule.unavailable === true) {
+        isUnavailable = true;
       }
       
-      // Générer les créneaux pour ce jour
+      // Générer les créneaux pour ce jour selon les horaires du pro
       const slots: TimeSlot[] = [];
       
-      // Créneaux du matin
-      for (let hour = startHour; hour < breakStart; hour++) {
-        slots.push({ time: `${hour.toString().padStart(2, '0')}:00`, available: true });
-        slots.push({ time: `${hour.toString().padStart(2, '0')}:30`, available: true });
-      }
-      
-      // Créneaux de l'après-midi
-      for (let hour = breakEnd; hour < endHour; hour++) {
-        slots.push({ time: `${hour.toString().padStart(2, '0')}:00`, available: true });
-        slots.push({ time: `${hour.toString().padStart(2, '0')}:30`, available: true });
-      }
-      
-      // Marquer les créneaux indisponibles selon les données du professionnel
-      if (dayAvailability.unavailable) {
-        const unavailableSlots = Array.isArray(dayAvailability.unavailable) 
-          ? dayAvailability.unavailable 
-          : [dayAvailability.unavailable];
+      if (!isUnavailable) {
+        // Créneaux du matin (selon les horaires du pro)
+        for (let hour = startHour; hour < breakStart; hour++) {
+          slots.push({ time: `${hour.toString().padStart(2, '0')}:00`, available: true });
+          slots.push({ time: `${hour.toString().padStart(2, '0')}:30`, available: true });
+        }
         
-        slots.forEach(slot => {
-          if (unavailableSlots.includes(slot.time)) {
-            slot.available = false;
-          }
+        // Créneaux de l'après-midi (selon les horaires du pro)
+        for (let hour = breakEnd; hour < endHour; hour++) {
+          slots.push({ time: `${hour.toString().padStart(2, '0')}:00`, available: true });
+          slots.push({ time: `${hour.toString().padStart(2, '0')}:30`, available: true });
+        }
+      }
+      
+      // Filtrer les créneaux passés (heure locale du pro => on utilise maintenant)
+      const nowHours = now.getHours();
+      const nowMinutes = now.getMinutes();
+      const isToday = i === 0;
+      const filteredSlots = slots.filter((slot) => {
+        if (!isToday) return true;
+        const [h, m] = slot.time.split(':').map((x) => parseInt(x, 10));
+        if (h > nowHours) return true;
+        if (h === nowHours && m > nowMinutes) return true;
+        return false;
+      });
+
+      // Ne pas ajouter les journées sans créneaux disponibles
+      if (filteredSlots.length > 0) {
+        schedule.push({
+          date: formattedDate,
+          dayName,
+          expanded: i === 0, // Premier jour ouvert par défaut
+          slots: filteredSlots,
+          isoDate
         });
       }
-      
-      schedule.push({
-        date: formattedDate,
-        dayName,
-        expanded: i === 0, // Premier jour ouvert par défaut
-        slots
-      });
     }
     
     return schedule;
   };
 
   const [schedule, setSchedule] = useState<DaySchedule[]>(() => 
-    generateScheduleForProfessional(selectedProfessionalData)
+    generateScheduleForProfessional(selectedProfessionalData, totalDuration)
   );
 
-  // Mettre à jour les créneaux quand le professionnel change
-  useEffect(() => {
-    const newSchedule = generateScheduleForProfessional(selectedProfessionalData);
-    setSchedule(newSchedule);
-    console.log('🕒 Créneaux mis à jour pour le professionnel:', selectedProfessionalData?.name || selectedProfessionalData?.nom || 'Aucun');
+  // Fuseau horaire du professionnel (par défaut Europe/Paris)
+  const proTimezone = React.useMemo(() => {
+    return (
+      (selectedProfessionalData && (selectedProfessionalData.timezone || selectedProfessionalData.timeZone)) ||
+      'Europe/Paris'
+    );
   }, [selectedProfessionalData]);
+
+  // Mettre à jour les créneaux quand le professionnel ou la durée totale change
+  useEffect(() => {
+    const newSchedule = generateScheduleForProfessional(selectedProfessionalData, totalDuration);
+    setSchedule(newSchedule);
+    console.log('🕒 Créneaux mis à jour pour le professionnel:', selectedProfessionalData?.name || selectedProfessionalData?.nom || 'Aucun', 'Durée totale:', totalDuration);
+  }, [selectedProfessionalData, totalDuration]);
 
   // API call pour récupérer les créneaux réels du professionnel
   const { data: professionalSlots, isLoading: slotsLoading } = useQuery({
-    queryKey: ['professional-slots', selectedProfessionalData?.id, bookingState.selectedServiceId],
+    queryKey: ['professional-slots', selectedProfessionalData?.id, totalDuration, proTimezone, selectedServices.map((s:any)=>s.id).join(',')],
     queryFn: async () => {
-      if (!selectedProfessionalData?.id || !bookingState.selectedServiceId) return null;
-      
+      if (!selectedProfessionalData?.id) return null;
       const response = await fetch(`/api/professionals/${selectedProfessionalData.id}/availability`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          serviceId: bookingState.selectedServiceId,
+          serviceId: selectedServices[0]?.id || selectedServiceId || null,
+          totalDuration,
+          timezone: proTimezone,
           dateRange: {
             start: new Date().toISOString().split('T')[0],
             end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -622,7 +769,7 @@ export default function BookingDateTime() {
       if (!response.ok) throw new Error('Erreur lors de la récupération des créneaux');
       return response.json();
     },
-    enabled: !!selectedProfessionalData?.id && !!bookingState.selectedServiceId,
+    enabled: !!selectedProfessionalData?.id && (selectedServices.length > 0 || !!selectedServiceId),
     retry: false
   });
 
@@ -635,22 +782,42 @@ export default function BookingDateTime() {
         );
         
         if (dayData && dayData.slots) {
+          // Filtrer les créneaux dispos selon la durée totale demandée
+          const filtered = dayData.slots.filter((slot: any) => {
+            if (!slot.available || slot.booked) return false;
+            const start = new Date(`2000-01-01T${slot.time}`);
+            const end = new Date(start.getTime() + totalDuration * 60000);
+            const endStr = end.toTimeString().slice(0,5);
+            const conflict = dayData.slots.some((other: any) => {
+              if (!other.booked) return false;
+              const oStart = new Date(`2000-01-01T${other.time}`);
+              const oEnd = new Date(oStart.getTime() + 60 * 60000);
+              const oEndStr = oEnd.toTimeString().slice(0,5);
+              return (slot.time < oEndStr && endStr > other.time);
+            });
+            if (conflict) return false;
+            // Cacher les créneaux passés si on est sur aujourd'hui
+            const isToday = day.isoDate && new Date().toISOString().slice(0,10) === day.isoDate;
+            if (isToday) {
+              const nowH = new Date().getHours();
+              const nowM = new Date().getMinutes();
+              const [h, m] = slot.time.split(':').map((x:string)=>parseInt(x,10));
+              if (h < nowH) return false;
+              if (h === nowH && m <= nowM) return false;
+            }
+            return true;
+          });
           return {
             ...day,
-            slots: dayData.slots.map((slot: any) => ({
-              time: slot.time,
-              available: slot.available && !slot.booked
-            }))
+            slots: filtered.map((s: any) => ({ time: s.time, available: true }))
           };
         }
-        
         return day;
       });
-      
       setSchedule(updatedSchedule);
-      console.log('🕒 Créneaux mis à jour avec données API pour:', selectedProfessionalData?.name || selectedProfessionalData?.nom);
+      console.log('🕒 Créneaux mis à jour avec données API pour:', selectedProfessionalData?.name || selectedProfessionalData?.nom, 'Durée totale:', totalDuration);
     }
-  }, [professionalSlots, selectedProfessionalData]);
+  }, [professionalSlots, selectedProfessionalData, totalDuration]);
 
   const toggleDay = (index: number) => {
     setSchedule(prev => prev.map((day, i) => 
@@ -664,46 +831,56 @@ export default function BookingDateTime() {
   };
 
   const handleContinue = () => {
-    if (selectedDate && selectedTime) {
-      // Stocker la sélection et passer à l'inscription
+    // Inclure le service de base dans la liste finale
+    const allSelectedServices = baseService && !selectedServices.some(s => s.id === baseService.id) 
+      ? [...selectedServices, {
+          id: baseService.id,
+          name: baseService.name || baseService.nom || 'Prestation',
+          duration: extractDuration(baseService) || 60,
+          price: extractPrice(baseService)
+        }]
+      : selectedServices;
+    
+    if (selectedDate && selectedTime && allSelectedServices.length > 0) {
+      // Stocker la sélection dans localStorage (legacy)
       localStorage.setItem('selectedDateTime', JSON.stringify({
         date: selectedDate,
         time: selectedTime,
-        totalDurationMinutes,
-        extraServiceIds
+        timezone: proTimezone
       }));
-      setLocation('/avyento-style-booking-fixed');
+      
+      // Stocker dans preBookingData pour le nouveau flux
+      try {
+        const existingData = sessionStorage.getItem('preBookingData');
+        const parsed = existingData ? JSON.parse(existingData) : {};
+        const updatedData = {
+          ...parsed,
+          selectedDate,
+          selectedTime,
+          timezone: proTimezone,
+          selectedServices: allSelectedServices,
+          totalDuration: grandTotalDuration,
+          totalPrice: grandTotalPrice,
+          serviceCount: totalServicesCount
+        };
+        
+        sessionStorage.setItem('preBookingData', JSON.stringify(updatedData));
+      } catch (e) {
+        console.warn('Erreur sauvegarde preBookingData:', e);
+      }
+      
+      // Rediriger vers la page de paiement BookingFix
+      setLocation('/booking-fix');
     }
   };
 
   const handleBack = () => {
-    // Retour vers la page du salon puisqu'on arrive maintenant directement
-    // Nettoyer le cache pour éviter de voir le salon d'un autre utilisateur
-    import('@/utils/salonCache').then(({ clearSalonCacheForAuthenticatedUser }) => {
-      clearSalonCacheForAuthenticatedUser();
-      setLocation('/salon');
-    });
+    // Retour vers la sélection de professionnel
+    setLocation('/professional-selection');
   };
 
-  const servicesSectionRef = useRef<HTMLDivElement | null>(null);
-  // Recalcule totalDurationMinutes après que toutes les sources potentielles soient disponibles
-  const findServiceById = (id?: string | number | null) => availableServices.find((s: any) => String(s.id) === String(id));
-  const baseService = findServiceById(selectedServiceId);
-  const extraServices = extraServiceIds.map(id => findServiceById(id)).filter(Boolean) as any[];
-  // Priorité UX: utiliser la durée du service sélectionné dans la liste courante,
-  // puis (si absent) retomber sur les données effectives, puis le cache local.
-  // Fix demandé: durée de base forcée si indétectable (fallback 20 min)
-  const baseDurationMinutes = (
-    (baseService && typeof baseService.duration === 'number' ? baseService.duration : undefined) ??
-    20
-  );
-  const totalDurationMinutes = Math.max(0, baseDurationMinutes + extraServices.reduce((acc, s) => acc + (typeof s?.duration === 'number' ? s.duration : 0), 0));
-
   const handleAddService = () => {
-    setShowServicePicker(true);
-    if (servicesSectionRef.current) {
-      servicesSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    setShowServiceDropdown(prev => !prev);
   };
 
   // Fonctions de gestion de l'édition
@@ -734,7 +911,7 @@ export default function BookingDateTime() {
     const newPrice = parseFloat(editPrice);
     if (isNaN(newPrice) || newPrice <= 0) return;
 
-    const result = await updateService(salonId, bookingState.selectedServiceId, {
+    const result = await updateService(salonId || '', bookingState.selectedServiceId, {
       price: newPrice
     });
 
@@ -754,7 +931,7 @@ export default function BookingDateTime() {
     const newDuration = parseInt(editDuration);
     if (isNaN(newDuration) || newDuration <= 0) return;
 
-    const result = await updateService(salonId, bookingState.selectedServiceId, {
+    const result = await updateService(salonId || '', bookingState.selectedServiceId, {
       duration: newDuration
     });
 
@@ -894,77 +1071,84 @@ export default function BookingDateTime() {
           </div>
         </div>
 
-        {/* Sélection de service */}
-        {showServicePicker && (
-          <div ref={servicesSectionRef} className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/50 shadow-sm p-4 lg:p-6 mx-4 lg:mx-0 mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Ajouter une prestation</h3>
-            {servicesLoading ? (
-              <div className="text-gray-500">Chargement des services...</div>
-            ) : (
-              <div className="space-y-2">
-                {availableServices
-                  .filter((s: any) => String(s.id) !== String(selectedServiceId))
-                  .map((service: any) => (
-                    <div
-                      key={service.id}
-                      onClick={() => {
-                        if (!extraServiceIds.includes(String(service.id))) {
-                          setExtraServiceIds([...extraServiceIds, String(service.id)]);
-                        }
-                        setShowServicePicker(false);
-                      }}
-                      className={`p-3 rounded-lg cursor-pointer border-2 transition-colors border-gray-200 bg-gray-50 hover:border-violet-300`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="font-medium text-gray-900">{service.name}</div>
-                          <div className="text-sm text-gray-600">{service.duration || 60} min</div>
-                        </div>
-                        <div className="font-semibold text-violet-600">{service.price},00 €</div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-            {extraServiceIds.length > 0 && (
-              <div className="mt-4">
-                <div className="text-sm font-medium text-gray-900 mb-2">Prestations ajoutées</div>
-                <div className="space-y-2">
-                  {extraServices.map((svc: any) => (
-                    <div key={String(svc.id)} className="flex justify-between items-center p-2 bg-gray-50 border border-gray-200 rounded-lg">
-                      <div className="text-sm text-gray-800">
-                        {svc.name} · {svc.duration || 60} min
-                      </div>
-                      <button
-                        onClick={() => setExtraServiceIds(extraServiceIds.filter(id => String(id) !== String(svc.id)))}
-                        className="text-xs text-red-600 hover:text-red-700"
-                      >
-                        Retirer
-                      </button>
-                    </div>
-                  ))}
+        {/* Multi-prestations */}
+        <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/50 shadow-sm p-4 lg:p-6 mx-4 lg:mx-0 mb-4">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="text-lg font-semibold text-gray-900">Ajouter une prestation</h3>
+            <Button onClick={handleAddService} className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-4 py-2">
+              {showServiceDropdown ? 'masquer' : 'voir +'}
+            </Button>
+          </div>
+          {/* Texte d'aide retiré selon demande */}
+          {selectedServices.length > 0 ? (
+            <div className="space-y-2 mb-4">
+              {selectedServices.map((service: any) => (
+                <div key={service.id} className="flex items-center justify-between p-3 bg-violet-50 rounded-lg">
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">{service.name}</div>
+                    <div className="text-sm text-gray-600">{formatDuration(service.duration || 60)} - {formatPrice(extractPrice(service))}</div>
+                  </div>
+                  <button onClick={() => removeService(service.id)} className="text-red-500 hover:text-red-700 p-1">
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+              {/* Bloc total plus lisible (inclut prestation de base + prestations ajoutées) */}
+              <div className="pt-3 border-t border-gray-200">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-violet-50 to-violet-100">
+                  <div>
+                    <div className="text-xs uppercase tracking-wide text-violet-700">Total {totalServicesCount} prestation{totalServicesCount > 1 ? 's' : ''}</div>
+                    <div className="text-sm text-gray-600">{formatDurationTotal(grandTotalDuration)}</div>
+                  </div>
+                  <div className="text-gray-900 font-semibold text-lg">{formatPrice(grandTotalPrice)}</div>
                 </div>
               </div>
-            )}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-gray-400 text-sm" />
+          )}
+          {/* Collapse: ouvre/ferme avec transition */}
+          <div className={`${showServiceDropdown ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden transition-all duration-300`}> 
+            <div className="space-y-4 pr-1 max-h-96 overflow-y-auto">
+              {servicesLoading ? (
+                <div className="text-gray-500 text-center py-4">Chargement des prestations...</div>
+              ) : (
+                Object.keys(servicesByCategory).length === 0 ? (
+                  <div className="text-gray-500 text-center py-4">Aucune prestation disponible</div>
+                ) : (
+                  Object.entries(servicesByCategory).map(([cat, items]) => (
+                    <div key={cat}>
+                      <div className="text-sm font-semibold text-gray-700 mb-2">{cat}</div>
+                      <div className="space-y-2">
+                        {(items as any[]).map((service: any) => {
+                          const isSelected = selectedServices.some((s:any) => s.id === service.id);
+                          return (
+                            <div key={service.id} onClick={() => toggleServiceSelection(service)} className={`p-3 rounded-lg cursor-pointer border-2 transition-colors ${isSelected ? 'border-violet-600 bg-violet-50' : 'border-gray-200 bg-gray-50 hover:border-violet-300'}`}>
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <div className="font-medium text-gray-900">{service.name}</div>
+                                  <div className="text-xs text-gray-600">{service.duration || 60} min</div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                          <div className="font-semibold text-violet-600">{formatPrice(extractPrice(service))}</div>
+                                  {isSelected && <Check className="w-5 h-5 text-violet-600" />}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))
+                )
+              )}
+            </div>
           </div>
-        )}
-
-        {/* Bouton "Ajouter une prestation" avec même style que "Continuer" */}
-        <div className="px-4 lg:px-0 pb-2">
-          <Button 
-            onClick={handleAddService}
-            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold"
-          >
-            Ajouter une prestation à la suite
-          </Button>
         </div>
 
         {/* Étape */}
         <div className="px-4 mb-4">
           <div className="text-sm text-violet-600 font-medium mb-1">2. Choix de la date & heure</div>
-          {totalDurationMinutes > 0 && (
-            <div className="text-xs text-gray-600">Durée totale: {totalDurationMinutes} min</div>
-          )}
         </div>
 
         {/* Planning par jour - responsive */}
@@ -1016,7 +1200,7 @@ export default function BookingDateTime() {
           <div className="max-w-4xl mx-auto">
             <Button
               onClick={handleContinue}
-              disabled={!selectedDate || !selectedTime}
+              disabled={!selectedDate || !selectedTime || (selectedServices.length === 0 && !baseService)}
               className="w-full h-12 lg:h-14 bg-violet-600 hover:bg-violet-700 text-white font-semibold disabled:bg-gray-300 rounded-xl text-base lg:text-lg"
             >
               Continuer

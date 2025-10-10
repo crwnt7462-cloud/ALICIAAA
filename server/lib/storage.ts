@@ -1,4 +1,4 @@
-import { supabase } from './clients/supabaseServer';
+// import { supabase } from './clients/supabaseServer';
 import { v4 as uuidv4 } from 'uuid';
 
 function isDataUri(s?: string) {

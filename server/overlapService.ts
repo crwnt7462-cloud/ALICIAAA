@@ -64,8 +64,8 @@ export class OverlapService {
             request.excludeAppointmentId 
               ? sql`${appointments.id} != ${request.excludeAppointmentId}`
               : sql`TRUE`,
-            // Exclure les rendez-vous annulés
-            sql`${appointments.status} != 'cancelled'`
+            // Note: status column doesn't exist, so we don't filter by status
+            sql`TRUE`
           )
         );
 
@@ -171,7 +171,7 @@ export class OverlapService {
           id: appointments.id,
           startTime: appointments.startTime,
           endTime: appointments.endTime,
-          status: appointments.status,
+          status: 'scheduled', // Default status since column doesn't exist
           isManualBlock: appointments.isManualBlock,
           createdByPro: appointments.createdByPro,
           allowOverlap: appointments.allowOverlap,
@@ -184,7 +184,8 @@ export class OverlapService {
           and(
             eq(appointments.userId, userId),
             eq(appointments.appointmentDate, date),
-            sql`${appointments.status} != 'cancelled'`
+            // Note: status column doesn't exist, so we don't filter by status
+            sql`TRUE`
           )
         )
         .orderBy(appointments.startTime);

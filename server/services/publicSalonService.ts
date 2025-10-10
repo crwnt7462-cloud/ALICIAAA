@@ -85,7 +85,7 @@ export async function devSeedSalonServices({ salonId, links }: z.infer<typeof de
  * - Client anon pour lectures publiques, service role pour admin uniquement
  */
 
-import { supabasePublic, supabase as supabaseServiceRole } from '../lib/clients/supabaseServer';
+// import { supabasePublic, supabase as supabaseServiceRole } from '../lib/clients/supabaseServer';
 
 export interface PublicSalonService {
   salon_id: string;

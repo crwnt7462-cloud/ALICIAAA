@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Frontend - Créneaux</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 5px; margin: 10px 0; }
+        .slot { padding: 5px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 12px; }
+        .slot.available { background: #d4edda; border-color: #c3e6cb; }
+        .slot.booked { background: #f8d7da; border-color: #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Frontend - Créneaux</h1>
+    
+    <div class="test-section info">
+        <h3>📋 Test Direct Frontend</h3>
+        <p>Test direct de la récupération des créneaux depuis le frontend</p>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 1. Test API Disponibilité Directe</h3>
+        <button onclick="testAvailabilityAPI()">Tester API Disponibilité</button>
+        <div id="api-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 2. Test Frontend - Page Réservation</h3>
+        <button onclick="openBookingPage()">Ouvrir Page Réservation</button>
+        <div id="frontend-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 3. Test Frontend - Page Salon</h3>
+        <button onclick="openSalonPage()">Ouvrir Page Salon</button>
+        <div id="salon-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 4. Test Créneaux Visuels</h3>
+        <button onclick="displaySlots()">Afficher Créneaux</button>
+        <div id="slots-result"></div>
+    </div>
+
+    <script>
+        const SALON_SLUG = 'salon-15228957';
+        const BASE_URL = 'http://localhost:3000';
+        const FRONTEND_URL = 'http://localhost:5173';
+        let availabilityData = null;
+
+        async function testAvailabilityAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p>🔄 Test API disponibilité...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/professionals/1759862715734/availability`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        serviceId: 1759861618425.438,
+                        totalDuration: 375,
+                        timezone: 'Europe/Paris',
+                        dateRange: { start: '2024-01-20', end: '2024-01-27' }
+                    })
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.availability) {
+                    availabilityData = data;
+                    const totalSlots = data.availability.reduce((sum, day) => sum + day.slots.length, 0);
+                    const availableSlots = data.availability.reduce((sum, day) => 
+                        sum + day.slots.filter(slot => slot.available).length, 0
+                    );
+                    
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Disponibilité Fonctionnelle</h4>
+                            <div class="step completed">
+                                <strong>Professionnel :</strong> ${data.professionalId}
+                            </div>
+                            <div class="step completed">
+                                <strong>Durée totale :</strong> ${data.totalDuration} minutes
+                            </div>
+                            <div class="step completed">
+                                <strong>Jours disponibles :</strong> ${data.availability.length}
+                            </div>
+                            <div class="step completed">
+                                <strong>Créneaux totaux :</strong> ${totalSlots}
+                            </div>
+                            <div class="step completed">
+                                <strong>Créneaux disponibles :</strong> ${availableSlots}
+                            </div>
+                            <div class="step completed">
+                                <strong>Premier jour :</strong> ${data.availability[0].date} (${data.availability[0].slots.length} créneaux)
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Erreur API</h4>
+                            <p><strong>Status :</strong> ${response.status}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        function openBookingPage() {
+            const resultDiv = document.getElementById('frontend-result');
+            resultDiv.innerHTML = `
+                <div class="info">
+                    <h4>🔗 Ouverture Page Réservation</h4>
+                    <p>Ouverture de la page de réservation dans un nouvel onglet...</p>
+                    <div class="step completed">
+                        <strong>URL :</strong> ${FRONTEND_URL}/booking?salon=${SALON_SLUG}
+                    </div>
+                    <div class="step completed">
+                        <strong>Instructions :</strong>
+                        <ol>
+                            <li>Sélectionnez un professionnel</li>
+                            <li>Choisissez une date</li>
+                            <li>Vérifiez que les créneaux horaires s'affichent</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+            
+            // Ouvrir la page de réservation
+            window.open(`${FRONTEND_URL}/booking?salon=${SALON_SLUG}`, '_blank');
+        }
+
+        function openSalonPage() {
+            const resultDiv = document.getElementById('salon-result');
+            resultDiv.innerHTML = `
+                <div class="info">
+                    <h4>🔗 Ouverture Page Salon</h4>
+                    <p>Ouverture de la page salon dans un nouvel onglet...</p>
+                    <div class="step completed">
+                        <strong>URL :</strong> ${FRONTEND_URL}/salon/${SALON_SLUG}
+                    </div>
+                    <div class="step completed">
+                        <strong>Instructions :</strong>
+                        <ol>
+                            <li>Cliquez sur "Réserver"</li>
+                            <li>Sélectionnez un professionnel</li>
+                            <li>Choisissez une date</li>
+                            <li>Vérifiez que les créneaux horaires s'affichent</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+            
+            // Ouvrir la page salon
+            window.open(`${FRONTEND_URL}/salon/${SALON_SLUG}`, '_blank');
+        }
+
+        function displaySlots() {
+            const resultDiv = document.getElementById('slots-result');
+            
+            if (!availabilityData) {
+                resultDiv.innerHTML = '<div class="error"><h4>❌ Aucune donnée</h4><p>Veuillez d\'abord tester l\'API disponibilité</p></div>';
+                return;
+            }
+            
+            let html = '<div class="success"><h4>📅 Créneaux Disponibles</h4>';
+            
+            availabilityData.availability.slice(0, 3).forEach(day => {
+                html += `
+                    <div class="step">
+                        <h5>${day.date} (${day.dayName})</h5>
+                        <div class="slots-grid">
+                            ${day.slots.map(slot => `
+                                <div class="slot ${slot.available ? 'available' : 'booked'}">
+                                    ${slot.time}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            resultDiv.innerHTML = html;
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            testAvailabilityAPI();
+        };
+    </script>
+</body>
+</html>
+

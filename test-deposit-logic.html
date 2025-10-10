@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Logique Acompte Dynamique</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .step { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+        .completed { background: #d4edda; }
+        .warning { background: #fff3cd; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Logique Acompte Dynamique</h1>
+    
+    <div class="test-section info">
+        <h3>📋 Logique Implémentée</h3>
+        <div class="step completed">
+            <strong>✅ Services Gratuits :</strong> Détection automatique des services "gratuit", "testtttt", "test"
+        </div>
+        <div class="step completed">
+            <strong>✅ Prix Zéro :</strong> Services avec prix = 0 ne nécessitent pas d'acompte
+        </div>
+        <div class="step completed">
+            <strong>✅ Acompte Dynamique :</strong> Calcul basé uniquement sur les services payants
+        </div>
+        <div class="step completed">
+            <strong>✅ Affichage Adaptatif :</strong> "Gratuit" vs "Acompte X%" selon le service
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 1. Test Service Gratuit</h3>
+        <button onclick="testFreeService()">Simuler Service "testtttt gratuit"</button>
+        <div id="free-service-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 2. Test Service Payant</h3>
+        <button onclick="testPaidService()">Simuler Service Payant</button>
+        <div id="paid-service-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 3. Test Mixte (Gratuit + Payant)</h3>
+        <button onclick="testMixedServices()">Simuler Mixte</button>
+        <div id="mixed-services-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 4. Test Page BookingFix</h3>
+        <button onclick="openBookingFix()">Ouvrir BookingFix</button>
+        <div id="booking-fix-result"></div>
+    </div>
+
+    <script>
+        const FRONTEND_URL = 'http://localhost:5173';
+
+        function testFreeService() {
+            const resultDiv = document.getElementById('free-service-result');
+            
+            const freeServiceData = {
+                selectedServices: [
+                    { 
+                        id: "service1", 
+                        name: "testtttt gratuit", 
+                        price: 0, 
+                        duration: 30 
+                    }
+                ],
+                totalPrice: 0,
+                totalDuration: 30,
+                serviceCount: 1,
+                selectedDate: "Lundi 20 janvier 2025",
+                selectedTime: "14:00",
+                professionalName: "Marie Dubois",
+                professionalId: "1759862715734",
+                salonId: "15228957-f9f1-4f2d-82ac-ecba9f33c922",
+                salonSlug: "salon-15228957"
+            };
+            
+            sessionStorage.setItem('preBookingData', JSON.stringify(freeServiceData));
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Service Gratuit Simulé</h4>
+                    <div class="step completed">
+                        <strong>Service :</strong> ${freeServiceData.selectedServices[0].name}
+                    </div>
+                    <div class="step completed">
+                        <strong>Prix :</strong> ${freeServiceData.totalPrice}€
+                    </div>
+                    <div class="step completed">
+                        <strong>Résultat Attendu :</strong> "✅ Aucun acompte requis - Service gratuit"
+                    </div>
+                    <div class="step completed">
+                        <strong>Bouton :</strong> "Confirmer gratuitement"
+                    </div>
+                    <pre>${JSON.stringify(freeServiceData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function testPaidService() {
+            const resultDiv = document.getElementById('paid-service-result');
+            
+            const paidServiceData = {
+                selectedServices: [
+                    { 
+                        id: "service1", 
+                        name: "Coupe + Brushing", 
+                        price: 45, 
+                        duration: 60 
+                    }
+                ],
+                totalPrice: 45,
+                totalDuration: 60,
+                serviceCount: 1,
+                selectedDate: "Lundi 20 janvier 2025",
+                selectedTime: "14:00",
+                professionalName: "Marie Dubois",
+                professionalId: "1759862715734",
+                salonId: "15228957-f9f1-4f2d-82ac-ecba9f33c922",
+                salonSlug: "salon-15228957"
+            };
+            
+            sessionStorage.setItem('preBookingData', JSON.stringify(paidServiceData));
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Service Payant Simulé</h4>
+                    <div class="step completed">
+                        <strong>Service :</strong> ${paidServiceData.selectedServices[0].name}
+                    </div>
+                    <div class="step completed">
+                        <strong>Prix :</strong> ${paidServiceData.totalPrice}€
+                    </div>
+                    <div class="step completed">
+                        <strong>Résultat Attendu :</strong> "Acompte de 50% requis (22.50 €)"
+                    </div>
+                    <div class="step completed">
+                        <strong>Bouton :</strong> "Payer 22.50 € (acompte 50%)"
+                    </div>
+                    <pre>${JSON.stringify(paidServiceData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function testMixedServices() {
+            const resultDiv = document.getElementById('mixed-services-result');
+            
+            const mixedServicesData = {
+                selectedServices: [
+                    { 
+                        id: "service1", 
+                        name: "testtttt gratuit", 
+                        price: 0, 
+                        duration: 30 
+                    },
+                    { 
+                        id: "service2", 
+                        name: "Coloration complète", 
+                        price: 80, 
+                        duration: 90 
+                    }
+                ],
+                totalPrice: 80,
+                totalDuration: 120,
+                serviceCount: 2,
+                selectedDate: "Lundi 20 janvier 2025",
+                selectedTime: "14:00",
+                professionalName: "Marie Dubois",
+                professionalId: "1759862715734",
+                salonId: "15228957-f9f1-4f2d-82ac-ecba9f33c922",
+                salonSlug: "salon-15228957"
+            };
+            
+            sessionStorage.setItem('preBookingData', JSON.stringify(mixedServicesData));
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Services Mixtes Simulés</h4>
+                    <div class="step completed">
+                        <strong>Services :</strong> 2 prestations (1 gratuite + 1 payante)
+                    </div>
+                    <div class="step completed">
+                        <strong>Prix Total :</strong> ${mixedServicesData.totalPrice}€
+                    </div>
+                    <div class="step completed">
+                        <strong>Résultat Attendu :</strong> "Acompte de 50% requis (40.00 €)" - seulement sur le service payant
+                    </div>
+                    <div class="step completed">
+                        <strong>Bouton :</strong> "Payer 40.00 € (acompte 50%)"
+                    </div>
+                    <pre>${JSON.stringify(mixedServicesData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function openBookingFix() {
+            const resultDiv = document.getElementById('booking-fix-result');
+            resultDiv.innerHTML = `
+                <div class="info">
+                    <h4>🔗 Ouverture Page BookingFix</h4>
+                    <div class="step completed">
+                        <strong>URL :</strong> ${FRONTEND_URL}/booking-fix
+                    </div>
+                    <div class="step completed">
+                        <strong>Vérifications :</strong>
+                        <ol>
+                            <li>✅ Nombre de prestations affiché dynamiquement</li>
+                            <li>✅ Logique d'acompte adaptée au service</li>
+                            <li>✅ Services gratuits = "Confirmer gratuitement"</li>
+                            <li>✅ Services payants = "Payer X € (acompte Y%)"</li>
+                            <li>✅ Affichage "✅ Gratuit" pour services gratuits</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+            
+            // Ouvrir la page booking-fix
+            window.open(`${FRONTEND_URL}/booking-fix`, '_blank');
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            console.log('🧪 Test logique acompte dynamique chargé');
+            
+            // Vérifier si des données existent déjà
+            const existingData = sessionStorage.getItem('preBookingData');
+            if (existingData) {
+                console.log('📋 Données existantes trouvées:', JSON.parse(existingData));
+            }
+        };
+    </script>
+</body>
+</html>
+

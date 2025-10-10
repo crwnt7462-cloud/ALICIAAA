@@ -25,7 +25,7 @@ import {
   Save
 } from "lucide-react";
 
-export default function Settings() {
+export default function SettingsClient() {
   const { clientData } = useClientAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();

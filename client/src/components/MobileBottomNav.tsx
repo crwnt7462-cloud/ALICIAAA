@@ -34,7 +34,12 @@ export function MobileBottomNav({ userType = 'pro' }: MobileBottomNavProps) {
       path: '/client-analytics',
       active: location === '/client-analytics'
     },
-
+    {
+      label: 'Équipe',
+      icon: Users,
+      path: '/staff-management',
+      active: location === '/staff-management' || location === '/staff'
+    }
   ];
 
   const clientNavItems = [
@@ -49,12 +54,6 @@ export function MobileBottomNav({ userType = 'pro' }: MobileBottomNavProps) {
       icon: Calendar,
       path: '/search',
       active: location === '/search'
-    },
-    {
-      label: 'Mes RDV',
-      icon: Users,
-      path: '/client-rdv',
-      active: location === '/client-rdv'
     },
     {
       label: 'Profil',

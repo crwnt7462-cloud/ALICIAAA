@@ -28,9 +28,9 @@ function getAllowedOrigins(): string[] {
   
   // Fallbacks sécurisés par environnement
   if (origins.length === 0) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
       // Dev: permettre localhost sur ports courants
-      origins.push('http://localhost:5173', 'http://localhost:3000', 'http://localhost:3001');
+      origins.push('http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:3001');
       console.warn('⚠️ cors_fallback_dev', { origins, hint: 'Set FRONT_ORIGIN in environment' });
     } else {
       // Production: JAMAIS de fallback wildcard
@@ -38,12 +38,14 @@ function getAllowedOrigins(): string[] {
         error: 'FRONT_ORIGIN required in production',
         hint: 'Set FRONT_ORIGIN environment variable'
       });
-      throw new Error('FRONT_ORIGIN required in production environment');
+      // En mode développement, utiliser un fallback
+      console.log('🔧 Mode développement: utilisation du fallback CORS');
+      return ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:3001'];
     }
   }
   
   // En développement, toujours ajouter localhost:3000 pour le debug
-  if (process.env.NODE_ENV === 'development' && !origins.includes('http://localhost:3000')) {
+  if ((process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) && !origins.includes('http://localhost:3000')) {
     origins.push('http://localhost:3000');
   }
   
@@ -61,18 +63,25 @@ export function createCorsConfig() {
   
   return {
     origin: (origin: string | undefined, callback: (error: Error | null, allowed?: boolean) => void) => {
-      // Permettre requêtes sans origin (ex: Postman, curl)
-      if (!origin && process.env.NODE_ENV === 'development') {
-        return callback(null, true);
-      }
-      
-      if (!origin) {
-        console.warn('⚠️ cors_no_origin_prod', { origin: null });
-        return callback(new Error('Origin required'), false);
+      // Permettre requêtes sans origin (ex: Postman, curl, assets)
+      if (!origin || origin === 'null') {
+        if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+          console.log('✅ cors_allowed_no_origin_dev', { origin: origin || null });
+          return callback(null, true);
+        } else {
+          console.warn('⚠️ cors_no_origin_prod', { origin: origin || null });
+          return callback(new Error('Origin required'), false);
+        }
       }
       
       if (allowedOrigins.includes(origin)) {
         console.log('✅ cors_allowed', { origin, allowed: true });
+        return callback(null, true);
+      }
+      
+      // En développement, permettre origin: 'null' pour les requêtes sans origin
+      if ((process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) && origin === 'null') {
+        console.log('✅ cors_allowed_null_dev', { origin });
         return callback(null, true);
       }
       

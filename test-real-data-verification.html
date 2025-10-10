@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Données Réelles - ProfessionalSelection</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a32a3; }
+        .debug { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Données Réelles - ProfessionalSelection</h1>
+    
+    <div class="step">
+        <h3>🎯 Vérification des Données Réelles</h3>
+        <p>Testons que ProfessionalSelection affiche uniquement les données réelles du salon <code>salon-15228957</code></p>
+    </div>
+    
+    <div class="step">
+        <h3>📊 Données Attendues</h3>
+        <ul>
+            <li><strong>Professionnel 1</strong> : afrt (ID: 1759862715734)</li>
+            <li><strong>Professionnel 2</strong> : biugo (ID: 1759862720573)</li>
+            <li><strong>Pas de données de test</strong> : Marie Dubois, Sophie Martin supprimées</li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Tests</h3>
+        <button onclick="testAPI()">Tester API Directe</button>
+        <button onclick="testPage()">Tester Page ProfessionalSelection</button>
+        <button onclick="checkNoTemplates()">Vérifier Absence de Templates</button>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="step">
+        <h3>📋 Résultats API</h3>
+        <div id="api-data" class="debug"></div>
+    </div>
+    
+    <div class="step">
+        <h3>✅ Checklist de Vérification</h3>
+        <ul id="checklist">
+            <li>⏳ API retourne les vrais professionnels (afrt, biugo)</li>
+            <li>⏳ Pas de données de test (Marie, Sophie)</li>
+            <li>⏳ Page affiche uniquement les données réelles</li>
+            <li>⏳ Normalisation des champs manquants</li>
+            <li>⏳ Gestion des cas vides</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultsDiv = document.getElementById('test-results');
+            const dataDiv = document.getElementById('api-data');
+            
+            resultsDiv.innerHTML = '<p>🔄 Test de l\'API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/public/salon/salon-15228957');
+                const data = await response.json();
+                
+                if (data.ok && data.salon && data.salon.team_members) {
+                    const professionals = data.salon.team_members;
+                    
+                    let html = '📊 Données du Salon:\n';
+                    html += `Nom du salon: ${data.salon.name}\n`;
+                    html += `Nombre de professionnels: ${professionals.length}\n\n`;
+                    
+                    html += '👥 Professionnels réels:\n';
+                    professionals.forEach((member, index) => {
+                        html += `${index + 1}. ${member.name} (ID: ${member.id})\n`;
+                        html += `   Rôle: ${member.role || 'Non défini'}\n`;
+                        html += `   Bio: ${member.bio || 'Non définie'}\n\n`;
+                    });
+                    
+                    dataDiv.textContent = html;
+                    
+                    // Vérifier que ce sont les bonnes données
+                    const hasAfrt = professionals.some(p => p.name === 'afrt');
+                    const hasBiugo = professionals.some(p => p.name === 'biugo');
+                    const hasTemplates = professionals.some(p => 
+                        p.name === 'Marie Dubois' || p.name === 'Sophie Martin'
+                    );
+                    
+                    if (hasAfrt && hasBiugo && !hasTemplates) {
+                        resultsDiv.innerHTML = '<div class="success">✅ Données réelles correctes - afrt et biugo trouvés, pas de templates</div>';
+                        updateChecklist([
+                            { text: '✅ API retourne les vrais professionnels (afrt, biugo)', status: 'success' },
+                            { text: '✅ Pas de données de test (Marie, Sophie)', status: 'success' }
+                        ]);
+                    } else {
+                        resultsDiv.innerHTML = '<div class="error">❌ Problème avec les données</div>';
+                    }
+                    
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">❌ Aucun salon ou professionnel trouvé</div>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="error">❌ Erreur: ' + error.message + '</div>';
+            }
+        }
+        
+        function testPage() {
+            window.open('http://localhost:5173/professional-selection', '_blank');
+        }
+        
+        function checkNoTemplates() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="info">ℹ️ Vérifiez manuellement que la page n\'affiche que "afrt" et "biugo", pas "Marie Dubois" ou "Sophie Martin"</div>';
+        }
+        
+        function updateChecklist(items) {
+            const checklist = document.getElementById('checklist');
+            items.forEach(item => {
+                const li = Array.from(checklist.children).find(child => 
+                    child.textContent.includes(item.text.split(' ').slice(1).join(' '))
+                );
+                if (li) {
+                    li.textContent = item.text;
+                    li.className = item.status === 'success' ? 'success' : 'warning';
+                }
+            });
+        }
+        
+        // Auto-test au chargement
+        window.onload = function() {
+            testAPI();
+        };
+    </script>
+</body>
+</html>
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Données Réelles - ProfessionalSelection</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a32a3; }
+        .debug { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Données Réelles - ProfessionalSelection</h1>
+    
+    <div class="step">
+        <h3>🎯 Vérification des Données Réelles</h3>
+        <p>Testons que ProfessionalSelection affiche uniquement les données réelles du salon <code>salon-15228957</code></p>
+    </div>
+    
+    <div class="step">
+        <h3>📊 Données Attendues</h3>
+        <ul>
+            <li><strong>Professionnel 1</strong> : afrt (ID: 1759862715734)</li>
+            <li><strong>Professionnel 2</strong> : biugo (ID: 1759862720573)</li>
+            <li><strong>Pas de données de test</strong> : Marie Dubois, Sophie Martin supprimées</li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Tests</h3>
+        <button onclick="testAPI()">Tester API Directe</button>
+        <button onclick="testPage()">Tester Page ProfessionalSelection</button>
+        <button onclick="checkNoTemplates()">Vérifier Absence de Templates</button>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="step">
+        <h3>📋 Résultats API</h3>
+        <div id="api-data" class="debug"></div>
+    </div>
+    
+    <div class="step">
+        <h3>✅ Checklist de Vérification</h3>
+        <ul id="checklist">
+            <li>⏳ API retourne les vrais professionnels (afrt, biugo)</li>
+            <li>⏳ Pas de données de test (Marie, Sophie)</li>
+            <li>⏳ Page affiche uniquement les données réelles</li>
+            <li>⏳ Normalisation des champs manquants</li>
+            <li>⏳ Gestion des cas vides</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultsDiv = document.getElementById('test-results');
+            const dataDiv = document.getElementById('api-data');
+            
+            resultsDiv.innerHTML = '<p>🔄 Test de l\'API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/public/salon/salon-15228957');
+                const data = await response.json();
+                
+                if (data.ok && data.salon && data.salon.team_members) {
+                    const professionals = data.salon.team_members;
+                    
+                    let html = '📊 Données du Salon:\n';
+                    html += `Nom du salon: ${data.salon.name}\n`;
+                    html += `Nombre de professionnels: ${professionals.length}\n\n`;
+                    
+                    html += '👥 Professionnels réels:\n';
+                    professionals.forEach((member, index) => {
+                        html += `${index + 1}. ${member.name} (ID: ${member.id})\n`;
+                        html += `   Rôle: ${member.role || 'Non défini'}\n`;
+                        html += `   Bio: ${member.bio || 'Non définie'}\n\n`;
+                    });
+                    
+                    dataDiv.textContent = html;
+                    
+                    // Vérifier que ce sont les bonnes données
+                    const hasAfrt = professionals.some(p => p.name === 'afrt');
+                    const hasBiugo = professionals.some(p => p.name === 'biugo');
+                    const hasTemplates = professionals.some(p => 
+                        p.name === 'Marie Dubois' || p.name === 'Sophie Martin'
+                    );
+                    
+                    if (hasAfrt && hasBiugo && !hasTemplates) {
+                        resultsDiv.innerHTML = '<div class="success">✅ Données réelles correctes - afrt et biugo trouvés, pas de templates</div>';
+                        updateChecklist([
+                            { text: '✅ API retourne les vrais professionnels (afrt, biugo)', status: 'success' },
+                            { text: '✅ Pas de données de test (Marie, Sophie)', status: 'success' }
+                        ]);
+                    } else {
+                        resultsDiv.innerHTML = '<div class="error">❌ Problème avec les données</div>';
+                    }
+                    
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">❌ Aucun salon ou professionnel trouvé</div>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="error">❌ Erreur: ' + error.message + '</div>';
+            }
+        }
+        
+        function testPage() {
+            window.open('http://localhost:5173/professional-selection', '_blank');
+        }
+        
+        function checkNoTemplates() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="info">ℹ️ Vérifiez manuellement que la page n\'affiche que "afrt" et "biugo", pas "Marie Dubois" ou "Sophie Martin"</div>';
+        }
+        
+        function updateChecklist(items) {
+            const checklist = document.getElementById('checklist');
+            items.forEach(item => {
+                const li = Array.from(checklist.children).find(child => 
+                    child.textContent.includes(item.text.split(' ').slice(1).join(' '))
+                );
+                if (li) {
+                    li.textContent = item.text;
+                    li.className = item.status === 'success' ? 'success' : 'warning';
+                }
+            });
+        }
+        
+        // Auto-test au chargement
+        window.onload = function() {
+            testAPI();
+        };
+    </script>
+</body>
+</html>
+
+

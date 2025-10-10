@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ProfessionalSelection - Vérification des Données</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a32a3; }
+        .url { background: #f8f9fa; padding: 5px; border-radius: 3px; font-family: monospace; }
+        .debug { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test ProfessionalSelection - Vérification des Données</h1>
+    
+    <div class="step">
+        <h3>🎯 Vérification des Données Réelles</h3>
+        <p>Testons si ProfessionalSelection récupère bien les données du salon <code>salon-15228957</code></p>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Tests API</h3>
+        <button onclick="testSalonAPI()">Tester API Salon</button>
+        <button onclick="testProfessionalSelection()">Tester ProfessionalSelection</button>
+        <button onclick="checkConsoleLogs()">Vérifier les Logs Console</button>
+        <div id="api-results"></div>
+    </div>
+    
+    <div class="step">
+        <h3>📊 Résultats API</h3>
+        <div id="api-data" class="debug"></div>
+    </div>
+    
+    <div class="step">
+        <h3>🔗 URLs de Test</h3>
+        <div class="url">http://localhost:5173/professional-selection</div>
+        <div class="url">http://localhost:3000/api/public/salon/salon-15228957</div>
+    </div>
+    
+    <div class="step">
+        <h3>📋 Checklist de Vérification</h3>
+        <ul id="checklist">
+            <li>✅ Salon ID correct (salon-15228957)</li>
+            <li>⏳ API retourne des données</li>
+            <li>⏳ Professionnels récupérés</li>
+            <li>⏳ Affichage correct</li>
+            <li>⏳ Navigation fonctionnelle</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testSalonAPI() {
+            const resultsDiv = document.getElementById('api-results');
+            const dataDiv = document.getElementById('api-data');
+            
+            resultsDiv.innerHTML = '<p>🔄 Test de l\'API salon...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/public/salon/salon-15228957');
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    resultsDiv.innerHTML = '<div class="success">✅ API fonctionne - Salon trouvé</div>';
+                    
+                    const salon = data.salon;
+                    let html = '📊 Données du Salon:\n';
+                    html += `Nom: ${salon.name}\n`;
+                    html += `ID: ${salon.id}\n`;
+                    html += `Slug: ${salon.public_slug}\n`;
+                    html += `Team Members: ${salon.team_members?.length || 0}\n`;
+                    
+                    if (salon.team_members && salon.team_members.length > 0) {
+                        html += '\n👥 Professionnels:\n';
+                        salon.team_members.forEach((member, index) => {
+                            html += `${index + 1}. ${member.name} (${member.role || 'Rôle non défini'})\n`;
+                        });
+                    }
+                    
+                    dataDiv.textContent = html;
+                    
+                    // Mettre à jour la checklist
+                    updateChecklist([
+                        { text: '✅ Salon ID correct (salon-15228957)', status: 'success' },
+                        { text: '✅ API retourne des données', status: 'success' },
+                        { text: salon.team_members?.length > 0 ? '✅ Professionnels récupérés' : '⚠️ Aucun professionnel trouvé', status: salon.team_members?.length > 0 ? 'success' : 'warning' }
+                    ]);
+                    
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">❌ API ne retourne pas de salon</div>';
+                    dataDiv.textContent = 'Erreur: ' + JSON.stringify(data, null, 2);
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="error">❌ Erreur API: ' + error.message + '</div>';
+                dataDiv.textContent = 'Erreur: ' + error.message;
+            }
+        }
+        
+        function testProfessionalSelection() {
+            // Ouvrir ProfessionalSelection dans un nouvel onglet
+            window.open('http://localhost:5173/professional-selection', '_blank');
+        }
+        
+        function checkConsoleLogs() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<div class="info">ℹ️ Ouvrez la console du navigateur (F12) pour voir les logs de debug</div>';
+        }
+        
+        function updateChecklist(items) {
+            const checklist = document.getElementById('checklist');
+            items.forEach(item => {
+                const li = Array.from(checklist.children).find(child => 
+                    child.textContent.includes(item.text.split(' ').slice(1).join(' '))
+                );
+                if (li) {
+                    li.textContent = item.text;
+                    li.className = item.status === 'success' ? 'success' : 'warning';
+                }
+            });
+        }
+        
+        // Auto-test au chargement
+        window.onload = function() {
+            testSalonAPI();
+        };
+    </script>
+</body>
+</html>
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ProfessionalSelection - Vérification des Données</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a32a3; }
+        .url { background: #f8f9fa; padding: 5px; border-radius: 3px; font-family: monospace; }
+        .debug { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test ProfessionalSelection - Vérification des Données</h1>
+    
+    <div class="step">
+        <h3>🎯 Vérification des Données Réelles</h3>
+        <p>Testons si ProfessionalSelection récupère bien les données du salon <code>salon-15228957</code></p>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Tests API</h3>
+        <button onclick="testSalonAPI()">Tester API Salon</button>
+        <button onclick="testProfessionalSelection()">Tester ProfessionalSelection</button>
+        <button onclick="checkConsoleLogs()">Vérifier les Logs Console</button>
+        <div id="api-results"></div>
+    </div>
+    
+    <div class="step">
+        <h3>📊 Résultats API</h3>
+        <div id="api-data" class="debug"></div>
+    </div>
+    
+    <div class="step">
+        <h3>🔗 URLs de Test</h3>
+        <div class="url">http://localhost:5173/professional-selection</div>
+        <div class="url">http://localhost:3000/api/public/salon/salon-15228957</div>
+    </div>
+    
+    <div class="step">
+        <h3>📋 Checklist de Vérification</h3>
+        <ul id="checklist">
+            <li>✅ Salon ID correct (salon-15228957)</li>
+            <li>⏳ API retourne des données</li>
+            <li>⏳ Professionnels récupérés</li>
+            <li>⏳ Affichage correct</li>
+            <li>⏳ Navigation fonctionnelle</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testSalonAPI() {
+            const resultsDiv = document.getElementById('api-results');
+            const dataDiv = document.getElementById('api-data');
+            
+            resultsDiv.innerHTML = '<p>🔄 Test de l\'API salon...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/public/salon/salon-15228957');
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    resultsDiv.innerHTML = '<div class="success">✅ API fonctionne - Salon trouvé</div>';
+                    
+                    const salon = data.salon;
+                    let html = '📊 Données du Salon:\n';
+                    html += `Nom: ${salon.name}\n`;
+                    html += `ID: ${salon.id}\n`;
+                    html += `Slug: ${salon.public_slug}\n`;
+                    html += `Team Members: ${salon.team_members?.length || 0}\n`;
+                    
+                    if (salon.team_members && salon.team_members.length > 0) {
+                        html += '\n👥 Professionnels:\n';
+                        salon.team_members.forEach((member, index) => {
+                            html += `${index + 1}. ${member.name} (${member.role || 'Rôle non défini'})\n`;
+                        });
+                    }
+                    
+                    dataDiv.textContent = html;
+                    
+                    // Mettre à jour la checklist
+                    updateChecklist([
+                        { text: '✅ Salon ID correct (salon-15228957)', status: 'success' },
+                        { text: '✅ API retourne des données', status: 'success' },
+                        { text: salon.team_members?.length > 0 ? '✅ Professionnels récupérés' : '⚠️ Aucun professionnel trouvé', status: salon.team_members?.length > 0 ? 'success' : 'warning' }
+                    ]);
+                    
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">❌ API ne retourne pas de salon</div>';
+                    dataDiv.textContent = 'Erreur: ' + JSON.stringify(data, null, 2);
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="error">❌ Erreur API: ' + error.message + '</div>';
+                dataDiv.textContent = 'Erreur: ' + error.message;
+            }
+        }
+        
+        function testProfessionalSelection() {
+            // Ouvrir ProfessionalSelection dans un nouvel onglet
+            window.open('http://localhost:5173/professional-selection', '_blank');
+        }
+        
+        function checkConsoleLogs() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<div class="info">ℹ️ Ouvrez la console du navigateur (F12) pour voir les logs de debug</div>';
+        }
+        
+        function updateChecklist(items) {
+            const checklist = document.getElementById('checklist');
+            items.forEach(item => {
+                const li = Array.from(checklist.children).find(child => 
+                    child.textContent.includes(item.text.split(' ').slice(1).join(' '))
+                );
+                if (li) {
+                    li.textContent = item.text;
+                    li.className = item.status === 'success' ? 'success' : 'warning';
+                }
+            });
+        }
+        
+        // Auto-test au chargement
+        window.onload = function() {
+            testSalonAPI();
+        };
+    </script>
+</body>
+</html>
+
+

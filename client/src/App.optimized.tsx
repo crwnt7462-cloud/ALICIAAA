@@ -10,16 +10,13 @@ import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 
 // Pages essentielles seulement (suppression des 150+ imports inutilisés)
-import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
-import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Services from "@/pages/Services";
-import Staff from "@/pages/Staff";
+import StaffManagementModern from "@/pages/StaffManagementModern";
 import NotFound from "@/pages/not-found";
 import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
-import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import QuickBooking from "@/pages/QuickBooking";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ClientDashboard from "@/pages/ClientDashboard";
@@ -34,24 +31,8 @@ import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
 import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
 
 function Router() {
-  // Route publique : /book/:public_slug
-  const bookMatch = location.match(/^\/book\/([a-zA-Z0-9_-]+)$/);
-  if (bookMatch) {
-    const public_slug = bookMatch[1];
-    const BookPublicSalonPage = require("@/pages/SalonPagePublic").default;
-    return <BookPublicSalonPage public_slug={public_slug} />;
-  }
-
   const { isAuthenticated, isLoading } = useAuth();
   const [location] = useLocation();
-
-  // Routage public /book/:public_slug (doit être avant les autres routes)
-  const bookMatch = location.match(/^\/book\/([a-zA-Z0-9_-]+)$/);
-  if (bookMatch) {
-    const public_slug = bookMatch[1];
-    const BookPublicSalonPage = require("@/pages/SalonPagePublic").default;
-    return <BookPublicSalonPage public_slug={public_slug} />;
-  }
 
   // Gestion des redirections critiques avec validation
   if (location === '/salon/excellence-hair-paris') {
@@ -104,7 +85,7 @@ function Router() {
   }
 
   if (location === '/ai-assistant') {
-    return <AIAssistantFixed />;
+    return <div>Page IA non disponible</div>;
   }
 
   return (
@@ -113,19 +94,19 @@ function Router() {
       <main className="flex-1 overflow-auto">
         <Switch>
           {isLoading ? (
-            <Route path="/" component={Landing} />
+            <Route path="/" component={NotFound} />
           ) : isAuthenticated ? (
             <>
               <Route path="/client-dashboard" component={ClientDashboard} />
               <Route path="/" component={Dashboard} />
               <Route path="/dashboard" component={Dashboard} />
-              <Route path="/planning" component={Planning} />
+              <Route path="/planning" component={() => <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center"><div className="text-center"><h1 className="text-2xl font-bold text-gray-900 mb-4">Planning</h1><p className="text-gray-600">Page en cours de développement</p></div></div>} />
               <Route path="/clients" component={Clients} />
               <Route path="/services" component={Services} />
-              <Route path="/staff" component={Staff} />
+              <Route path="/staff" component={StaffManagementModern} />
             </>
           ) : (
-            <Route path="/" component={Landing} />
+            <Route path="/" component={NotFound} />
           )}
           <Route component={NotFound} />
         </Switch>

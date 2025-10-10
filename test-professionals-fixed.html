@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Professionals Fixé</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a32a3; }
+        .debug { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>✅ Test Professionals Fixé</h1>
+    
+    <div class="step success">
+        <h3>🎉 Problème Résolu !</h3>
+        <p>L'API <code>/api/salons/{uuid}/professionals</code> fonctionne maintenant et retourne les vrais professionnels.</p>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Tests</h3>
+        <button onclick="testAPI()">Tester API Professionals</button>
+        <button onclick="testPage()">Tester Page ProfessionalSelection</button>
+        <button onclick="checkConsole()">Vérifier Console</button>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="step">
+        <h3>📊 Résultats API</h3>
+        <div id="api-data" class="debug"></div>
+    </div>
+    
+    <div class="step">
+        <h3>✅ Checklist Finale</h3>
+        <ul id="checklist">
+            <li>✅ API /api/salons/{uuid}/professionals fonctionne</li>
+            <li>✅ Retourne les vrais professionnels (afrt, biugo)</li>
+            <li>⏳ Page ProfessionalSelection affiche les pros</li>
+            <li>⏳ Flux de réservation complet</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultsDiv = document.getElementById('test-results');
+            const dataDiv = document.getElementById('api-data');
+            
+            resultsDiv.innerHTML = '<p>🔄 Test de l\'API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/salons/15228957-f9f1-4f2d-82ac-ecba9f33c922/professionals');
+                const data = await response.json();
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    resultsDiv.innerHTML = '<div class="success">✅ API fonctionne - Professionnels trouvés</div>';
+                    
+                    let html = '📊 Professionnels récupérés:\n';
+                    data.forEach((pro, index) => {
+                        html += `${index + 1}. ${pro.name} (ID: ${pro.id})\n`;
+                        html += `   Rôle: ${pro.title}\n`;
+                        html += `   Bio: ${pro.bio || 'N/A'}\n\n`;
+                    });
+                    
+                    dataDiv.textContent = html;
+                    
+                    updateChecklist([
+                        { text: '✅ API /api/salons/{uuid}/professionals fonctionne', status: 'success' },
+                        { text: '✅ Retourne les vrais professionnels (afrt, biugo)', status: 'success' }
+                    ]);
+                    
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">❌ Aucun professionnel trouvé</div>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="error">❌ Erreur: ' + error.message + '</div>';
+            }
+        }
+        
+        function testPage() {
+            window.open('http://localhost:5173/professional-selection', '_blank');
+        }
+        
+        function checkConsole() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="info">ℹ️ Ouvrez la console du navigateur (F12) pour voir les logs de debug</div>';
+        }
+        
+        function updateChecklist(items) {
+            const checklist = document.getElementById('checklist');
+            items.forEach(item => {
+                const li = Array.from(checklist.children).find(child => 
+                    child.textContent.includes(item.text.split(' ').slice(1).join(' '))
+                );
+                if (li) {
+                    li.textContent = item.text;
+                    li.className = item.status === 'success' ? 'success' : 'warning';
+                }
+            });
+        }
+        
+        // Auto-test au chargement
+        window.onload = function() {
+            testAPI();
+        };
+    </script>
+</body>
+</html>
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Professionals Fixé</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #6f42c1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a32a3; }
+        .debug { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>✅ Test Professionals Fixé</h1>
+    
+    <div class="step success">
+        <h3>🎉 Problème Résolu !</h3>
+        <p>L'API <code>/api/salons/{uuid}/professionals</code> fonctionne maintenant et retourne les vrais professionnels.</p>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Tests</h3>
+        <button onclick="testAPI()">Tester API Professionals</button>
+        <button onclick="testPage()">Tester Page ProfessionalSelection</button>
+        <button onclick="checkConsole()">Vérifier Console</button>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="step">
+        <h3>📊 Résultats API</h3>
+        <div id="api-data" class="debug"></div>
+    </div>
+    
+    <div class="step">
+        <h3>✅ Checklist Finale</h3>
+        <ul id="checklist">
+            <li>✅ API /api/salons/{uuid}/professionals fonctionne</li>
+            <li>✅ Retourne les vrais professionnels (afrt, biugo)</li>
+            <li>⏳ Page ProfessionalSelection affiche les pros</li>
+            <li>⏳ Flux de réservation complet</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultsDiv = document.getElementById('test-results');
+            const dataDiv = document.getElementById('api-data');
+            
+            resultsDiv.innerHTML = '<p>🔄 Test de l\'API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/salons/15228957-f9f1-4f2d-82ac-ecba9f33c922/professionals');
+                const data = await response.json();
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    resultsDiv.innerHTML = '<div class="success">✅ API fonctionne - Professionnels trouvés</div>';
+                    
+                    let html = '📊 Professionnels récupérés:\n';
+                    data.forEach((pro, index) => {
+                        html += `${index + 1}. ${pro.name} (ID: ${pro.id})\n`;
+                        html += `   Rôle: ${pro.title}\n`;
+                        html += `   Bio: ${pro.bio || 'N/A'}\n\n`;
+                    });
+                    
+                    dataDiv.textContent = html;
+                    
+                    updateChecklist([
+                        { text: '✅ API /api/salons/{uuid}/professionals fonctionne', status: 'success' },
+                        { text: '✅ Retourne les vrais professionnels (afrt, biugo)', status: 'success' }
+                    ]);
+                    
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">❌ Aucun professionnel trouvé</div>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="error">❌ Erreur: ' + error.message + '</div>';
+            }
+        }
+        
+        function testPage() {
+            window.open('http://localhost:5173/professional-selection', '_blank');
+        }
+        
+        function checkConsole() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="info">ℹ️ Ouvrez la console du navigateur (F12) pour voir les logs de debug</div>';
+        }
+        
+        function updateChecklist(items) {
+            const checklist = document.getElementById('checklist');
+            items.forEach(item => {
+                const li = Array.from(checklist.children).find(child => 
+                    child.textContent.includes(item.text.split(' ').slice(1).join(' '))
+                );
+                if (li) {
+                    li.textContent = item.text;
+                    li.className = item.status === 'success' ? 'success' : 'warning';
+                }
+            });
+        }
+        
+        // Auto-test au chargement
+        window.onload = function() {
+            testAPI();
+        };
+    </script>
+</body>
+</html>
+

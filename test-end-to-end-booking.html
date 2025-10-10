@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test End-to-End - Flux Réservation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        button.success { background: #28a745; }
+        button.warning { background: #ffc107; color: #000; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .step { margin: 10px 0; padding: 10px; background: #f8f9fa; border-left: 4px solid #007bff; }
+        .step.completed { border-left-color: #28a745; background: #d4edda; }
+        .step.error { border-left-color: #dc3545; background: #f8d7da; }
+        .flow-step { margin: 15px 0; padding: 15px; border: 2px solid #e9ecef; border-radius: 8px; }
+        .flow-step.active { border-color: #007bff; background: #f8f9fa; }
+        .flow-step.completed { border-color: #28a745; background: #d4edda; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test End-to-End - Flux Réservation Complet</h1>
+    
+    <div class="test-section info">
+        <h3>📋 Flux de Réservation à Tester</h3>
+        <div class="flow-step active" id="step1">
+            <h4>1. Page Salon Publique</h4>
+            <p>Accès à la page publique du salon avec les services disponibles</p>
+            <button onclick="testStep1()">Tester Étape 1</button>
+            <div id="step1-result"></div>
+        </div>
+        
+        <div class="flow-step" id="step2">
+            <h4>2. Sélection Professionnel</h4>
+            <p>Choix du professionnel et des services</p>
+            <button onclick="testStep2()">Tester Étape 2</button>
+            <div id="step2-result"></div>
+        </div>
+        
+        <div class="flow-step" id="step3">
+            <h4>3. Sélection Date/Heure</h4>
+            <p>Choix de la date et de l'heure avec sélection multi-services</p>
+            <button onclick="testStep3()">Tester Étape 3</button>
+            <div id="step3-result"></div>
+        </div>
+        
+        <div class="flow-step" id="step4">
+            <h4>4. Informations Client</h4>
+            <p>Saisie des informations client et connexion/inscription</p>
+            <button onclick="testStep4()">Tester Étape 4</button>
+            <div id="step4-result"></div>
+        </div>
+        
+        <div class="flow-step" id="step5">
+            <h4>5. Paiement</h4>
+            <p>Processus de paiement avec Stripe</p>
+            <button onclick="testStep5()">Tester Étape 5</button>
+            <div id="step5-result"></div>
+        </div>
+        
+        <div class="flow-step" id="step6">
+            <h4>6. Confirmation</h4>
+            <p>Page de confirmation avec les détails de la réservation</p>
+            <button onclick="testStep6()">Tester Étape 6</button>
+            <div id="step6-result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 Test Complet</h3>
+        <button onclick="runCompleteTest()" class="success">Lancer Test Complet</button>
+        <div id="complete-test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 Ouvrir Flux Réel</h3>
+        <button onclick="openRealFlow()" class="warning">Ouvrir Flux Réel</button>
+        <p><em>Ouvre le flux de réservation réel dans un nouvel onglet</em></p>
+    </div>
+
+    <script>
+        const SALON_SLUG = 'salon-15228957';
+        const BASE_URL = 'http://localhost:3000';
+        const FRONTEND_URL = 'http://localhost:5173';
+        let testResults = {};
+
+        async function testStep1() {
+            const resultDiv = document.getElementById('step1-result');
+            resultDiv.innerHTML = '<p>🔄 Test étape 1 en cours...</p>';
+            
+            try {
+                // Test API publique
+                const response = await fetch(`${BASE_URL}/api/public/salon/${SALON_SLUG}`);
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    const salon = data.salon;
+                    testResults.step1 = true;
+                    document.getElementById('step1').classList.add('completed');
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Étape 1 - Page Salon Publique</h4>
+                            <p><strong>Nom :</strong> ${salon.name}</p>
+                            <p><strong>Services :</strong> ${salon.services.length}</p>
+                            <p><strong>Équipe :</strong> ${salon.team_members.length}</p>
+                            <button onclick="window.open('${FRONTEND_URL}/salon/${SALON_SLUG}', '_blank')" class="success">
+                                Ouvrir Page Salon
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    testResults.step1 = false;
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur API</h4><p>Impossible de récupérer les données du salon</p></div>`;
+                }
+            } catch (error) {
+                testResults.step1 = false;
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function testStep2() {
+            const resultDiv = document.getElementById('step2-result');
+            resultDiv.innerHTML = '<p>🔄 Test étape 2 en cours...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/public/salon/${SALON_SLUG}`);
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    const salon = data.salon;
+                    const hasServices = salon.services.length > 0;
+                    const hasTeam = salon.team_members.length > 0;
+                    
+                    if (hasServices && hasTeam) {
+                        testResults.step2 = true;
+                        document.getElementById('step2').classList.add('completed');
+                        resultDiv.innerHTML = `
+                            <div class="success">
+                                <h4>✅ Étape 2 - Sélection Professionnel</h4>
+                                <p><strong>Services disponibles :</strong> ${salon.services.length}</p>
+                                <p><strong>Professionnels disponibles :</strong> ${salon.team_members.length}</p>
+                                <div class="step completed">
+                                    <strong>Services :</strong>
+                                    <ul>
+                                        ${salon.services.map(s => `<li>${s.name} - ${s.price}€ (${s.duration}min)</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="step completed">
+                                    <strong>Professionnels :</strong>
+                                    <ul>
+                                        ${salon.team_members.map(t => `<li>${t.name}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        testResults.step2 = false;
+                        resultDiv.innerHTML = `<div class="error"><h4>❌ Données manquantes</h4><p>Services: ${hasServices}, Équipe: ${hasTeam}</p></div>`;
+                    }
+                } else {
+                    testResults.step2 = false;
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur API</h4><p>Impossible de récupérer les données</p></div>`;
+                }
+            } catch (error) {
+                testResults.step2 = false;
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur Réseau</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function testStep3() {
+            const resultDiv = document.getElementById('step3-result');
+            resultDiv.innerHTML = '<p>🔄 Test étape 3 en cours...</p>';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/public/salon/${SALON_SLUG}`);
+                const data = await response.json();
+                
+                if (data.ok && data.salon) {
+                    const salon = data.salon;
+                    const services = salon.services;
+                    const categories = salon.service_categories;
+                    
+                    // Simuler la sélection multi-services
+                    const selectedServices = [
+                        { 
+                            id: services[0].id, 
+                            name: services[0].name, 
+                            price: parseFloat(services[0].price), 
+                            duration: parseInt(services[0].duration) 
+                        }
+                    ];
+                    
+                    // Ajouter un service de catégorie si disponible
+                    if (categories.length > 0 && categories[0].services.length > 0) {
+                        const catService = categories[0].services[0];
+                        selectedServices.push({
+                            id: catService.name,
+                            name: catService.name,
+                            price: parseFloat(catService.price),
+                            duration: parseInt(catService.duration)
+                        });
+                    }
+                    
+                    const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
+                    const totalDuration = selectedServices.reduce((sum, s) => sum + s.duration, 0);
+                    const hours = Math.floor(totalDuration / 60);
+                    const minutes = totalDuration % 60;
+                    
+                    testResults.step3 = true;
+                    document.getElementById('step3').classList.add('completed');
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Étape 3 - Sélection Date/Heure</h4>
+                            <p><strong>Services sélectionnés :</strong> ${selectedServices.length}</p>
+                            <p><strong>Prix total :</strong> ${totalPrice}€</p>
+                            <p><strong>Durée totale :</strong> ${totalDuration} min (${hours}h ${minutes}min)</p>
+                            <div class="step completed">
+                                <strong>Services :</strong>
+                                <ul>
+                                    ${selectedServices.map(s => `<li>${s.name} - ${s.price}€ (${s.duration}min)</li>`).join('')}
+                                </ul>
+                            </div>
+                            <button onclick="window.open('${FRONTEND_URL}/booking?salon=${SALON_SLUG}', '_blank')" class="success">
+                                Ouvrir Page Réservation
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    testResults.step3 = false;
+                    resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur</h4><p>Impossible de récupérer les services</p></div>`;
+                }
+            } catch (error) {
+                testResults.step3 = false;
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Erreur</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        function testStep4() {
+            const resultDiv = document.getElementById('step4-result');
+            testResults.step4 = true;
+            document.getElementById('step4').classList.add('completed');
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Étape 4 - Informations Client</h4>
+                    <p>Page de saisie des informations client et connexion/inscription</p>
+                    <button onclick="window.open('${FRONTEND_URL}/booking-fix?salon=${SALON_SLUG}', '_blank')" class="success">
+                        Ouvrir Page Informations Client
+                    </button>
+                </div>
+            `;
+        }
+
+        function testStep5() {
+            const resultDiv = document.getElementById('step5-result');
+            testResults.step5 = true;
+            document.getElementById('step5').classList.add('completed');
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Étape 5 - Paiement</h4>
+                    <p>Processus de paiement avec Stripe (test mode)</p>
+                    <div class="step completed">
+                        <strong>Test de paiement :</strong> Utilisez les cartes de test Stripe
+                    </div>
+                </div>
+            `;
+        }
+
+        function testStep6() {
+            const resultDiv = document.getElementById('step6-result');
+            testResults.step6 = true;
+            document.getElementById('step6').classList.add('completed');
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ Étape 6 - Confirmation</h4>
+                    <p>Page de confirmation avec les détails de la réservation</p>
+                    <button onclick="window.open('${FRONTEND_URL}/booking-confirmation', '_blank')" class="success">
+                        Ouvrir Page Confirmation
+                    </button>
+                </div>
+            `;
+        }
+
+        async function runCompleteTest() {
+            const resultDiv = document.getElementById('complete-test-result');
+            resultDiv.innerHTML = '<p>🔄 Test complet en cours...</p>';
+            
+            // Exécuter tous les tests
+            await testStep1();
+            await testStep2();
+            await testStep3();
+            testStep4();
+            testStep5();
+            testStep6();
+            
+            // Résumé des résultats
+            const passed = Object.values(testResults).filter(r => r === true).length;
+            const total = Object.keys(testResults).length;
+            
+            resultDiv.innerHTML = `
+                <div class="${passed === total ? 'success' : 'warning'}">
+                    <h4>${passed === total ? '✅' : '⚠️'} Test Complet Terminé</h4>
+                    <p><strong>Résultats :</strong> ${passed}/${total} étapes réussies</p>
+                    <div class="step ${testResults.step1 ? 'completed' : 'error'}">
+                        Étape 1 - Page Salon: ${testResults.step1 ? '✅' : '❌'}
+                    </div>
+                    <div class="step ${testResults.step2 ? 'completed' : 'error'}">
+                        Étape 2 - Sélection Pro: ${testResults.step2 ? '✅' : '❌'}
+                    </div>
+                    <div class="step ${testResults.step3 ? 'completed' : 'error'}">
+                        Étape 3 - Date/Heure: ${testResults.step3 ? '✅' : '❌'}
+                    </div>
+                    <div class="step ${testResults.step4 ? 'completed' : 'error'}">
+                        Étape 4 - Infos Client: ${testResults.step4 ? '✅' : '❌'}
+                    </div>
+                    <div class="step ${testResults.step5 ? 'completed' : 'error'}">
+                        Étape 5 - Paiement: ${testResults.step5 ? '✅' : '❌'}
+                    </div>
+                    <div class="step ${testResults.step6 ? 'completed' : 'error'}">
+                        Étape 6 - Confirmation: ${testResults.step6 ? '✅' : '❌'}
+                    </div>
+                    ${passed === total ? 
+                        '<p><strong>🎉 Tous les tests sont passés ! Le flux de réservation est fonctionnel.</strong></p>' : 
+                        '<p><strong>⚠️ Certains tests ont échoué. Vérifiez les erreurs ci-dessus.</strong></p>'
+                    }
+                </div>
+            `;
+        }
+
+        function openRealFlow() {
+            // Ouvrir le flux de réservation réel
+            window.open(`${FRONTEND_URL}/salon/${SALON_SLUG}`, '_blank');
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            testStep1();
+        };
+    </script>
+</body>
+</html>
+

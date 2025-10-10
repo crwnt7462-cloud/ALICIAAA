@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { supabase as supabaseServiceRole } from "../db";
+import { createClient } from '@supabase/supabase-js';
+import { serviceRole as supabaseServiceRole } from "../lib/clients/supabaseServer";
+
+console.log('🔍 supabaseServiceRole importé:', !!supabaseServiceRole);
 
 const router = Router();
 
@@ -54,39 +57,31 @@ router.get('/api/salons/:salonId/professionals', async (req, res) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Récupérer les professionnels directement sans jointure bloquante sur salons
-    // On évite la jointure salon car RLS peut bloquer
-    const { data: professionnels, error: prosError } = await supabase
-      .from('professionnels')
-      .select(`
-        id,
-        nom,
-        metier,
-        note,
-        avis,
-        specialites,
-        description,
-        photo_url
-      `)
-      .eq('salon_id', salonId);
+    // Récupérer les professionnels depuis la table salons (team_members)
+    const { data: salon, error: salonError } = await supabase
+      .from('salons')
+      .select('team_members')
+      .eq('id', salonId)
+      .single();
 
-    if (prosError) {
-      console.log('professionals_list_fetch_err', { salon_id: salonId, supabaseError: { code: prosError.code } });
-      // RLS à corriger côté DB - Ne PAS remettre service_role
-      return res.status(500).json({ error: 'Failed to fetch professionals' });
+    if (salonError) {
+      console.log('professionals_list_fetch_err', { salon_id: salonId, supabaseError: { code: salonError.code } });
+      return res.status(500).json({ error: 'Failed to fetch salon' });
     }
+
+    const professionnels = salon?.team_members || [];
 
     // 4. Mapper vers le format UI-ready
     const professionals: ProfessionalResponse[] = (professionnels || []).map(pro => ({
       id: pro.id.toString(),
-      name: pro.nom,
-      title: pro.metier || null,
-      avatarUrl: pro.photo_url || null,
-      rating: pro.note || null,
-      reviewsCount: pro.avis || null,
-      tags: pro.specialites && pro.specialites.length > 0 ? pro.specialites.slice(0, 3) : [],
-      nextAvailable: null, // Phase 1: null, à implémenter plus tard avec appointments
-      bio: pro.description || null
+      name: pro.name || 'Professionnel',
+      title: pro.role || 'Professionnel',
+      avatarUrl: pro.avatar || null,
+      rating: pro.rating || null,
+      reviewsCount: pro.reviewsCount || null,
+      tags: pro.specialties && pro.specialties.length > 0 ? pro.specialties.slice(0, 3) : [],
+      nextAvailable: pro.nextSlot || null,
+      bio: pro.bio || null
     }));
 
     // Log et réponse
@@ -103,11 +98,21 @@ router.get('/api/salons/:salonId/professionals', async (req, res) => {
 });
 
 // GET /api/salon/:salonId/services (exemple, adapte le chemin si besoin)
-router.get('/api/salon/:salonId/services', async (req, res) => {
+router.get('/salon/:salonId/services', async (req, res) => {
   try {
     const { salonId } = req.params;
     if (!salonId) return res.status(400).json({ ok: false, error: 'salonId requis' });
-    const { data, error } = await supabaseServiceRole!.from('services').select('*').eq('salon_id', salonId);
+    
+    // Créer le client Supabase directement
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return res.status(503).json({ ok: false, error: 'Configuration Supabase manquante' });
+    }
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { data, error } = await supabase.from('services').select('*').eq('salon_id', salonId);
     if (error) return res.status(500).json({ ok: false, error: error.message });
     return res.status(200).json({ ok: true, data });
   } catch (err) {

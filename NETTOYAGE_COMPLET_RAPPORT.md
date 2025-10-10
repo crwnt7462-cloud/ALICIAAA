@@ -40,10 +40,10 @@
 ## 🔧 CORRECTIONS AUTOMATIQUES APPLIQUÉES
 
 ### App.tsx - Routes mises à jour
-- ✅ NotificationTest → NotificationCenter
+- ✅ NotificationTest → NotificationCenter - SUPPRIMÉ
 - ✅ MessagingTest → RealTimeMessaging  
 - ✅ BookingTest → SimpleBooking
-- ✅ MentionTest → MessagingHub
+- ✅ MentionTest → Supprimé
 - ✅ PageBuilder → PageCreator
 - ✅ Suppression routes PerfectBookingCreator
 

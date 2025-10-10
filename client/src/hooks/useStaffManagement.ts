@@ -7,7 +7,10 @@ export interface Professional {
   rating: number;
   reviewCount: number;
   specialties: string[];
+  selectedServices?: string[]; // Nouveaux services sélectionnés
+  jobTitle?: string; // Intitulé exact du métier
   nextAvailable: string;
+  availableToday?: boolean;
   role?: string;
   email?: string;
   phone?: string;
@@ -15,65 +18,8 @@ export interface Professional {
   experience?: string;
 }
 
-// Données initiales des professionnels
-const initialProfessionals: Professional[] = [
-  {
-    id: "antoine",
-    name: "Antoine",
-    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format",
-    rating: 4.9,
-    reviewCount: 127,
-    specialties: ["Coupe homme", "Barbe", "Coiffure classique"],
-    nextAvailable: "Aujourd'hui 14h30",
-    role: "Barbier Senior",
-    email: "antoine@salon.fr",
-    phone: "06 12 34 56 78",
-    bio: "Spécialiste des coupes masculines traditionnelles et modernes",
-    experience: "8 ans d'expérience"
-  },
-  {
-    id: "marie",
-    name: "Marie",
-    photo: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&auto=format",
-    rating: 4.8,
-    reviewCount: 89,
-    specialties: ["Coupe femme", "Coloration", "Brushing"],
-    nextAvailable: "Demain 10h00",
-    role: "Coloriste Experte",
-    email: "marie@salon.fr",
-    phone: "06 98 76 54 32",
-    bio: "Experte en colorations et soins capillaires",
-    experience: "6 ans d'expérience"
-  },
-  {
-    id: "julien",
-    name: "Julien",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format",
-    rating: 4.7,
-    reviewCount: 156,
-    specialties: ["Coupe moderne", "Styling", "Coupe dégradée"],
-    nextAvailable: "Aujourd'hui 16h00",
-    role: "Styliste Créatif",
-    email: "julien@salon.fr",
-    phone: "06 55 44 33 22",
-    bio: "Passionné par les coupes tendances et créatives",
-    experience: "4 ans d'expérience"
-  },
-  {
-    id: "sophie",
-    name: "Sophie",
-    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&auto=format",
-    rating: 4.9,
-    reviewCount: 203,
-    specialties: ["Coiffure mixte", "Extensions", "Chignon"],
-    nextAvailable: "Demain 9h30",
-    role: "Coiffeuse Polyvalente",
-    email: "sophie@salon.fr",
-    phone: "06 77 88 99 00",
-    bio: "Experte en coiffures événementielles et extensions",
-    experience: "10 ans d'expérience"
-  }
-];
+// Données initiales vides - les données réelles viennent de l'API
+const initialProfessionals: Professional[] = [];
 
 // Clé pour le localStorage
 const STAFF_STORAGE_KEY = 'salon_staff_data';
@@ -98,11 +44,8 @@ const staffEventManager = new StaffEventManager();
 
 // Hook pour la gestion du staff avec synchronisation
 export function useStaffManagement() {
-  const [professionals, setProfessionals] = useState<Professional[]>(() => {
-    // Charger depuis localStorage ou utiliser les données initiales
-    const stored = localStorage.getItem(STAFF_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : initialProfessionals;
-  });
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Synchroniser avec localStorage et notifier les autres composants
   const updateProfessionals = (newProfessionals: Professional[]) => {
@@ -110,6 +53,66 @@ export function useStaffManagement() {
     localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(newProfessionals));
     staffEventManager.notify(newProfessionals);
   };
+
+  // Charger les données depuis l'API
+  useEffect(() => {
+    const loadStaffData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Récupérer l'ID du salon depuis l'API /api/salon/my-salon
+        const salonResponse = await fetch('/api/salon/my-salon', {
+          credentials: 'include',
+          cache: 'no-store',
+          referrerPolicy: 'same-origin',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!salonResponse.ok) {
+          throw new Error(`Erreur salon ${salonResponse.status}: ${salonResponse.statusText}`);
+        }
+
+        const salonData = await salonResponse.json();
+        const salonId = salonData.salon?.id || salonData.id;
+        
+        if (!salonId) {
+          console.warn('Aucun salon ID trouvé dans la réponse API');
+          setProfessionals([]);
+          return;
+        }
+
+        console.log('🔍 Salon ID récupéré:', salonId);
+
+        // Maintenant récupérer les professionnels de ce salon
+        const response = await fetch(`/api/salons/${salonId}/professionals`, {
+          credentials: 'include',
+          cache: 'no-store',
+          referrerPolicy: 'same-origin',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erreur professionals ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('👥 Professionnels récupérés:', data);
+        
+        setProfessionals(data || []);
+        
+        // Sauvegarder en localStorage pour la synchronisation
+        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(data || []));
+        
+      } catch (error) {
+        console.error('Erreur lors du chargement du staff:', error);
+        setProfessionals([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadStaffData();
+  }, []);
 
   // Écouter les changements d'autres composants
   useEffect(() => {
@@ -141,6 +144,7 @@ export function useStaffManagement() {
 
   return {
     professionals,
+    isLoading,
     addProfessional,
     updateProfessional,
     deleteProfessional,

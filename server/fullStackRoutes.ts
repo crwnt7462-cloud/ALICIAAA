@@ -355,7 +355,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       const url = `/api/user/subscription?plan=${planType}&userId=test-${planType}`;
       
       // Simuler un appel interne
-      const planResponse = await fetch(`http://localhost:5000${url}`);
+      const planResponse = await fetch(`${process.env.API_URL || `http://localhost:${process.env.PORT || 5000}`}${url}`);
       const planData = await planResponse.json();
       
       res.json({
@@ -1123,6 +1123,16 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.post('/api/auth/forgot-password', async (req, res) => {
     try {
       const { email } = req.body;
+      const clientIP = req.ip || req.connection.remoteAddress;
+      const userAgent = req.get('User-Agent') || 'Unknown';
+      
+      // Log de sécurité
+      console.log('🔐 Tentative de récupération de mot de passe:', {
+        email: email ? email.substring(0, 3) + '***' : 'undefined',
+        ip: clientIP,
+        userAgent: userAgent.substring(0, 50),
+        timestamp: new Date().toISOString()
+      });
       
       if (!email) {
         return res.status(400).json({ 
@@ -1131,20 +1141,30 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         });
       }
 
+      // Validation email côté serveur
+      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+      if (!emailRegex.test(email.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Format d\'email invalide'
+        });
+      }
+
       // Vérifier si l'utilisateur existe
-      const user = await storage.getUserByEmail(email);
+      const user = await storage.getUserByEmail(email.trim());
       
       if (!user) {
         // Pour la sécurité, on retourne succès même si l'email n'existe pas
+        console.log('⚠️ Tentative de récupération pour email inexistant:', email.substring(0, 3) + '***');
         return res.json({ 
           success: true, 
           message: 'Si ce compte existe, un email de récupération a été envoyé' 
         });
       }
 
-      // TODO: Implémenter l'envoi d'email réel
+      // TODO: Implémenter l'envoi d'email réel avec token sécurisé
       // Pour l'instant, simuler l'envoi
-      console.log('📧 Récupération de mot de passe demandée pour:', email);
+      console.log('📧 Récupération de mot de passe demandée pour:', email.substring(0, 3) + '***');
       
       res.json({ 
         success: true, 
@@ -2451,7 +2471,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         customerName,
         appointmentId,
         salonName,
-  successUrl: `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
+  successUrl: `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`}/booking-confirmation?session_id={CHECKOUT_SESSION_ID}`,
   cancelUrl: `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`}/booking`
       });
       
@@ -4554,6 +4574,212 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       return res.status(500).json({ 
         error: 'Erreur test',
         details: error instanceof Error ? error.message : 'Erreur inconnue'
+      });
+    }
+  });
+
+
+  // 🔔 ROUTES MESSAGERIE - API pour les conversations et messages
+  app.get('/api/conversations', async (req, res) => {
+    try {
+      // Récupérer les conversations de l'utilisateur connecté
+      const userId = req.headers['x-user-id'] as string || 'demo-user';
+      
+      // Données de test pour le développement
+      const testConversations = [
+        {
+          id: "conv1",
+          clientId: "client1",
+          clientName: "Marie Laurent",
+          clientPhone: "06 12 34 56 78",
+          clientEmail: "marie.laurent@email.com",
+          lastMessage: "Merci pour le rendez-vous, j'ai adoré ma nouvelle coupe !",
+          lastMessageTime: "2024-01-15T14:30:00Z",
+          unreadCount: 0,
+          isOnline: true,
+          clientRating: 5,
+          totalAppointments: 8,
+          lastAppointment: "2024-01-12",
+          tags: ["VIP", "Fidèle"]
+        },
+        {
+          id: "conv2",
+          clientId: "client2",
+          clientName: "Sophie Martin",
+          clientPhone: "06 87 65 43 21",
+          clientEmail: "sophie.martin@email.com",
+          lastMessage: "Bonjour, j'aimerais changer la couleur de mes cheveux, avez-vous des créneaux cette semaine ?",
+          lastMessageTime: "2024-01-15T09:15:00Z",
+          unreadCount: 2,
+          isOnline: false,
+          clientRating: 4.8,
+          totalAppointments: 12,
+          lastAppointment: "2024-01-08",
+          tags: ["Régulière"]
+        },
+        {
+          id: "conv3",
+          clientId: "client3",
+          clientName: "Emma Rodriguez",
+          clientPhone: "06 45 67 89 12",
+          clientEmail: "emma.rodriguez@email.com",
+          lastMessage: "Parfait ! À demain alors 😊",
+          lastMessageTime: "2024-01-14T16:45:00Z",
+          unreadCount: 0,
+          isOnline: true,
+          clientRating: 5,
+          totalAppointments: 15,
+          lastAppointment: "2024-01-10",
+          tags: ["VIP", "Recommande"]
+        }
+      ];
+      
+      res.json(testConversations);
+    } catch (error: any) {
+      console.error('❌ Erreur récupération conversations:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erreur lors du chargement des conversations'
+      });
+    }
+  });
+
+  app.get('/api/messages', async (req, res) => {
+    try {
+      const { conversationId } = req.query;
+      
+      if (!conversationId) {
+        return res.status(400).json({
+          success: false,
+          error: 'ID de conversation requis'
+        });
+      }
+      
+      // Données de test pour les messages
+      const testMessages = [
+        {
+          id: "msg1",
+          conversationId: conversationId,
+          senderId: "client1",
+          senderName: "Marie Laurent",
+          senderType: "client",
+          content: "Bonjour ! Je souhaiterais prendre rendez-vous pour une coloration",
+          timestamp: "2024-01-15T10:00:00Z",
+          read: true,
+          messageType: "text"
+        },
+        {
+          id: "msg2",
+          conversationId: conversationId,
+          senderId: "business1",
+          senderName: "Studio Élégance",
+          senderType: "business",
+          content: "Bonjour Marie ! Bien sûr, j'ai plusieurs créneaux disponibles cette semaine. Quelle couleur envisagez-vous ?",
+          timestamp: "2024-01-15T10:05:00Z",
+          read: true,
+          messageType: "text"
+        },
+        {
+          id: "msg3",
+          conversationId: conversationId,
+          senderId: "client1",
+          senderName: "Marie Laurent",
+          senderType: "client",
+          content: "J'aimerais passer au blond cendré, pensez-vous que cela m'irait bien ?",
+          timestamp: "2024-01-15T10:10:00Z",
+          read: true,
+          messageType: "text"
+        },
+        {
+          id: "msg4",
+          conversationId: conversationId,
+          senderId: "business1",
+          senderName: "Studio Élégance",
+          senderType: "business",
+          content: "Excellente idée ! Avec votre teint, le blond cendré sera parfait. Je vous propose jeudi 14h ou vendredi 10h ?",
+          timestamp: "2024-01-15T10:15:00Z",
+          read: true,
+          messageType: "text"
+        },
+        {
+          id: "msg5",
+          conversationId: conversationId,
+          senderId: "client1",
+          senderName: "Marie Laurent",
+          senderType: "client",
+          content: "Jeudi 14h c'est parfait ! Merci beaucoup",
+          timestamp: "2024-01-15T10:20:00Z",
+          read: true,
+          messageType: "text"
+        }
+      ];
+      
+      res.json(testMessages);
+    } catch (error: any) {
+      console.error('❌ Erreur récupération messages:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erreur lors du chargement des messages'
+      });
+    }
+  });
+
+  app.post('/api/messages', async (req, res) => {
+    try {
+      const { content, conversationId } = req.body;
+      
+      if (!content || !conversationId) {
+        return res.status(400).json({
+          success: false,
+          error: 'Contenu et ID de conversation requis'
+        });
+      }
+      
+      // Simuler l'envoi d'un message
+      const newMessage = {
+        id: `msg_${Date.now()}`,
+        conversationId,
+        senderId: "business1",
+        senderName: "Studio Élégance",
+        senderType: "business",
+        content: content.trim(),
+        timestamp: new Date().toISOString(),
+        read: true,
+        messageType: "text"
+      };
+      
+      // Ici, vous pourriez sauvegarder le message en base de données
+      console.log('📨 Nouveau message envoyé:', newMessage);
+      
+      res.json({
+        success: true,
+        message: newMessage
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur envoi message:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erreur lors de l\'envoi du message'
+      });
+    }
+  });
+
+  app.post('/api/conversations/:conversationId/read', async (req, res) => {
+    try {
+      const { conversationId } = req.params;
+      
+      // Simuler le marquage des messages comme lus
+      console.log(`📖 Messages marqués comme lus pour la conversation ${conversationId}`);
+      
+      res.json({
+        success: true,
+        message: 'Messages marqués comme lus'
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur marquage messages lus:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erreur lors du marquage des messages'
       });
     }
   });
