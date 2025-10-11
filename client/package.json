@@ -16,6 +16,7 @@
     "typecheck:client": "tsc --noEmit"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@uppy/aws-s3": "^5.0.1",
     "@uppy/core": "^5.1.0",
     "@uppy/dashboard": "^5.0.2",

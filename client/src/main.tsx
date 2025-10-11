@@ -6,6 +6,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 // N2-AUDIT: auto-détection API (bloc corrigé, top-level, sans doublon)
 async function initApiUrl() {

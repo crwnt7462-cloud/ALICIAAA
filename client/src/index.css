@@ -1509,6 +1509,28 @@
   font-weight: 900;
 }
 
+/* Fallback pour backdrop-filter non supporté */
+@supports not (backdrop-filter: blur(20px)) {
+  .glass-button,
+  .glass-card,
+  .glass-input,
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  }
+}
+
+/* Support WebKit avec fallback */
+@supports (backdrop-filter: blur(20px)) {
+  .glass-button,
+  .glass-card,
+  .glass-input,
+  .glass-effect {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
